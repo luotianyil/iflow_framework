@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2b76529f-b347-4015-a35a-a6efaa624139" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/vendor/framework/src" />
+    </include_path>
+  </component>
+  <component name="ProjectId" id="1lhHE1xdgRJn5dyk4B2ppAqIrpv" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/framework" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="php.override.implement.member.chooser.php.doc" value="NONE" />
+    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\framework" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor\iflow\framework" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\framework\src" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\framework" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor\iflow" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2b76529f-b347-4015-a35a-a6efaa624139" name="Default Changelist" comment="" />
+      <created>1608042288096</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1608042288096</updated>
+      <workItem from="1608042289479" duration="12435000" />
+      <workItem from="1608101331549" duration="8220000" />
+      <workItem from="1608186731574" duration="23669000" />
+      <workItem from="1608300163457" duration="2709000" />
+      <workItem from="1608360522077" duration="21276000" />
+      <workItem from="1608447408550" duration="6462000" />
+      <workItem from="1608453990049" duration="47000" />
+      <workItem from="1608454437217" duration="8998000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
