@@ -6,6 +6,8 @@ namespace iflow;
 use iflow\initializer\annotationInitializer;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
+use iflow\initializer\initializer;
+use iflow\Swoole\Http\HttpServer;
 
 /**
  * Class App
@@ -29,9 +31,11 @@ class App extends Container
 
     // 初始化服务
     protected array $initializers = [
-        Error::class,
+        initializer::class,
+//        Error::class,
         Config::class,
-        annotationInitializer::class
+        annotationInitializer::class,
+        HttpServer::class
     ];
 
     // 用户运行入口类
@@ -56,12 +60,12 @@ class App extends Container
 
     public function initializer() : void
     {
-        $this->load();
         // 加载基础服务
+        $this->load();
         foreach ($this->initializers as $key) {
             $this->make($key) -> initializer($this);
         }
-        var_dump(config('router@home'));
+        var_dump(config());
     }
 
     public function getVerSion() : string
@@ -129,5 +133,10 @@ class App extends Container
     public function getAppPath() : string
     {
         return $this->appPath;
+    }
+
+    public function getRootPath() : string
+    {
+        return $this->rootPath;
     }
 }

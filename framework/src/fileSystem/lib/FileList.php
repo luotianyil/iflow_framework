@@ -37,7 +37,7 @@ class FileList
      */
     public function loadDirFile(string $dir, array $fileList = []) : array
     {
-        $dir = glob(trim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR . '*' . (is_dir($dir) ? '' : $this->ext));
+        $dir = glob($dir. DIRECTORY_SEPARATOR . '*' . (is_dir($dir) ? '' : $this->ext));
         foreach ($dir as $key) {
             $fileDir = explode(DIRECTORY_SEPARATOR, $key);
             if (is_file($key)) {

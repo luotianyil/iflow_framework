@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2b76529f-b347-4015-a35a-a6efaa624139" name="Default Changelist" comment="" />
+    <list default="true" id="2b76529f-b347-4015-a35a-a6efaa624139" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/config/swoole.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Middleware.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Swoole/Http/HttpServer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/initializer/initializer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/iflow_framework.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/iflow_framework.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/App.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/App.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/Container.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Container.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/Facede.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Facede.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/Response.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Response.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/Resquest.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Resquest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/app/controller/IndexController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/app/live_web/controller/Index.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/facade/Config.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/facade/Config.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/fileSystem/File.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/fileSystem/File.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/fileSystem/lib/FileList.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/fileSystem/lib/FileList.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/helper.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/helper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/initializer/Config.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/initializer/Config.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/initializer/Error.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/initializer/Error.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/initializer/annotationInitializer.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/initializer/annotationInitializer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/router/RouterBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/router/RouterBase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/router/lib/Router.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/router/lib/Router.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/router/lib/RouterAnnotation.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/router/lib/RouterAnnotation.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iflow" beforeDir="false" afterPath="$PROJECT_DIR$/iflow" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -9,7 +37,9 @@
   </component>
   <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
-    <execution />
+    <execution>
+      <interpreter composer="composer" />
+    </execution>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -21,7 +51,7 @@
       <path value="$PROJECT_DIR$/vendor/psr/container" />
       <path value="$PROJECT_DIR$/vendor/psr/log" />
       <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
-      <path value="$PROJECT_DIR$/vendor/framework/src" />
+      <path value="$PROJECT_DIR$/../../../../phplib/swoole-ide-helper" />
     </include_path>
   </component>
   <component name="ProjectId" id="1lhHE1xdgRJn5dyk4B2ppAqIrpv" />
@@ -34,7 +64,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/framework" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../phplib/swoole-ide-helper" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -44,14 +74,16 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor\framework" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\framework" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor\iflow\framework" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\framework\src" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\app\src" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework" />
-      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\framework" />
-      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor\iflow" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\extend\framework" />
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\extend" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor" />
     </key>
   </component>
@@ -70,7 +102,9 @@
       <workItem from="1608360522077" duration="21276000" />
       <workItem from="1608447408550" duration="6462000" />
       <workItem from="1608453990049" duration="47000" />
-      <workItem from="1608454437217" duration="8998000" />
+      <workItem from="1608454437217" duration="13072000" />
+      <workItem from="1608531907946" duration="2068000" />
+      <workItem from="1608534095169" duration="8394000" />
     </task>
     <servers />
   </component>

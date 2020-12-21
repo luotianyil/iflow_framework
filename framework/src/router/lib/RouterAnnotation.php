@@ -41,7 +41,7 @@ class RouterAnnotation
     public function scanRouter()
     {
         foreach ($this->useScanNamespace as $key) {
-            $this->useClass[$key] = $this->file -> fileList -> loadFileList($this->app -> getFrameWorkPath() . 'src/' . str_replace('iflow', '', $key), '.php', true);
+            $this->useClass[$key] = $this->file -> fileList -> loadFileList($this->app -> getRootPath() . $key, '.php', true);
         }
         $this->loadRouter();
     }
@@ -52,9 +52,9 @@ class RouterAnnotation
         $useClass = $useClass ?: $this->useClass;
         foreach ($useClass as $key => $value) {
             if (is_array($value)) {
-                $this->loadRouter($value, $nameSpace.'\\'.$key);
+               if (sizeof($value) > 0) $this->loadRouter($value, $nameSpace.'\\'.$key);
             } elseif (file_exists($value)) {
-                $class = str_replace('.php', '', str_replace($this->app -> getFrameWorkPath() . 'src/', 'iflow', $value));
+                $class = str_replace('.php', '', str_replace($this->app -> getRootPath(), '', $value));
                 app(annotationInitializer::class) -> loadAnnotations(new \ReflectionClass($class) ?: throw new \Error('初始化失败'));
             }
         }
