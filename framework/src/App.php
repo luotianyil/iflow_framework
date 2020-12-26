@@ -3,11 +3,11 @@ declare (strict_types = 1);
 
 namespace iflow;
 
+use iflow\console\Console;
 use iflow\initializer\annotationInitializer;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
 use iflow\initializer\initializer;
-use iflow\Swoole\Http\HttpServer;
 
 /**
  * Class App
@@ -31,11 +31,12 @@ class App extends Container
 
     // 初始化服务
     protected array $initializers = [
-        initializer::class,
+        Console::class,
+//        initializer::class,
 //        Error::class,
         Config::class,
         annotationInitializer::class,
-        HttpServer::class
+//        HttpServer::class
     ];
 
     // 用户运行入口类
@@ -65,7 +66,6 @@ class App extends Container
         foreach ($this->initializers as $key) {
             $this->make($key) -> initializer($this);
         }
-        var_dump(config());
     }
 
     public function getVerSion() : string

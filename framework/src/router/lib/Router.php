@@ -5,8 +5,8 @@ namespace iflow\router\lib;
 
 // 路由方法
 use iflow\App;
-use JetBrains\PhpStorm\ArrayShape;
 use ReflectionClass;
+use ReflectionMethod;
 
 #[\Attribute]
 class Router
@@ -26,7 +26,8 @@ class Router
         protected string $rule = '',
         protected string $methods = 'get',
         protected string $ext = '',
-        protected array $parameter = []
+        protected array $parameter = [],
+        protected array $options = [],
     )
     {}
 
@@ -50,18 +51,49 @@ class Router
         foreach ($this->annotationClass -> getMethods() as $key) {
             // 获取方法调用的注解
             $annotations = $key -> getAttributes();
+            $parameter = $this->getRouterMethodParameter($key);
             foreach ($annotations as $k) {
                 if ($k -> getName() === Router::class) {
                     $k = $k -> newInstance();
-                    $this->routers[$this->fatherRouter][] =
-                        $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}");
+                    $router = $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}");
+                    array_merge($parameter, $router['parameter']);
+                    $this->routers[$this->fatherRouter][] = $router;
+
                 }
             }
         }
         config($this->routers, $this->routerKey);
     }
 
-    #[ArrayShape(['rule' => "string", 'methods' => "string", 'ext' => "string", 'parameter' => "array"])]
+    /**
+     * 获取路由方法 参数
+     * @param ReflectionMethod $methond
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function getRouterMethodParameter(ReflectionMethod $methond): array
+    {
+        $parameters = $methond -> getParameters();
+
+        $parameter = [];
+
+        // 遍历 方法参数
+        foreach ($parameters as $key) {
+            $type = $key -> getType();
+            $name = $key -> getName();
+            assert($type instanceof \ReflectionType);
+            if (class_exists($type -> getName())) {
+                $parameter[$name] = (new ReflectionClass($type -> getName())) -> getProperties();
+            } else {
+                $parameter[$name] = [
+                    'type' => $type -> getName(),
+                    'name' => $name,
+                ];
+            }
+        }
+        return $parameter;
+    }
+
     public function getRouter(string $fatherRouter, string $action = '') : array
     {
         return [
@@ -70,6 +102,7 @@ class Router
             'action' => $action,
             'ext' => $this->ext,
             'parameter' => $this->parameter,
+            'options' => $this->options,
         ];
     }
 }

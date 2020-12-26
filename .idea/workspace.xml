@@ -2,33 +2,35 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b76529f-b347-4015-a35a-a6efaa624139" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/config/swoole.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/src/Middleware.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/src/Swoole/Http/HttpServer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework/src/initializer/initializer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/iflow_framework.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/iflow_framework.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/command.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Collection.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Swoole/Services/Server.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Swoole/Services/Services.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Swoole/Services/WebSocket/webSocket.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Utils/Message/Message.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Utils/Message/baseMessage.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/Utils/basicTools.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/console/Console.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/console/lib/Help.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/console/lib/Input.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/console/lib/outPut.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/contract/Arrayable.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/fileSystem/lib/fileSystem.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/response/lib/Json.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/framework/src/response/lib/Xml.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/src/App.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/App.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/src/Container.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Container.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/Facede.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Facede.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/src/Response.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Response.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/Resquest.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Resquest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/app/controller/IndexController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/app/live_web/controller/Index.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/facade/Config.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/facade/Config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/fileSystem/File.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/fileSystem/File.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/fileSystem/lib/FileList.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/fileSystem/lib/FileList.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/src/Swoole/Http/HttpServer.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/Swoole/Services/Http/HttpServer.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/src/helper.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/helper.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/src/initializer/Config.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/initializer/Config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/initializer/Error.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/initializer/Error.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/initializer/annotationInitializer.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/initializer/annotationInitializer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/src/router/RouterBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/router/RouterBase.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/framework/src/router/lib/Router.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/router/lib/Router.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/src/router/lib/RouterAnnotation.php" beforeDir="false" afterPath="$PROJECT_DIR$/framework/src/router/lib/RouterAnnotation.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/iflow" beforeDir="false" afterPath="$PROJECT_DIR$/iflow" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/run.php" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,11 +82,11 @@
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor\iflow\framework" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\framework\src\Swoole\Services" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\app\src" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\extend\framework" />
       <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\extend" />
-      <recent name="E:\Source_code\web\group_project\live_project\iflow_framework\vendor" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -104,7 +106,12 @@
       <workItem from="1608453990049" duration="47000" />
       <workItem from="1608454437217" duration="13072000" />
       <workItem from="1608531907946" duration="2068000" />
-      <workItem from="1608534095169" duration="8394000" />
+      <workItem from="1608534095169" duration="9557000" />
+      <workItem from="1608623792841" duration="15885000" />
+      <workItem from="1608731774724" duration="7264000" />
+      <workItem from="1608795587963" duration="12485000" />
+      <workItem from="1608878718498" duration="16126000" />
+      <workItem from="1608969331390" duration="3838000" />
     </task>
     <servers />
   </component>

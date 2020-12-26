@@ -1,32 +1,32 @@
 <?php
 
 
-namespace iflow\Swoole\Http;
+namespace iflow\Swoole\Services\Http;
 
-use iflow\App;
 use iflow\Middleware;
-use Swoole\Http\Server;
+use iflow\Swoole\Services\Services;
+use Swoole\Server;
 
 class HttpServer
 {
 
     protected Server $http;
 
-    protected App $app;
+    protected Services $services;
 
     protected array $config = [
         'port' => 8080,
         'daemonize' => false
     ];
 
-    public function initializer(App $app)
+    public function initializer(Services $services)
     {
 
-        $this->app = $app;
-        $this->config = config('swoole');
+        $this->services = $services;
+        $this->config = config('swoole') ?: $this->config;
 
         // 初始化 HTTP 全局环境
-        $this->http = new Server('127.0.0.1', 8080);
+        $this->http = new Server('127.0.0.1', $this->config['port']);
         $this->http -> set($this->config);
 
         $this->http->on('start', function ($server) {
@@ -46,6 +46,6 @@ class HttpServer
     public function httpRequest($request, $response)
     {
         // 初始化中间件
-        $this->app -> make(Middleware::class) -> initializer($this->app);
+        $this->services -> app -> make(Middleware::class) -> initializer($this->services -> app);
     }
 }

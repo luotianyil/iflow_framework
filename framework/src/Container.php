@@ -39,26 +39,74 @@ class Container implements ContainerInterface
     // 实例化 对象 返回
     public function invokeClass(string $class, $vars)
     {
-        $ref = new \ReflectionClass($class) ?: throw new \Error('Class not exists: '.$class);
-        if ($ref -> hasMethod('__make')) {
-            $method = $ref -> getMethod('__make');
-            if ($method -> isPublic() && $method -> isStatic()) {
-                $vars = $this->bindParameters($method, $vars);
-                $method -> invokeArgs(null, $vars);
+        try {
+            $ref = new \ReflectionClass($class);
+            if ($ref -> hasMethod('__make')) {
+                $method = $ref -> getMethod('__make');
+                if ($method -> isPublic() && $method -> isStatic()) {
+                    $vars = $this->bindParameters($method, $vars);
+                    $method -> invokeArgs(null, $vars);
+                }
             }
+
+            $constructor = $ref -> getConstructor();
+            $vars = $constructor ? $this->bindParameters($constructor, $vars) : [];
+            $object = $ref -> newInstanceArgs($vars);
+
+            if (!$this->has($class)) $this->bind[$class] = new \stdClass();
+
+            $this->containers[$this->bind[$class]] = $object;
+            return $object;
+        } catch (\ReflectionException) {
+            throw new \Error('Class not exists: ' . $class);
+        }
+    }
+
+    // 执行闭包
+    public function invokeFunction($methods, array $vars = [])
+    {
+        try {
+            $ref = new \ReflectionFunction($methods);
+            $args = $this->bindParameters($ref, $vars);
+            return $methods(...$args);
+        } catch (\ReflectionException) {
+            throw new \Error("function not exists: ${methods}");
+        }
+    }
+
+    public function invokeMethod($methods, array $vars = [])
+    {
+        if (is_array($methods)) {
+            [$class, $methods] = $methods;
+        } else {
+            [$class, $methods] = explode('::', $methods);
         }
 
-        $constructor = $ref -> getConstructor();
-        $vars = $constructor ? $this->bindParameters($constructor, $vars) : [];
-        $object = $ref -> newInstanceArgs($vars);
-        $this->containers[$this->bind[$class]] = $object;
-        return $object;
+        try {
+            $ref = new \ReflectionMethod($class, $methods);
+            $args = $this->bindParameters($ref, $vars);
+            return $ref->invokeArgs(is_object($class) ? $class : null, $args);
+        } catch (\ReflectionException $e) {
+            throw new \Error("function not exists: ${methods}");
+        }
+    }
+
+    // 反射执行方法
+    public function invoke(array|string $callable, array $vars = [])
+    {
+        if ($callable instanceof \Closure) {
+            return $this->invokeFunction($callable, $vars);
+        } elseif (is_string($callable) && !str_contains($callable, '::')) {
+            return $this->invokeFunction($callable, $vars);
+        } else {
+            return $this->invokeMethod($callable, $vars);
+        }
     }
 
     // 绑定参数
     public function bindParameters(ReflectionFunctionAbstract $methods, $vars) : array
     {
-        if (!$vars || $methods -> getNumberOfParameters() === 0) return [];
+        if (!$vars && $methods -> getNumberOfParameters() === 0) return [];
         $parameters = $methods -> getParameters();
 
         reset($vars);

@@ -7,15 +7,17 @@ use iflow\App;
 use iflow\Container;
 use iflow\facade\Config;
 
+// 返回json
 if (!function_exists('json')) {
-    function json(array $data, int $code = 200, array $header = []) {
-        echo 123;
+    function json(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Json {
+        return \iflow\Response::create($data, 'json', $code) -> headers($headers) -> options($options);
     }
 }
 
 // 返回xml
 if (!function_exists('xml')) {
-    function xml(array $data, int $code = 200, array $header = []) {
+    function xml(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Xml {
+        return \iflow\Response::create($data, 'json', $code) -> headers($headers) -> options($options);
     }
 }
 
@@ -33,5 +35,19 @@ if (!function_exists('config')) {
             return Config::set($value, $name);
         }
         return Config::get($name, $value);
+    }
+}
+
+if (!function_exists('request')) {
+    function request(): \iflow\Resquest
+    {
+        return app('Request');
+    }
+}
+
+if (!function_exists('message')) {
+    function message() : \iflow\Utils\Message\Message
+    {
+        return app('\iflow\Utils\Message\Message');
     }
 }

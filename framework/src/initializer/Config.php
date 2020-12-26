@@ -56,6 +56,8 @@ class Config
                 return [];
             }
         };
+
+        $config = is_numeric($config)?[] : $config;
         $this->set($name, is_object($config) ? $config() : $config);
     }
 
