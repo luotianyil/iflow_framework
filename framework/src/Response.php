@@ -6,13 +6,13 @@ namespace iflow;
 
 class Response
 {
-
-    protected string $contentType = 'text/html';
-    protected string $charSet = 'utf-8';
-    protected int $code = 200;
-    protected mixed $data;
-    protected array $options = [];
-    protected array $headers = [];
+    public string $contentType = 'text/html';
+    public string $charSet = 'utf-8';
+    public int $code = 200;
+    public mixed $data;
+    public array $options = [];
+    public array $headers = [];
+    public mixed $response = null;
 
     protected function init($data, $code) {
         $this->code = $code;
@@ -21,6 +21,11 @@ class Response
 
     protected function contentType($contentType = 'application/json') : static {
         $this -> contentType = $contentType;
+        return $this;
+    }
+
+    protected function response($response): static {
+        $this->response = $response;
         return $this;
     }
 
@@ -55,7 +60,29 @@ class Response
     public static function create($data = [], string $type = 'json', int $code = 200)
     {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
-        return app() -> invokeClass($class, [$data, $code]);
+        $response = Container::getInstance()->invokeClass($class, [$data, $code]);
+        foreach (array_merge((array) $response, (array) response()) as $key => $value) {
+            if (method_exists($response, $key)) {
+                if (!is_string($response -> $key)) $response -> $key($value);
+            }
+        }
+        return $response;
+    }
+
+    public function send()
+    {
+        foreach ($this->headers as $key => $value) {
+            $this->response -> header($key, $value);
+        }
+        $this->response -> status($this->code);
+        $this->response -> header('content-type', $this->contentType);
+        $this->response -> end($this->output($this->data));
+    }
+
+    public function initializer($response): static
+    {
+        $this->response = $response;
+        return $this;
     }
 
 }

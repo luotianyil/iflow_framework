@@ -3,14 +3,12 @@
 
 namespace iflow\Swoole\Services\Http;
 
-use iflow\Middleware;
+use iflow\Swoole\Services\Http\lib\initializer;
 use iflow\Swoole\Services\Services;
-use Swoole\Server;
+use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
 
 class HttpServer
 {
-
-    protected Server $http;
 
     protected Services $services;
 
@@ -21,31 +19,31 @@ class HttpServer
 
     public function initializer(Services $services)
     {
-
         $this->services = $services;
         $this->config = config('swoole') ?: $this->config;
-
         // 初始化 HTTP 全局环境
-        $this->http = new Server('127.0.0.1', $this->config['port']);
-        $this->http -> set($this->config);
-
-        $this->http->on('start', function ($server) {
-            $this->httpStart($server);
+        $services->getServer()->on('request', function ($request, $response) {
+            if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
+                $file = $this->services -> app -> getAppPath() . 'public' . DIRECTORY_SEPARATOR . 'favicon.ico';
+                if (file_exists($file)) $response->sendfile($file);
+                else $response -> end();
+                return;
+            }
+            $this->services -> app -> make(initializer::class) -> __initializer($this -> services, $request, $response);
         });
-        $this->http->on('request', function ($request, $response) {
-            $this->httpRequest($request, $response);
-        });
-        $this->http -> start();
     }
-
-    // http服务启动项 - 回调
-    public function httpStart($server)
-    {}
 
     // http请求回调
     public function httpRequest($request, $response)
     {
         // 初始化中间件
-        $this->services -> app -> make(Middleware::class) -> initializer($this->services -> app);
+        $url = explode('/', trim($request->server['request_uri'], '/'));
+        if ($this->config['websocket']['enable']) {
+            if ($url[0] === 'socket.io') {
+                $SocketIo = new SocketIo();
+                $SocketIo -> config = $this->config['websocket'];
+                $url = $SocketIo-> __initializer($request, $response);
+            }
+        }
     }
 }

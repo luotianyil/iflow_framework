@@ -1,0 +1,25 @@
+<?php
+
+
+namespace iflow\Swoole\MQTT;
+
+
+use iflow\Swoole\MQTT\lib\mqttClient;
+use iflow\Swoole\MQTT\lib\mqttServer;
+
+class Services extends \iflow\Swoole\Services
+{
+
+    protected array $initializers = [
+        mqttServer::class
+    ];
+
+    public function run()
+    {
+        $this->userEvent[2] = empty($this->userEvent[2]) ? 'service' : ($this->userEvent[2] === 'service' ? 'service' : 'client');
+        if ($this->userEvent[2] === 'client') {
+            call_user_func([new mqttClient(), 'initializer'], $this);
+        } else $this->initializer();
+    }
+
+}

@@ -15,6 +15,11 @@ class outPut
         return $this;
     }
 
+    public function writeLine(string $msg)
+    {
+        $this -> write($msg.PHP_EOL)->outPutWrite();
+    }
+
     public function outPutWrite()
     {
         fflush($this->outFile);

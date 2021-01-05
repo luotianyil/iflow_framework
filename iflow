@@ -4,6 +4,7 @@ namespace iflow;
 
 require __DIR__ . '/vendor/autoload.php';
 
+use app\controller;
 use \iflow\router\lib\RouterAnnotation;
 
 // 应用初始化

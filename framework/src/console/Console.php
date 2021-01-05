@@ -12,15 +12,16 @@ use iflow\Swoole\Services\Services;
 
 class Console
 {
-    protected App $app;
+    public App $app;
 
-    protected Input $input;
-    protected outPut $outPut;
+    public Input $input;
+    public outPut $outPut;
 
     public array $command = [
-        '<start|stop>-tcp',
-        '<start|stop>-udp',
-        '<start|stop>-service' => Services::class,
+        '<start|stop|reload>-service' => Services::class,
+        '<start|stop|reload>-tcp' => \iflow\Swoole\Tcp\Services::class,
+        '<start|stop|reload>-udp' => \iflow\Swoole\Udp\Services::class,
+        '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,
         'help' => Help::class
     ];
 
@@ -31,7 +32,7 @@ class Console
         $this->app = $app;
         $this->input = new Input();
         $this->outPut = new outPut($this->openOutputStream());
-        // 获取用户输入
+//        // 获取用户输入
         $this->userCommand = $this->input -> getUserCommand();
 
         // 运行程序
@@ -44,7 +45,7 @@ class Console
         $this->getCommand();
 
         // 解析用户 指令
-        $this->input -> parsingInputCommand($this->command, $this->app);
+        $this->input -> parsingInputCommand($this->command, $this);
     }
 
     protected function getCommand(): static

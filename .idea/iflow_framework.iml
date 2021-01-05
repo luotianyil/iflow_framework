@@ -5,11 +5,16 @@
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/framework/src" isTestSource="false" packagePrefix="iflow\" />
+      <sourceFolder url="file://$MODULE_DIR$/app" isTestSource="false" packagePrefix="app\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
       <excludeFolder url="file://$MODULE_DIR$/src" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/swoole/ide-helper" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/binsoul/net-mqtt" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/mime-type-detection" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -11,11 +11,24 @@ class ComposerStaticInit55dcd52be8d3231cc976c65d362e64a8
         array (
             'iflow\\' => 6,
         ),
+        'a' => 
+        array (
+            'app\\' => 4,
+        ),
         'P' => 
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Container\\' => 14,
+        ),
+        'L' => 
+        array (
+            'League\\MimeTypeDetection\\' => 25,
+            'League\\Flysystem\\' => 17,
+        ),
+        'B' => 
+        array (
+            'BinSoul\\Net\\Mqtt\\' => 17,
         ),
     );
 
@@ -23,6 +36,10 @@ class ComposerStaticInit55dcd52be8d3231cc976c65d362e64a8
         'iflow\\' => 
         array (
             0 => __DIR__ . '/../..' . '/framework/src',
+        ),
+        'app\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
         ),
         'Psr\\SimpleCache\\' => 
         array (
@@ -35,6 +52,18 @@ class ComposerStaticInit55dcd52be8d3231cc976c65d362e64a8
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'League\\MimeTypeDetection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
+        ),
+        'League\\Flysystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/flysystem/src',
+        ),
+        'BinSoul\\Net\\Mqtt\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/binsoul/net-mqtt/src',
         ),
     );
 

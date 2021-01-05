@@ -6,16 +6,16 @@ namespace iflow\console\lib;
 
 use iflow\console\Console;
 
-class Help
+class Help extends Command
 {
-    public function handle(Console $console)
+    public function handle()
     {
         $content = "";
-        foreach ($console -> command as $key => $value) {
+        foreach ($this->Console -> command as $key => $value) {
             $key = is_numeric($key) ? $value : $key;
             $content .= "\033[20;1H\033[1;4;32m{$key}\033[0m".PHP_EOL;
         }
 
-        $console -> outWrite($content);
+        $this->Console -> outWrite($content);
     }
 }

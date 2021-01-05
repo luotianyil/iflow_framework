@@ -8,13 +8,13 @@ use iflow\Response;
 
 class Json extends Response
 {
-    protected array $options = [
+    public array $options = [
         'json_encode' => JSON_UNESCAPED_UNICODE
     ];
 
-    protected string $contentType = 'application/json';
+    public string $contentType = 'application/json';
 
-    public function __construct(mixed $data = '', int $code = 200)
+    public function __construct(array $data = [], int $code = 200)
     {
         $this->init($data, $code);
     }

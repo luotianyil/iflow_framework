@@ -9,10 +9,10 @@ use iflow\Response;
 class Xml extends Response
 {
 
-    protected string $contentType = 'text/xml';
+    public string $contentType = 'text/xml';
 
     // 输出参数
-    protected array $options = [
+    public array $options = [
         // 根节点名
         'root_node' => 'xml',
         // 根节点属性
@@ -25,9 +25,9 @@ class Xml extends Response
         'encoding'  => 'utf-8',
     ];
 
-    public function __construct($data, int $code = 200)
+    public function __construct(array $data = [], int $code = 200)
     {
-        $this->init($code, $data);
+        $this->init($data, $code);
     }
 
     protected function output($data): string

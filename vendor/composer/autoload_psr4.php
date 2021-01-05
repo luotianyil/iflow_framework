@@ -7,7 +7,11 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'iflow\\' => array($baseDir . '/framework/src'),
+    'app\\' => array($baseDir . '/app'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
+    'League\\MimeTypeDetection\\' => array($vendorDir . '/league/mime-type-detection/src'),
+    'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
+    'BinSoul\\Net\\Mqtt\\' => array($vendorDir . '/binsoul/net-mqtt/src'),
 );

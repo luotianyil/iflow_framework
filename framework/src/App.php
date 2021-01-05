@@ -31,10 +31,10 @@ class App extends Container
 
     // 初始化服务
     protected array $initializers = [
-        Console::class,
-//        initializer::class,
-//        Error::class,
         Config::class,
+        Console::class,
+        initializer::class,
+//        Error::class,
         annotationInitializer::class,
 //        HttpServer::class
     ];
@@ -50,6 +50,8 @@ class App extends Container
         $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
         static::setInstance($this);
+        $this->instance(static::class, $this);
+        $this->instance('iflow\Container', $this);
     }
 
     public function run(string $class = '') {

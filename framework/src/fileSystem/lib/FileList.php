@@ -41,7 +41,7 @@ class FileList
         foreach ($dir as $key) {
             $fileDir = explode(DIRECTORY_SEPARATOR, $key);
             if (is_file($key)) {
-                $fileList[str_replace($this->ext, '', $fileDir[count($fileDir) - 1])] = $key;
+                $fileList[str_replace($this->ext, '', $fileDir[count($fileDir) - 1])] = str_replace('//', '/', $key);
             } else if (is_dir($key)) {
                 $fileList[$fileDir[count($fileDir) - 1]] = $this->loadDirFile($key, $fileList);
             }

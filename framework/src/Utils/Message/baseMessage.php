@@ -12,7 +12,7 @@ trait baseMessage
     public array $items = [];
     public array $page_info = [];
     public string $filter = 'json';
-    public ?bool $isRest = null;
+    public ?bool $isRest = false;
 
     public function msgBaseInitialize()
     {
@@ -43,14 +43,12 @@ trait baseMessage
             return $data;
         }
 
-        if ($this->isRest === null) $this->isRest = config("webconfig.isRest");
-
         if ($this->isRest) {
             $data['requestInfo'] = [
-                'requestUri' => request() -> pathinfo(),
-                'requestParam' => array_keys(request() -> param() ?? []),
-                'timestamp' => time(),
-                'method' => request() -> method()
+                'requestUri' => request() -> request_uri,
+                'requestParam' => array_keys(request() -> getParams() ?? []),
+//                'timestamp' => request() -> request,
+                'method' => request() -> request_method
             ];
 
             return match ($this->filter) {

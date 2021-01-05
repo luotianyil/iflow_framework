@@ -48,7 +48,6 @@ class Container implements ContainerInterface
                     $method -> invokeArgs(null, $vars);
                 }
             }
-
             $constructor = $ref -> getConstructor();
             $vars = $constructor ? $this->bindParameters($constructor, $vars) : [];
             $object = $ref -> newInstanceArgs($vars);
@@ -115,15 +114,17 @@ class Container implements ContainerInterface
         foreach ($parameters as $parameter) {
             $name = $parameter -> getName();
             $class = $parameter -> getType();
-            assert($class instanceof ReflectionNamedType);
-            if (class_exists($class -> getName())) {
-                $args[] = $this->getObjectParam($class -> getName(), $vars);
-            } elseif (1 == $type && !empty($vars)) {
-                $args[] = array_shift($vars);
-            } else if ($parameter -> isDefaultValueAvailable()) {
-                $args[] = $parameter -> getDefaultValue();
-            } else {
-                throw new \Error('method param miss:' . $name);
+            // assert();
+            if ($class instanceof ReflectionNamedType) {
+                if (class_exists($class -> getName())) {
+                    $args[] = $this->getObjectParam($class -> getName(), $vars);
+                } elseif (1 == $type && !empty($vars)) {
+                    $args[] = array_shift($vars);
+                } else if ($parameter -> isDefaultValueAvailable()) {
+                    $args[] = $parameter -> getDefaultValue();
+                } else {
+                    throw new \Error('method param miss:' . $name);
+                }
             }
         }
         return $args;
@@ -135,10 +136,10 @@ class Container implements ContainerInterface
         $array = $vars;
         $value = array_shift($array);
 
-        if ($vars instanceof $className) {
+        if ($value instanceof $className) {
             $result = $value;
         } else {
-            $result = $this->make($className);
+            $result = $className === $this->make($className);
         }
 
         array_shift($vars);
@@ -161,6 +162,21 @@ class Container implements ContainerInterface
         }
 
         return static::$instance;
+    }
+
+    /**
+     * 绑定一个类实例到容器
+     * @access public
+     * @param string $abstract 类名或者标识
+     * @param object $instance 类的实例
+     * @return $this
+     */
+    public function instance(string $abstract, object $instance)
+    {
+        $this->containers = $this->containers ?: new \WeakMap();
+        if (!$this->has($abstract)) $this->bind[$abstract] = new \stdClass();
+        $this->containers[$this->bind[$abstract]] = $instance;
+        return $this;
     }
 
     // 设置当前容器

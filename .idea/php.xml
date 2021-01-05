@@ -7,6 +7,10 @@
       <path value="$PROJECT_DIR$/vendor/psr/log" />
       <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
       <path value="$PROJECT_DIR$/../../../../phplib/swoole-ide-helper" />
+      <path value="$PROJECT_DIR$/vendor/swoole/ide-helper" />
+      <path value="$PROJECT_DIR$/vendor/binsoul/net-mqtt" />
+      <path value="$PROJECT_DIR$/vendor/league/flysystem" />
+      <path value="$PROJECT_DIR$/vendor/league/mime-type-detection" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0" />
