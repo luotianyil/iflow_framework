@@ -41,7 +41,6 @@ class Router
         // 定义路由数据
         $this->routerKey = config('app@router');
         $this->routers = config($this->routerKey);
-
         $this->bindRouter();
     }
 
@@ -56,9 +55,8 @@ class Router
                 if ($k -> getName() === Router::class) {
                     $k = $k -> newInstance();
                     $router = $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}");
-                    array_merge($parameter, $router['parameter']);
+                    $router['parameter'] = array_merge($parameter, $router['parameter']);
                     $this->routers[$this->fatherRouter][] = $router;
-
                 }
             }
         }
@@ -67,14 +65,13 @@ class Router
 
     /**
      * 获取路由方法 参数
-     * @param ReflectionMethod $methond
+     * @param ReflectionMethod $method
      * @return array
      * @throws \ReflectionException
      */
-    public function getRouterMethodParameter(ReflectionMethod $methond): array
+    public function getRouterMethodParameter(ReflectionMethod $method): array
     {
-        $parameters = $methond -> getParameters();
-
+        $parameters = $method -> getParameters();
         $parameter = [];
 
         // 遍历 方法参数
@@ -83,11 +80,22 @@ class Router
             $name = $key -> getName();
             assert($type instanceof \ReflectionType);
             if (class_exists($type -> getName())) {
-                $parameter[$name] = (new ReflectionClass($type -> getName())) -> getProperties();
+                $parametersType = new ReflectionClass($type -> getName());
+                $parametersTypeInstance = $parametersType -> newInstance();
+                foreach ($parametersType -> getProperties() as $param) {
+                    $p = $param -> getName();
+                    $parameter[$name][] = [
+                        'type' => gettype($parametersTypeInstance -> $p),
+                        'class' => $parametersTypeInstance::class,
+                        'name' => $param -> getName(),
+                        'default' => $parametersTypeInstance -> $p
+                    ];
+                }
             } else {
                 $parameter[$name] = [
                     'type' => $type -> getName(),
                     'name' => $name,
+                    'default' => $key -> isDefaultValueAvailable() ? $key -> getDefaultValue() : ''
                 ];
             }
         }
@@ -98,7 +106,7 @@ class Router
     {
         return [
             'rule' => $fatherRouter.$this->rule,
-            'methods' => $this->methods?:'get',
+            'method' => $this->methods !== ''? strtolower($this->methods) :'*',
             'action' => $action,
             'ext' => $this->ext,
             'parameter' => $this->parameter,

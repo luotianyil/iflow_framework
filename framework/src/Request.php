@@ -6,7 +6,7 @@ namespace iflow;
 class Request
 {
 
-    public \Swoole\Http\Request $request;
+    public mixed $request;
     public array $server;
     public string $request_uri = '';
     public string $query_string = '';

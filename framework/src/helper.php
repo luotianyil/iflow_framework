@@ -7,6 +7,7 @@ use iflow\App;
 use iflow\Container;
 use iflow\facade\Config;
 
+// 应用
 if (!function_exists('app')) {
     function app(string $name = '', array $args = [], bool $isNew = false)
     {
@@ -14,6 +15,7 @@ if (!function_exists('app')) {
     }
 }
 
+// 配置
 if (!function_exists('config')) {
     function config($name = '', $value = [])
     {
@@ -24,6 +26,7 @@ if (!function_exists('config')) {
     }
 }
 
+// 请求
 if (!function_exists('request')) {
     function request(): \iflow\Request
     {
@@ -31,6 +34,15 @@ if (!function_exists('request')) {
     }
 }
 
+// 文件
+if (!function_exists('files')) {
+    function files($file) : mixed
+    {
+        return app() -> make(\iflow\fileSystem\File::class) -> create($file);
+    }
+}
+
+// 响应
 if (!function_exists('response')) {
     function response() : \iflow\Response
     {
@@ -38,13 +50,15 @@ if (!function_exists('response')) {
     }
 }
 
+// 信息
 if (!function_exists('message')) {
     function message() : \iflow\Utils\Message\Message
     {
-        return app(\iflow\Utils\Message\Message::class);
+        return app() -> make(\iflow\Utils\Message\Message::class);
     }
 }
 
+// 运行目录
 if (!function_exists('runtime_path')) {
     function runtime_path($path = ''): string
     {
@@ -52,12 +66,6 @@ if (!function_exists('runtime_path')) {
     }
 }
 
-if (!function_exists('file')) {
-    function file($path = ''): string
-    {
-        return request() -> request -> files;
-    }
-}
 
 // 返回json
 if (!function_exists('json')) {

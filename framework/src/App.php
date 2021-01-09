@@ -32,10 +32,10 @@ class App extends Container
     // 初始化服务
     protected array $initializers = [
         Config::class,
-        Console::class,
-        initializer::class,
-//        Error::class,
         annotationInitializer::class,
+        Console::class,
+//        initializer::class,
+//        Error::class,
 //        HttpServer::class
     ];
 

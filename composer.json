@@ -10,7 +10,10 @@
     "ext-json": "*",
     "ext-libxml": "*",
     "binsoul/net-mqtt": "^1.0@dev",
-    "league/flysystem": "2.0.2"
+    "league/flysystem": "2.x-dev",
+    "ext-mbstring": "*",
+    "aws/aws-sdk-php": "^3.0@dev",
+    "ext-ftp": "*"
   },
   "license": "MIT",
   "authors": [

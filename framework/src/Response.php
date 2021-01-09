@@ -69,6 +69,12 @@ class Response
         return $response;
     }
 
+    public function notFount()
+    {
+        $this -> code = 404;
+        $this -> data('404 Not-Found') -> send();
+    }
+
     public function send()
     {
         foreach ($this->headers as $key => $value) {
