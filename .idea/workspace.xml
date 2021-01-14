@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b76529f-b347-4015-a35a-a6efaa624139" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/iflow_framework.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/iflow_framework.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

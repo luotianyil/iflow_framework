@@ -39,9 +39,7 @@ class Event
     }
 
     public function onClose($server, $frame)
-    {
-        return $server -> close($frame -> fd);
-    }
+    {}
 
     public function onMessage($server, $frame)
     {
