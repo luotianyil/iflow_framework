@@ -3,7 +3,6 @@
 declare (strict_types = 1);
 
 // 助手函数
-use iflow\App;
 use iflow\Container;
 use iflow\facade\Config;
 
@@ -58,6 +57,22 @@ if (!function_exists('message')) {
     }
 }
 
+if (!function_exists('sendFile')) {
+    function sendFile($path, bool $isConfigRootPath = true) : bool
+    {
+        $path = ($isConfigRootPath ? config('app@resources.file')['rootPath'] . DIRECTORY_SEPARATOR : '') . $path;
+        response() -> sendFile($path);
+        return false;
+    }
+}
+
+if (!function_exists('logs')) {
+    function logs(string $type = 'info', string $message = '', array $content = [])
+    {
+        return app() -> make(\iflow\log\Log::class) -> write($type, $message, $content);
+    }
+}
+
 // 运行目录
 if (!function_exists('runtime_path')) {
     function runtime_path($path = ''): string
@@ -69,8 +84,8 @@ if (!function_exists('runtime_path')) {
 
 // 返回json
 if (!function_exists('json')) {
-    function json(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Json {
-        return \iflow\Response::create($data, 'json', $code)
+    function json($data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Json {
+        return \iflow\Response::create($data, $code, 'json')
             -> headers($headers) -> options($options);
     }
 }
@@ -78,7 +93,7 @@ if (!function_exists('json')) {
 // 返回xml
 if (!function_exists('xml')) {
     function xml(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Xml {
-        return \iflow\Response::create($data, 'xml', $code)
+        return \iflow\Response::create($data, $code, 'xml')
             -> headers($headers) -> options($options);
     }
 }

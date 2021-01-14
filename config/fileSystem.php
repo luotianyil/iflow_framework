@@ -36,7 +36,7 @@ return [
             'timeout' => 90,
             'utf8' => false,
             'passive' => true,
-            'transferMode' => FTP_BINARY,
+            'transferMode' => 2,
             'systemType' => null, // 'windows' or 'unix'
             'ignorePassiveAddress' => null, // true or false
             'timestampsOnUnixListingsEnabled' => false, // true or false

@@ -11,24 +11,12 @@ class mqttServer
 
     protected array $events = [
         'receive' => 'onReceive',
-        'connect' => 'onConnect'
+        'connect' => 'onConnect',
+        'close' => 'onClose',
     ];
-
-    protected Parser $parser;
 
     public function initializer(Services $services)
     {
-        $services -> eventInit($this, $this->events);
-        $this->parser = new Parser();
-    }
-
-    public function onReceive($server, $fd, $from_id, $data)
-    {
-        var_dump($this->parser -> decoding($data));
-    }
-
-    public function onConnect($server, $fd)
-    {
-        var_dump($fd);
+        $services -> eventInit(new mqttServerEvent(new Parser(), $services), $this->events);
     }
 }

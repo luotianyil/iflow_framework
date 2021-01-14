@@ -43,11 +43,6 @@ class Validate extends validateBase
         return $this;
     }
 
-    /*
-     *  ['a:xxx' => 'regx:<>|min:1|max:2|required|validateFunc:xxx']
-     *
-     *
-     * */
     protected function explodeValidateRule($key, $rule)
     {
         $rule = explode('|', $rule);

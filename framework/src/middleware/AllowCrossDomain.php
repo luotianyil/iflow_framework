@@ -31,7 +31,7 @@ class AllowCrossDomain
         $cookieDomain = config('cookie@domain');
 
         if (!isset($header['Access-Control-Allow-Origin'])) {
-            $origin = $request->header['origin'] ?? '';
+            $origin = $request -> request -> header['origin'] ?? '';
             if ($origin && ('' == $cookieDomain || strpos($origin, $cookieDomain))) {
                 $header['Access-Control-Allow-Origin'] = $origin;
             } else {

@@ -16,7 +16,7 @@ class Services extends \iflow\Swoole\Services
 
     public function run()
     {
-        $this->userEvent[2] = empty($this->userEvent[2]) ? 'service' : ($this->userEvent[2] === 'service' ? 'service' : 'client');
+        $this->userEvent[2] = empty($this->userEvent[2]) ? 'client' : ($this->userEvent[2] === 'server' ? 'server' : 'client');
         if ($this->userEvent[2] === 'client') {
             call_user_func([new mqttClient(), 'initializer'], $this);
         } else $this->initializer();

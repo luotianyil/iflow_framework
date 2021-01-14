@@ -4,29 +4,53 @@
 namespace iflow\Swoole\Services\WebSocket\socketio;
 
 
-use Swoole\Http\Request;
-use Swoole\WebSocket\Server;
+use iflow\Swoole\Services\WebSocket\webSocket;
 
 class Event
 {
+    protected array $config = [];
+    protected webSocket $websocket;
+    public Parser $parser;
 
-    public function onOpen($server, $req)
+    public function __construct(webSocket $websocket)
     {
-        echo $req -> fd.PHP_EOL;
+        $this->websocket = $websocket;
+        $this->config = $websocket -> services -> config;
+        $this->parser = new Parser();
     }
 
-    public function onClose($server, $req)
+    public function onOpen($server, $frame)
     {
+        if (!empty($frame->get['sid'])) {
+            $payload        = json_encode(
+                [
+                    'sid'          => base64_encode(uniqid()),
+                    'upgrades'     => [],
+                    'pingInterval' => $this->config['websocket']['ping_interval'],
+                    'pingTimeout'  => $this->config['websocket']['ping_timeout'],
+                ]
+            );
+            $initPayload    = Parser::OPEN . $payload;
+            $connectPayload = Parser::MESSAGE . Parser::CONNECT;
+
+            $server->push($frame -> fd, $initPayload);
+            $server->push($frame -> fd, $connectPayload);
+        }
     }
 
-    public function onMessage(Server $server, $req)
+    public function onClose($server, $frame)
     {
-        $server->push($req -> fd, '42'.json_encode(['message', '123123']));
+        return $server -> close($frame -> fd);
     }
 
-    public function onConnection($server)
+    public function onMessage($server, $frame)
     {
-        echo $server -> id;
+        $data = $this->parser::getPayload($frame -> data);
+        if ($data) {
+            $this->websocket -> fd = $frame -> fd;
+            $this->websocket ->services -> callConfigHandle($this -> config['Handle'], [$this->websocket, $data['event'], $data['data']]);
+        } else {
+            $this->parser::heartbeat($server, $frame -> fd, $frame -> data);
+        }
     }
-
 }

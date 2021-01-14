@@ -34,7 +34,7 @@ class RouterBase
     public function validateRouter(string $url = '/', string $method = 'get', array $param = []) : array | bool
     {
         $routerList = $this->getRouterList();
-        $router =  $this->getRouterParam($routerList, $url, $method);
+        $router = $this->getRouterParam($routerList, $url, $method);
         return $router ? $this->bindParam($router, $param) : $router;
     }
 
@@ -59,10 +59,14 @@ class RouterBase
                     $rule = explode('/', trim($key['rule'], '/'));
                     $key['param'] = [];
                     if (count($rule) === count($url)) {
+                        $ruleIsSuccess = true;
                         foreach ($url as $k => $v) {
                             $e = preg_replace('/[<|>]/', '', $rule[$k]);
                             $e = explode(':', $e);
-                            if (count($e) === 1 && $e[0] !== $v) return $router;
+                            if (count($e) === 1 && $e[0] !== $v) {
+                                $ruleIsSuccess = false;
+                                break;
+                            }
 
                             if ($e[0] === '?') $key['param'][] = $v;
                             else if (sizeof($e) > 1) {
@@ -71,10 +75,15 @@ class RouterBase
                                 }
                                 if (preg_match($e[0], $v)) {
                                     $key['param'][] = $v;
-                                } else return $router;
+                                } else {
+                                    $ruleIsSuccess = false;
+                                    break;
+                                }
                             }
                         }
-                        return $this->validateMethod($method, $key['method']) ? $key :[];
+                        if ($ruleIsSuccess) {
+                            return $this->validateMethod($method, $key['method']) ? $key :[];
+                        }
                     }
                 }
             }

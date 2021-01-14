@@ -35,8 +35,13 @@ trait Client
             if (!$this->server->connect(...$this->param)) {
                 $this->services -> Console -> outPut -> writeLine("connect failed. Error: {$this->server->errCode}");
             } else {
-                if (class_exists($this->services -> Handle)) {
-                    call_user_func([new $this->services -> Handle, 'handle'], $this->server);
+                while($this->server -> isConnected()) {
+                    $pack = $this->server -> recv();
+                    if (null !== $pack) {
+                        if (class_exists($this->services -> Handle)) {
+                            call_user_func([new $this->services -> Handle, 'handle'], ...[$this, $pack]);
+                        }
+                    }
                 }
             }
         });

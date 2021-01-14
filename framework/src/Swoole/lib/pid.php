@@ -24,20 +24,10 @@ class pid
         return 0;
     }
 
-    public function kill($sig, $wait = 0): bool
+    public function kill($sig): bool
     {
         $pid = $this->getPid();
         $pid > 0 && Process::kill($pid, $sig);
-
-        if ($wait) {
-            $start = time();
-            do {
-                if (!$this->isRun()) {
-                    break;
-                }
-                usleep(100000);
-            } while (time() < $start + $wait);
-        }
         return $this->isRun();
     }
 

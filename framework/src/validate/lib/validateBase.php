@@ -30,10 +30,6 @@ class validateBase
         'float'   => FILTER_VALIDATE_FLOAT,
     ];
 
-    protected array $alias = [
-        '>' => 'gt', '>=' => 'egt', '<' => 'lt', '<=' => 'elt', '=' => 'eq', 'same' => 'eq',
-    ];
-
     protected array $error = [];
 
     public function min(mixed $value, int $rule = 0): bool
@@ -44,6 +40,37 @@ class validateBase
     public function max(mixed $value, int $rule = 0): bool
     {
         return $this->getLength($value) <= $rule;
+    }
+
+    public function email($value)
+    {
+        return $this->filter($value, $this->filter['email']);
+    }
+
+    public function ip($value, $rule = 'ipv4')
+    {
+        if (!in_array($rule, ['ipv4', 'ipv6'])) $rule = 'ipv4';
+        return $this->filter($value, [FILTER_VALIDATE_IP, 'ipv6' == $rule ? FILTER_FLAG_IPV6 : FILTER_FLAG_IPV4]);
+    }
+
+    public function integer($value)
+    {
+        return $this->filter($value, $this->filter['integer']);
+    }
+
+    public function url($value)
+    {
+        return $this->filter($value, $this->filter['url']);
+    }
+
+    public function macAddr($value)
+    {
+        return $this->filter($value, $this->filter['macAddr']);
+    }
+
+    public function float($value)
+    {
+        return $this->filter($value, $this->filter['float']);
     }
 
     protected function getLength(mixed $value): int
@@ -66,7 +93,7 @@ class validateBase
         return $this->error;
     }
 
-    public function find()
+    public function findError()
     {
         foreach ($this->error as $key => $value) {
             foreach ($value as $k => $v) return $v;
@@ -84,6 +111,18 @@ class validateBase
             $rule = '/^' . $rule . '$/';
         }
         return is_scalar($value) && 1 === preg_match($rule, (string) $value);
+    }
+
+    public function filter($value, $rule)
+    {
+        $param = null;
+        if (is_string($rule)) {
+            [$rule, $param] = explode(',', $rule);
+        } elseif (is_array($rule)){
+            $param = $rule[1] ?? null;
+            $rule = $rule[0];
+        }
+        return false !== filter_var($value, is_int($rule) ? $rule : filter_id($rule), $param);
     }
 
 }

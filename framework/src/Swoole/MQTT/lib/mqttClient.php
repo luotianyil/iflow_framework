@@ -3,67 +3,84 @@
 
 namespace iflow\Swoole\MQTT\lib;
 
-
-use BinSoul\Net\Mqtt\Packet\PublishRequestPacket;
+use Simps\MQTT\Client;
 use iflow\Swoole\MQTT\Services;
-use Swoole\Coroutine\Client;
 
 class mqttClient
 {
 
-    protected Client $client;
-    protected Services $services;
+    private Client $client;
+    public Services $services;
+    protected array $inputConfig = [
+        'connect' => [
+            'clean' => true,
+            'will' => []
+        ],
+        'topics' => [
+            'test' => [
+                'qos' => 1,
+                'no_local' => true,
+                'retain_as_published' => true,
+                'retain_handling' => 2,
+            ]
+        ]
+    ];
+
+    protected $pingTimerId;
+    private int $timeSincePing = 0;
 
     public function initializer(Services $services)
     {
         $this->services = $services;
-
-        $this->client = new Client(SWOOLE_SOCK_TCP);
-        $this->client -> set($this->services -> options);
-
         \Co\run(function () {
+            $this->client = new Client($this->services -> configs, $this->services -> configs['swConfig'], $this->services -> configs['sockType'], 2);
             if ($this->connect()) {
-                $this->wait();
+                if ($this->client -> subscribe($this->inputConfig['topics'])) {
+                    $this->wait();
+                } else {
+                    throw new \Exception('MQTT Subscribe Error');
+                }
             }
-            $this->close();
         });
     }
 
-    public function send()
+    private function wait()
     {
-        $request = new PublishRequestPacket;
-        $request->setTopic(1);
-        $request->setPayload(json_encode(['code' => 255], true));
-        $request->setQosLevel(1);
-        $request->setDuplicate(1);
-        $request->setRetained(1);
-        $request->setIdentifier(1);
-        $this->client -> send($request);
+        while(true)
+        {
+            $packet = $this->client->recv();
+            if ($packet && $packet !== true) {
+                $this -> timeSincePing = time();
+                $this -> services->callConfigHandle($packet, [$this, $packet]);
+            }
+            $this -> ping();
+        }
     }
 
-    public function wait()
-    {}
-
-    public function connect(): bool
+    private function connect(): bool
     {
-        if (!$this->client->connect(...$this->services -> param)) {
-            $this->services -> Console -> outPut -> writeLine("connect failed. Error: {$this->client->errCode}");
+        $inputConfig = $this -> services ->callConfigHandle($this->services -> config['connectBefore'], [$this]);
+
+        $this->inputConfig = empty($inputConfig) ? $this->inputConfig : $inputConfig;
+
+        if (!$this->client->connect(...array_values($this->inputConfig['connect'] ?? []))) {
+            $this->services -> Console -> outPut -> writeLine("connect failed. Error");
             return false;
         }
         return true;
     }
 
-    public function isConnect(): bool
+    private function ping()
     {
-        return $this->client -> isConnected();
-    }
-
-    public function close(): bool
-    {
-        if ($this->isConnect()) {
-            return $this->client -> close();
+        if (isset($this->services -> config['keep_alive']) && $this -> timeSincePing < (time() - $this->services -> config['keep_alive'])) {
+            $buffer = $this -> client ->ping();
+            if ($buffer) $this -> timeSincePing = time();
+            else $this->client -> close();
         }
-        return false;
     }
 
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
 }

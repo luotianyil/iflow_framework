@@ -9,6 +9,7 @@ use iflow\Request;
 use iflow\Response;
 use iflow\router\RouterBase;
 use iflow\Swoole\Services\Services;
+use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
 
 class initializer
 {
@@ -44,21 +45,35 @@ class initializer
     // 验证路由
     protected function validateRouter()
     {
-        $this->router = app() -> make(RouterBase::class) -> validateRouter($this->request -> request_uri, $this->request -> request_method);
 
-        if (!$this->router) {
-            $this->response -> notFount();
+        $middleware = $this->services -> app
+            -> make(Middleware::class)
+            -> initializer($this->services -> app, $this->request, $this->response);
+        // 中间件返回 响应实例结束
+        if ($middleware instanceof Response) {
+            $middleware -> send();
         } else {
-            $middleware = $this->services -> app
-                -> make(Middleware::class)
-                -> initializer($this->services -> app, $this->request, $this->response);
-            // 中间件返回 响应实例结束
-            if ($middleware instanceof Response) {
-                $middleware -> send();
-            } else {
-                $this->newInstanceController();
+
+            if ($this->isSocketIo($this->request -> request_uri)) {
+                return;
             }
+            if ($this->isStaticResources($this->request -> request_uri)) {
+                return;
+            }
+            if ($this->isRequestApi($this->request -> request_uri)) {
+                return;
+            }
+
+            $this->router = app() -> make(RouterBase::class) -> validateRouter(
+                $this->request -> request_uri,
+                $this->request -> request_method,
+                $this->request -> params() ?? []
+            );
+
+            return !$this->router ? $this->response -> notFount(): $this->newInstanceController();
         }
+
+        return true;
     }
 
     protected function newInstanceController()
@@ -67,29 +82,28 @@ class initializer
         if (!class_exists($controller)) $this->response -> notFount();
 
         $ref = new \ReflectionClass($controller);
-        $controller = $ref -> newInstance(...[$this->request, $this->response]);
+        $controller =
+        $ref -> getConstructor() ?
+            $ref -> newInstance(...[$this->request, $this->response]) : $ref -> newInstance();
         if (!method_exists($controller, $action)) $this->response -> notFount();
 
-        $response = call_user_func([$controller, $action], ...$this->bindParam($this->router['parameter']));
-
-        if ($response instanceof Response) $response -> send();
-        if (is_array($response)) json($response) -> send();
-        $this->response -> data($response) -> send();
+        return $this->send(call_user_func([$controller, $action], ...$this->bindParam(
+            $this->router['parameter']
+        )));
     }
 
     protected function bindParam(array $params = []): array
     {
         $parameter = [];
         foreach ($params as $key => $value) {
-            if (empty($value['default'])) {
-                $parameter[] = $this->setInstanceValue($value);
-            } else {
+            if (isset($value['default'])) {
                 $parameter[] = $value['default'];
+            } else {
+                $parameter[] = $this->setInstanceValue($value);
             }
         }
         return $parameter;
     }
-
 
     protected function setInstanceValue(array $params): mixed
     {
@@ -107,5 +121,54 @@ class initializer
             }
         }
         return $object;
+    }
+
+    protected function isRequestApi(string $url = ''): Response|bool
+    {
+        $url = trim($url, '/');
+        if ($url === config('app@api_path')) {
+            message() -> success('success', config('router')) -> send();
+            return true;
+        }
+        return false;
+    }
+
+    protected function isStaticResources(string $url = '')
+    {
+        $url = explode('/', trim($url, '/'));
+        $rule = config('app@resources.file');
+        if ($url[0] === $rule['rule']) {
+            array_splice($url, 0, 1);
+            $url = str_replace('/', DIRECTORY_SEPARATOR, implode('/', $url));
+            response() -> sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url);
+            return true;
+        }
+        return false;
+    }
+
+    protected function isSocketIo($url = '')
+    {
+        $url = explode('/', trim($url, '/'));
+        if ($this->services -> configs['websocket']['enable']) {
+            if ($url[0] === 'socket.io') {
+                $SocketIo = new SocketIo();
+                $SocketIo -> config = $this->services -> configs['websocket'];
+                return $this->send($SocketIo-> __initializer($this->request, $this->response));
+            }
+        }
+        return false;
+    }
+
+    protected function send($response)
+    {
+        if ($response instanceof Response) {
+            $response -> send();
+        } else if (!is_string($response)) {
+            json($response) -> send();
+        } else if ($this->response) {
+            $this->response -> data($response) -> send();
+        }
+
+        return true;
     }
 }

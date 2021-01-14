@@ -14,7 +14,7 @@ class Json extends Response
 
     public string $contentType = 'application/json';
 
-    public function __construct(array $data = [], int $code = 200)
+    public function __construct(mixed $data = [], int $code = 200)
     {
         $this->init($data, $code);
     }

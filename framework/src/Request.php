@@ -3,6 +3,8 @@
 
 namespace iflow;
 
+use iflow\fileSystem\lib\upLoadFile;
+
 class Request
 {
 
@@ -19,7 +21,19 @@ class Request
         $this->request_uri = $request -> server['request_uri'];
         $this->query_string = $request -> server['query_string'] ?? '';
         $this->request_method = $request -> server['request_method'];
+
+        $this->initFile();
         return $this;
+    }
+
+    protected function initFile()
+    {
+
+        $files = $this->request -> files ?? [];
+        $upLoadFile = app() -> make(upLoadFile::class);
+        foreach ($files as $key => $value) {
+            $upLoadFile -> setFile($key, $value);
+        }
     }
 
     // validate param
@@ -32,10 +46,33 @@ class Request
     }
 
     // get param
-    public function getParams(string $param = '', $type = 'get')
+    public function getParams(string $name = '')
     {
-        if ($param === '') return $this->request -> $type;
-        return $this->request -> $type[$param];
+        if ($name === '') return $this->request -> get;
+        return $this->request -> get[$name] ?? null;
+    }
+
+
+    public function file(string $name): upLoadFile|array
+    {
+        $upLoadFile = app() -> make(upLoadFile::class);
+        return $upLoadFile -> getFile($name);
+    }
+
+    public function postParams(string $name = '')
+    {
+        if (!$this->isPost()) return [];
+        $params = json_decode($this->request -> getContent(), true);
+        if ($name === '') return $params;
+        return $params[$name] ?? null;
+    }
+
+    public function params(string $name = '')
+    {
+        return match ($this->isPost()) {
+            true => $this->postParams($name),
+            false => $this->getParams($name)
+        };
     }
 
     public function isPost(): bool

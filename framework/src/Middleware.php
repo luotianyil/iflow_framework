@@ -13,7 +13,7 @@ class Middleware
     protected App $app;
     protected pipeline $pipeline;
 
-    public function initializer(App $app, Request $request, Response $response): Response
+    public function initializer(App $app, Request $request, Response $response)
     {
         $this->app = $app;
         $this->response = $response;
@@ -23,7 +23,7 @@ class Middleware
     }
 
     // add Middleware
-    public function addMiddleware(): Response
+    public function addMiddleware()
     {
         foreach (config('middleware') as $key) {
             $this->pipeline -> through($key);
@@ -31,11 +31,11 @@ class Middleware
         return $this->thenMiddleware();
     }
 
-    public function thenMiddleware(): Response
+    public function thenMiddleware()
     {
         $then = $this->pipeline -> process($this->app, $this -> request, $this->response);
         if ($then instanceof Response) return $then;
-        return message() -> success('hello World', config('router'));
+        return $then;
     }
 
 }

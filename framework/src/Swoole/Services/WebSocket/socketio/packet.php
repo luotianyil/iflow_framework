@@ -54,25 +54,4 @@ class packet
         'BINARY_ACK',
     ];
 
-    public static function getSocketType(string $packet)
-    {
-        $type = $packet[0] ?? null;
-        if (!array_key_exists($type, static::$socketTypes)) {
-            return;
-        }
-
-        return (int) $type;
-    }
-
-    public static function isSocketType($packet, string $typeName)
-    {
-        $type = array_search(strtoupper($typeName), static::$socketTypes);
-
-        if ($type === false) {
-            return false;
-        }
-
-        return static::getSocketType($packet) === $type;
-    }
-
 }

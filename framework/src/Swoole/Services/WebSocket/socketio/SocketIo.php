@@ -3,8 +3,8 @@
 
 namespace iflow\Swoole\Services\WebSocket\socketio;
 
-
-use Swoole\Http\Request;
+use iflow\Request;
+use iflow\Response;
 
 class SocketIo
 {
@@ -13,24 +13,23 @@ class SocketIo
 
     public array $config = [];
 
-    public function heartbeat()
-    {}
-
-    public function __initializer(Request $request, $response): string
+    public function __initializer(Request $request, Response $response): Response|string
     {
 
-        if (!in_array($request->get['transport'], $this->transports)) {
-            return json(
-                [
-                    'code' => 0,
-                    'message' => 'Transport unknown',
-                ],
-                400
-            );
+        if ($request -> isPost()) {
+            return json([
+                    'code'    => 3,
+                    'message' => 'Bad request',
+            ], 400);
         }
 
-
-        if (!empty($request -> get['sid'])) {
+        if (!in_array($request->getParams('transport'), $this->transports)) {
+            return json([
+                'code' => 0,
+                'message' => 'Transport unknown',
+            ], 400);
+        }
+        if (!empty($request -> getParams('sid'))) {
             return '1:16';
         } else {
             $sid     = base64_encode(uniqid());
@@ -40,9 +39,8 @@ class SocketIo
                     'upgrades'     => ['websocket'],
                     'pingInterval' => $this -> config['ping_interval'],
                     'pingTimeout'  => $this -> config['ping_timeout'],
-                ]
-            );
-            $response -> cookie('io', $sid);
+                ], JSON_UNESCAPED_UNICODE);
+            $response -> response -> cookie('io', $sid);
             return '97:0' . $payload . '2:40';
         }
     }

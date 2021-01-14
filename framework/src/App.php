@@ -8,6 +8,7 @@ use iflow\initializer\annotationInitializer;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
 use iflow\initializer\initializer;
+use iflow\log\Log;
 
 /**
  * Class App
@@ -32,11 +33,11 @@ class App extends Container
     // 初始化服务
     protected array $initializers = [
         Config::class,
+        Log::class,
+        Error::class,
         annotationInitializer::class,
-        Console::class,
-//        initializer::class,
-//        Error::class,
-//        HttpServer::class
+        initializer::class,
+        Console::class
     ];
 
     // 用户运行入口类
@@ -61,7 +62,7 @@ class App extends Container
         $this->initializer();
     }
 
-    public function initializer() : void
+    protected function initializer() : void
     {
         // 加载基础服务
         $this->load();

@@ -17,11 +17,13 @@ trait Server
         $this->services = $services;
         $this->eventType = strtolower($this->services -> userEvent[1]);
         $this -> setConfig() -> setPid() -> setParam() -> setOptions();
-        if (isset($this->services -> userEvent[2])) {
-            if (strtolower($this->services -> userEvent[2]) === 'client') $this -> initializerClient();
-            else $this->initializerServer();
-        } else {
-            $this->initializerServer();
+        if (strtolower($this->services -> userEvent[0]) !== 'stop') {
+            if (isset($this->services -> userEvent[2])) {
+                if (strtolower($this->services -> userEvent[2]) === 'client') $this -> initializerClient();
+                else $this->initializerServer();
+            } else {
+                $this->initializerServer();
+            }
         }
     }
 
@@ -30,15 +32,12 @@ trait Server
         if ($this->eventType === 'udp') {
             $this->param[] = SWOOLE_PROCESS;
             $this->param[] = SWOOLE_SOCK_UDP;
-        } elseif ($this->eventType === 'mqtt') {
-            $this->param[] = SWOOLE_BASE;
         }
 
         $serverClass = match ($this->eventType) {
           'service' => $this->services -> config['websocket']['enable'] ? WebSocketServer::class : HttpServer::class,
           default => \Swoole\Server::class
         };
-
         $this->server = new $serverClass(...$this->param);
         $this->server -> set($this->options);
     }
@@ -46,45 +45,36 @@ trait Server
 
     public function setPid(): static
     {
-        $this->pid = new pid($this -> configs['pid_file']);
+        $this->pid = new pid(
+            $this -> configs['pid_file'] ?? $this -> configs['swConfig']['pid_file']
+        );
         return $this;
     }
 
     public function setConfig(): static
     {
-        $this->configs = $this->services -> config[$this->eventType.'SwooleConfig'];
-        $this->configs['pid_file'] = $this->configs['pid_file'].'.'.$this->eventType.'.pid';
-        $this->configs['log_file'] = $this->configs['log_file'].'.'.$this->eventType.'.log';
+        $this->configs = $this->services -> config;
         return $this;
     }
 
     public function setOptions(): static
     {
-
         $this->options = $this->configs;
-
-        unset($this->options['serverHost']);
-        unset($this->options['clientHost']);
+        unset($this->options['host']);
+        unset($this->options['options']);
+        unset($this->options['websocket']);
         unset($this->options['Handle']);
+        unset($this->options['mqttEvent']);
         return $this;
     }
 
     public function setParam(): static
     {
-        if ($this->eventType === 'service') {
-            $this->param = [
-                $this->services -> config['host'],
-                $this->services -> config['port']
-            ];
-        } else {
-            if (!empty($this->services -> userEvent[2])) {
-                $this->param = array_values($this->configs[strtolower($this->services -> userEvent[2]) === 'client' ? 'clientHost' : 'serverHost']);
-                $this->Handle = $this->configs['Handle'][strtolower($this->services -> userEvent[2]) === 'client' ? 'ClientHandle' : 'ServerHandle'];
-            } else {
-                $this->param = array_values($this->configs['serverHost']);
-                $this->Handle = $this->configs['Handle']['ServerHandle'];
-            }
-        }
+        $this->param = isset($this->configs['port']) ? [
+            $this->configs['host'],
+            $this->configs['port']
+        ] : array_values($this->configs['host']);
+        $this->Handle = $this->configs['Handle'];
         return $this;
     }
 
@@ -92,5 +82,4 @@ trait Server
     {
         return $this->server;
     }
-
 }

@@ -24,7 +24,7 @@ class Router
 
     public function __construct(
         protected string $rule = '',
-        protected string $methods = 'get',
+        protected string $methods = '',
         protected string $ext = '',
         protected array $parameter = [],
         protected array $options = [],

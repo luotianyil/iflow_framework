@@ -52,12 +52,12 @@ class Response
         return $this;
     }
 
-    protected function output($data): string
+    protected function output($data)
     {
         return $data;
     }
 
-    public static function create($data = [], string $type = 'json', int $code = 200)
+    public static function create($data = [], int $code = 200, string $type = 'json')
     {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
         $response = Container::getInstance()->invokeClass($class, [$data, $code]);
@@ -69,20 +69,36 @@ class Response
         return $response;
     }
 
-    public function notFount()
+    public function notFount(): bool
     {
         $this -> code = 404;
-        $this -> data('404 Not-Found') -> send();
+        $path = config('app@404_error_page');
+        if (file_exists($path)) {
+            $this->sendFile($path);
+        } else $this -> data('404 Not-Found') -> send();
+        return false;
     }
 
     public function send()
+    {
+        $this->setResponseHeader();
+        return $this->response -> end($this->output($this->data));
+    }
+
+    public function sendFile(string $path = '')
+    {
+        $this->setResponseHeader();
+        if (file_exists($path)) $this->response -> sendfile($path);
+        else $this->notFount();
+    }
+
+    protected function setResponseHeader()
     {
         foreach ($this->headers as $key => $value) {
             $this->response -> header($key, $value);
         }
         $this->response -> status($this->code);
         $this->response -> header('content-type', $this->contentType);
-        $this->response -> end($this->output($this->data));
     }
 
     public function initializer($response): static

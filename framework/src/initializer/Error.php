@@ -24,10 +24,14 @@ class Error
     }
 
     public function appError(int $errno, string $str, string $file = '', int $line = 0)
-    {}
+    {
+        logs('error', "error: $str file: $file in line $line");
+    }
 
     public function appHandler(Throwable $e)
-    {}
+    {
+        $this->appError($e -> getCode(), $e -> getMessage(), $e -> getFile(), $e -> getLine());
+    }
 
     public function appShuDown()
     {}

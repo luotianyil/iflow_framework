@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad6f1a5d010b62c513875676eae81dd6",
+    "content-hash": "dadedcd6ba9ac1ef1bb239e138166ff1",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.171.14",
+            "version": "3.171.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2bc8681a623caa13d5c1da90ca4d6c76436b545d"
+                "reference": "216ff33ce238c30cf793973262ea727f2ce41224"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2bc8681a623caa13d5c1da90ca4d6c76436b545d",
-                "reference": "2bc8681a623caa13d5c1da90ca4d6c76436b545d",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/216ff33ce238c30cf793973262ea727f2ce41224",
+                "reference": "216ff33ce238c30cf793973262ea727f2ce41224",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -95,7 +95,12 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2021-01-07T19:16:26+00:00"
+            "support": {
+                "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
+                "issues": "https://github.com/aws/aws-sdk-php/issues",
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.171.16"
+            },
+            "time": "2021-01-12T19:12:49+00:00"
         },
         {
             "name": "binsoul/net-mqtt",
@@ -127,6 +132,7 @@
                 "phpstan/phpstan": "^0.12",
                 "phpunit/phpunit": "^8"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -156,6 +162,10 @@
                 "mqtt",
                 "net"
             ],
+            "support": {
+                "issues": "https://github.com/binsoul/net-mqtt/issues",
+                "source": "https://github.com/binsoul/net-mqtt/tree/0.8.0"
+            },
             "time": "2020-04-27T16:43:58+00:00"
         },
         {
@@ -242,6 +252,10 @@
                 "rest",
                 "web service"
             ],
+            "support": {
+                "issues": "https://github.com/guzzle/guzzle/issues",
+                "source": "https://github.com/guzzle/guzzle/tree/7.2.0"
+            },
             "funding": [
                 {
                     "url": "https://github.com/GrahamCampbell",
@@ -288,6 +302,7 @@
             "require-dev": {
                 "symfony/phpunit-bridge": "^4.4 || ^5.1"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -317,6 +332,10 @@
             "keywords": [
                 "promise"
             ],
+            "support": {
+                "issues": "https://github.com/guzzle/promises/issues",
+                "source": "https://github.com/guzzle/promises/tree/master"
+            },
             "time": "2020-10-19T16:50:15+00:00"
         },
         {
@@ -394,7 +413,134 @@
                 "uri",
                 "url"
             ],
+            "support": {
+                "issues": "https://github.com/guzzle/psr7/issues",
+                "source": "https://github.com/guzzle/psr7/tree/1.x"
+            },
             "time": "2020-12-08T11:45:39+00:00"
+        },
+        {
+            "name": "guzzlehttp/ringphp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/RingPHP.git",
+                "reference": "5e2a174052995663dd68e6b5ad838afd47dd615b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/5e2a174052995663dd68e6b5ad838afd47dd615b",
+                "reference": "5e2a174052995663dd68e6b5ad838afd47dd615b",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "guzzlehttp/streams": "~3.0",
+                "php": ">=5.4.0",
+                "react/promise": "~2.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "ext-curl": "Guzzle will use specific adapters if cURL is present"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Ring\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "support": {
+                "issues": "https://github.com/guzzle/RingPHP/issues",
+                "source": "https://github.com/guzzle/RingPHP/tree/1.1.1"
+            },
+            "abandoned": true,
+            "time": "2018-07-31T13:22:33+00:00"
+        },
+        {
+            "name": "guzzlehttp/streams",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/streams.git",
+                "reference": "d99a261c616210618ab94fd319cb17eda458cc3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/streams/zipball/d99a261c616210618ab94fd319cb17eda458cc3e",
+                "reference": "d99a261c616210618ab94fd319cb17eda458cc3e",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Stream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Provides a simple abstraction over streams of data",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "stream"
+            ],
+            "support": {
+                "issues": "https://github.com/guzzle/streams/issues",
+                "source": "https://github.com/guzzle/streams/tree/master"
+            },
+            "abandoned": true,
+            "time": "2016-04-13T16:32:01+00:00"
         },
         {
             "name": "league/flysystem",
@@ -402,12 +548,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "1d68c2325a56b6b847f3a40b9564cabfa7bb2594"
+                "reference": "7373c4baf04c6cdf88b961486e89a40238c46c53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/1d68c2325a56b6b847f3a40b9564cabfa7bb2594",
-                "reference": "1d68c2325a56b6b847f3a40b9564cabfa7bb2594",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/7373c4baf04c6cdf88b961486e89a40238c46c53",
+                "reference": "7373c4baf04c6cdf88b961486e89a40238c46c53",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -436,6 +582,7 @@
                 "phpstan/phpstan": "^0.12.26",
                 "phpunit/phpunit": "^8.5 || ^9.4"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -466,6 +613,10 @@
                 "sftp",
                 "storage"
             ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem/issues",
+                "source": "https://github.com/thephpleague/flysystem/tree/2.x"
+            },
             "funding": [
                 {
                     "url": "https://offset.earth/frankdejonge",
@@ -480,7 +631,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-28T17:02:23+00:00"
+            "time": "2021-01-11T13:27:22+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -527,6 +678,20 @@
                 }
             ],
             "description": "Mime-type detection for Flysystem",
+            "support": {
+                "issues": "https://github.com/thephpleague/mime-type-detection/issues",
+                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/league/flysystem",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-10-18T11:50:25+00:00"
         },
         {
@@ -557,6 +722,7 @@
                 "composer/xdebug-handler": "^1.4",
                 "phpunit/phpunit": "^4.8.36 || ^7.5.15"
             },
+            "default-branch": true,
             "bin": [
                 "bin/jp.php"
             ],
@@ -590,6 +756,10 @@
                 "json",
                 "jsonpath"
             ],
+            "support": {
+                "issues": "https://github.com/jmespath/jmespath.php/issues",
+                "source": "https://github.com/jmespath/jmespath.php/tree/master"
+            },
             "time": "2020-08-03T09:32:24+00:00"
         },
         {
@@ -615,6 +785,7 @@
             "require": {
                 "php": ">=7.2.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -645,6 +816,10 @@
                 "container-interop",
                 "psr"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/container/issues",
+                "source": "https://github.com/php-fig/container/tree/master"
+            },
             "time": "2020-10-13T07:07:53+00:00"
         },
         {
@@ -671,6 +846,7 @@
                 "php": "^7.0 || ^8.0",
                 "psr/http-message": "^1.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -700,6 +876,9 @@
                 "psr",
                 "psr-18"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/http-client/tree/master"
+            },
             "time": "2020-09-19T09:12:31+00:00"
         },
         {
@@ -725,6 +904,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -756,6 +936,9 @@
                 "request",
                 "response"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/master"
+            },
             "time": "2019-08-29T13:16:46+00:00"
         },
         {
@@ -781,6 +964,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -809,6 +993,9 @@
                 "psr",
                 "psr-3"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/master"
+            },
             "time": "2020-09-18T06:44:51+00:00"
         },
         {
@@ -834,6 +1021,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -863,6 +1051,9 @@
                 "psr-16",
                 "simple-cache"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/simple-cache/tree/master"
+            },
             "time": "2020-04-21T06:43:17+00:00"
         },
         {
@@ -909,7 +1100,167 @@
                 }
             ],
             "description": "A polyfill for getallheaders.",
+            "support": {
+                "issues": "https://github.com/ralouphie/getallheaders/issues",
+                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+            },
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "react/promise",
+            "version": "2.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "a8ec7b446d6673901e3be20258d12b6b980af92f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/a8ec7b446d6673901e3be20258d12b6b980af92f",
+                "reference": "a8ec7b446d6673901e3be20258d12b6b980af92f",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0 || ^5.7 || ^4.8.36"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Promise\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Sorgalla",
+                    "email": "jsorgalla@gmail.com"
+                }
+            ],
+            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
+            "keywords": [
+                "promise",
+                "promises"
+            ],
+            "support": {
+                "issues": "https://github.com/reactphp/promise/issues",
+                "source": "https://github.com/reactphp/promise/tree/2.x"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/WyriHaximus",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/cboden",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/jsor",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-07-23T20:41:09+00:00"
+        },
+        {
+            "name": "simps/mqtt",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/simps/mqtt.git",
+                "reference": "72d397ea704ba9d84ce3f7b7551138fc4811808b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/simps/mqtt/zipball/72d397ea704ba9d84ce3f7b7551138fc4811808b",
+                "reference": "72d397ea704ba9d84ce3f7b7551138fc4811808b",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phpunit/phpunit": "^7.0.0",
+                "swoole/ide-helper": ">=4.4.19"
+            },
+            "suggest": {
+                "ext-swoole": "The ext-swoole >= v4.4.19 needs to be loaded when using the MQTT Client."
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Simps\\MQTT\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Lu Fei",
+                    "email": "lufei@simps.io"
+                }
+            ],
+            "description": "MQTT Protocol Analysis and Coroutine Client for PHP",
+            "keywords": [
+                "client",
+                "coroutine",
+                "mqtt",
+                "mqtt3.1",
+                "mqtt5.0",
+                "mqtt_client",
+                "mqtt_protocol",
+                "php",
+                "simps",
+                "swoole"
+            ],
+            "support": {
+                "issues": "https://github.com/simps/mqtt/issues",
+                "source": "https://github.com/simps/mqtt/tree/master"
+            },
+            "funding": [
+                {
+                    "url": "https://simps.io/#/zh-cn/donate",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/simple-swoole",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/simps",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2021-01-12T08:11:49+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -937,6 +1288,7 @@
             "suggest": {
                 "ext-mbstring": "For best performance"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -978,6 +1330,9 @@
                 "portable",
                 "shim"
             ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.22.0"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -993,21 +1348,284 @@
                 }
             ],
             "time": "2021-01-07T16:49:33+00:00"
+        },
+        {
+            "name": "topthink/think-helper",
+            "version": "v3.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-helper.git",
+                "reference": "c28d37743bda4a0455286ca85b17b5791d626e10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-helper/zipball/c28d37743bda4a0455286ca85b17b5791d626e10",
+                "reference": "c28d37743bda4a0455286ca85b17b5791d626e10",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "think\\": "src"
+                },
+                "files": [
+                    "src/helper.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "description": "The ThinkPHP6 Helper Package",
+            "support": {
+                "issues": "https://github.com/top-think/think-helper/issues",
+                "source": "https://github.com/top-think/think-helper/tree/3.0"
+            },
+            "time": "2019-11-08T08:01:10+00:00"
+        },
+        {
+            "name": "topthink/think-orm",
+            "version": "2.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-orm.git",
+                "reference": "f48dc09050f25029d41a66bfc9c3c403e4f82024"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-orm/zipball/f48dc09050f25029d41a66bfc9c3c403e4f82024",
+                "reference": "f48dc09050f25029d41a66bfc9c3c403e4f82024",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1.0",
+                "psr/log": "~1.0",
+                "psr/simple-cache": "^1.0",
+                "topthink/think-helper": "^3.1"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "think\\": "src"
+                },
+                "files": []
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "liu21st",
+                    "email": "liu21st@gmail.com"
+                }
+            ],
+            "description": "think orm",
+            "keywords": [
+                "database",
+                "orm"
+            ],
+            "support": {
+                "issues": "https://github.com/top-think/think-orm/issues",
+                "source": "https://github.com/top-think/think-orm/tree/v2.0.36"
+            },
+            "time": "2021-01-12T09:08:52+00:00"
+        },
+        {
+            "name": "yurunsoft/composer-include-files",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Yurunsoft/composer-include-files.git",
+                "reference": "277ed077b85d7a9d7b6b73ff148a48d9d676218d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Yurunsoft/composer-include-files/zipball/277ed077b85d7a9d7b6b73ff148a48d9d676218d",
+                "reference": "277ed077b85d7a9d7b6b73ff148a48d9d676218d",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "composer-plugin-api": "^1.0 || ^2.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "ComposerIncludeFiles\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "ComposerIncludeFiles\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Robertson",
+                    "email": "funkjedi@gmail.com"
+                }
+            ],
+            "description": "Include files at a higher priority than autoload files.",
+            "homepage": "https://github.com/funkjedi/composer-include-files",
+            "keywords": [
+                "autoload",
+                "composer"
+            ],
+            "support": {
+                "source": "https://github.com/Yurunsoft/composer-include-files/tree/v2.0.0"
+            },
+            "time": "2020-10-26T05:59:11+00:00"
+        },
+        {
+            "name": "yurunsoft/guzzle-swoole",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Yurunsoft/Guzzle-Swoole.git",
+                "reference": "0890fb683f688f67e24fe5e8f68119eec31df5b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Yurunsoft/Guzzle-Swoole/zipball/0890fb683f688f67e24fe5e8f68119eec31df5b3",
+                "reference": "0890fb683f688f67e24fe5e8f68119eec31df5b3",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "composer-plugin-api": "^1.0|^2.0",
+                "guzzlehttp/guzzle": "~6.0|~7.0",
+                "guzzlehttp/ringphp": "~1.0",
+                "php": ">=7.1",
+                "yurunsoft/composer-include-files": "^1.0|^2.0",
+                "yurunsoft/yurun-http": "^4.0"
+            },
+            "require-dev": {
+                "composer/composer": "^1.0|^2.0",
+                "phpunit/phpunit": ">=7",
+                "swoole/ide-helper": "*"
+            },
+            "default-branch": true,
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin",
+                "include_files": [
+                    "src/load_include.php",
+                    "src/functions.php"
+                ]
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yurun\\Util\\Swoole\\Guzzle\\": "src/",
+                    "GuzzleHttp\\": "src/GuzzleHttp/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "让 Guzzle 支持 Swoole 协程，可以用于 ElasticSearch、AWS 等 SDK 当中",
+            "support": {
+                "issues": "https://github.com/Yurunsoft/Guzzle-Swoole/issues",
+                "source": "https://github.com/Yurunsoft/Guzzle-Swoole/tree/master"
+            },
+            "time": "2020-12-05T00:52:46+00:00"
+        },
+        {
+            "name": "yurunsoft/yurun-http",
+            "version": "v4.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Yurunsoft/YurunHttp.git",
+                "reference": "1474e8c8a239f4e946ea05e2a33a46a58a7618a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Yurunsoft/YurunHttp/zipball/1474e8c8a239f4e946ea05e2a33a46a58a7618a1",
+                "reference": "1474e8c8a239f4e946ea05e2a33a46a58a7618a1",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "psr/http-message": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4",
+                "swoole/ide-helper": "^4.5",
+                "workerman/workerman": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Yurun\\Util\\": "./src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "YurunHttp 是开源的 PHP HTTP 类库，支持链式操作，简单易用。支持 Curl、Swoole，支持 Http、Http2、WebSocket！",
+            "support": {
+                "issues": "https://github.com/Yurunsoft/YurunHttp/issues",
+                "source": "https://github.com/Yurunsoft/YurunHttp/tree/v4.3.2"
+            },
+            "time": "2020-12-30T04:50:09+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "swoole/ide-helper",
-            "version": "4.6.0-beta",
+            "version": "4.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swoole/ide-helper.git",
-                "reference": "95177cfcd07e4de6f29ffe21b6cf0292fc03e11d"
+                "reference": "5b36a9722eb8c693ff9831023cfb807474eab07c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/95177cfcd07e4de6f29ffe21b6cf0292fc03e11d",
-                "reference": "95177cfcd07e4de6f29ffe21b6cf0292fc03e11d",
+                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/5b36a9722eb8c693ff9831023cfb807474eab07c",
+                "reference": "5b36a9722eb8c693ff9831023cfb807474eab07c",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1034,24 +1652,30 @@
                 }
             ],
             "description": "IDE help files for Swoole.",
-            "time": "2020-12-17T20:34:17+00:00"
+            "support": {
+                "issues": "https://github.com/swoole/ide-helper/issues",
+                "source": "https://github.com/swoole/ide-helper/tree/4.6.1"
+            },
+            "time": "2021-01-11T19:15:13+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "binsoul/net-mqtt": 20,
         "league/flysystem": 20,
-        "aws/aws-sdk-php": 20
+        "aws/aws-sdk-php": 20,
+        "yurunsoft/guzzle-swoole": 20,
+        "topthink/think-orm": 20,
+        "simps/mqtt": 20,
+        "binsoul/net-mqtt": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.0.0",
-        "ext-json": "*",
-        "ext-libxml": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }

@@ -22,7 +22,15 @@ class Services extends Command
     public function handle()
     {
         $this->userEvent = explode('-', $this->Console -> input -> getUserCommand()[1]);
-        $this->config = config('swoole');
+
+        if ($this->userEvent[1] !== 'service') {
+            $configKeys = $this->userEvent[1];
+            $configKeys = $configKeys . '@' . (empty($this->userEvent[2]) ? 'server' : $this->userEvent[2]);
+        } else {
+            $configKeys = 'service';
+        }
+
+        $this->config = config($configKeys);
         $this->initializers($this);
         match($this->userEvent[0]) {
             'stop' => $this->stop(),
@@ -54,9 +62,7 @@ class Services extends Command
     }
 
     public function onTask()
-    {
-        var_dump(123);
-    }
+    {}
 
     // 启动
     protected function start()
@@ -73,8 +79,7 @@ class Services extends Command
         }
 
         $this->Console -> outPut ->writeLine('Stopping swoole server...');
-
-        $isRunning = $this->pid->kill(SIGTERM, 15);
+        $isRunning = $this->pid->kill(SIGTERM);
 
         if ($isRunning) {
             $this->Console -> outPut ->writeLine('Unable to stop the swoole_server process.');
@@ -89,7 +94,7 @@ class Services extends Command
     protected function stop(): bool
     {
         if ($this->pid -> isRun()) {
-            $this->pid -> kill(SIGTERM, 15);
+            $this->pid -> kill(SIGTERM);
             $this->Console -> outPut ->writeLine('> swoole server stop success');
         } else {
             $this->Console -> outPut ->writeLine('no swoole server process running. ');
@@ -110,5 +115,13 @@ class Services extends Command
             $this->start();
         }
         return true;
+    }
+
+    public function callConfigHandle($pack = '', $param = [])
+    {
+        if (class_exists($this->services -> Handle)) {
+            return call_user_func([new $this->services -> Handle, 'Handle'], ...$param);
+        }
+        return [];
     }
 }
