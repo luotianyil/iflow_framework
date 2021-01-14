@@ -15,7 +15,7 @@
     "topthink/think-orm": "2.0.x-dev",
     "simps/mqtt": "dev-master"
   },
-  "license": "MIT",
+  "license": "Mulan PSL v1",
   "authors": [
     {
       "name": "洛水天依",
