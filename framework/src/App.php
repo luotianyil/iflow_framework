@@ -44,10 +44,10 @@ class App extends Container
     public \ReflectionClass $appRunClass;
 
     // 初始化
-    public function __construct(string $rootPath = '')
+    public function __construct()
     {
         $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-        $this->rootPath    = $rootPath ? rtrim($rootPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR : $this->getDefaultRootPath();
+        $this->rootPath    = $this->getDefaultRootPath();
         $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
         static::setInstance($this);
@@ -81,7 +81,6 @@ class App extends Container
     {
         // 加载助手函数
         include_once $this->frameWorkPath . 'src/helper.php';
-
         if (is_file($this->appPath . '/common.php')) {
             include_once $this->appPath . '/common.php';
         }
@@ -94,7 +93,7 @@ class App extends Container
      */
     public function getDefaultRootPath(): string
     {
-        return dirname($this->frameWorkPath) . DIRECTORY_SEPARATOR;
+        return dirname($this->frameWorkPath, 4) . DIRECTORY_SEPARATOR;
     }
 
     /**
