@@ -23,8 +23,12 @@
   ],
   "autoload": {
     "psr-4": {
+<<<<<<< HEAD
       "iflow\\": "src",
       "app\\": "app"
+=======
+      "iflow\\": "framework/src"
+>>>>>>> 99b7c56ae4991989b57fcda3044bcd1e7829c28e
     }
   },
   "require-dev": {
