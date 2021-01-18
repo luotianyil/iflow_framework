@@ -12,8 +12,7 @@
     "aws/aws-sdk-php": "^3.0@dev",
     "yurunsoft/guzzle-swoole": "dev-master",
     "ext-json": "*",
-    "topthink/think-orm": "2.0.x-dev",
-    "simps/mqtt": "dev-master"
+    "topthink/think-orm": "2.0.x-dev"
   },
   "license": "Mulan PSL v1",
   "authors": [
@@ -24,7 +23,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "iflow\\": "framework/src",
+      "iflow\\": "src",
       "app\\": "app"
     }
   },
