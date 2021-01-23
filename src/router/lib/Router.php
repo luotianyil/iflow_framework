@@ -54,7 +54,7 @@ class Router
             foreach ($annotations as $k) {
                 if ($k -> getName() === Router::class) {
                     $k = $k -> newInstance();
-                    $router = $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}");
+                    $router = $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->options);
                     $router['parameter'] = array_merge($parameter, $router['parameter']);
                     $this->routers[$this->fatherRouter][] = $router;
                 }
@@ -84,11 +84,12 @@ class Router
                 $parametersTypeInstance = $parametersType -> newInstance();
                 foreach ($parametersType -> getProperties() as $param) {
                     $p = $param -> getName();
+                    $defaultValue = $parametersType -> getProperty($p);
                     $parameter[$name][] = [
-                        'type' => gettype($parametersTypeInstance -> $p),
+                        'type' => $defaultValue -> getType() -> getName(),
                         'class' => $parametersTypeInstance::class,
                         'name' => $param -> getName(),
-                        'default' => $parametersTypeInstance -> $p
+                        'default' => $defaultValue -> getDefaultValue()
                     ];
                 }
             } else {
@@ -102,7 +103,7 @@ class Router
         return $parameter;
     }
 
-    public function getRouter(string $fatherRouter, string $action = '') : array
+    public function getRouter(string $fatherRouter, string $action = '', array $options = []) : array
     {
         return [
             'rule' => $fatherRouter.$this->rule,
@@ -110,7 +111,7 @@ class Router
             'action' => $action,
             'ext' => $this->ext,
             'parameter' => $this->parameter,
-            'options' => $this->options,
+            'options' => array_replace_recursive($options, $this->options)
         ];
     }
 }
