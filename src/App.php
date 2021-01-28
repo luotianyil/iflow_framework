@@ -96,7 +96,7 @@ class App extends Container
      */
     public function getDefaultRootPath(): string
     {
-        return $this->frameWorkPath;
+        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
     }
 
     /**
