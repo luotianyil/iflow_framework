@@ -73,6 +73,12 @@ if (!function_exists('logs')) {
     }
 }
 
+if (!function_exists('event')) {
+    function event(string $event, ...$args) {
+        return app() -> make(\iflow\event\Event::class) -> runEvent($event, $args);
+    }
+}
+
 // 运行目录
 if (!function_exists('runtime_path')) {
     function runtime_path($path = ''): string

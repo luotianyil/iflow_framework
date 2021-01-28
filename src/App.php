@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace iflow;
 
 use iflow\console\Console;
+use iflow\event\Event;
 use iflow\initializer\annotationInitializer;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
@@ -35,6 +36,7 @@ class App extends Container
         Config::class,
         Log::class,
         Error::class,
+        Event::class,
         annotationInitializer::class,
         initializer::class,
         Console::class
@@ -82,8 +84,8 @@ class App extends Container
         // 加载助手函数
         include_once $this->frameWorkPath . DIRECTORY_SEPARATOR . 'helper.php';
 
-        if (is_file($this->appPath . '/common.php')) {
-            include_once $this->appPath . '/common.php';
+        if (is_file($this->appPath . DIRECTORY_SEPARATOR . 'common.php')) {
+            include_once $this->appPath . DIRECTORY_SEPARATOR . 'common.php';
         }
     }
 

@@ -33,7 +33,7 @@ class Container implements ContainerInterface
         $this->containers = $this->containers ?: new \WeakMap();
 
         // 判断容器是否存在 该对象
-        if ($this->has($class)) return $this->containers -> offsetGet($this->bind[$class]);
+        if ($this->has($class)) return $this->get($class);
         // 不存在 实例化
         $this->bind[$class] = new \stdClass();
         return $this->invokeClass($class, $vars);
@@ -78,12 +78,7 @@ class Container implements ContainerInterface
 
     public function invokeMethod($methods, array $vars = [])
     {
-        if (is_array($methods)) {
-            [$class, $methods] = $methods;
-        } else {
-            [$class, $methods] = explode('::', $methods);
-        }
-
+        [$class, $methods] = is_array($methods) ? $methods : explode('::', $methods);
         try {
             $ref = new \ReflectionMethod($class, $methods);
             $args = $this->bindParameters($ref, $vars);
@@ -117,7 +112,6 @@ class Container implements ContainerInterface
         foreach ($parameters as $parameter) {
             $name = $parameter -> getName();
             $class = $parameter -> getType();
-            // assert();
             if ($class instanceof ReflectionNamedType) {
                 if (class_exists($class -> getName())) {
                     $args[] = $this->getObjectParam($class -> getName(), $vars);
@@ -142,10 +136,8 @@ class Container implements ContainerInterface
         if ($value instanceof $className) {
             $result = $value;
         } else {
-            $result = $className === $this->make($className);
+            $result = $this->make($className);
         }
-
-        array_shift($vars);
         return $result;
     }
 

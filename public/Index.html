@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页</title>
+</head>
+<body>
+<div id="app">
+</div>
+</body>
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+    }
+    #app {
+        overflow: hidden;
+        height: 100vh;
+    }
+    #backgroundVideo {
+        width: 100vw;
+        height: 100vh;
+        object-fit: fill;
+    }
+    #backgroundVideo::after {
+        filter: blur(2px);
+    }
+    .mask {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        background: #13131373;
+        filter: blur(1px);
+    }
+    .btn {
+        position: fixed;
+        background: #79b3da61;
+        padding: 10px;
+        border-radius: 10px;
+        color: #e0e0e07a;
+        text-align: center;
+        bottom: 60px;
+        left: 40%;
+        z-index: 999;
+        cursor: pointer;
+    }
+    #audio {
+        position: fixed;
+        right: 20px;
+        color: #e0e0e07a;
+        top: 10px;
+        z-index: 999;
+    }
+</style>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/3.0.2/vue.runtime.global.js"></script>
+<script>
+    function init () {
+        if (/windows phone|iphone|android/ig.test(window.navigator.userAgent)) {
+            document.getElementById('app').innerHTML=
+                "<a href='https://mzshe.cn/#/open_api'>iflow-Framework docs</a><br/><a href='https://www.npmjs.com/package/iflow_ui'>download iflow-ui</a>"
+            return
+        }
+
+        const h = Vue.h
+
+        Vue.createApp({
+            setup(props, $) {
+            },
+            render() {
+                return h('div', {}, [
+                    h('div', {
+                        className: 'mask'
+                    }),
+                    h('div', {
+                        className: 'btn',
+                        onclick: function (){
+                            window.open('https://mzshe.cn/#/open_api')
+                        }
+                    }, {}, 'iflow-Framework docs'),
+                    h('div', {
+                        className: 'btn',
+                        style: 'margin-left: 175px',
+                        onclick: function (){
+                            window.open('https://www.npmjs.com/package/iflow_ui')
+                        }
+                    }, 'download iflow-ui'),
+                    h('div', {
+                        id: 'audio',
+                        style: 'margin-left: 190px',
+                        onclick: function (){
+                            document.getElementById('backgroundVideo').muted = !document.getElementById('backgroundVideo').muted
+                            document.getElementById('audio').innerHTML = `audio: ${document.getElementById('backgroundVideo').muted ? 'off' : 'on'}`
+                        }
+                    }, 'audio: off'),
+                    h('video', {
+                        id: 'backgroundVideo',
+                        src: 'https://www.mzshe.cn/ganyu.mp4',
+                        autoplay: 'autoplay',
+                        loop: 'loop',
+                        muted: 'muted'
+                    })
+                ])
+            }
+        }).mount('#app')
+    }
+    init()
+</script>
+</html>

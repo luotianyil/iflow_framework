@@ -85,7 +85,7 @@ class initializer
         $controller =
         $ref -> getConstructor() ?
             $ref -> newInstance(...[$this->request, $this->response]) : $ref -> newInstance();
-        if (!method_exists($controller, $action)) $this->response -> notFount();
+        if (!method_exists($controller, $action)) return $this->response -> notFount();
 
         return $this->send(call_user_func([$controller, $action], ...$this->bindParam(
             $this->router['parameter']
@@ -111,10 +111,10 @@ class initializer
         if (count($params) > 0 && isset($params[0]['class'])) {
             $class = $params[0]['class'];
             if (class_exists($class)) {
-                $object = (new \ReflectionClass($class)) -> newInstance();
+                $ref = new \ReflectionClass($class);
+                $object = $ref -> newInstance();
                 foreach ($params as $key => $value) {
-                    $param = $value['name'];
-                    $object -> $param = $value['default'];
+                    $ref -> getProperty($value['name']) -> setValue($object, $value['default']);
                 }
             } else {
                 return $object['default'];
