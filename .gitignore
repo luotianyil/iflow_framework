@@ -3,6 +3,7 @@
 /vendor
 /app
 /config
+/public
 /iflow
 *.log
 *.pid

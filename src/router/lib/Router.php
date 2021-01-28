@@ -111,7 +111,7 @@ class Router
             'action' => $action,
             'ext' => $this->ext,
             'parameter' => $this->parameter,
-            'options' => array_replace_recursive($options, $this->options)
+            'options' => array_replace_recursive($options, $this->options),
         ];
     }
 }

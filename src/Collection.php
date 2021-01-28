@@ -22,7 +22,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
     public function offsetExists($offset)
     {
         // TODO: Implement offsetExists() method.
-        return empty($this->items[$offset]);
+        return isset($this->items[$offset]) || !empty($this->items[$offset]);
     }
 
     public function offsetGet($offset)
