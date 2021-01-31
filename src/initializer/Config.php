@@ -63,7 +63,7 @@ class Config
 
     public function set(string $name, array $config = [])
     {
-        return $this->config[$name] = array_replace_recursive($this->config[$name] ?? [], $config);
+        return $this->config[$name] = isset($this->config[$name]) ? array_replace_recursive($this->config[$name], $config) : $config;
     }
 
     public function get(string $name = '', $default = null)
@@ -106,7 +106,6 @@ class Config
     {
         return empty($this->config[$name]) ? false : true;
     }
-
 
     public function saveConfigFile($config, $name, $path)
     {

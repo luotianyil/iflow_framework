@@ -47,13 +47,13 @@ trait baseMessage
             $data['requestInfo'] = [
                 'requestUri' => request() -> request_uri,
                 'requestParam' => array_keys(request() -> getParams() ?? []),
-//                'timestamp' => request() -> request,
+                'timestamp' => request() -> server['request_time_float'],
                 'method' => request() -> request_method
             ];
 
             return match ($this->filter) {
                 'xml' => xml($data, $code, [], ['root_node' => 'xml']),
-                'json' => json($data, $code)
+                default => json($data, $code)
             };
         }
         return $this->filter === 'json' ? json($data) : xml($data, 200, [], ['root_node' => 'xml']);
