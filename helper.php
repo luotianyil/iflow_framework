@@ -92,7 +92,8 @@ if (!function_exists('runtime_path')) {
 if (!function_exists('rpc')) {
     function rpc($clientName, $url, array &$param = []) {
         $config = config('rpc@server.clientList');
-        $clientList = Config::getConfigFile($config['path'] . $config['name']);
+        $clientList = Config::getConfigFile($config['path'] . $config['name'])['clientList'] ?? [];
+
         $client = [];
         foreach ($clientList as $key) {
             if ($key['name'] === $clientName) {
