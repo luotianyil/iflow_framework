@@ -104,7 +104,8 @@ class rpcClient
             $event = new Event();
             $event -> data = $pack;
             $event -> server = $server;
-            return $event -> validateRouter();
+            $event -> isTpc = true;
+            return $event -> rpcValidateRouter();
         }
         return $server -> send('404 - no data');
     }
