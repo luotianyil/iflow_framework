@@ -3,14 +3,12 @@
 
 namespace iflow\Swoole\Services\WebSocket;
 
-use iflow\Swoole\Services\Services;
-use iflow\Swoole\Services\WebSocket\socketio\Event;
 use iflow\Swoole\Services\WebSocket\socketio\Parser;
 
 class webSocket
 {
 
-    protected array $events = [
+    public array $events = [
         'message' => 'onMessage',
         'close' => 'onClose',
         'open' => 'onOpen'
@@ -18,14 +16,15 @@ class webSocket
 
     private array $to = [];
 
-    public Services $services;
+    public object $services;
 
     public int $fd = 0;
 
-    public function initializer(Services $services)
+    public function initializer($services)
     {
         $this->services = $services;
-        $services -> eventInit(new Event($this), $this->events);
+        $event = config('service@Handle');
+        $services -> eventInit(new $event($this), $this->events);
     }
 
     public function emit($event, $data)

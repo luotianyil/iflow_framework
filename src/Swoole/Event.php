@@ -3,23 +3,19 @@
 
 namespace iflow\Swoole;
 
-trait Event
+abstract class Event
 {
     public function onConnect($server, $req)
     {}
 
-    public function onReceive($server, $fd, $reactor_id, $data)
-    {}
+    abstract public function onReceive($server, $fd, $reactor_id, $data);
 
     public function onClose($server, $req)
     {}
 
-    public function onOpen($server, $req)
-    {}
+    abstract public function onOpen($server, $req);
 
-    public function onMessage($server, $req)
-    {}
+    abstract public function onMessage($server, $req);
 
-    public function onConnection($server)
-    {}
+    abstract public function onConnection($server, $fd);
 }

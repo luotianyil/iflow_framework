@@ -12,7 +12,7 @@ class RouterBase
      */
     public function getRouterList() : array
     {
-        return config('router');
+        return config(config('app@router'));
     }
 
     /**
@@ -34,7 +34,12 @@ class RouterBase
     public function validateRouter(string $url = '/', string $method = 'get', array $param = []) : array | bool
     {
         $routerList = $this->getRouterList();
-        $router = $this->getRouterParam($routerList, $url, $method);
+        $router = [];
+
+        foreach ($routerList as $key) {
+            $router = $this->getRouterParam($key, $url, $method);
+            if ($router) break;
+        }
         return $router ? $this->bindParam($router, $param) : $router;
     }
 

@@ -8,21 +8,21 @@ use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;
 use iflow\router\RouterBase;
-use iflow\Swoole\Services\Services;
 use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
 
 class initializer
 {
 
-    public Services $services;
+    public object $services;
     public Request $request;
     public Response $response;
 
+    public bool $isTpc = false;
+
     public array $router;
 
-    public function __initializer(Services $services, $request, $response)
+    public function __initializer($request, $response)
     {
-        $this->services = $services;
         $this->setRequest($request)
             -> setResponse($response)
             -> validateRouter();
@@ -63,7 +63,6 @@ class initializer
             if ($this->isRequestApi($this->request -> request_uri)) {
                 return;
             }
-
             $this->router = app() -> make(RouterBase::class) -> validateRouter(
                 $this->request -> request_uri,
                 $this->request -> request_method,
@@ -149,7 +148,7 @@ class initializer
     protected function isSocketIo($url = '')
     {
         $url = explode('/', trim($url, '/'));
-        if ($this->services -> configs['websocket']['enable']) {
+        if (config('service@websocket.enable')) {
             if ($url[0] === 'socket.io') {
                 $SocketIo = new SocketIo();
                 $SocketIo -> config = $this->services -> configs['websocket'];

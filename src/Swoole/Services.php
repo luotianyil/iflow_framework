@@ -19,9 +19,10 @@ class Services extends Command
     public array $config = [];
     public array $userEvent = [];
 
-    public function handle()
+    public function handle($event = '')
     {
-        $this->userEvent = explode('-', $this->Console -> input -> getUserCommand()[1]);
+        $this->userEvent =
+            explode('-', $event ? $event : $this->Console -> input -> getUserCommand()[1]);
 
         if ($this->userEvent[1] !== 'service') {
             $configKeys = $this->userEvent[1];
@@ -44,12 +45,13 @@ class Services extends Command
     public function run()
     {}
 
-    public function eventInit($class = '', array $event = []) {
+    public function eventInit($class = '', array $event = [], $server = null) {
         $class = is_object($class) ? $class : $this;
         $event = $event ?: $this->event;
+        $server = $server ?: $this->server;
 
         foreach ($event as $key => $value) {
-            $this-> server -> on($key, function () use ($class, $value) {
+            $server -> on($key, function () use ($class, $value) {
                 call_user_func([$class, $value], ...func_get_args());
             });
         }

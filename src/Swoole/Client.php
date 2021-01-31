@@ -13,6 +13,7 @@ trait Client
 {
 
     protected HttpServer|WebSocketServer|\Swoole\Server|SwooleClient $server;
+    protected SwooleClient $client;
     protected Services $services;
     public pid $pid;
     protected string $eventType = '';
@@ -21,10 +22,12 @@ trait Client
     public string $Handle = '';
     public array $options = [];
 
+    protected int $timeSincePing = 0;
+
     public function initializerClient()
     {
-        if ($this->eventType !== 'mqtt') {
-            $this->server = new SwooleClient($this->eventType === 'udp' ? SWOOLE_SOCK_UDP : SWOOLE_SOCK_TCP);
+        if ($this->eventType !== 'mqtt' && $this->eventType !== 'rpc') {
+            $this->client = new SwooleClient($this->eventType === 'udp' ? SWOOLE_SOCK_UDP : SWOOLE_SOCK_TCP);
             $this->monitorClient();
         }
     }
@@ -32,18 +35,37 @@ trait Client
     public function monitorClient()
     {
         \Co\run(function () {
-            if (!$this->server->connect(...$this->param)) {
-                $this->services -> Console -> outPut -> writeLine("connect failed. Error: {$this->server->errCode}");
+            if (!$this->client->connect(...$this->param)) {
+                $this->services -> Console -> outPut -> writeLine("connect failed. Error: {$this->client->errCode}");
             } else {
-                while($this->server -> isConnected()) {
-                    $pack = $this->server -> recv();
-                    if (null !== $pack) {
-                        if (class_exists($this->services -> Handle)) {
-                            call_user_func([new $this->services -> Handle, 'handle'], ...[$this, $pack]);
-                        }
+                while($this->client -> isConnected()) {
+                    $pack = $this->client -> recv();
+                    if ($pack) {
+                        $this->timeSincePing = time();
+                        $this -> services->callConfigHandle('', [$this, $pack]);
                     }
+                    $this->ping();
                 }
             }
         });
+    }
+
+    public function ping($data = 1)
+    {
+        if (isset($this->services -> config['keep_alive']) && $this -> timeSincePing < (time() - $this->services -> config['keep_alive'])) {
+            $buffer = $this->send($data);
+            if ($buffer) $this -> timeSincePing = time();
+            else $this->client -> close();
+        }
+    }
+
+    public function send($data)
+    {
+        return $this -> client -> send(
+            match (!is_string($data)) {
+                true => json_encode($data, JSON_UNESCAPED_UNICODE),
+                default => $data
+            }
+        );
     }
 }
