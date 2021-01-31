@@ -7,6 +7,7 @@ namespace iflow\router\lib;
 use iflow\App;
 use ReflectionClass;
 use ReflectionMethod;
+use function GuzzleHttp\Psr7\str;
 
 #[\Attribute]
 class Router
@@ -17,6 +18,11 @@ class Router
     // 类 地址
     protected string $fatherRouter = '';
     protected ReflectionClass $annotationClass;
+
+    // routerAttributeNames
+    protected array $routerAttributeNames = [
+        Router::class
+    ];
 
     // 绑定路由
     protected array $routers = [];
@@ -39,8 +45,8 @@ class Router
         $this->annotationClass = $annotationClass;
 
         // 定义路由数据
-        $this->routerKey = config('app@router');
-        $this->routers = config($this->routerKey);
+        $this->routerKey = (string) config('app@router');
+        $this->routers = (array) config($this->routerKey);
         $this->bindRouter();
     }
 
@@ -52,7 +58,7 @@ class Router
             $annotations = $key -> getAttributes();
             $parameter = $this->getRouterMethodParameter($key);
             foreach ($annotations as $k) {
-                if ($k -> getName() === Router::class) {
+                if (in_array($k -> getName(), $this->routerAttributeNames)) {
                     $k = $k -> newInstance();
                     $router = $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->options);
                     $router['parameter'] = array_merge($parameter, $router['parameter']);

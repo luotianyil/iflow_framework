@@ -52,7 +52,7 @@ class Response
         return $this;
     }
 
-    protected function output($data)
+    public function output($data)
     {
         return $data;
     }

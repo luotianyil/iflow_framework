@@ -25,7 +25,7 @@ class Json extends Response
      * @return string
      * @throws \Exception
      */
-    protected function output($data) : string
+    public function output($data) : string
     {
         try {
             $data = json_encode($data, $this->options['json_encode']);

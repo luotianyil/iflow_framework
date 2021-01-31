@@ -35,20 +35,18 @@ trait Server
         }
 
         $serverClass = match ($this->eventType) {
-          'service' => $this->services -> config['websocket']['enable'] ? WebSocketServer::class : HttpServer::class,
-          default => \Swoole\Server::class
+            'service', 'rpc' => $this->services -> config['websocket']['enable'] ? WebSocketServer::class : HttpServer::class,
+            default => \Swoole\Server::class
         };
         $this->server = new $serverClass(...$this->param);
-        $this->services -> app -> instance($serverClass, $this->server);
+        $this->services -> app -> instance(\Swoole\Server::class, $this->server);
         $this->server -> set($this->options);
     }
 
 
     public function setPid(): static
     {
-        $this->pid = new pid(
-            $this -> configs['pid_file'] ?? $this -> configs['swConfig']['pid_file']
-        );
+        $this->pid = new pid($this -> configs['swConfig']['pid_file']);
         return $this;
     }
 
@@ -60,27 +58,29 @@ trait Server
 
     public function setOptions(): static
     {
-        $this->options = $this->configs;
-        unset($this->options['host']);
-        unset($this->options['options']);
-        unset($this->options['websocket']);
-        unset($this->options['Handle']);
-        unset($this->options['mqttEvent']);
+        $this->options = $this->configs['swConfig'];
         return $this;
     }
 
     public function setParam(): static
     {
-        $this->param = isset($this->configs['port']) ? [
-            $this->configs['host'],
-            $this->configs['port']
-        ] : array_values($this->configs['host']);
+        if ($this->eventType === 'rpc') {
+            $this->param = array_values(
+                (array) config('service@host')
+            );
+        } else {
+            $this->param = isset($this->configs['port']) ? [
+                $this->configs['host'],
+                $this->configs['port']
+            ] : array_values($this->configs['host']);
+        }
         $this->Handle = $this->configs['Handle'];
         return $this;
     }
 
     public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|\Swoole\Coroutine\Client
     {
+        if (strtolower($this->services -> userEvent[2]) === 'client') return $this->client;
         return $this->server;
     }
 }

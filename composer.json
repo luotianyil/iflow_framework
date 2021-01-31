@@ -13,7 +13,8 @@
     "yurunsoft/guzzle-swoole": "^2.2",
     "ext-json": "*",
     "topthink/think-orm": "2.0.x-dev",
-    "simps/mqtt": "^1.1.4"
+    "simps/mqtt": "^1.1.4",
+    "ext-bcmath": "*"
   },
   "license": "Mulan PSL v1",
   "authors": [

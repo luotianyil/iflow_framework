@@ -73,6 +73,7 @@ if (!function_exists('logs')) {
     }
 }
 
+// event
 if (!function_exists('event')) {
     function event(string $event, ...$args) {
         return app() -> make(\iflow\event\Event::class) -> runEvent($event, $args);
@@ -84,6 +85,26 @@ if (!function_exists('runtime_path')) {
     function runtime_path($path = ''): string
     {
         return app()->getRuntimePath() . ($path ? $path . DIRECTORY_SEPARATOR : $path);
+    }
+}
+
+// rpc
+if (!function_exists('rpc')) {
+    function rpc($clientName, $url, array &$param = []) {
+        $config = config('rpc@server.clientList');
+        $clientList = Config::getConfigFile($config['path'] . $config['name']);
+        $client = [];
+        foreach ($clientList as $key) {
+            if ($key['name'] === $clientName) {
+                $client = $key;
+                break;
+            }
+        }
+        if (!$client) return "";
+        $param['request_uri'] = $url;
+        return app() -> make(\Swoole\Server::class) -> send($client['fd'],
+            json_encode($param, JSON_UNESCAPED_UNICODE)
+        );
     }
 }
 

@@ -30,7 +30,7 @@ class Xml extends Response
         $this->init($data, $code);
     }
 
-    protected function output($data): string
+    public function output($data): string
     {
         if (is_string($data)) {
             if (0 !== strpos($data, '<?xml')) {

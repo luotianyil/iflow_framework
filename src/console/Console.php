@@ -19,9 +19,10 @@ class Console
 
     public array $command = [
         '<start|stop|reload>-service' => Services::class,
-        '<start|stop|reload>-tcp' => \iflow\Swoole\Tcp\Services::class,
-        '<start|stop|reload>-udp' => \iflow\Swoole\Udp\Services::class,
+        '<start|stop|reload>-tcp-<client|server>' => \iflow\Swoole\Tcp\Services::class,
+        '<start|stop|reload>-udp-<client|server>' => \iflow\Swoole\Udp\Services::class,
         '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,
+        '<start|stop|reload>-rpc-<client|server>' => \iflow\Swoole\Rpc\Services::class,
         'help' => Help::class
     ];
 
