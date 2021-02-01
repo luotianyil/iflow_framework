@@ -58,7 +58,8 @@ class rpcClient
                     if ($this->client -> connect(...$this->rpcBindParam)) {
                         $this -> send([
                             'name' => $this->services->config['clientName'],
-                            'host' => $this->services->config['host'],
+                            'tcpHost' => $this->services->config['host'],
+                            'httpHost' => config('service@host'),
                             'initializer' => 1
                         ]);
                         while ($this->client -> isConnected()) {
