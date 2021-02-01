@@ -16,7 +16,7 @@ if (!function_exists('app')) {
 
 // 配置
 if (!function_exists('config')) {
-    function config($name = '', $value = [])
+    function config($name = '', $value = []): mixed
     {
         if (is_array($name)) {
             return Config::set($value, $name);

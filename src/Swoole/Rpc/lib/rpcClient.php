@@ -52,7 +52,7 @@ class rpcClient
         $process = new \Swoole\Process(function () {
             $this->client = new SwooleClient(SWOOLE_SOCK_TCP);
             $this->rpcBindParam = array_values($this->services -> configs['server']);
-            swoole_set_process_name('rpc_bind_Server');
+            swoole_set_process_name(uniqid('rpc_bind_server_'));
             \Co\run(
                 function () {
                     if ($this->client -> connect(...$this->rpcBindParam)) {
