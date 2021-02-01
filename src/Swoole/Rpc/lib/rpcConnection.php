@@ -18,8 +18,8 @@ class rpcConnection
         $client = Config::getConfigFile($config['path'] . $config['name']);
         unset($client['clientList'][$fd]);
         Config::saveConfigFile($client,
-            $config['clientList']['name'],
-            $config['clientList']['path']
+            $config['name'],
+            $config['path']
         );
         $server -> close($fd);
     }
