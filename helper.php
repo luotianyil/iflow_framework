@@ -109,6 +109,23 @@ if (!function_exists('rpc')) {
     }
 }
 
+// session
+if (!function_exists('session')) {
+    function session(string|null $name = null, array|null $default = []) {
+        $session = app() -> make(\iflow\session\Session::class) -> initializer();
+
+        if ($default === null) {
+            return $session -> delete($name);
+        }
+
+        if (count($default) > 0) {
+            return $session -> set($name, $default);
+        }
+
+        return $session -> get($name);
+    }
+}
+
 
 // 返回json
 if (!function_exists('json')) {

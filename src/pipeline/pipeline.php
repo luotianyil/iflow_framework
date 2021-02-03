@@ -23,6 +23,8 @@ class pipeline
             $class = is_numeric($key) ? $value : $key;
             $method = is_numeric($key) ? 'handle' : $value;
             $callBack = call_user_func([$app->make($class), $method], ...func_get_args());
+
+            unset($this->queue[$key]);
             if ($callBack instanceof Response) return $callBack;
             $call[] = $callBack;
         }

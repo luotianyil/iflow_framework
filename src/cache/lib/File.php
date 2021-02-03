@@ -15,35 +15,82 @@ class File
         return $this;
     }
 
-    protected function getStorePath()
+    protected function getStorePath(string $name)
     {
-        return $this->config['path'];
+        return $this->config['path'] . $name;
+    }
+
+    protected function getStoreRoot() {
+        return rtrim($this->config['path'], DIRECTORY_SEPARATOR);
+    }
+
+    protected function getExpired()
+    {
+        return $this->config['expired'];
     }
 
     public function set(string $name, array $data)
     {
-        !is_dir($this->config['path']) && mkdir($this->config['path'], 0755, true);
-        $file = $this->config['path']. $name. '.php';
-        $fileStream = fopen($file, "w+");
-        $old_data = $this->get($name);
+        go(function () use ($name, $data) {
+            !is_dir($this->config['path']) && mkdir($this->config['path'], 0755, true);
+            $file = $this->getStorePath($name);
+            $fileStream = fopen($file, "w+");
+            $old_data = $this->get($name);
+            flock($fileStream, LOCK_EX);
 
-        $data = $old_data ? array_replace_recursive($old_data, $data) : $data;
-        $data = serialize($data);
+            $data['iflow_expired'] = strtotime('+'. $this->getExpired() . 'second');
 
-        fwrite($fileStream, gzcompress($data));
-        return fclose($fileStream);
+            $data = $old_data ? array_replace_recursive($old_data, $data) : $data;
+            $data = serialize($data);
+
+            fwrite($fileStream, gzcompress($data));
+
+            flock($fileStream, LOCK_UN);
+            fclose($fileStream);
+        });
+        return $data;
     }
 
     public function get(string $name)
     {
-        $file = $this->getStorePath() . $name. '.php';
-        if (file_exists($file))
-            return unserialize(gzuncompress(file_get_contents($file)));
+        $file = $this->getStorePath($name);
+        if (file_exists($file)) {
+            $data = file_get_contents($file);
+            if ($data !== '') {
+                $data = unserialize(gzuncompress($data));
+                return time() > $data['iflow_expired'] ? [] : $data;
+            }
+        }
         return [];
     }
 
     public function delete(string $name): bool
     {
-        return @unlink($this->getStorePath() . $name . '.php');
+        return @unlink($this->getStorePath($name));
+    }
+
+    public function gc($lifetime) {
+        go(function () use ($lifetime) {
+            $now = time();
+            $files = $this->findFiles($this->getStoreRoot(), function (\SplFileInfo $item) use ($lifetime, $now) {
+                return $now - $lifetime > $item -> getMTime();
+            });
+            foreach ($files as $file) {
+                @unlink($file->getPathname());
+            }
+        });
+    }
+
+    protected function findFiles(string $root, \Closure $filter) {
+        $items = new \FilesystemIterator($root);
+        foreach ($items as $item) {
+            if ($item->isDir() && !$item->isLink()) {
+                yield from $this->findFiles($item->getPathname(), $filter);
+            } else {
+                if ($filter($item)) {
+                    yield $item;
+                }
+            }
+        }
     }
 }

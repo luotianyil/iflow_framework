@@ -80,7 +80,7 @@ trait Server
 
     public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|\Swoole\Coroutine\Client
     {
-        if (strtolower($this->services -> userEvent[2]) === 'client') return $this->client;
+        if (isset($this->services -> userEvent[2]) && strtolower($this->services -> userEvent[2]) === 'client') return $this->client;
         return $this->server;
     }
 }
