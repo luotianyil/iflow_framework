@@ -58,10 +58,7 @@ class Services extends Command
     }
 
     public function onStart($serve)
-    {
-        $server = 'SERVER_ADDRESS: '.$serve -> host.':'.$serve -> port;
-        $this->Console -> outPut ->writeLine($server.PHP_EOL.'> Start Success');
-    }
+    {}
 
     public function onTask()
     {}
@@ -69,6 +66,8 @@ class Services extends Command
     // 启动
     protected function start()
     {
+        $info = 'SERVER_ADDRESS: '.$this->server -> host.':'.$this->server -> port;
+        $this->Console -> outPut ->writeLine($info.PHP_EOL.'> Start Success');
         $this->getServer() -> start();
     }
 

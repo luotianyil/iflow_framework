@@ -7,7 +7,10 @@ namespace iflow\console\lib;
 class outPut
 {
     public function __construct(protected $outFile = null)
-    {}
+    {
+        $banner = config('banner');
+        if (isset($banner[0])) fwrite($this->outFile, $banner[0].PHP_EOL);
+    }
 
     public function write($data): static
     {

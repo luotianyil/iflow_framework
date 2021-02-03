@@ -77,7 +77,7 @@ if (!function_exists('logs')) {
 // event
 if (!function_exists('event')) {
     function event(string $event, ...$args) {
-        return app() -> make(\iflow\event\Event::class) -> runEvent($event, $args);
+        return app() -> make(\iflow\event\Event::class) -> callEvent($event, $args);
     }
 }
 

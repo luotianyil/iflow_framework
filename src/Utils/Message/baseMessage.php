@@ -52,10 +52,10 @@ trait baseMessage
             ];
 
             return match ($this->filter) {
-                'xml' => xml($data, $code, [], ['root_node' => 'xml']),
+                'xml' => xml($data, $code),
                 default => json($data, $code)
             };
         }
-        return $this->filter === 'json' ? json($data) : xml($data, 200, [], ['root_node' => 'xml']);
+        return $this->filter === 'json' ? json($data) : xml($data);
     }
 }
