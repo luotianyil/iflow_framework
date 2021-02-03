@@ -16,7 +16,7 @@ class Session
         }
 
         $this->config = config('session');
-        if (!$this->config) throw new \Exception('cache config null');
+        if (!$this->config) throw new \Exception('session config null');
         $class = $this->namespace . ucfirst($this->config['type']);
         $this -> session = (new $class) -> initializer($this->config);
         return $this;

@@ -66,6 +66,7 @@ if (!function_exists('sendFile')) {
     }
 }
 
+// write log
 if (!function_exists('logs')) {
     function logs(string $type = 'info', string $message = '', array $content = [])
     {
@@ -125,7 +126,6 @@ if (!function_exists('session')) {
         return $session -> get($name);
     }
 }
-
 
 // 返回json
 if (!function_exists('json')) {
