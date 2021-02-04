@@ -37,7 +37,7 @@ class authHandle
         return $this->authList;
     }
 
-    public function setAuthList(): self
+    public function setAuthList(): static
     {
         $this->authList = [];
         return $this;

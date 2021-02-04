@@ -23,8 +23,7 @@ class authAnnotation
         public string $key = '',
         public string $role = 'admin|user',
         public string $callBack = ''
-    )
-    {}
+    ) {}
 
     public function handle($requestTools)
     {
