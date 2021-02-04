@@ -4,28 +4,24 @@
 namespace iflow\Swoole\Services\Http\lib;
 
 
-use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;
 use iflow\router\RouterBase;
-use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
 
-class initializer
+
+class initializer extends requestTools
 {
-
-    public object $services;
-    public Request $request;
-    public Response $response;
-
-    public bool $isTpc = false;
-
-    public array $router;
 
     public function __initializer($request, $response)
     {
         $this->setRequest($request)
-            -> setResponse($response)
-            -> validateRouter();
+            -> setResponse($response);
+
+        foreach ($this->runProcess as $key) {
+            if (method_exists($this, $key) && call_user_func([$this, $key])) {
+                break;
+            }
+        }
     }
 
     // 初始化请求数据
@@ -46,47 +42,39 @@ class initializer
     protected function validateRouter()
     {
 
-        $middleware = $this->services -> app
-            -> make(Middleware::class)
-            -> initializer($this->services -> app, $this->request, $this->response);
-        // 中间件返回 响应实例结束
-        if ($middleware instanceof Response) {
-            $middleware -> send();
-        } else {
+        if ($this->isSocketIo($this->request -> request_uri)) return true;
+        if ($this->isStaticResources($this->request -> request_uri)) return true;
+        if ($this->isRequestApi($this->request -> request_uri)) return true;
 
-            if ($this->isSocketIo($this->request -> request_uri)) {
-                return;
-            }
-            if ($this->isStaticResources($this->request -> request_uri)) {
-                return;
-            }
-            if ($this->isRequestApi($this->request -> request_uri)) {
-                return;
-            }
-            $this->router = app() -> make(RouterBase::class) -> validateRouter(
-                $this->request -> request_uri,
-                $this->request -> request_method,
-                $this->request -> params() ?? []
-            );
+        $this->router = app() -> make(RouterBase::class) -> validateRouter(
+            $this->request -> request_uri,
+            $this->request -> request_method,
+            $this->request -> params() ?? []
+        );
 
-            return !$this->router ? $this->response -> notFount(): $this->newInstanceController();
+        if (!$this->router) {
+            $this->response -> notFount();
+            return true;
         }
-
-        return true;
+        return $this->newInstanceController();
     }
 
-    protected function newInstanceController()
+    protected function newInstanceController(): bool
     {
-        [$controller, $action] = explode('@', $this->router['action']);
-        if (!class_exists($controller)) $this->response -> notFount();
+        $this->requestController = explode('@', $this->router['action']);
+        if ($this->validateResponse(class_exists($this->requestController[0]))) return true;
+        $this->refController = new \ReflectionClass($this->requestController[0]);
+        if ($this->validateResponse($this->refController -> hasMethod($this->requestController[1]))) return true;
+        return false;
+    }
 
-        $ref = new \ReflectionClass($controller);
+    protected function startController() {
         $controller =
-        $ref -> getConstructor() ?
-            $ref -> newInstance(...[$this->request, $this->response]) : $ref -> newInstance();
-        if (!method_exists($controller, $action)) return $this->response -> notFount();
+            $this->refController -> getConstructor() ?
+                $this->refController -> newInstance(...[$this->request, $this->response])
+                : $this->refController -> newInstance();
 
-        return $this->send(call_user_func([$controller, $action], ...$this->bindParam(
+        return $this->send(call_user_func([$controller, $this->requestController[1]], ...$this->bindParam(
             $this->router['parameter']
         )));
     }
@@ -120,54 +108,5 @@ class initializer
             }
         }
         return $object;
-    }
-
-    protected function isRequestApi(string $url = ''): Response|bool
-    {
-        $url = trim($url, '/');
-        if ($url === config('app@api_path')) {
-            message() -> success('success', config('router')) -> send();
-            return true;
-        }
-        return false;
-    }
-
-    protected function isStaticResources(string $url = '')
-    {
-        $url = explode('/', trim($url, '/'));
-        $rule = config('app@resources.file');
-        if ($url[0] === $rule['rule']) {
-            array_splice($url, 0, 1);
-            $url = str_replace('/', DIRECTORY_SEPARATOR, implode('/', $url));
-            response() -> sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url);
-            return true;
-        }
-        return false;
-    }
-
-    protected function isSocketIo($url = '')
-    {
-        $url = explode('/', trim($url, '/'));
-        if (config('service@websocket.enable')) {
-            if ($url[0] === 'socket.io') {
-                $SocketIo = new SocketIo();
-                $SocketIo -> config = $this->services -> configs['websocket'];
-                return $this->send($SocketIo-> __initializer($this->request, $this->response));
-            }
-        }
-        return false;
-    }
-
-    protected function send($response)
-    {
-        if ($response instanceof Response) {
-            $response -> send();
-        } else if (!is_string($response)) {
-            json($response) -> send();
-        } else if ($this->response) {
-            $this->response -> data($response) -> send();
-        }
-
-        return true;
     }
 }
