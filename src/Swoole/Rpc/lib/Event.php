@@ -26,11 +26,25 @@ class Event extends HttpServer
         $this->data = json_decode($data, true);
         $this->server = $server;
         $this->fd = $fd;
+        if ($this->startRpcResponse()) return $this -> send(403);
+        return true;
+    }
+
+    public function startRpcResponse()
+    {
+        $this->isTpc = true;
         if (is_array($this->data)) {
-            $this->isTpc = true;
-            return $this->rpcValidateRouter();
+            $this->runProcess = array_diff($this->runProcess, ['validateRouter', 'runMiddleware']);
+            array_unshift($this->runProcess, 'rpcValidateRouter');
+            foreach ($this->runProcess as $key) {
+                if (method_exists($this, $key) && call_user_func([$this, $key])) {
+                    return true;
+                }
+            }
+            return false;
         }
-        return $server -> send($fd, 403);
+
+        return true;
     }
 
     public function onOpen($server, $req)
@@ -59,10 +73,10 @@ class Event extends HttpServer
             $this->data
         );
 
-        if (!$this->router) return $this->send(404);
-        else {
-            return $this->newInstanceController();
+        if (!$this->router) {
+            return $this->send(404);
         }
+        return $this->newInstanceController();
     }
 
     protected function send($response): bool
@@ -72,7 +86,7 @@ class Event extends HttpServer
                 $param[] = $this->fd;
             }
 
-            if ($response instanceof Response) $response = $response -> output($this->data);
+            if ($response instanceof Response) $response = $response -> output($response -> data);
 
             $param[] = match (!is_string($response)) {
                 true => json_encode($response, JSON_UNESCAPED_UNICODE),

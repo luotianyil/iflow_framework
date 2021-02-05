@@ -94,19 +94,15 @@ if (!function_exists('rpc')) {
     function rpc($clientName, $url, array &$param = []) {
         $config = config('rpc@server.clientList');
         $clientList = Config::getConfigFile($config['path'] . $config['name'])['clientList'] ?? [];
-
-        $client = [];
         foreach ($clientList as $key) {
             if ($key['name'] === $clientName) {
-                $client = $key;
-                break;
+                $param['request_uri'] = $url;
+                return app() -> make(\Swoole\Server::class) -> send($key['fd'],
+                    json_encode($param, JSON_UNESCAPED_UNICODE)
+                );
             }
         }
-        if (!$client) return "";
-        $param['request_uri'] = $url;
-        return app() -> make(\Swoole\Server::class) -> send($client['fd'],
-            json_encode($param, JSON_UNESCAPED_UNICODE)
-        );
+        return null;
     }
 }
 

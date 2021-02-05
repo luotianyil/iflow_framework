@@ -24,13 +24,14 @@ class rpcReceive extends initializer
         $this->config = config('rpc@server');
 
         $info = json_decode($data, true);
+
         $this->clientList = Config::getConfigFile(
             $this->config['clientList']['path'] . $this->config['clientList']['name']
         );
 
         if ($info) {
             if ($this->addClient($info, $fd)) {
-                $this -> send($this->clientList[$fd]);
+                $this -> send($info);
             }
         }
     }
@@ -68,5 +69,4 @@ class rpcReceive extends initializer
 
     public function onClose($server, $fd)
     {}
-
 }
