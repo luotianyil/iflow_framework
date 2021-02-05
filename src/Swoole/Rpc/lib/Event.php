@@ -38,12 +38,11 @@ class Event extends HttpServer
             array_unshift($this->runProcess, 'rpcValidateRouter');
             foreach ($this->runProcess as $key) {
                 if (method_exists($this, $key) && call_user_func([$this, $key])) {
-                    return true;
+                    return $key !== 'startController';
                 }
             }
             return false;
         }
-
         return true;
     }
 

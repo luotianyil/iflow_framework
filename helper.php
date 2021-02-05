@@ -106,6 +106,19 @@ if (!function_exists('rpc')) {
     }
 }
 
+// request_rpc
+if (!function_exists('rpcRequest')) {
+    function rpcRequest(string $host, int $port, string $url, array $param = [], array $options = []): \iflow\Swoole\Rpc\lib\rpcRequest
+    {
+        $res = app() -> make(
+            \iflow\Swoole\Rpc\lib\rpcRequest::class,
+            func_get_args()
+        );
+        $res -> request();
+        return $res;
+    }
+}
+
 // session
 if (!function_exists('session')) {
     function session(string|null $name = null, array|null $default = []) {
