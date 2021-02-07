@@ -112,10 +112,41 @@ if (!function_exists('rpcRequest')) {
     {
         $res = app() -> make(
             \iflow\Swoole\Rpc\lib\rpcRequest::class,
-            func_get_args()
+            func_get_args(),
+            isNew: true
         );
         $res -> request();
         return $res;
+    }
+}
+
+if (!function_exists('httpRequest')) {
+    function httpRequest(
+        string $host,
+        int $port = 0,
+        string $method = 'GET',
+        bool $isSsl = false,
+        array $header = [],
+        string $path = "/",
+        mixed $data = "",
+        array $options = [],
+        string $type = "http"
+    ): \iflow\Swoole\Scrapy\http\http | \iflow\Swoole\Scrapy\http\http2
+    {
+        $class = $type === "http" ? \iflow\Swoole\Scrapy\http\http::class : \iflow\Swoole\Scrapy\http\http2::class;
+        $request = app() -> make(
+            $class,
+            [
+                $host,
+                $port,
+                $method,
+                $header,
+                $isSsl,
+                $options
+            ],
+            isNew: true
+        );
+        return $request -> connection() -> request($path, $data);
     }
 }
 

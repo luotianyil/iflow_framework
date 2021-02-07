@@ -42,6 +42,7 @@ class Container implements ContainerInterface
     // 实例化 对象 返回
     public function invokeClass(string $class, $vars)
     {
+        $class = str_replace('\\\\', '\\', $class);
         try {
             $ref = new \ReflectionClass($class);
             if ($ref -> hasMethod('__make')) {
@@ -59,8 +60,8 @@ class Container implements ContainerInterface
 
             $this->containers[$this->bind[$class]] = $object;
             return $object;
-        } catch (\ReflectionException) {
-            throw new \Error('Class not exists: ' . $class);
+        } catch (\ReflectionException $exception) {
+            throw new \Error('Class not exists: ' . $class . $exception -> getMessage());
         }
     }
 
@@ -183,7 +184,7 @@ class Container implements ContainerInterface
     // 删除容器 内对象
     public function delete($class) : void
     {
-        if ($this->has($class)) {
+        if (!empty($this->bind[$class])) {
             $this->containers -> offsetUnset($this->bind[$class]);
             unset($this->bind[$class]);
         }
@@ -211,6 +212,10 @@ class Container implements ContainerInterface
     public function has($id): bool
     {
         // TODO: Implement has() method.
-        return !empty($this->bind[$id]);
+        if (empty($this->bind[$id]) || !$this->containers -> offsetExists($this->bind[$id])) {
+            $this->delete($id);
+            return false;
+        }
+        return true;
     }
 }
