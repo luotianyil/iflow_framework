@@ -6,6 +6,7 @@ namespace iflow\initializer;
 
 use iflow\App;
 use Co;
+use Swoole\Runtime;
 use think\facade\Db;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 use GuzzleHttp\DefaultHandler;

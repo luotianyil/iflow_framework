@@ -28,6 +28,7 @@ class App extends Container
     protected string $rootPath = '';
     protected string $frameWorkPath = '';
     protected string $appPath = '';
+    protected string $appClassName = '';
     protected string $runtimePath = '';
     protected string $configExt = '.php';
 
@@ -42,26 +43,32 @@ class App extends Container
         Console::class
     ];
 
+    protected array $frameWorkFolder = [
+        'app',
+        'runtime',
+        'config',
+        'public'
+    ];
+
     // 用户运行入口类
     public \ReflectionClass $appRunClass;
 
     // 初始化
-    public function __construct(string $rootPath = '')
+    public function __construct()
     {
-        $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-        $this->rootPath    = $rootPath ? rtrim($rootPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR : $this->getDefaultRootPath();
-        $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
-        $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
         static::setInstance($this);
-        $this->instance(static::class, $this);
+        $this->appClassName = static::class;
+        $this->instance($this->getAppClassName(), $this);
         $this->instance('iflow\Container', $this);
     }
 
-    public function run(string $class = '') {
+    public function run() {
         // 反射获取 入口类
-        $this->appRunClass = new \ReflectionClass($class) ?: throw new \Error('初始化失败');
-        // 初始化 全局依赖
-        $this->initializer();
+        $this->appRunClass = new \ReflectionClass($this->getAppClassName()) ?: throw new \Error('初始化失败');
+        if ($this->frameWorkDirInit()) {
+            // 初始化 全局依赖
+            $this->initializer();
+        }
     }
 
     protected function initializer() : void
@@ -87,6 +94,20 @@ class App extends Container
         if (is_file($this->appPath . DIRECTORY_SEPARATOR . 'common.php')) {
             include_once $this->appPath . DIRECTORY_SEPARATOR . 'common.php';
         }
+    }
+
+    public function frameWorkDirInit(): bool
+    {
+        $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+        $this->rootPath    = $this->getDefaultRootPath();
+        $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
+        $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
+        foreach ($this->frameWorkFolder as $key) {
+            if (!file_exists($this->getDefaultRootPath() . $key)) {
+                throw new \Exception("application rootPath file / folder : ". $key. " not exists");
+            }
+        }
+        return true;
     }
 
     /**
@@ -143,5 +164,10 @@ class App extends Container
     public function getRootPath() : string
     {
         return $this->rootPath;
+    }
+
+    public function getAppClassName(): string
+    {
+        return $this->appClassName;
     }
 }

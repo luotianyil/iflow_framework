@@ -10,7 +10,8 @@ use iflow\facade\Config;
 if (!function_exists('app')) {
     function app(string $name = '', array $args = [], bool $isNew = false)
     {
-        return Container::getInstance()->make($name ?: 'iflow\Container', $args, $isNew);
+        if ($name === '')  return Container::getInstance();
+        return Container::getInstance() -> make($name, $args, $isNew);
     }
 }
 
@@ -89,6 +90,14 @@ if (!function_exists('runtime_path')) {
     }
 }
 
+// appClassName
+if (!function_exists('app_class_name')) {
+    function app_class_name(): string
+    {
+        return app()->getAppClassName();
+    }
+}
+
 // rpc
 if (!function_exists('rpc')) {
     function rpc($clientName, $url, array &$param = []) {
@@ -127,26 +136,24 @@ if (!function_exists('httpRequest')) {
         string $method = 'GET',
         bool $isSsl = false,
         array $header = [],
-        string $path = "/",
-        mixed $data = "",
+        array $data = [],
         array $options = [],
         string $type = "http"
     ): \iflow\Swoole\Scrapy\http\http | \iflow\Swoole\Scrapy\http\http2
     {
         $class = $type === "http" ? \iflow\Swoole\Scrapy\http\http::class : \iflow\Swoole\Scrapy\http\http2::class;
-        $request = app() -> make(
+        return app() -> make(
             $class,
-            [
-                $host,
-                $port,
-                $method,
-                $header,
-                $isSsl,
-                $options
-            ],
             isNew: true
-        );
-        return $request -> connection() -> request($path, $data);
+        ) -> process([
+            'host' => $host,
+            'port' => $port,
+            'method' => $method,
+            'data' => $data,
+            'isSsl' => $isSsl,
+            'header' => $header,
+            'options' => $options
+       ]);
     }
 }
 
@@ -180,5 +187,10 @@ if (!function_exists('xml')) {
     function xml(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Xml {
         return \iflow\Response::create($data, $code, 'xml')
             -> headers($headers) -> options($options);
+    }
+}
+
+if (!function_exists('view')) {
+    function view() {
     }
 }

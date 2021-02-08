@@ -25,13 +25,13 @@ class HttpServer extends initializer
     public function onRequest($request, $response)
     {
         if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
-            $file = $this->services -> app -> getRootPath() . 'public' . DIRECTORY_SEPARATOR . 'favicon.ico';
+            $file = config('app@favicon');
             if (file_exists($file)) $response->sendfile($file);
             else $response -> end();
             return;
         }
         $this -> __initializer($request, $response);
-        $request_time = date('Y-m-d H:i:s',$request -> server['request_time_float']);
+        $request_time = date('Y-m-d H:i:s', $request -> server['request_time_float']);
         logs('info',
             "requestTime: {$request_time} url: {$request -> server['request_uri']} method: {$request -> server['request_method']}");
     }
