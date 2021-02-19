@@ -22,9 +22,9 @@ class requestTools
     public array $requestController = [];
 
     protected array $runProcess = [
+        'runMiddleware',
         'validateRouter',
         'runAnnotation',
-        'runMiddleware',
         'startController'
     ];
 

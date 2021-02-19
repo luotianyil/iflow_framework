@@ -9,7 +9,7 @@ use League\MimeTypeDetection\FinfoMimeTypeDetector;
 class fileSystem extends SplFileInfo
 {
 
-    public FinfoMimeTypeDetector $finfoMimeTypeDetector;
+    public ?FinfoMimeTypeDetector $finfoMimeTypeDetector = null;
     public \League\Flysystem\Filesystem $fileSystem;
 
     protected array $config = [];
@@ -21,6 +21,8 @@ class fileSystem extends SplFileInfo
 
     public function getFileMine(): string
     {
+
+        $this->finfoMimeTypeDetector = $this->finfoMimeTypeDetector ?: app() -> make(FinfoMimeTypeDetector::class);
         return $this->finfoMimeTypeDetector -> detectMimeType($this->getPathname(), '');
     }
 

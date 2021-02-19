@@ -15,18 +15,10 @@ class SocketIo
 
     public function __initializer(Request $request, Response $response): Response|string
     {
-
-        if ($request -> isPost()) {
-            return json([
-                    'code'    => 3,
-                    'message' => 'Bad request',
-            ], 400);
-        }
-
         if (!in_array($request->getParams('transport'), $this->transports)) {
             return json([
                 'code' => 0,
-                'message' => 'Transport unknown',
+                'msg' => 'Transport unknown'
             ], 400);
         }
         if (!empty($request -> getParams('sid'))) {

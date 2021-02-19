@@ -61,6 +61,7 @@ class Response
     {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
         $response = Container::getInstance()->invokeClass($class, [$data, $code]);
+        $response -> response = response() -> response;
         foreach (array_merge((array) $response, (array) response()) as $key => $value) {
             if (method_exists($response, $key)) {
                 if (!is_string($response -> $key)) $response -> $key($value);
@@ -104,6 +105,12 @@ class Response
     public function initializer($response): static
     {
         $this->response = $response;
+        return $this;
+    }
+
+    public function trailer(string $key, string $value, bool $ucwords = true)
+    {
+        $this->response -> trailer(...func_get_args());
         return $this;
     }
 

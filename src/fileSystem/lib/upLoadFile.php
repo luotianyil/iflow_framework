@@ -45,11 +45,8 @@ class upLoadFile extends fileSystem
 
     public function move(string $savePath, array $config = [])
     {
-
-        $savePath .= $this->config['rootPath'] . DIRECTORY_SEPARATOR . $savePath;
         $validate = $this->validate($config);
         if ($validate) {
-            !is_dir($savePath) && mkdir($savePath, 0755, true);
             $fileNameType = $config['type'] ?? 'hash';
             $fileNameType = is_string($fileNameType) ? [
                 $fileNameType
@@ -57,8 +54,15 @@ class upLoadFile extends fileSystem
                 array_keys($fileNameType),
                 $fileNameType['algo'] ?? 'sha1'
             ];
-            $fileName = call_user_func([$this, $fileNameType[0]], $fileNameType[1] ?? '');
-            move_uploaded_file($this->getPathname(), $savePath.$fileName);
+            $fileName = call_user_func([$this, $fileNameType[0]], $fileNameType[1] ?? 'sha1');
+            $savePath = rtrim($this->config['rootPath'], DIRECTORY_SEPARATOR)
+                . DIRECTORY_SEPARATOR
+                . $savePath
+                . DIRECTORY_SEPARATOR
+                . $fileName
+                . '.' . $this->getExtension();
+            !is_dir(dirname($savePath)) && mkdir($savePath, 0755, true);
+            move_uploaded_file($this->getPathname(), $savePath);
         }
         return $validate;
     }
@@ -75,7 +79,6 @@ class upLoadFile extends fileSystem
         if ($this->getSize() > $validate['size']) {
             $this->error[] = "file size error max";
         }
-
         return $this;
     }
 

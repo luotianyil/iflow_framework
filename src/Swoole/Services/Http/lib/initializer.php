@@ -39,7 +39,7 @@ class initializer extends requestTools
     }
 
     // 验证路由
-    protected function validateRouter()
+    protected function validateRouter(): bool
     {
 
         if ($this->isSocketIo($this->request -> request_uri)) return true;
@@ -68,7 +68,8 @@ class initializer extends requestTools
         return false;
     }
 
-    protected function startController() {
+    protected function startController(): bool
+    {
         $controller =
             $this->refController -> getConstructor() ?
                 $this->refController -> newInstance(...[$this->request, $this->response])

@@ -54,4 +54,39 @@ class packet
         'BINARY_ACK',
     ];
 
+    public function __construct(
+        protected string $type = '',
+        protected string $data = ''
+    )
+    {}
+
+    public function open($data)
+    {
+        return new static(self::OPEN, $data);
+    }
+
+    public function pong($data)
+    {
+        return new static(self::PONG, $data);
+    }
+
+    public static function ping()
+    {
+        return new static(self::PING);
+    }
+
+    public static function message($payload)
+    {
+        return new static(self::MESSAGE, $payload);
+    }
+
+    public static function fromString(string $packet)
+    {
+        return new static(substr($packet, 0, 1), substr($packet, 1) ?? '');
+    }
+
+    public function toString()
+    {
+        return $this->type . $this->data;
+    }
 }

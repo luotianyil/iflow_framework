@@ -36,11 +36,11 @@ class RouterBase
         $routerList = $this->getRouterList();
         $router = [];
 
-        foreach ($routerList as $key) {
+        foreach ($routerList['router'] as $key) {
             $router = $this->getRouterParam($key, $url, $method);
             if ($router) break;
         }
-        return $router ? $this->bindParam($router, $param) : $router;
+        return $router ? $this->bindParam($router, $param, $routerList) : $router;
     }
 
     /**
@@ -96,9 +96,14 @@ class RouterBase
         return $router;
     }
 
-    public function bindParam(array $router, array $param): array
+    public function bindParam(array $router, array $param, array $routerList): array
     {
         foreach ($router['parameter'] as $key => $value) {
+            if ($value['type'] === 'class') {
+                $router['parameter'][$key] =
+                $value = $routerList['routerParams'][$value['class']];
+            }
+
             if (isset($value['default'])) {
                 $router['parameter'][$key]['default'] = match ($value['type']) {
                     'array' => array_merge($value['default'], $param[$value['name']] ?? []),

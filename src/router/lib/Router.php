@@ -25,7 +25,11 @@ class Router
     ];
 
     // 绑定路由
-    protected array $routers = [];
+    protected array $routers = [
+        'router' => [],
+        'routerParams' => []
+    ];
+
     protected string $routerKey = '';
 
     public function __construct(
@@ -34,8 +38,7 @@ class Router
         protected string $ext = '',
         protected array $parameter = [],
         protected array $options = [],
-    )
-    {}
+    ){}
 
     // 全局类初始化
     public function __make(App $app, ReflectionClass $annotationClass)
@@ -62,7 +65,7 @@ class Router
                     $k = $k -> newInstance();
                     $router = $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->options);
                     $router['parameter'] = array_merge($parameter, $router['parameter']);
-                    $this->routers[$this->fatherRouter][] = $router;
+                    $this->routers['router'][$this->fatherRouter][] = $router;
                 }
             }
         }
@@ -84,20 +87,25 @@ class Router
         foreach ($parameters as $key) {
             $type = $key -> getType();
             $name = $key -> getName();
-            assert($type instanceof \ReflectionType);
             if (class_exists($type -> getName())) {
-                $parametersType = new ReflectionClass($type -> getName());
+                $className = $type -> getName();
+                $parametersType = new ReflectionClass($className);
                 $parametersTypeInstance = $parametersType -> newInstance();
+                $this->routers['routerParams'][$className] = $this->routers['routerParams'][$className] ?? [];
                 foreach ($parametersType -> getProperties() as $param) {
                     $p = $param -> getName();
                     $defaultValue = $parametersType -> getProperty($p);
-                    $parameter[$name][] = [
+                    $this->routers['routerParams'][$className][] = [
                         'type' => $defaultValue -> getType() -> getName(),
                         'class' => $parametersTypeInstance::class,
                         'name' => $param -> getName(),
                         'default' => $defaultValue -> getDefaultValue()
                     ];
                 }
+                $parameter[$name] = [
+                    'type' => 'class',
+                    'class' => $className
+                ];
             } else {
                 $parameter[$name] = [
                     'type' => $type -> getName(),
@@ -117,7 +125,7 @@ class Router
             'action' => $action,
             'ext' => $this->ext,
             'parameter' => $this->parameter,
-            'options' => array_replace_recursive($options, $this->options),
+            'options' => array_replace_recursive($options, $this->options)
         ];
     }
 }

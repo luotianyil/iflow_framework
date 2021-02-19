@@ -50,6 +50,13 @@ if (!function_exists('response')) {
     }
 }
 
+if (!function_exists('app_server')) {
+    function app_server(): \Swoole\Server | \Swoole\Http\Server | \Swoole\WebSocket\Server
+    {
+        return app() -> make(\Swoole\Server::class);
+    }
+}
+
 // 信息
 if (!function_exists('message')) {
     function message() : \iflow\Utils\Message\Message
@@ -57,6 +64,33 @@ if (!function_exists('message')) {
         return app() -> make(\iflow\Utils\Message\Message::class);
     }
 }
+
+if (!function_exists('emails')) {
+    function emails(
+        array $to,
+        string $body = '',
+        array $files = [],
+        string $subject = ''
+    ) {
+        $content = new \iflow\Swoole\email\lib\Message\Html();
+        $content = $content -> setHtml($body) -> setSubject($subject);
+        foreach ($files as $file) {
+            $content = $content -> addAttachment(
+                $file['filename'],
+                $file['filePath'],
+                $file['mime'],
+            );
+        }
+        return (new \iflow\Swoole\email\Mailer()) -> setTo($to) -> send($content);
+    }
+}
+
+if (!function_exists('systemInfo')) {
+    function systemInfo(): array {
+        return (new \iflow\Utils\Tools\SystemTools()) -> getSystemInfo();
+    }
+}
+
 
 if (!function_exists('sendFile')) {
     function sendFile($path, bool $isConfigRootPath = true) : bool
@@ -106,7 +140,7 @@ if (!function_exists('rpc')) {
         foreach ($clientList as $key) {
             if ($key['name'] === $clientName) {
                 $param['request_uri'] = $url;
-                return app() -> make(\Swoole\Server::class) -> send($key['fd'],
+                return app_server() -> send($key['fd'],
                     json_encode($param, JSON_UNESCAPED_UNICODE)
                 );
             }

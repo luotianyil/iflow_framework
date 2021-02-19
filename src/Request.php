@@ -28,7 +28,6 @@ class Request
 
     protected function initFile()
     {
-
         $files = $this->request -> files ?? [];
         $upLoadFile = app() -> make(upLoadFile::class);
         foreach ($files as $key => $value) {
@@ -53,10 +52,10 @@ class Request
     }
 
 
-    public function file(string $name): upLoadFile|array
+    public function file(string $name = ''): upLoadFile|array
     {
         $upLoadFile = app() -> make(upLoadFile::class);
-        return $upLoadFile -> getFile($name);
+        return $name === '' ? $upLoadFile -> getFileList() : $upLoadFile -> getFile($name);
     }
 
     public function postParams(string $name = '')

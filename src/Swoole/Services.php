@@ -18,6 +18,7 @@ class Services extends Command
 
     public array $config = [];
     public array $userEvent = [];
+    public float $runMemoryUsage = 0.00;
 
     public function handle($event = '')
     {
@@ -66,7 +67,10 @@ class Services extends Command
     // 启动
     protected function start()
     {
-        $info = 'SERVER_ADDRESS: '.$this->server -> host.':'.$this->server -> port;
+
+        $this->runMemoryUsage = round(memory_get_usage() / 1024 / 1024, 2);
+        $info = 'SERVER_ADDRESS: '.$this->server -> host.':'.$this->server -> port. PHP_EOL;
+        $info .= "runMemoryUsage: " . $this->runMemoryUsage . "M";
         $this->Console -> outPut ->writeLine($info.PHP_EOL.'> Start Success');
         $this->getServer() -> start();
     }

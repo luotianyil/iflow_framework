@@ -72,17 +72,19 @@ class Logger implements LoggerInterface
 
     protected function setLogs(string $type, $message, $content)
     {
-
-        if (in_array($type, $this->config['errorLevelSendEmail'])) {
-            // code ...
-        }
-
-        $this->logs[] = [
-            'time' => \DateTime::createFromFormat('0.u00 U', microtime())->setTimezone(new \DateTimeZone(date_default_timezone_get()))->format($this->config['time_format']),
-            'content' => $message. trim(var_export(count($content) <= 0 ? '' : $content, true), "'"),
-            'type' => strtoupper($type)
-        ];
-
+        go(function () use ($type, $message, $content) {
+            $content = $message. trim(var_export(count($content) <= 0 ? '' : $content, true), "'");
+            if (in_array($type, $this->config['errorLevelSendEmail'])) {
+                // code ...
+                $systemInfo = systemInfo();
+                emails($this->config['toEmails'], $content, subject: "{$systemInfo['name']} - {$systemInfo['user_name']} 异常提醒");
+            }
+            $this->logs[] = [
+                'time' => \DateTime::createFromFormat('0.u00 U', microtime())->setTimezone(new \DateTimeZone(date_default_timezone_get()))->format($this->config['time_format']),
+                'content' => $content,
+                'type' => strtoupper($type)
+            ];
+        });
         return $this;
     }
 
