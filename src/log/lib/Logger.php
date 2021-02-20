@@ -72,19 +72,22 @@ class Logger implements LoggerInterface
 
     protected function setLogs(string $type, $message, $content)
     {
-        go(function () use ($type, $message, $content) {
-            $content = $message. trim(var_export(count($content) <= 0 ? '' : $content, true), "'");
-            if (in_array($type, $this->config['errorLevelSendEmail'])) {
-                // code ...
-                $systemInfo = systemInfo();
-                emails($this->config['toEmails'], $content, subject: "{$systemInfo['name']} - {$systemInfo['user_name']} 异常提醒");
-            }
-            $this->logs[] = [
-                'time' => \DateTime::createFromFormat('0.u00 U', microtime())->setTimezone(new \DateTimeZone(date_default_timezone_get()))->format($this->config['time_format']),
-                'content' => $content,
-                'type' => strtoupper($type)
-            ];
-        });
+        $content = $message. trim(var_export(count($content) <= 0 ? '' : $content, true), "'");
+        $timer = \DateTime::createFromFormat('0.u00 U', microtime())->setTimezone(new \DateTimeZone(date_default_timezone_get()))->format($this->config['time_format']);
+        $this->logs[] = [
+            'time' => $timer,
+            'content' => $content,
+            'type' => strtoupper($type)
+        ];
+
+        if (in_array($type, $this->config['errorLevelSendEmail'])) {
+            // code ...
+            $systemInfo = systemInfo();
+            $content = "<p>{$type}: {$content}</p><p>SystemInfo: os: {$systemInfo['os']['name']}, userName: {$systemInfo['os']['user_name']}</p>";
+            $content .= "<p>DateTime: {$timer}</p>";
+            emails($this->config['toEmails'], $content, subject: "{$systemInfo['os']['name']} - {$systemInfo['os']['user_name']} 异常提醒");
+        }
+
         return $this;
     }
 

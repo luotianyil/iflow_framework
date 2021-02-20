@@ -6,6 +6,7 @@ namespace iflow;
 use iflow\console\Console;
 use iflow\event\Event;
 use iflow\initializer\annotationInitializer;
+use iflow\initializer\appMonitoring;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
 use iflow\initializer\initializer;
@@ -40,7 +41,8 @@ class App extends Container
         annotationInitializer::class,
         initializer::class,
         Event::class,
-        Console::class
+        Console::class,
+        appMonitoring::class
     ];
 
     protected array $frameWorkFolder = [
@@ -64,7 +66,7 @@ class App extends Container
 
     public function run() {
         // 反射获取 入口类
-        $this->appRunClass = new \ReflectionClass($this->getAppClassName()) ?: throw new \Error('初始化失败');
+        $this->appRunClass = new \ReflectionClass($this->getAppClassName());
         if ($this->frameWorkDirInit()) {
             // 初始化 全局依赖
             $this->initializer();
@@ -117,8 +119,7 @@ class App extends Container
      */
     public function getDefaultRootPath(): string
     {
-//        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
-        return $this->frameWorkPath;
+        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
     }
 
     /**

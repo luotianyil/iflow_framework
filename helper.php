@@ -81,7 +81,9 @@ if (!function_exists('emails')) {
                 $file['mime'],
             );
         }
-        return (new \iflow\Swoole\email\Mailer()) -> setTo($to) -> send($content);
+        \Co\run(function () use ($to, $content) {
+            (new \iflow\Swoole\email\Mailer()) -> setTo($to) -> send($content);
+        });
     }
 }
 

@@ -45,8 +45,11 @@ class SystemTools
         if (file_exists($configPath)) {
             $info = explode(PHP_EOL, trim(file_get_contents($configPath)));
             foreach ($info as $key) {
-                [$name, $value] = explode(':', $key);
-                $cpuInfo[trim($name)] = trim($value);
+                $data = explode(':', $key);
+                if (count($data) > 1) {
+                    [$name, $value] = $data;
+                    $cpuInfo[trim($name)] = trim($value);
+                }
             }
         }
         return $cpuInfo;
@@ -74,8 +77,7 @@ class SystemTools
         foreach ($units as $unit) {
             if($length > 1024)
                 $length = round($length/1024, 1);
-            else
-                break;
+            else break;
         }
         return $length.' '.$unit;
     }

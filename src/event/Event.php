@@ -26,14 +26,12 @@ class Event
 
     public function callEvent(string $event, array $args = [])
     {
-        go(function () use ($event, $args) {
-            if ($this->arrayTools -> offsetExists($event)) {
-                $event = $this->app -> make($this->arrayTools -> offsetGet($event), isNew: true);
-                return $this->app -> invokeMethod([$event, 'handle'], $args);
-            } else {
-                throw new \Error("event error: ${event} not exists");
-            }
-        });
+        if ($this->arrayTools -> offsetExists($event)) {
+            $event = $this->app -> make($this->arrayTools -> offsetGet($event), isNew: true);
+            return $this->app -> invokeMethod([$event, 'handle'], $args);
+        } else {
+            throw new \Error("event error: ${event} not exists");
+        }
     }
 
 }

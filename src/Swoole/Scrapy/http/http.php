@@ -56,7 +56,7 @@ class http
 
     public function start()
     {
-        go(function () {
+        \Co\run(function () {
             foreach ($this->Queue as $key => $value) {
                 $this->process($value);
             }
