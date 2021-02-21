@@ -35,7 +35,7 @@ class upLoadFile extends fileSystem
 
     public function getFile(string $index)
     {
-        return $this->fileList[$index];
+        return $this->fileList[$index] ?? null;
     }
 
     public function read(): string
@@ -62,7 +62,8 @@ class upLoadFile extends fileSystem
                 . $fileName
                 . '.' . $this->getExtension();
             !is_dir(dirname($savePath)) && mkdir($savePath, 0755, true);
-            move_uploaded_file($this->getPathname(), $savePath);
+            return move_uploaded_file($this->getPathname(), $savePath) ? $savePath
+                : false;
         }
         return $validate;
     }
