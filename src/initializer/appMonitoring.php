@@ -54,7 +54,9 @@ class appMonitoring
 
         if ($content !== '') {
             $content .= "<p>DateTime: ". date('Y-m-d H:i:s') ."</p>";
-            emails($this->config['toEmails'], $content, subject: config('app@appName') . ' - 应用预警');
+            \Co\run(function () use ($content) {
+                emails($this->config['toEmails'], $content, subject: config('app@appName') . ' - 应用预警');
+            });
         }
     }
 }

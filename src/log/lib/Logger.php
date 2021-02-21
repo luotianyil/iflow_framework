@@ -85,7 +85,9 @@ class Logger implements LoggerInterface
             $systemInfo = systemInfo();
             $content = "<p>{$type}: {$content}</p><p>SystemInfo: os: {$systemInfo['os']['name']}, userName: {$systemInfo['os']['user_name']}</p>";
             $content .= "<p>DateTime: {$timer}</p>";
-            emails($this->config['toEmails'], $content, subject: "{$systemInfo['os']['name']} - {$systemInfo['os']['user_name']} 异常提醒");
+            \Co\run(function () use ($systemInfo, $content) {
+                emails($this->config['toEmails'], $content, subject: "{$systemInfo['os']['name']} - {$systemInfo['os']['user_name']} 异常提醒");
+            });
         }
 
         return $this;
