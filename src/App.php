@@ -7,6 +7,7 @@ use iflow\console\Console;
 use iflow\event\Event;
 use iflow\initializer\annotationInitializer;
 use iflow\initializer\appMonitoring;
+use iflow\initializer\appSurroundings;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
 use iflow\initializer\initializer;
@@ -38,6 +39,7 @@ class App extends Container
         Config::class,
         Log::class,
         Error::class,
+        appSurroundings::class,
         annotationInitializer::class,
         initializer::class,
         Event::class,
@@ -119,7 +121,8 @@ class App extends Container
      */
     public function getDefaultRootPath(): string
     {
-        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
+//        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
+        return $this->frameWorkPath;
     }
 
     /**

@@ -72,25 +72,12 @@ class File
     public function gc($lifetime) {
         go(function () use ($lifetime) {
             $now = time();
-            $files = $this->findFiles($this->getStoreRoot(), function (\SplFileInfo $item) use ($lifetime, $now) {
+            $files = find_files($this->getStoreRoot(), function (\SplFileInfo $item) use ($lifetime, $now) {
                 return $now - $lifetime > $item -> getMTime();
             });
             foreach ($files as $file) {
                 @unlink($file->getPathname());
             }
         });
-    }
-
-    protected function findFiles(string $root, \Closure $filter) {
-        $items = new \FilesystemIterator($root);
-        foreach ($items as $item) {
-            if ($item->isDir() && !$item->isLink()) {
-                yield from $this->findFiles($item->getPathname(), $filter);
-            } else {
-                if ($filter($item)) {
-                    yield $item;
-                }
-            }
-        }
     }
 }

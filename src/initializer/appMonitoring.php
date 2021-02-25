@@ -10,11 +10,8 @@ class appMonitoring
 {
     protected App $app;
 
-    // 类全部注解
-    protected array $annotations = [];
     protected array $config = [];
 
-    // 实例化 入口类 全部注解
     public function initializer(App $app)
     {
         $this->app = $app;

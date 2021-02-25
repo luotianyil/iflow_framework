@@ -103,4 +103,8 @@ class basicTools
         $card_id_end = substr(substr_replace($card_id,"****",14,4), 12, 6);
         return $card_id_start.$card_id_end;
     }
+
+    public function execShell($shell) {
+        return trim(shell_exec($shell), PHP_EOL);
+    }
 }

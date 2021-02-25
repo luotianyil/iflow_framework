@@ -81,4 +81,15 @@ class SystemTools
         }
         return $length.' '.$unit;
     }
+
+    public function get_extension_loaded(array $extensions)
+    {
+        $not_ext = [];
+        foreach ($extensions as $ext) {
+            if (!extension_loaded($ext)) {
+                $not_ext[] = $ext;
+            }
+        }
+        return $not_ext;
+    }
 }

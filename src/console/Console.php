@@ -5,6 +5,7 @@ namespace iflow\console;
 
 
 use iflow\App;
+use iflow\command\install;
 use iflow\console\lib\Help;
 use iflow\console\lib\Input;
 use iflow\console\lib\outPut;
@@ -23,7 +24,8 @@ class Console
         '<start|stop|reload>-udp-<client|server>' => \iflow\Swoole\Udp\Services::class,
         '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,
         '<start|stop|reload>-rpc-<client|server>' => \iflow\Swoole\Rpc\Services::class,
-        'help' => Help::class
+        'help' => Help::class,
+        'install' => install::class
     ];
 
     protected array $userCommand = [];
@@ -33,7 +35,7 @@ class Console
         $this->app = $app;
         $this->input = new Input();
         $this->outPut = new outPut($this->openOutputStream());
-//        // 获取用户输入
+        // 获取用户输入
         $this->userCommand = $this->input -> getUserCommand();
 
         // 运行程序

@@ -42,6 +42,21 @@ if (!function_exists('files')) {
     }
 }
 
+if (!function_exists('find_files')) {
+    function find_files(string $root, \Closure $filter) {
+        $items = new \FilesystemIterator($root);
+        foreach ($items as $item) {
+            if ($item->isDir() && !$item->isLink()) {
+                yield from find_files($item->getPathname(), $filter);
+            } else {
+                if ($filter($item)) {
+                    yield $item;
+                }
+            }
+        }
+    }
+}
+
 // 响应
 if (!function_exists('response')) {
     function response() : \iflow\Response
@@ -59,9 +74,9 @@ if (!function_exists('app_server')) {
 
 // 信息
 if (!function_exists('message')) {
-    function message() : \iflow\Utils\Message\Message
+    function message($type = 'json') : \iflow\Utils\Message\Message
     {
-        return app() -> make(\iflow\Utils\Message\Message::class);
+        return app() -> make(\iflow\Utils\Message\Message::class) -> setFilter($type);
     }
 }
 
@@ -226,5 +241,11 @@ if (!function_exists('xml')) {
 
 if (!function_exists('view')) {
     function view() {
+    }
+}
+
+if (!function_exists('hasha')) {
+    function hasha($string): string {
+        return md5(hash_hmac("sha512", $string, '!dJ&S6@GliG3'));
     }
 }
