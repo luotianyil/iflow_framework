@@ -48,7 +48,7 @@ class http2 extends http
         return $this;
     }
 
-    public function setMethod(string $method): static
+    public function setMethod(string $method = ''): static
     {
         $this->request -> method = $method;
         return $this;

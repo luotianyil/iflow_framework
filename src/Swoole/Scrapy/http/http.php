@@ -82,7 +82,7 @@ class http
     public function parseUrl(string $url): static
     {
         $scheme = explode('//', $url)[0];
-        if (!preg_match('/^http(s):$/', $scheme)) {
+        if (!preg_match('/^http(s|):$/', $scheme)) {
             $url = "http://" . $url;
         }
 
@@ -146,7 +146,7 @@ class http
 
     public function request($path = ""): static
     {
-        $this->client -> execute($path);
+        $this->client -> execute($path . $this->parse_url['query']);
         $this->data = $this->client -> body;
         $this->client -> close();
         return $this;
@@ -178,7 +178,6 @@ class http
         // TODO: Implement __call() method.
         if (method_exists($this->client, $name)) {
             call_user_func([$this->client, $name], ...$arguments);
-            return $this;
         }
         return $this;
     }

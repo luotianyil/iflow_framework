@@ -109,6 +109,7 @@ class RouterBase
                     'array' => array_merge($value['default'], $param[$value['name']] ?? []),
                     default => function () use ($param, $key, $value) {
                         $params = $param[$key] ?? null;
+                        if (is_numeric($params)) $params = intval($params);
                         if (gettype($params) !== gettype($value['default'])) return $value['default'];
                         return $params;
                     }
@@ -120,6 +121,7 @@ class RouterBase
                         'array' => array_merge($v['default'], $param[$key][$v['name']] ?? []),
                         default => function () use ($param, $key, $v) {
                             $params = $param[$key][$v['name']] ?? null;
+                            if (is_numeric($params)) $params = intval($params);
                             if (gettype($params) !== gettype($v['default'])) return $v['default'];
                             return $params;
                         }
