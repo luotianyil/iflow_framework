@@ -128,7 +128,8 @@ class Lightbenc{
         return null;
     }
 
-    public static function bencode(&$d){
+    public static function bencode(&$d): ?string
+    {
         if(is_array($d)){
             $ret="l";
             if(isset($d["isDct"])&&$d["isDct"]){
@@ -160,12 +161,14 @@ class Lightbenc{
             return null;
     }
 
-    public static function bdecode_file($filename){
+    public static function bdecode_file($filename): array|int|string|null
+    {
         $f=file_get_contents($filename, FILE_BINARY);
         return Lightbenc::bdecode($f);
     }
 
-    public static function bdecode_getinfo($filename){
+    public static function bdecode_getinfo(string $filename): int|array|string
+    {
         $t = Lightbenc::bdecode(file_get_contents($filename, FILE_BINARY));
         $t['info_hash'] = sha1(Lightbenc::bencode($t['info']));
         $t['magnet_path'] = 'magnet:?xt=urn:btih:'.$t['info_hash'].'&dn='.$t['info']['name'];

@@ -249,3 +249,9 @@ if (!function_exists('hasha')) {
         return md5(hash_hmac("sha512", $string, '!dJ&S6@GliG3'));
     }
 }
+
+if (!function_exists('bt_to_magnet')) {
+    function bt_to_magnet($torrent) {
+        return (new \iflow\Utils\torrent\Lightbenc()) -> bdecode_getinfo($torrent);
+    }
+}
