@@ -93,7 +93,7 @@ if (!function_exists('emails')) {
             $content = $content -> addAttachment(
                 $file['filename'],
                 $file['filePath'],
-                $file['mime'],
+                $file['mime']
             );
         }
         return (new \iflow\Swoole\email\Mailer()) -> setTo($to) -> send($content);

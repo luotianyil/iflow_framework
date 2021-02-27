@@ -25,7 +25,8 @@ class Error
 
     public function appError(int $errno, string $str, string $file = '', int $line = 0)
     {
-        logs('error', "error: $str file: $file in line $line");
+        $type = $this->isFatal($errno) ? 'error' : 'warning';
+        logs($type, "error: $str file: $file in line $line");
     }
 
     public function appHandler(Throwable $e)

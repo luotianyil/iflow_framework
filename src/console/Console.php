@@ -48,7 +48,9 @@ class Console
         $this->getCommand();
 
         // 解析用户 指令
-        $this->input -> parsingInputCommand($this->command, $this);
+        if ($this->input -> parsingInputCommand($this->command, $this) === false) {
+            $this->outPut -> writeLine('Unknown instruction');
+        }
     }
 
     protected function getCommand(): static
