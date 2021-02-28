@@ -43,7 +43,9 @@ if (!function_exists('files')) {
 }
 
 if (!function_exists('find_files')) {
-    function find_files(string $root, \Closure $filter) {
+    function find_files(string $root, \Closure $filter): Generator | null
+    {
+        if (!file_exists($root)) return null;
         $items = new \FilesystemIterator($root);
         foreach ($items as $item) {
             if ($item->isDir() && !$item->isLink()) {

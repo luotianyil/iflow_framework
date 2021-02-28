@@ -13,6 +13,11 @@ class install extends Command
 
     protected array $config = [];
 
+    protected array $composerShell = [
+        'update',
+        'dump-autoload'
+    ];
+
     public function handle() {
         $this->config = config('install');
         $this -> includeDataBase() ->  installLib();
@@ -54,7 +59,11 @@ class install extends Command
 
     protected function installLib() {
         $this->Console -> outPut -> writeLine('start install library');
-        (new basicTools()) -> execShell(PHP_BINDIR . DIRECTORY_SEPARATOR . 'php ' . $this->config['composer']['rootPath']. ' update');
+        $php_path = PHP_BINDIR . DIRECTORY_SEPARATOR . 'php';
+        $composer = $this->config['composer']['rootPath'];
+        foreach($this->composerShell as $key => $value) {
+            (new basicTools()) -> execShell($php_path . ' ' . $composer . ' ' . $value);
+        }
     }
 
 }
