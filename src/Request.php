@@ -36,21 +36,33 @@ class Request
     }
 
     // validate param
-    public function has($param, $type = 'get')
+    public function has($param, $type = 'get'): bool
     {
-        if (!in_array($type, ['post', 'get'])) {
+        if (!in_array($type, ['post', 'get', 'header'])) {
             return false;
         }
-        return !empty($request -> $type[$param]);
+        return !empty($this->request -> $type[$param]);
     }
 
     // get param
     public function getParams(string $name = '')
     {
         if ($name === '') return $this->request -> get;
-        return $this->request -> get[$name] ?? null;
+        return $this->get($name, 'get');
     }
 
+    public function getHeader(string $name = '')
+    {
+        if ($name === '') return $this->request -> header;
+        return $this->get($name, 'header');
+    }
+
+    protected function get(string $name, string $type) {
+        if ($this->has($name, $type)) {
+            return $this->request -> get[$name];
+        }
+        return null;
+    }
 
     public function file(string $name = ''): upLoadFile|array
     {

@@ -36,7 +36,9 @@ class authAnnotation
         foreach ($this->initializers as $key) {
             call_user_func([$handle, $key], $requestTools -> request);
         }
-        return call_user_func([$handle, 'validateAuth'], $requestTools -> request);
+        return
+            call_user_func([$handle, 'validateAuth'], $requestTools -> request)
+                -> callback();
     }
 
 }

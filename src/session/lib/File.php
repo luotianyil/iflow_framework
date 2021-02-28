@@ -13,11 +13,12 @@ class File implements Session
     protected array $config = [];
     protected \iflow\cache\lib\File $file;
 
-    public function initializer(array $config = [])
+    public function initializer(array $config = []): static
     {
         $this->config = $config;
         $this->file = Cache::store($this->config['cache_config']);
         $this->file->gc($this->config['expired']);
+        return $this;
     }
 
     public function get(string $name)

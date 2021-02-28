@@ -10,7 +10,7 @@ class Mongo implements Session
     protected object|null $mongodb = null;
     protected array $config = [];
 
-    public function initializer(array $config = [])
+    public function initializer(array $config = []): static
     {
         $this->config = $config;
         if (is_string($config['mongo_model'])) {
@@ -19,6 +19,8 @@ class Mongo implements Session
         } else {
             $this->mongodb = $config['mongo_model'];
         }
+
+        return $this;
     }
 
     public function set(string|null $name = null, array $default = []): mixed

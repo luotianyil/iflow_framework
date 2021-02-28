@@ -210,7 +210,6 @@ if (!function_exists('httpRequest')) {
 if (!function_exists('session')) {
     function session(string|null $name = null, array|null $default = []) {
         $session = app() -> make(\iflow\session\Session::class) -> initializer();
-
         if ($default === null) {
             return $session -> delete($name);
         }
@@ -218,7 +217,6 @@ if (!function_exists('session')) {
         if (count($default) > 0) {
             return $session -> set($name, $default);
         }
-
         return $session -> get($name);
     }
 }

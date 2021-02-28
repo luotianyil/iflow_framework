@@ -26,9 +26,9 @@ class authHandle
 
     public function setUserInfo(): static
     {
-        $this->userInfo = [
-            'role' => 'admin'
-        ];
+        $token_key = request() -> params('Authorization');
+        $token_key = $token_key ?: request() -> getHeader('Authorization');
+        $this->userInfo = session($token_key);
         return $this;
     }
 
@@ -43,11 +43,15 @@ class authHandle
         return $this;
     }
 
-    public function validateAuth(Request $request): bool
+    public function validateAuth(Request $request): static
     {
-        $this->authRole = explode('|', $this->authAnnotation -> role);
-        $this->error = !in_array($this->userInfo['role'], $this->authRole);
-        return $this->callback();
+        if (empty($this->userInfo['role'])) {
+            $this->error = true;
+        } else {
+            $this->authRole = explode('|', $this->authAnnotation -> role);
+            $this->error = !in_array($this->userInfo['role'], $this->authRole);
+        }
+        return $this;
     }
 
     public function callback(): bool
