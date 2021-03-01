@@ -95,7 +95,7 @@ class Router
                 foreach ($parametersType -> getProperties() as $param) {
                     $p = $param -> getName();
                     $defaultValue = $parametersType -> getProperty($p);
-                    $this->routers['routerParams'][$className][] = [
+                    $this->routers['routerParams'][$className][$param -> getName()] = [
                         'type' => $defaultValue -> getType() -> getName(),
                         'class' => $parametersTypeInstance::class,
                         'name' => $param -> getName(),
