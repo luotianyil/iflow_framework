@@ -95,19 +95,16 @@ class initializer extends requestTools
 
     protected function setInstanceValue(array $params): mixed
     {
+        $keys = array_keys($params);
+        $class = $params[$keys[0]]['class'] ?? '';
         $object = [];
-        if (count($params) > 0 && isset($params[0]['class'])) {
-            $class = $params[0]['class'];
-            if (class_exists($class)) {
-                $ref = new \ReflectionClass($class);
-                $object = $ref -> newInstance();
-                foreach ($params as $key => $value) {
-                    $ref -> getProperty($value['name']) -> setValue($object, $value['default']);
-                }
-            } else {
-                return $object['default'];
+        if (count($params) > 0 && class_exists($class)) {
+            $ref = new \ReflectionClass($class);
+            $object = $ref -> newInstance();
+            foreach ($params as $key => $value) {
+                $ref -> getProperty($value['name']) -> setValue($object, $value['default']);
             }
-        }
+        } else return $object['default'];
         return $object;
     }
 }
