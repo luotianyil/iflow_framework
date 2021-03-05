@@ -62,6 +62,7 @@ class rpcClient
                             'httpHost' => config('service@host'),
                             'initializer' => 1
                         ]);
+                        $this->app -> instance(\Swoole\Coroutine\Client::class, $this->client);
                         while ($this->client -> isConnected()) {
                             $pack = $this->client -> recv();
                             if ($pack) {

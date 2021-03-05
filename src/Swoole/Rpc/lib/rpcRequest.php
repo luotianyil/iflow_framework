@@ -15,6 +15,7 @@ class rpcRequest
     public function __construct(
         protected string $host = '',
         protected int $port = 0,
+        protected bool $isSsl = false,
         protected string $url = '',
         protected array $param = [],
         protected array $options = []
@@ -24,7 +25,9 @@ class rpcRequest
     public function request()
     {
         $this->param['request_uri'] = $this->url;
-        $this->client = $this->client ?: new SwooleClient(SWOOLE_SOCK_TCP);
+        $this->client = $this->client ?: new SwooleClient(
+            $this->isSsl ? SWOOLE_TCP | SWOOLE_SSL : SWOOLE_TCP
+        );
         $this->client -> set($this->options);
         if (!$this->client -> connect($this->host, $this->port)) {
             $this->error = $this->client -> errMsg;

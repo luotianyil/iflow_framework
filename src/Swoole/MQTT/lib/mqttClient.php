@@ -33,7 +33,12 @@ class mqttClient
     {
         $this->services = $services;
         \Co\run(function () {
-            $this->client = new Client($this->services -> configs, $this->services -> configs['swConfig'], $this->services -> configs['sockType'], 2);
+            $this->client = new Client(
+                $this->services -> configs['host'],
+                $this->services -> configs['port'],
+                $this->services -> configs['swConfig'],
+                $this->services -> configs['sockType']
+            );
             if ($this->connect()) {
                 if ($this->client -> subscribe($this->inputConfig['topics'])) {
                     $this->wait();

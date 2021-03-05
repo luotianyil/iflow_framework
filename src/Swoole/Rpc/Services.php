@@ -23,6 +23,12 @@ class Services extends \iflow\Swoole\Services\Services
             $this->rpcServer -> set(
                 $this->config['swConfig']
             );
+
+            config('rpc', [
+                'server' => [
+                    'enable' => true
+                ]
+            ]);
             Config::delConfigFile($this->config['clientList']['path'] . $this->config['clientList']['name']);
             $this->initializers[] = rpcService::class;
         }

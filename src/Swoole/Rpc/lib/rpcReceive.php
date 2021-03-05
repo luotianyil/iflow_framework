@@ -13,16 +13,14 @@ class rpcReceive extends initializer
     public array $router;
     public int $fd;
     protected Server $server;
-    protected array $clientList = [];
+    protected ?array $clientList = [];
     protected mixed $config = [];
 
     public function handle(Server $server, $fd, $reactor_id, $data)
     {
         $this->server = $server;
         $this->fd = $fd;
-
         $this->config = config('rpc@server');
-
         $info = json_decode($data, true);
 
         $this->clientList = Config::getConfigFile(
@@ -30,10 +28,15 @@ class rpcReceive extends initializer
         );
 
         if ($info) {
+            if (isset($info['isClientConnection']) && isset($info['client_name'])) {
+                return $this -> send(rpc($info['client_name'], $info['request_uri'], $info));
+            }
             if ($this->addClient($info, $fd)) {
                 $this -> send($info);
             }
+            return true;
         }
+        return true;
     }
 
     public function addClient($info, $fd)

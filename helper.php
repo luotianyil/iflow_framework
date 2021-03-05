@@ -68,9 +68,16 @@ if (!function_exists('response')) {
 }
 
 if (!function_exists('app_server')) {
-    function app_server(): \Swoole\Server | \Swoole\Http\Server | \Swoole\WebSocket\Server
+    function app_server(): \Swoole\Server | \Swoole\Http\Server | \Swoole\WebSocket\Server | \Swoole\Coroutine\Client
     {
         return app() -> make(\Swoole\Server::class);
+    }
+}
+
+if (!function_exists('app_client')) {
+    function app_client(): \Swoole\Coroutine\Client
+    {
+        return app() -> make(\Swoole\Coroutine\Client::class);
     }
 }
 
@@ -152,15 +159,27 @@ if (!function_exists('app_class_name')) {
 // rpc
 if (!function_exists('rpc')) {
     function rpc($clientName, $url, array &$param = []) {
-        $config = config('rpc@server.clientList');
-        $clientList = Config::getConfigFile($config['path'] . $config['name'])['clientList'] ?? [];
-        foreach ($clientList as $key) {
-            if ($key['name'] === $clientName) {
-                $param['request_uri'] = $url;
-                return app_server() -> send($key['fd'],
-                    json_encode($param, JSON_UNESCAPED_UNICODE)
-                );
+        $config = config('rpc');
+        $param['request_uri'] = $url;
+        $config['server']['enable'] = $config['server']['enable'] ?? false;
+        if ($config['server']['enable']) {
+            $config = $config['server']['clientList'];
+            $clientList = Config::getConfigFile($config['path'] . $config['name'])['clientList'] ?? [];
+            foreach ($clientList as $key) {
+                if ($key['name'] === $clientName) {
+                    return app_server() -> send($key['fd'],
+                        json_encode($param, JSON_UNESCAPED_UNICODE)
+                    );
+                }
             }
+        } else {
+            $param['client_name'] = $clientName;
+            $param['isClientConnection'] = true;
+            $client = app_client();
+            $client  -> send(
+                json_encode($param, JSON_UNESCAPED_UNICODE)
+            );
+            return $client -> recv(30);
         }
         return null;
     }
@@ -168,7 +187,14 @@ if (!function_exists('rpc')) {
 
 // request_rpc
 if (!function_exists('rpcRequest')) {
-    function rpcRequest(string $host, int $port, string $url, array $param = [], array $options = []): \iflow\Swoole\Rpc\lib\rpcRequest
+    function rpcRequest(
+        string $host,
+        int $port,
+        string $url,
+        bool $isSsl = false,
+        array $param = [],
+        array $options = []
+    ): \iflow\Swoole\Rpc\lib\rpcRequest
     {
         $res = app() -> make(
             \iflow\Swoole\Rpc\lib\rpcRequest::class,
