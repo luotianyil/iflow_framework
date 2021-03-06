@@ -15,7 +15,8 @@
     "topthink/think-orm": "2.0.x-dev",
     "simps/mqtt": "^1.1.4",
     "ext-bcmath": "*",
-    "ext-zlib": "*"
+    "ext-zlib": "*",
+    "ext-fileinfo": "*"
   },
   "license": "MulanPSL-1.0",
   "authors": [

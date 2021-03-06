@@ -70,12 +70,12 @@ class Response
         return $response;
     }
 
-    public function notFount(): bool
+    public function notFount(): response\lib\File | bool
     {
         $this -> code = 404;
         $path = config('app@404_error_page');
         if (file_exists($path)) {
-            $this->sendFile($path);
+            return $this -> response -> sendFile($path);
         } else $this -> data('404 Not-Found') -> send();
         return false;
     }
@@ -88,9 +88,7 @@ class Response
 
     public function sendFile(string $path = '')
     {
-        $this->setResponseHeader();
-        if (file_exists($path)) $this->response -> sendfile($path);
-        else $this->notFount();
+        return sendFile($path);
     }
 
     protected function setResponseHeader()

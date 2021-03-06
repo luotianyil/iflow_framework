@@ -115,16 +115,6 @@ if (!function_exists('systemInfo')) {
     }
 }
 
-
-if (!function_exists('sendFile')) {
-    function sendFile($path, bool $isConfigRootPath = true) : bool
-    {
-        $path = ($isConfigRootPath ? config('app@resources.file')['rootPath'] . DIRECTORY_SEPARATOR : '') . $path;
-        response() -> sendFile($path);
-        return false;
-    }
-}
-
 // write log
 if (!function_exists('logs')) {
     function logs(string $type = 'info', string $message = '', array $content = [])
@@ -262,6 +252,15 @@ if (!function_exists('xml')) {
     function xml(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Xml {
         return \iflow\Response::create($data, $code, 'xml')
             -> headers($headers) -> options($options);
+    }
+}
+
+if (!function_exists('sendFile')) {
+    function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\lib\File
+    {
+        $path = ($isConfigRootPath ? config('app@resources.file')['rootPath'] . DIRECTORY_SEPARATOR : '') . $path;
+        return \iflow\Response::create($path, $code, 'file')
+            -> headers($headers);
     }
 }
 

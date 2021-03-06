@@ -47,7 +47,7 @@ class requestTools
         if ($url[0] === $rule['rule']) {
             array_splice($url, 0, 1);
             $url = str_replace('/', DIRECTORY_SEPARATOR, implode('/', $url));
-            response() -> sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url);
+            sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url, isConfigRootPath: false) -> send();
             return true;
         }
         return false;
