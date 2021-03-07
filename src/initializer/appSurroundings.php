@@ -18,7 +18,8 @@ class appSurroundings
             'zlib',
             'bcmath',
             'mbstring',
-            'json'
+            'json',
+            'fileinfo'
         ]
     ];
 
