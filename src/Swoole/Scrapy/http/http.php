@@ -83,7 +83,7 @@ class http
     {
         $scheme = explode('//', $url)[0];
         if (!preg_match('/^http(s|):$/', $scheme)) {
-            $url = "http://" . $url;
+            $url = "http://" . explode('//', $url)[1] ?: $url;
         }
 
         preg_match_all(
@@ -119,7 +119,7 @@ class http
 
     protected function setData($query, $data): static
     {
-        if ($query) {
+        if ($query && is_array($data)) {
             parse_str($query, $queryArray);
             $data = array_replace_recursive($queryArray, $data);
         }

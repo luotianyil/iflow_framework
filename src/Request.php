@@ -41,7 +41,7 @@ class Request
         if (!in_array($type, ['post', 'get', 'header'])) {
             return false;
         }
-        return !empty($this->request -> $type[$param]);
+        return !empty($this->request -> {$type}[$param]);
     }
 
     // get param
@@ -54,12 +54,12 @@ class Request
     public function getHeader(string $name = '')
     {
         if ($name === '') return $this->request -> header;
-        return $this->get($name, 'header');
+        return $this->get(strtolower(str_replace('_', '-', $name)), 'header');
     }
 
     protected function get(string $name, string $type) {
         if ($this->has($name, $type)) {
-            return $this->request -> get[$name];
+            return $this->request -> {$type}[$name];
         }
         return null;
     }
@@ -109,5 +109,17 @@ class Request
     public function isOptions(): bool
     {
         return strtoupper($this->request_method) === 'OPTIONS';
+    }
+
+    public function isAjax(): bool
+    {
+        $value = $this->getHeader('HTTP_X_REQUESTED_WITH') ?: $this->getHeader('X-Requested-With');
+        return $value && 'xmlhttprequest' == strtolower($value);
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        // TODO: Implement __call() method.
+        return call_user_func([$this->request, $name], ...$arguments);
     }
 }

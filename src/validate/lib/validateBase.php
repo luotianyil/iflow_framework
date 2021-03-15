@@ -47,28 +47,28 @@ class validateBase
         return $this->filter($value, $this->filter['email']);
     }
 
-    public function ip($value, $rule = 'ipv4')
+    public function ip($value, $rule = 'ipv4'): bool
     {
         if (!in_array($rule, ['ipv4', 'ipv6'])) $rule = 'ipv4';
         return $this->filter($value, [FILTER_VALIDATE_IP, 'ipv6' == $rule ? FILTER_FLAG_IPV6 : FILTER_FLAG_IPV4]);
     }
 
-    public function integer($value)
+    public function integer($value): bool
     {
         return $this->filter($value, $this->filter['integer']);
     }
 
-    public function url($value)
+    public function url($value): bool
     {
         return $this->filter($value, $this->filter['url']);
     }
 
-    public function macAddr($value)
+    public function macAddr($value): bool
     {
         return $this->filter($value, $this->filter['macAddr']);
     }
 
-    public function float($value)
+    public function float($value): bool
     {
         return $this->filter($value, $this->filter['float']);
     }

@@ -13,7 +13,7 @@ class authAnnotation
     public array $config = [];
     protected array $initializers = [
         'setUserInfo',
-        'setAuthList'
+        'setAuthRoles'
     ];
 
     public App $app;

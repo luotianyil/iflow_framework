@@ -9,8 +9,9 @@ class authHandle
 {
 
     protected array $userInfo = [];
-    protected array $authList = [];
-    protected array $authRole = [];
+
+    // 自定义角色
+    protected array $authRoles = [];
 
     public array $router = [];
     public bool $error = false;
@@ -28,18 +29,18 @@ class authHandle
     {
         $token_key = request() -> params('Authorization');
         $token_key = $token_key ?: request() -> getHeader('Authorization');
-        $this->userInfo = session($token_key);
+        if ($token_key) $this->userInfo = session($token_key);
         return $this;
     }
 
-    public function getAuthList(): array
+    public function getAuthRoles(): array
     {
-        return $this->authList;
+        return $this->authRoles;
     }
 
-    public function setAuthList(): static
+    public function setAuthRoles(): static
     {
-        $this->authList = [];
+        $this->authRoles = ['admin', 'test'];
         return $this;
     }
 
@@ -48,8 +49,9 @@ class authHandle
         if (empty($this->userInfo['role'])) {
             $this->error = true;
         } else {
-            $this->authRole = explode('|', $this->authAnnotation -> role);
-            $this->error = !in_array($this->userInfo['role'], $this->authRole);
+            $this->authRoles = array_merge(explode('|', $this->authAnnotation -> role), $this->authRoles);
+            if (!in_array($this->userInfo['role'], $this->authRoles))
+            $this->error = !in_array($this->userInfo['role'], $this->authRoles);
         }
         return $this;
     }

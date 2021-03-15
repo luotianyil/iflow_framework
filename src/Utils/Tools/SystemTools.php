@@ -82,7 +82,7 @@ class SystemTools
         return $length.' '.$unit;
     }
 
-    public function get_extension_loaded(array $extensions)
+    public function get_extension_loaded(array $extensions): array
     {
         $not_ext = [];
         foreach ($extensions as $ext) {

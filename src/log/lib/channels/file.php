@@ -10,7 +10,7 @@ class file
 
     public function __construct(array $config = [])
     {
-        $this->config = $config['file'];
+        $this->config = $config;
     }
 
     public function save(array $logs): bool

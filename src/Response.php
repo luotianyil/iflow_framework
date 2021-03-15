@@ -73,11 +73,14 @@ class Response
     public function notFount(): response\lib\File | bool
     {
         $this -> code = 404;
-        $path = config('app@404_error_page');
-        if (file_exists($path)) {
-            return $this -> response -> sendFile($path);
-        } else $this -> data('404 Not-Found') -> send();
-        return false;
+        $type = config('app@404_error_response');
+        if ($type === 'html') {
+            $path = config('app@404_error_page');
+            if (file_exists($path)) {
+                return $this -> response -> sendFile($path);
+            }
+        }
+        return message() -> nodata('404 Not-Found') -> send();
     }
 
     public function send()

@@ -14,7 +14,7 @@ class Log extends Logger {
     {
         $this->config = config('log');
         $channels = $this->nameSpaces . $this->config['default'];
-        $this->channel = app() -> make($channels, [$this->config]);
+        $this->channel = app() -> make($channels, [$this->config[$this->config['default']]]);
     }
 
     public function write(string $type, string $message, array $content = []): bool

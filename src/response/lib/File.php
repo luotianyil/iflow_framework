@@ -9,7 +9,7 @@ use iflow\Response;
 class File extends Response
 {
 
-    protected array $contentTypes = [
+    protected array $mimeType = [
         'js' => 'text/javascript; charset=UTF-8',
         'css' => 'text/css'
     ];
@@ -33,7 +33,7 @@ class File extends Response
             $mimetype = finfo_file($finfo, $data);
             finfo_close($finfo);
             $ext = pathinfo($data, PATHINFO_EXTENSION);
-            if (in_array($ext, $this->contentTypes)) $mimetype = $this->contentTypes[$ext];
+            if (in_array($ext, $this->mimeType)) $mimetype = $this->mimeType[$ext];
             return $this->contentType($mimetype)->response -> sendfile($data);
         } else $this->notFount();
         return false;

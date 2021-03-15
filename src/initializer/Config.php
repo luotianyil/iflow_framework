@@ -69,37 +69,32 @@ class Config
     public function get(string $name = '', $default = null)
     {
         if ($name === '') return $this->config;
-
         $keys = explode('@', $name);
         if (!$this->has($keys[0])) return [];
         // 返回全部
         if (empty($keys[1])) return $this->config[$keys[0]];
         $names = explode('.', $keys[1]);
         $info = [];
-        if (count($names) === 1) {
+        if (count($names) <= 1) {
             foreach ($names as $val) {
                 if (isset($this->config[$keys[0]][$val])) {
                     $info = $this->config[$keys[0]][$val];
                 }
             }
-        } else $info = $this->getConfigValue($names, $this->config[$keys[0]]);
-
+        } else {
+            return $this->getConfigValue($names, $this->config[$keys[0]]);
+        }
         return $info;
     }
 
     protected function getConfigValue($names, array $config = [])
     {
         // 按.拆分成多维数组进行判断
-        $info = [];
-        $index = 0;
-        foreach ($names as $val) {
-            $index++;
-            if (isset($config[$val])) {
-                if ($index === count($names)) return $config[$val];
-                $info = $this->getConfigValue(array_diff($names, [$val]), $config[$val]);
-            }
+        if (count($names) === 1) {
+            return $config[array_shift($names)] ?: [];
         }
-        return $info;
+        $key = array_shift($names);
+        return $this->getConfigValue($names, $config[$key]);
     }
 
     public function has(string $name) : bool

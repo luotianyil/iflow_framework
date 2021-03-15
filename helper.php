@@ -203,7 +203,7 @@ if (!function_exists('httpRequest')) {
         string $method = 'GET',
         bool $isSsl = false,
         array $header = [],
-        array $data = [],
+        array|string $data = [],
         array $options = [],
         string $type = "http"
     ): \iflow\Swoole\Scrapy\http\http | \iflow\Swoole\Scrapy\http\http2

@@ -11,7 +11,7 @@ class EnDecryption
 
     public function __construct()
     {
-        $this->config = config('enDecryption.openssl');
+        $this->config = config('enDecryption@openssl');
     }
 
     // 对称加密
@@ -29,7 +29,7 @@ class EnDecryption
     }
 
     // openssl 加密
-    public function Encryption($data = '', $method = 'ASE-256-CFB', $key = '', $option = 0, $iv = '') : string
+    public function Encryption($data = '', $method = 'DES-ECB', $key = '', $option = 0, $iv = '') : string
     {
         $key = $key !== '' ? $key : $this->config['encryption_key'];
         $iv = $iv !== '' ? $iv : $this->config['iv'];
@@ -37,7 +37,7 @@ class EnDecryption
     }
 
     // openssl 解密
-    public function Decryption($data = '', $method = 'ASE-256-CFB', $key = '', $option = 0, $iv = '') : string
+    public function Decryption($data = '', $method = 'DES-ECB', $key = '', $option = 0, $iv = '') : string
     {
         $key = $key !== '' ? $key : $this->config['encryption_key'];
         $iv = $iv !== '' ? $iv : $this->config['iv'];

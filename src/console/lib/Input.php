@@ -21,7 +21,7 @@ class Input
     }
 
     // 解析 用户 输入指令并执行
-    public function parsingInputCommand(array $command, Console $console): bool
+    public function parsingInputCommand(array $command, Console $console)
     {
         if (count($this->argv) < 2) {
             return false;
