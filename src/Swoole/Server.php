@@ -66,7 +66,7 @@ trait Server
     {
         if ($this->eventType === 'rpc') {
             $this->param = array_values(
-                (array) config('service@host')
+                (array) config('swoole.service@host')
             );
         } else {
             $this->param = isset($this->configs['port']) ? [

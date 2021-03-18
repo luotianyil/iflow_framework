@@ -45,6 +45,7 @@ class Config
 
     public function parse(string $file, string $name)
     {
+        if (str_contains($name, 'swoole.') && !swoole_success()) return [];
         $type   = pathinfo($file, PATHINFO_EXTENSION);
         $config = match ($type) {
             'php' => include $file,
@@ -59,7 +60,7 @@ class Config
         };
 
         $config = is_numeric($config)?[] : $config;
-        $this->set($name, is_object($config) ? $config() : $config);
+        return $this->set($name, is_object($config) ? $config() : $config);
     }
 
     public function set(string $name, array $config = [])

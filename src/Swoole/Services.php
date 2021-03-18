@@ -30,9 +30,9 @@ class Services extends Command
 
         if ($this->userEvent[1] !== 'service') {
             $configKeys = $this->userEvent[1];
-            $configKeys = $configKeys . '@' . (empty($this->userEvent[2]) ? 'server' : $this->userEvent[2]);
+            $configKeys = 'swoole.'. $configKeys . '@' . (empty($this->userEvent[2]) ? 'server' : $this->userEvent[2]);
         } else {
-            $configKeys = 'service';
+            $configKeys = 'swoole.service';
         }
 
         $this->config = config($configKeys);
@@ -53,7 +53,6 @@ class Services extends Command
         $class = is_object($class) ? $class : $this;
         $event = $event ?: $this->event;
         $server = $server ?: $this->server;
-
         foreach ($event as $key => $value) {
             $server -> on($key, function () use ($class, $value) {
                 call_user_func([$class, $value], ...func_get_args());

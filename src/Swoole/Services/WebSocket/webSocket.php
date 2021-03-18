@@ -23,7 +23,7 @@ class webSocket
     public function initializer($services)
     {
         $this->services = $services;
-        $event = config('service@Handle');
+        $event = $services -> config['Handle'];
         $services -> eventInit(new $event($this), $this->events);
     }
 
