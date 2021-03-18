@@ -302,6 +302,13 @@ if (!function_exists('go')) {
 
 if (!function_exists('php_run_path')) {
     function php_run_path(): string {
+        if(str_contains(PHP_OS, 'WIN')){
+            $ini= ini_get_all();
+            $path = $ini['extension_dir']['local_value'];
+            $b= substr($path,0,-3);
+            $php_path = str_replace('\\','/',$b);
+            return $php_path.'php.exe';
+        }
         return PHP_BINDIR . DIRECTORY_SEPARATOR . 'php';
     }
 }
@@ -320,5 +327,3 @@ if (!function_exists('array_multi_to_one')) {
         }
     }
 }
-
-
