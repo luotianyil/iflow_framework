@@ -23,6 +23,7 @@ class requestTools
 
     protected array $runProcess = [
         'runMiddleware',
+        'validateRouterBefore',
         'validateRouter',
         'runAnnotation',
         'startController'
@@ -62,6 +63,15 @@ class requestTools
                 $SocketIo -> config = $this->services -> configs['websocket'];
                 return $this->send($SocketIo-> __initializer($this->request, $this->response));
             }
+        }
+        return false;
+    }
+
+    protected function validateRouterBefore(): bool {
+        if ($this->isStaticResources($this->request -> request_uri)) return true;
+        if ($this->isRequestApi($this->request -> request_uri)) return true;
+        if (swoole_success()) {
+            if ($this->isSocketIo($this->request -> request_uri)) return true;
         }
         return false;
     }

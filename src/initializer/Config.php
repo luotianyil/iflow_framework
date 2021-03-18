@@ -16,6 +16,7 @@ class Config
 {
     public App $app;
     public array $config = [];
+    protected File $file;
 
     public function initializer(App $app)
     {

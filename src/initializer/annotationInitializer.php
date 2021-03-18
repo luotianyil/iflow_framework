@@ -19,9 +19,7 @@ class annotationInitializer
     public function initializer(App $app)
     {
         $this->app = $app;
-        \Co\run(function() {
-            $this->loadAnnotations($this->app -> appRunClass);
-        });
+        $this->loadAnnotations($this->app -> appRunClass);
     }
 
     public function loadAnnotations(ReflectionClass $annotationClass)

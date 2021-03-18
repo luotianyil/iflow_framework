@@ -21,7 +21,6 @@ class fileSystem extends SplFileInfo
 
     public function getFileMine(): string
     {
-
         $this->finfoMimeTypeDetector = $this->finfoMimeTypeDetector ?: app() -> make(FinfoMimeTypeDetector::class);
         return $this->finfoMimeTypeDetector -> detectMimeType($this->getPathname(), '');
     }

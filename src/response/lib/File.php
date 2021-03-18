@@ -3,11 +3,12 @@
 
 namespace iflow\response\lib;
 
-
 use iflow\Response;
 
 class File extends Response
 {
+
+    protected bool $isFile = true;
 
     protected array $mimeType = [
         'js' => 'text/javascript; charset=UTF-8',
@@ -34,7 +35,7 @@ class File extends Response
             finfo_close($finfo);
             $ext = pathinfo($data, PATHINFO_EXTENSION);
             if (in_array($ext, $this->mimeType)) $mimetype = $this->mimeType[$ext];
-            return $this->contentType($mimetype)->response -> sendfile($data);
+            return $this->contentType($mimetype) -> end($data);
         } else $this->notFount();
         return false;
     }
@@ -42,6 +43,11 @@ class File extends Response
     public function send()
     {
         return $this->output($this->data);
+    }
+
+    public function end($data): bool
+    {
+        return $this->response -> sendFile($data);
     }
 
 }

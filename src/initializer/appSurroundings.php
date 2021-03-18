@@ -14,7 +14,6 @@ class appSurroundings
 
     protected array $config = [
         'ext' => [
-            'swoole',
             'zlib',
             'bcmath',
             'mbstring',

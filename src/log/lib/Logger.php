@@ -5,6 +5,8 @@ namespace iflow\log\lib;
 
 
 use Psr\Log\LoggerInterface;
+use Swoole\Error;
+use Swoole\Exception;
 
 class Logger implements LoggerInterface
 {
@@ -80,7 +82,7 @@ class Logger implements LoggerInterface
             'type' => strtoupper($type)
         ];
 
-        if (in_array($type, $this->config['errorLevelSendEmail'])) {
+        if (in_array($type, $this->config['errorLevelSendEmail']) && swoole_success()) {
             // code ...
             $systemInfo = systemInfo();
             $content = "<p>{$type}: {$content}</p><p>SystemInfo: os: {$systemInfo['os']['name']}, userName: {$systemInfo['os']['user_name']}</p>";

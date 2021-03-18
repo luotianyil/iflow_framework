@@ -70,14 +70,12 @@ class File
     }
 
     public function gc($lifetime) {
-        go(function () use ($lifetime) {
-            $now = time();
-            $files = find_files($this->getStoreRoot(), function (\SplFileInfo $item) use ($lifetime, $now) {
-                return $now - $lifetime > $item -> getMTime();
-            });
-            foreach ($files as $file) {
-                @unlink($file->getPathname());
-            }
+        $now = time();
+        $files = find_files($this->getStoreRoot(), function (\SplFileInfo $item) use ($lifetime, $now) {
+            return $now - $lifetime > $item -> getMTime();
         });
+        foreach ($files as $file) {
+            @unlink($file->getPathname());
+        }
     }
 }

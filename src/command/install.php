@@ -59,10 +59,9 @@ class install extends Command
 
     protected function installLib() {
         $this->Console -> outPut -> writeLine('start install library');
-        $php_path = PHP_BINDIR . DIRECTORY_SEPARATOR . 'php';
         $composer = $this->config['composer']['rootPath'];
         foreach($this->composerShell as $key => $value) {
-            (new basicTools()) -> execShell($php_path . ' ' . $composer . ' ' . $value);
+            (new basicTools()) -> execShell(php_run_path() . ' ' . $composer . ' ' . $value);
         }
     }
 

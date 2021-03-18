@@ -5,6 +5,7 @@ namespace iflow\initializer;
 
 
 use iflow\App;
+use iflow\Utils\Tools\Timer;
 
 class appMonitoring
 {
@@ -21,8 +22,7 @@ class appMonitoring
 
     protected function appMonitoring(): bool {
         if (!$this->config['enable']) return false;
-        \Co\run(function () {
-            \Co::sleep(floatval(bcdiv("{$this -> config['delayTime']}", "1000")));
+        Timer::tick(floatval(bcdiv("{$this -> config['delayTime']}", "1000")), function () {
             $this->Monitoring();
         });
         return true;

@@ -258,7 +258,7 @@ if (!function_exists('xml')) {
 if (!function_exists('sendFile')) {
     function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\lib\File
     {
-        $path = ($isConfigRootPath ? config('app@resources.file')['rootPath'] . DIRECTORY_SEPARATOR : '') . $path;
+        $path = ($isConfigRootPath ? config('app@resources.file.rootPath') . DIRECTORY_SEPARATOR : '') . $path;
         return \iflow\Response::create($path, $code, 'file')
             -> headers($headers);
     }
@@ -280,3 +280,45 @@ if (!function_exists('bt_to_magnet')) {
         return (new \iflow\Utils\torrent\Lightbenc()) -> bdecode_getinfo($torrent);
     }
 }
+
+if (!function_exists('is_cli')) {
+    function is_cli(): bool {
+        return (new \iflow\Utils\Tools\SystemTools()) -> isCli();
+    }
+}
+
+if (!function_exists('swoole_success')) {
+    function swoole_success(): bool {
+        return is_cli() && extension_loaded('swoole');
+    }
+}
+
+
+if (!function_exists('go')) {
+    function go(\Closure $closure) {
+        return call_user_func($closure);
+    }
+}
+
+if (!function_exists('php_run_path')) {
+    function php_run_path(): string {
+        return PHP_BINDIR . DIRECTORY_SEPARATOR . 'php';
+    }
+}
+
+if (!function_exists('array_multi_to_one')) {
+    function array_multi_to_one($array, &$arr, ?\Closure $closure = null) {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                array_multi_to_one($value, $arr, $closure);
+            } else {
+                if ($closure === null) $arr[] = $value;
+                else if (call_user_func($closure, $value)) {
+                    $arr[] = $value;
+                }
+            }
+        }
+    }
+}
+
+

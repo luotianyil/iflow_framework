@@ -5,6 +5,9 @@ namespace iflow\Swoole;
 
 
 use iflow\console\lib\Command;
+use iflow\fileSystem\Watch;
+use Swoole\Process;
+
 class Services extends Command
 {
     use Server;
@@ -67,11 +70,16 @@ class Services extends Command
     // 启动
     protected function start()
     {
-
         $this->runMemoryUsage = round(memory_get_usage() / 1024 / 1024, 2);
         $info = 'SERVER_ADDRESS: '.$this->server -> host.':'.$this->server -> port. PHP_EOL;
         $info .= "runMemoryUsage: " . $this->runMemoryUsage . "M";
         $this->Console -> outPut ->writeLine($info.PHP_EOL.'> Start Success');
+        $process = new Process(function () {
+            \Co\run(function () {
+                (new Watch()) -> initializer($this->app);
+            });
+        });
+        $this->getServer() -> addProcess($process);
         $this->getServer() -> start();
     }
 

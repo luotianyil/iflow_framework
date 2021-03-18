@@ -5,6 +5,7 @@ namespace iflow;
 
 use iflow\console\Console;
 use iflow\event\Event;
+use iflow\http\HttpServer;
 use iflow\initializer\annotationInitializer;
 use iflow\initializer\appMonitoring;
 use iflow\initializer\appSurroundings;
@@ -17,6 +18,7 @@ use iflow\log\Log;
  * Class App
  * @package iflow
  * @property Config $config
+ * @property HttpServer $http
  */
 class App extends Container
 {
@@ -78,10 +80,14 @@ class App extends Container
     protected function initializer() : void
     {
         // 加载基础服务
-        $this->load();
-        foreach ($this->initializers as $key) {
-            $this->make($key) -> initializer($this);
-        }
+        $this->load() -> boot();
+    }
+
+    protected function boot()
+    {
+        array_walk($this->initializers, function ($value) {
+            $this->make($value) -> initializer($this);
+        });
     }
 
     public function getVerSion() : string
@@ -90,7 +96,7 @@ class App extends Container
     }
 
     // 加载全局配置文件
-    public function load() : void
+    protected function load() : static
     {
         // 加载助手函数
         include_once $this->frameWorkPath . DIRECTORY_SEPARATOR . 'helper.php';
@@ -98,6 +104,7 @@ class App extends Container
         if (is_file($this->appPath . DIRECTORY_SEPARATOR . 'common.php')) {
             include_once $this->appPath . DIRECTORY_SEPARATOR . 'common.php';
         }
+        return $this;
     }
 
     public function frameWorkDirInit(): bool

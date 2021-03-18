@@ -41,11 +41,6 @@ class initializer extends requestTools
     // 验证路由
     protected function validateRouter(): bool
     {
-
-        if ($this->isSocketIo($this->request -> request_uri)) return true;
-        if ($this->isStaticResources($this->request -> request_uri)) return true;
-        if ($this->isRequestApi($this->request -> request_uri)) return true;
-
         $this->router = app() -> make(RouterBase::class) -> validateRouter(
             $this->request -> request_uri,
             $this->request -> request_method,

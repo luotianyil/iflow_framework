@@ -15,13 +15,13 @@ class Event
     public function initializer(App $app)
     {
         $this->app = $app;
-        $this->bindEvent();
+        $this->bindEvent(config('event'));
         $this->arrayTools = new \iflow\Utils\ArrayTools($this->events);
     }
 
-    public function bindEvent()
+    public function bindEvent(array $events = [])
     {
-        $this->events = array_replace_recursive($this->events, config('event')) ?: [];
+        $this->events = array_replace_recursive($this->events, $events) ?: [];
     }
 
     public function callEvent(string $event, array $args = [])

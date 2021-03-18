@@ -4,6 +4,8 @@
 namespace iflow;
 
 
+use iflow\response\lib\File;
+
 class Response
 {
     public string $contentType = 'text/html';
@@ -73,11 +75,10 @@ class Response
     public function notFount(): response\lib\File | bool
     {
         $this -> code = 404;
-        $type = config('app@404_error_response');
-        if ($type === 'html') {
+        if (request() -> isAjax() === false) {
             $path = config('app@404_error_page');
             if (file_exists($path)) {
-                return $this -> response -> sendFile($path);
+                return $this->sendFile($path, false) -> send();
             }
         }
         return message() -> nodata('404 Not-Found') -> send();
@@ -89,9 +90,9 @@ class Response
         return $this->response -> end($this->output($this->data));
     }
 
-    public function sendFile(string $path = '')
+    private function sendFile(string $path = '', bool $isConfigRootPath = true): File
     {
-        return sendFile($path);
+        return sendFile($path, isConfigRootPath: $isConfigRootPath);
     }
 
     protected function setResponseHeader()
