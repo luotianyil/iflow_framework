@@ -20,7 +20,7 @@ class rpcReceive extends initializer
     {
         $this->server = $server;
         $this->fd = $fd;
-        $this->config = config('rpc@server');
+        $this->config = config('swoole.rpc@server');
         $info = json_decode($data, true);
 
         $this->clientList = Config::getConfigFile(

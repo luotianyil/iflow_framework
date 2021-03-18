@@ -14,7 +14,7 @@ class rpcConnection
 
     public function onClose($server, $fd)
     {
-        $config = config('rpc@server.clientList');
+        $config = config('swoole.rpc@server.clientList');
         $client = Config::getConfigFile($config['path'] . $config['name']);
         unset($client['clientList'][$fd]);
         Config::saveConfigFile($client,

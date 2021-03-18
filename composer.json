@@ -27,7 +27,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "iflow\\": "src"
+      "iflow\\": "src",
+      "app\\": "app"
     }
   },
   "require-dev": {
