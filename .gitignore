@@ -8,3 +8,4 @@
 /runtime
 *.log
 *.pid
+composer.lock
