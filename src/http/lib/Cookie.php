@@ -17,7 +17,8 @@ class Cookie
         'secure'    => false,
         // httponly设置
         'httponly'  => false,
-        'samesite' => ''
+        'samesite' => '',
+        'priority' => ''
     ];
 
     public function __construct(
@@ -60,7 +61,11 @@ class Cookie
 
     private function saveCookie(string $name, $value, array $options = [])
     {
-        setcookie($name, $value, $options);
+        response() -> response -> rawCookie(
+            $name, $value, $options['expires'],
+            $options['path'], $options['domain'], $options['secure'],
+            $options['httponly'], $options['samesite'], $options['priority']
+        );
     }
 
 }

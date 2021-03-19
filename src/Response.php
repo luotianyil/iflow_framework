@@ -117,4 +117,11 @@ class Response
         return $this;
     }
 
+    public function __call(string $name, array $arguments)
+    {
+        // TODO: Implement __call() method.
+        if (method_exists($this->response, $name)) return call_user_func($name, ...$arguments);
+        return null;
+    }
+
 }

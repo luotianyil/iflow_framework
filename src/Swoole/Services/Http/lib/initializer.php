@@ -4,6 +4,7 @@
 namespace iflow\Swoole\Services\Http\lib;
 
 
+use iflow\http\lib\Cookie;
 use iflow\Request;
 use iflow\Response;
 use iflow\router\RouterBase;
@@ -27,6 +28,7 @@ class initializer extends requestTools
     // 初始化请求数据
     public function setRequest($request): static
     {
+        $this->services -> app -> make(Cookie::class, $request -> cookie);
         $this->request = $this -> services -> app -> make(Request::class, [], true) -> initializer($request);
         return $this;
     }
