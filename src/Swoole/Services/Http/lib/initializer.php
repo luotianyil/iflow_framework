@@ -28,7 +28,9 @@ class initializer extends requestTools
     // 初始化请求数据
     public function setRequest($request): static
     {
-        $this->services -> app -> make(Cookie::class, $request -> cookie);
+        $this->services -> app -> make(Cookie::class, [
+            $request -> cookie ?: []
+        ]);
         $this->request = $this -> services -> app -> make(Request::class, [], true) -> initializer($request);
         return $this;
     }

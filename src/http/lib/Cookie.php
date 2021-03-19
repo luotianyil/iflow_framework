@@ -38,7 +38,7 @@ class Cookie
         return !empty($this->cookie[$name]);
     }
 
-    public function set(string $name, string $value, array $options = []): static
+    public function set(string $name, $value, array $options = []): static
     {
         if (empty($options['expires'])) {
             $this->config['expires'] = $this->config['expires'] === 0 ? 315360000 : $this->config['expires'];
@@ -61,7 +61,8 @@ class Cookie
 
     private function saveCookie(string $name, $value, array $options = [])
     {
-        response() -> response -> rawCookie(
+        if (is_array($value)) $value = serialize($value);
+        response() -> response -> cookie(
             $name, $value, $options['expires'],
             $options['path'], $options['domain'], $options['secure'],
             $options['httponly'], $options['samesite'], $options['priority']
