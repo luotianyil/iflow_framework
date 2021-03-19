@@ -239,6 +239,18 @@ if (!function_exists('session')) {
     }
 }
 
+// cookie
+if (!function_exists('cookie')) {
+    function cookie(string $name = '', $value = '', array $options = []) {
+        $cookie = app() -> make(\iflow\http\lib\Cookie::class);
+        if ($value === '') {
+            return $cookie -> get($name);
+        }
+        if ($value === null) return $cookie -> del($name);
+        return $cookie -> set($name, $value, $options);
+    }
+}
+
 // 返回json
 if (!function_exists('json')) {
     function json($data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Json {

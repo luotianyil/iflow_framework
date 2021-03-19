@@ -92,6 +92,7 @@ class Response
 
     private function sendFile(string $path = '', bool $isConfigRootPath = true): File
     {
+        $this->setResponseHeader();
         return sendFile($path, isConfigRootPath: $isConfigRootPath);
     }
 
@@ -101,7 +102,7 @@ class Response
             $this->response -> header($key, $value);
         }
         $this->response -> status($this->code);
-        $this->response -> header('content-type', $this->contentType);
+        $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
     }
 
     public function initializer($response): static
@@ -114,6 +115,13 @@ class Response
     {
         $this->response -> trailer(...func_get_args());
         return $this;
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        // TODO: Implement __call() method.
+        if (method_exists($this->response, $name)) return call_user_func($name, ...$arguments);
+        return null;
     }
 
 }
