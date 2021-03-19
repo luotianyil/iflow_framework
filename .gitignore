@@ -1,5 +1,6 @@
 /.idea
 /.vscode
+/.git
 /vendor
 /app
 /config
