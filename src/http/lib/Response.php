@@ -28,6 +28,11 @@ class Response
         header($key . ':' . $value);
     }
 
+    public function status($code): int
+    {
+        return http_response_code($code);
+    }
+
     public function __call(string $name, array $arguments)
     {
         // TODO: Implement __call() method.

@@ -4,6 +4,7 @@
 namespace iflow\http;
 
 
+use iflow\http\lib\Cookie;
 use iflow\http\lib\Request;
 use iflow\http\lib\Response;
 use iflow\initializer\annotationInitializer;
@@ -34,13 +35,17 @@ class App extends \iflow\App
 
         $this->request = new Request();
         $this->response = new Response();
-        $this->request();
+        $this->request() -> end();
     }
 
-    public function request()
+    public function request(): static
     {
         $initializer = new \iflow\Swoole\Services\Http\lib\initializer();
         $initializer -> services = new \iflow\http\lib\service($this);
         $initializer -> __initializer($this->request, $this->response);
+        return $this;
     }
+
+    public function end()
+    {}
 }

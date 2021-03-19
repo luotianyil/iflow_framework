@@ -13,7 +13,7 @@ class Request
     public array $post = [];
     public array $header = [];
     public array $files = [];
-    public array $cookie = [];
+    public Cookie $cookie;
     public array $request;
 
     public string $input;
@@ -22,7 +22,6 @@ class Request
     {
         $this->input = file_get_contents('php://input');
         $this->setServer() -> setHeader() -> setParams();
-
     }
 
     public function getContent(): string
@@ -57,7 +56,9 @@ class Request
         $this->get     = $_GET;
         $this->post    = $_POST;
         $this->request = $_REQUEST;
-        $this->cookie  = $_COOKIE;
+        $this->cookie  = app() -> make(Cookie::class, [
+            $_COOKIE
+        ]);
         $this->files    = $_FILES ?? [];
     }
 

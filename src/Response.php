@@ -92,6 +92,7 @@ class Response
 
     private function sendFile(string $path = '', bool $isConfigRootPath = true): File
     {
+        $this->setResponseHeader();
         return sendFile($path, isConfigRootPath: $isConfigRootPath);
     }
 
@@ -101,7 +102,7 @@ class Response
             $this->response -> header($key, $value);
         }
         $this->response -> status($this->code);
-        $this->response -> header('content-type', $this->contentType);
+        $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
     }
 
     public function initializer($response): static

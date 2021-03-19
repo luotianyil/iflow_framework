@@ -7,15 +7,12 @@ use iflow\Response;
 
 class File extends Response
 {
-
-    protected bool $isFile = true;
-
     protected array $mimeType = [
-        'js' => 'text/javascript; charset=UTF-8',
+        'js' => 'text/javascript',
         'css' => 'text/css'
     ];
 
-    public string $contentType = 'text/html; charset=utf-8';
+    public string $contentType = 'text/html';
     public function __construct(string $data = '', int $code = 200)
     {
         $this->init($data, $code);
@@ -25,7 +22,6 @@ class File extends Response
      * 返回file
      * @param $data
      * @return bool
-     * @throws \Exception
      */
     public function output($data): bool
     {
@@ -40,13 +36,14 @@ class File extends Response
         return false;
     }
 
-    public function send()
+    public function send(): bool
     {
         return $this->output($this->data);
     }
 
     public function end($data): bool
     {
+        $this->setResponseHeader();
         return $this->response -> sendFile($data);
     }
 
