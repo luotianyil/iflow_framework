@@ -11,7 +11,6 @@ class Response
     {
         if (file_exists($path)) return $this->end(file_get_contents($path));
         return $this->end('404 - notFond');
-
     }
 
     public function end($data): bool
@@ -33,7 +32,7 @@ class Response
         return http_response_code($code);
     }
 
-    public function cookie($name, $value, int $expires, string $path = '/', string $domain = '', $secure = '', $httponly = false, $samesite = ''): bool
+    public function cookie($name, $value, int $expires, string $path = '/', string $domain = '', $secure = '', $httponly = false, $samesite = '', $priority = ''): bool
     {
         return setcookie($name, $value, [
             'expires' => $expires,

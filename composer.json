@@ -16,7 +16,8 @@
     "simps/mqtt": "^1.1.4",
     "ext-bcmath": "*",
     "ext-zlib": "*",
-    "ext-fileinfo": "*"
+    "ext-fileinfo": "*",
+    "ext-rdkafka": "*"
   },
   "license": "MulanPSL-1.0",
   "authors": [

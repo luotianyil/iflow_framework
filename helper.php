@@ -282,8 +282,8 @@ if (!function_exists('view')) {
 }
 
 if (!function_exists('hasha')) {
-    function hasha($string): string {
-        return md5(hash_hmac("sha512", $string, '!dJ&S6@GliG3'));
+    function hasha($string, string $key = '@QU8LP!90YB'): string {
+        return md5(hash_hmac("sha512", $string, $key));
     }
 }
 

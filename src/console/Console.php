@@ -25,6 +25,7 @@ class Console
         '<start|stop|reload>-udp-<client|server>' => \iflow\Swoole\Udp\Services::class,
         '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,
         '<start|stop|reload>-rpc-<client|server>' => \iflow\Swoole\Rpc\Services::class,
+        '<start|stop|reload>-kafka-consumer' => \iflow\Swoole\Kafka\Services::class,
         'start' => HttpServer::class,
         'help' => Help::class,
         'install' => install::class
