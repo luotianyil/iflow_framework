@@ -16,6 +16,7 @@ class tag extends tags
     {
         $this->content = $this->varParser();
         $this->content = $this->includeParser();
+        $this->content = $this->classParser();
 
         foreach (["/(?:\{(.*)\})(.*)(?:\{)(.*)(?:\})/i", "/(?:\{(.*)\})(.*)|(\r\n)(?:\{)(.*)(?:\})/i"] as $regx) {
             preg_match_all(
@@ -41,7 +42,6 @@ class tag extends tags
             "/(?:\{(\W\w+)\})/i",
             $this->content,
             $tags);
-
         if (empty($tags[1])) return $this->content;
         if (is_string($tags[1])) return str_replace($tags[0], "<?php echo ".$tags[1].";?>", $this->content);
         $templateTags = $this->getTags($tags);
@@ -62,6 +62,26 @@ class tag extends tags
         foreach ($templateTags as $tag) {
             $file = $this->config['view_root_path'] . trim(str_replace('"', '', $tag[1]));
             $this->content = str_replace($tag[0], "<?php include \"".$file."\"; ?>", $this->content);
+        }
+        return $this->content;
+    }
+
+    public function classParser()
+    {
+        preg_match_all(
+            "/(?:\{lib_(.*)\})/i",
+            $this->content,
+            $tags);
+        $templateTags = $this->getTags($tags);
+        foreach ($templateTags as $tag) {
+            $tps = explode(':', $tag[1]);
+            $paramName = count($tps) > 1 ? $tps[1] : $tps[0];
+            if (array_key_exists($tps[0], $this->config['tags'])) {
+                $info = "<?php ";
+                $info .= "$$paramName = app('{$this->config['tags'][$tps[0]]['class']}') -> handle();";
+                $info .= "?>";
+                $this->content = str_replace($tag[0], $info, $this->content);
+            }
         }
         return $this->content;
     }

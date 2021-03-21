@@ -31,7 +31,6 @@ class Parser extends tag implements TemplateParser
     {
         // TODO: Implement fetch() method.
         if ($this->exists()) {
-            extract($this->data, EXTR_OVERWRITE);
             $storeFile = $this->getStoreFile();
             if (file_exists($storeFile)) return $this->send($storeFile);
             return $this->send($this->templateParser());
@@ -42,7 +41,9 @@ class Parser extends tag implements TemplateParser
 
     public function send($filePath = '')
     {
-        return response() -> data(include $filePath);
+        extract($this->data, EXTR_OVERWRITE);
+        include $filePath;
+        return response() -> data('');
     }
 
     private function templateParser(): string

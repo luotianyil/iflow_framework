@@ -18,7 +18,6 @@ use iflow\log\Log;
  * Class App
  * @package iflow
  * @property Config $config
- * @property HttpServer $http
  */
 class App extends Container
 {

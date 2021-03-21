@@ -277,7 +277,8 @@ if (!function_exists('sendFile')) {
 }
 
 if (!function_exists('view')) {
-    function view() {
+    function view(string $template, array $data = []) {
+        return (new \iflow\template\Template()) -> display($template, $data);
     }
 }
 
