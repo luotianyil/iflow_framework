@@ -3,15 +3,8 @@
 
 namespace iflow\template\lib;
 
-
-use iflow\App;
-
-class Parser implements TemplateParser
+class Parser extends tag implements TemplateParser
 {
-
-    private App $app;
-    protected array $config = [];
-    protected string $file;
 
     public function config(array $config = [])
     {
@@ -22,21 +15,40 @@ class Parser implements TemplateParser
     public function exists()
     {
         // TODO: Implement exists() method.
+        return file_exists($this->file);
     }
 
     public function display(string $template, array $data = [])
     {
         // TODO: Implement display() method.
-        extract($data, EXTR_OVERWRITE);
+        $this->data = $data;
+        $view_suffix = $this->config['view_suffix'] === '' ? '' : ".{$this->config['view_suffix']}";
+        $this->file = $this->config['view_root_path'] . $template . $view_suffix;
+        return $this->fetch();
     }
 
     public function fetch()
     {
         // TODO: Implement fetch() method.
+        if ($this->exists()) {
+            extract($this->data, EXTR_OVERWRITE);
+            $storeFile = $this->getStoreFile();
+            if (file_exists($storeFile)) return $this->send($storeFile);
+            return $this->send($this->templateParser());
+        } else {
+            throw new \Exception('template file not exists');
+        }
     }
 
-    public function templateParser()
+    public function send($filePath = '')
     {
-
+        return response() -> data(include $filePath);
     }
+
+    private function templateParser(): string
+    {
+        $this->content = file_get_contents($this->file);
+        return $this->funcParser();
+    }
+
 }
