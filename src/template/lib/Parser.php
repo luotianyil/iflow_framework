@@ -46,6 +46,12 @@ class Parser extends tag implements TemplateParser
         return response() -> data('');
     }
 
+    public function getContent(): string
+    {
+        $this->funcParser();
+        return $this->content;
+    }
+
     private function templateParser(): string
     {
         $this->content = file_get_contents($this->file);

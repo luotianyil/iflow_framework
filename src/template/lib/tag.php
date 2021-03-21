@@ -4,6 +4,8 @@
 namespace iflow\template\lib;
 
 
+use iflow\template\Template;
+
 class tag extends tags
 {
 
@@ -14,8 +16,8 @@ class tag extends tags
 
     public function funcParser()
     {
-        $this->content = $this->varParser();
         $this->content = $this->includeParser();
+        $this->content = $this->varParser();
         $this->content = $this->classParser();
 
         foreach (["/(?:\{(.*)\})(.*)(?:\{)(.*)(?:\})/i", "/(?:\{(.*)\})(.*)|(\r\n)(?:\{)(.*)(?:\})/i"] as $regx) {
@@ -60,8 +62,8 @@ class tag extends tags
             $tags);
         $templateTags = $this->getTags($tags);
         foreach ($templateTags as $tag) {
-            $file = $this->config['view_root_path'] . trim(str_replace('"', '', $tag[1]));
-            $this->content = str_replace($tag[0], "<?php include \"".$file."\"; ?>", $this->content);
+            $file = trim(str_replace('"', '', $tag[1]));
+            $this->content = str_replace($tag[0], file_get_contents($this->config['view_root_path']. $file. ".html"), $this->content);
         }
         return $this->content;
     }
