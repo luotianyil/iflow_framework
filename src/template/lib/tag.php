@@ -3,9 +3,6 @@
 
 namespace iflow\template\lib;
 
-
-use iflow\template\Template;
-
 class tag extends tags
 {
 

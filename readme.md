@@ -1,9 +1,117 @@
-> iflow_framework
+[![Php Version](https://img.shields.io/badge/php-%3E=8.0.1-brightgreen.svg)](https://secure.php.net/)
+[![Swoole Version](https://img.shields.io/badge/swoole-%3E=4.5.0-brightgreen.svg)](https://github.com/swoole/swoole-src)
+[![iflow Framework Version](https://img.shields.io/badge/iflow_framework-%3E=0.0.1-brightgreen.svg)](https://github.com/luotianyil/iflow_framework)
+[![think-orm Version](https://img.shields.io/badge/think/orm-%3E=2.0.x-brightgreen.svg)](https://www.kancloud.cn/manual/think-orm/1257998)
+[![iflowFramework Doc](https://img.shields.io/badge/docs-passing-green.svg?maxAge=2592000)](https://mzshe.cn/#/open_api)
 
-> 基于扩展
-[orm - think-orm](https://www.kancloud.cn/manual/think-orm/1257998)
-[mqtt-cli: simps/mqtt](https://simps.io/#/zh-cn/mqtt/client)
+# iflowFramework
 
-[docs](https://mzshe.cn/#/open_api)
-[demo](https://framework.mzshe.cn)
 
+
+iflowFramework是基于 Php 8.0+ 和 Swoole 4.5+ 的高性能、简单易用的开发框架。支持在 Swoole Server/FPM 同时 支持 windows 上运行。内置了 Http ，Tcp，WebSocket，MQTT，RPC服务。
+
+
+
+
+# 代码
+
+Github : https://github.com/luotianyil/iflow_framework
+
+Gitee : https://gitee.com/mkccl/iflow_application
+
+# 安装
+
+composer install 前更改 composer 源，防止报错。
+
+```
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+```
+
+
+## 初始化项目
+
+
+
+示例项目
+
+git初始化
+```
+git clone https://gitee.com/mkccl/iflow_application
+
+cd iflow_application
+
+sudo composer install / sudo php iflow install
+```
+
+composer 初始化项目
+```
+composer create-project iflow/application
+```
+
+启动
+
+```
+php iflow start or php iflow start-service
+```
+
+
+# 文档
+
+https://mzshe.cn/#/open_api
+
+
+
+# 演示
+https://framework.mzshe.cn
+
+
+# 功能
+
+
+- 基于 Swoole 扩展
+
+- 容器 (PSR-11)
+
+- HTTP 服务器
+
+- RPC 服务器
+
+- WebSocket 服务器
+
+- MVC 分层设计
+
+- 中间件
+
+- 视图模板
+
+- 注解路由 (PHP8.0 新特性)
+
+- 数据库连接池
+
+- ORM 模型 ([think-orm](https://laravel-china.org/docs/laravel/5.5/eloquent/1332))
+
+- 日志系统 (PSR-3) (支持类型：File/Elasticsearch)
+
+- 缓存 （支持类型： File/Redis）
+
+- 自定义配置
+
+- 自定义指令
+
+- 事件注册
+
+- Cookie
+
+- Session
+
+- 自定义权限验证
+
+- SMTP 发送邮件
+
+- TCP/HTTP 自定义请求
+
+- Elasticsearch 客户端
+
+- Kafka
+
+- 更多有趣的助手函数
