@@ -26,6 +26,26 @@ if (!function_exists('config')) {
     }
 }
 
+if (!function_exists('loadConfigFile')) {
+    function loadConfigFile(string $file): mixed
+    {
+        $type = pathinfo($file, PATHINFO_EXTENSION);
+        $config = match ($type) {
+            'php' => include $file,
+            'ini' => parse_ini_file($file, true, INI_SCANNER_TYPED) ?: [],
+            'json' => json_decode(file_get_contents($file), true),
+            'yaml' => function () use ($file) {
+                if (function_exists('yaml_parse_file')) {
+                    return yaml_parse_file($file);
+                }
+                return [];
+            }
+        };
+        $config = is_numeric($config)?[] : $config;
+        return is_object($config) ? call_user_func($config) : $config;
+    }
+}
+
 // 请求
 if (!function_exists('request')) {
     function request(): \iflow\Request
@@ -338,5 +358,11 @@ if (!function_exists('array_multi_to_one')) {
                 }
             }
         }
+    }
+}
+
+if (!function_exists('i18n')) {
+    function i18n(string $key, string|array $default = '', string $lan = ''): string {
+        return app(\iflow\i18n\I18n::class) -> i18n($key, $default, $lan);
     }
 }

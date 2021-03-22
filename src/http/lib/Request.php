@@ -37,14 +37,14 @@ class Request
 
     protected function setHeader(): static {
         if (function_exists('apache_request_headers') && $apache_header = apache_request_headers()) {
-            $this->header = $apache_header;
-        } else {
-            foreach ($this->server as $name => $value)
+            $this->header = array_change_key_case($apache_header, CASE_LOWER);
+        }
+
+        foreach ($this->server as $name => $value)
+        {
+            if (substr($name, 0, 5) == 'http_')
             {
-                if (substr($name, 0, 5) == 'http_')
-                {
-                    $this->header[substr($name, 5)] = $value;
-                }
+                $this->header[substr($name, 5)] = $value;
             }
         }
 

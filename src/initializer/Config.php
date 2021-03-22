@@ -46,21 +46,7 @@ class Config
     public function parse(string $file, string $name)
     {
         if (str_contains($name, 'swoole.') && !swoole_success()) return [];
-        $type   = pathinfo($file, PATHINFO_EXTENSION);
-        $config = match ($type) {
-            'php' => include $file,
-            'ini' => parse_ini_file($file, true, INI_SCANNER_TYPED) ?: [],
-            'json' => json_decode(file_get_contents($file), true),
-            'yaml' => function () use ($file) {
-                if (function_exists('yaml_parse_file')) {
-                    return yaml_parse_file($file);
-                }
-                return [];
-            }
-        };
-
-        $config = is_numeric($config)?[] : $config;
-        return $this->set($name, is_object($config) ? $config() : $config);
+        return $this->set($name, loadConfigFile($file));
     }
 
     public function set(string $name, array $config = [])

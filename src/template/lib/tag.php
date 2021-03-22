@@ -3,6 +3,8 @@
 
 namespace iflow\template\lib;
 
+use iflow\log\lib\channels\file;
+
 class tag extends tags
 {
 
@@ -11,11 +13,12 @@ class tag extends tags
     protected array $data = [];
     protected string $file;
 
-    public function funcParser()
+    protected function funcParser(): string
     {
         $this->content = $this->includeParser();
         $this->content = $this->varParser();
         $this->content = $this->classParser();
+        $this->content = $this->functionParser();
 
         foreach (["/(?:\{(.*)\})(.*)(?:\{)(.*)(?:\})/i", "/(?:\{(.*)\})(.*)|(\r\n)(?:\{)(.*)(?:\})/i"] as $regx) {
             preg_match_all(
@@ -35,7 +38,7 @@ class tag extends tags
         return $this->saveStore();
     }
 
-    public function varParser()
+    protected function varParser(): string
     {
         preg_match_all(
             "/(?:\{(\W\w+)\})/i",
@@ -51,7 +54,7 @@ class tag extends tags
         return $this->content;
     }
 
-    public function includeParser()
+    protected function includeParser(): string
     {
         preg_match_all(
             "/(?:\{include(.*)\})/i",
@@ -65,7 +68,7 @@ class tag extends tags
         return $this->content;
     }
 
-    public function classParser()
+    protected function classParser(): string
     {
         preg_match_all(
             "/(?:\{lib_(.*)\})/i",
@@ -73,11 +76,10 @@ class tag extends tags
             $tags);
         $templateTags = $this->getTags($tags);
         foreach ($templateTags as $tag) {
-            $tps = explode(':', $tag[1]);
-            $paramName = count($tps) > 1 ? $tps[1] : $tps[0];
+            [$tps, $paramName] = $this->TagsType($tag);
             if (array_key_exists($tps[0], $this->config['tags'])) {
                 $info = "<?php ";
-                $info .= "$$paramName = app('{$this->config['tags'][$tps[0]]['class']}') -> handle();";
+                $info .= "$$paramName app('{$this->config['tags'][$tps[0]]['class']}') -> handle();";
                 $info .= "?>";
                 $this->content = str_replace($tag[0], $info, $this->content);
             }
@@ -85,7 +87,34 @@ class tag extends tags
         return $this->content;
     }
 
-    protected function getTags($tags = []) {
+    protected function functionParser(): string
+    {
+        preg_match_all(
+            "/(?:\{fuc_(.*)\})/i",
+            $this->content,
+            $tags);
+        $templateTags = $this->getTags($tags);
+        foreach ($templateTags as $tag) {
+            [$tps, $type] = $this->TagsType($tag);
+            $info = "<?php $type {$tps[0]}; ?>";
+            $this->content = str_replace($tag[0], $info, $this->content);
+        }
+        return $this->content;
+    }
+
+    protected function TagsType($tag, $type = '') {
+        $tps = explode(':', $tag[1]);
+        if (count($tps) > 1) {
+            $type = $tps[1];
+            $type = $type !== 'echo' ? "$$type =" : 'echo';
+        }
+        return [
+            $tps,
+            $type
+        ];
+    }
+
+    protected function getTags($tags = []): array {
         $templateTags = [];
         foreach ($tags as $key => $value) {
             foreach ($value as $k => $tag) {
@@ -95,13 +124,13 @@ class tag extends tags
         return $templateTags;
     }
 
-    protected function tagBegin($tag)
+    protected function tagBegin($tag): string
     {
         if ($tag === '') return '';
         return "<?php ".ltrim($tag, '/')."?>";
     }
 
-    protected function tagEnd($tag)
+    protected function tagEnd($tag): string
     {
         if ($tag === '') return '';
         return "<?php ".ltrim($tag, '/')."?>";

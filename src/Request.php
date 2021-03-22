@@ -117,6 +117,11 @@ class Request
         return $value && 'xmlhttprequest' == strtolower($value);
     }
 
+    public function getLanguage(): string
+    {
+        return explode(',', $this->getHeader('Accept-Language'))[0];
+    }
+
     public function __call(string $name, array $arguments)
     {
         // TODO: Implement __call() method.
