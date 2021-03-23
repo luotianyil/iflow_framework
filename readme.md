@@ -21,7 +21,8 @@ Gitee : https://gitee.com/mkccl/iflow_application
 
 # 安装
 
-composer install 前更改 composer 源，防止报错。
+
+更改镜像
 
 ```
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
@@ -83,6 +84,8 @@ https://framework.mzshe.cn
 - 中间件
 
 - 视图模板
+
+- i18n 国际化
 
 - 注解路由 (PHP8.0 新特性)
 
