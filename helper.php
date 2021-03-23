@@ -224,7 +224,9 @@ if (!function_exists('httpRequest')) {
         bool $isSsl = false,
         array $header = [],
         array|string $data = [],
-        array $options = [],
+        array $options = [
+            'timeout' => 30
+        ],
         string $type = "http"
     ): \iflow\Swoole\Scrapy\http\http | \iflow\Swoole\Scrapy\http\http2
     {

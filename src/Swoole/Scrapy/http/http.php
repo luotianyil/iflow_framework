@@ -4,8 +4,7 @@
 namespace iflow\Swoole\Scrapy\http;
 
 
-use Co\Http\Client;
-
+use iflow\http\lib\Client;
 
 /**
  * Class http
@@ -14,13 +13,13 @@ use Co\Http\Client;
 class http
 {
 
-    protected Client|\Co\Http2\Client $client;
+    protected object $client;
 
     protected mixed $data = null;
     protected array $Queue = [];
     protected array $parse_url = [];
-
     protected array $param = [];
+    protected string $class;
 
     public function __construct(
         protected string $host = '',
@@ -30,7 +29,9 @@ class http
         protected bool $isSsl = false,
         protected array $options = [],
         ?callable $call = null
-    ){}
+    ){
+        $this->class = extension_loaded('swoole') ? \Co\Http\Client::class : Client::class;
+    }
 
     public function addQueue(
         string $host,
@@ -129,7 +130,7 @@ class http
 
     protected function initClient($param, $options = []): static
     {
-        $this->client = new Client(...$param);
+        $this->client = new $this -> class(...$param);
         $options['options'] = array_replace_recursive($this->options, $options['options']);
         $this->client -> set($options['options']);
         return $this;
