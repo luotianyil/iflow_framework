@@ -8,7 +8,6 @@ trait utils
 {
     protected string $langType = 'zh-cn';
 
-
     /**
      * @param string $langType
      * @return static

@@ -25,16 +25,15 @@ class I18n
         foreach ($langFiles as $key => $value) {
             if (file_exists($value)) $this->lang[strtolower($key)] = loadConfigFile($value);
         }
+        config($this->lang, 'i18n');
         return $this;
     }
-
 
     public function i18n(string $key, string|array $default = '', $lan = '')
     {
         $this->setLangType($lan);
-        if (array_key_exists($this->langType, $this->lang) && isset($this->lang[$this->langType][$key])) {
-            return $this->lang[$this->langType][$key];
-        }
+        $lan = config('i18n@' . $this->langType . '.' .$key);
+        if ($lan) return $lan;
         if (is_array($default)) {
             $default = $default[$this->langType] ?? array_values($default)[0];
         }

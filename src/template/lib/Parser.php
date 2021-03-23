@@ -41,9 +41,12 @@ class Parser extends tag implements TemplateParser
 
     public function send($filePath = '')
     {
+        ob_start();
         extract($this->data, EXTR_OVERWRITE);
         include $filePath;
-        return response() -> data('');
+        $info = ob_get_contents();
+        ob_end_clean();
+        return response() -> data($info);
     }
 
     public function getContent(): string
