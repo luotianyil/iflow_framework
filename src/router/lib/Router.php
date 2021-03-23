@@ -120,7 +120,7 @@ class Router
     public function getRouter(string $fatherRouter, string $action = '', array $options = []) : array
     {
         return [
-            'rule' => $fatherRouter.$this->rule,
+            'rule' => $fatherRouter. '/' . ltrim($this->rule, '/'),
             'method' => $this->methods !== ''? strtolower($this->methods) :'*',
             'action' => $action,
             'ext' => $this->ext,

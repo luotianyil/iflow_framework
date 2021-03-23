@@ -106,7 +106,7 @@ class App extends Container
         return $this;
     }
 
-    public function frameWorkDirInit(): bool
+    protected function frameWorkDirInit(): bool
     {
         $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
         $this->rootPath    = $this->getDefaultRootPath();

@@ -87,6 +87,14 @@ if (!function_exists('response')) {
     }
 }
 
+// 路由信息
+if (!function_exists('router')) {
+    function router() : array
+    {
+        return app(\iflow\router\RouterBase::class) -> getRouter();
+    }
+}
+
 if (!function_exists('app_server')) {
     function app_server(): \Swoole\Server | \Swoole\Http\Server | \Swoole\WebSocket\Server | \Swoole\Coroutine\Client
     {
