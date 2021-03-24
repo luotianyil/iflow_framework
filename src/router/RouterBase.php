@@ -75,6 +75,7 @@ class RouterBase
                     $url = is_array($url)? $url: explode('/', trim($url, '/'));
                     $rule = explode('/', trim($key['rule'], '/'));
                     $router = $this->regxRouter($url, $rule, $method, $key);
+                    if ($router) break;
                 }
             }
         }
@@ -89,7 +90,7 @@ class RouterBase
      * @param $key
      * @return array|mixed
      */
-    protected function regxRouter(array $url,array $rule, string $method, $key)
+    protected function regxRouter(array $url,array $rule, string $method, $key): mixed
     {
         // 验证url 与 路由长度 是否一致
         if (count($rule) === count($url)) {
@@ -176,7 +177,6 @@ class RouterBase
                             return $params;
                         }
                     };
-
                     $router['parameter'][$key][$k]['default'] = is_object($router['parameter'][$key][$k]['default']) ? call_user_func($router['parameter'][$key][$k]['default']): $router['parameter'][$key][$k]['default'];
                 }
             }
