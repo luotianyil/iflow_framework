@@ -63,7 +63,7 @@ class Router
             foreach ($annotations as $annotation) {
                 if (in_array($annotation -> getName(), $this->routerAttributeNames)) {
                     $routerAnnotation = $annotation -> newInstance();
-                    $router = $routerAnnotation -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$routerAnnotation -> getName()}", $this->options);
+                    $router = $routerAnnotation -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->options);
                     $router['parameter'] = array_merge($parameter, $router['parameter']);
 
                     if (empty($this->routers['router'][$this->fatherRouter]))

@@ -40,7 +40,7 @@ class authHandle
 
     public function setAuthRoles(): static
     {
-        $this->authRoles = ['admin', 'test'];
+        $this->authRoles = explode('|', $this->authAnnotation -> role);
         return $this;
     }
 
@@ -50,8 +50,7 @@ class authHandle
             $this->error = true;
         } else {
             $this->authRoles = array_merge(explode('|', $this->authAnnotation -> role), $this->authRoles);
-            if (!in_array($this->userInfo['role'], $this->authRoles))
-            $this->error = !in_array($this->userInfo['role'], $this->authRoles);
+            if ($this->authAnnotation -> role !== '*') $this->error = !in_array($this->userInfo['role'], $this->authRoles);
         }
         return $this;
     }
