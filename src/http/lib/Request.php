@@ -15,6 +15,7 @@ class Request
     public array $files = [];
     public Cookie $cookie;
     public array $request;
+    public array $rowContent = [];
 
     public string $input;
 
@@ -24,9 +25,15 @@ class Request
         $this->setServer() -> setHeader() -> setParams();
     }
 
-    public function getContent(): string
+    // 获取原始POST包体
+    public function getContent(): array
     {
-        return $this->input;
+        if ('application/x-www-form-urlencoded' == explode(';', $this->header['content-type'])[0]) {
+            parse_str($this->input, $this->rowContent);
+        } elseif (str_contains('json', $this->header['content-type'])) {
+            $this->rowContent = json_decode($this->input, true);
+        }
+        return $this->rowContent ?: $this->post;
     }
 
     protected function setServer(): static

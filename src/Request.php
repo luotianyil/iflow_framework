@@ -73,7 +73,8 @@ class Request
     public function postParams(string $name = '')
     {
         if (!$this->isPost()) return [];
-        $params = json_decode($this->request -> getContent(), true);
+        $row = $this->request -> getContent();
+        $params = is_array($row) ? $row : (json_decode($row, true)?: $this->request -> post);
         if ($name === '') return $params;
         return $params[$name] ?? null;
     }

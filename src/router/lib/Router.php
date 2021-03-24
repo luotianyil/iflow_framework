@@ -60,12 +60,18 @@ class Router
             // 获取方法调用的注解
             $annotations = $key -> getAttributes();
             $parameter = $this->getRouterMethodParameter($key);
-            foreach ($annotations as $k) {
-                if (in_array($k -> getName(), $this->routerAttributeNames)) {
-                    $k = $k -> newInstance();
-                    $router = $k -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->options);
+            foreach ($annotations as $annotation) {
+                if (in_array($annotation -> getName(), $this->routerAttributeNames)) {
+                    $routerAnnotation = $annotation -> newInstance();
+                    $router = $routerAnnotation -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$routerAnnotation -> getName()}", $this->options);
                     $router['parameter'] = array_merge($parameter, $router['parameter']);
-                    $this->routers['router'][$this->fatherRouter][] = $router;
+
+                    if (empty($this->routers['router'][$this->fatherRouter]))
+                        $this->routers['router'][$this->fatherRouter] = [];
+
+                    // 验证是否存在该路由
+                    if (!in_array($router, $this->routers['router'][$this->fatherRouter]))
+                        $this->routers['router'][$this->fatherRouter][] = $router;
                 }
             }
         }
@@ -120,7 +126,7 @@ class Router
     public function getRouter(string $fatherRouter, string $action = '', array $options = []) : array
     {
         return [
-            'rule' => $fatherRouter. '/' . ltrim($this->rule, '/'),
+            'rule' => str_replace('//', '/', $fatherRouter. $this->rule),
             'method' => $this->methods !== ''? strtolower($this->methods) :'*',
             'action' => $action,
             'ext' => $this->ext,
