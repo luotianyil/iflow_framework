@@ -14,9 +14,6 @@ class Router
 {
 
     protected App $app;
-
-    // 类 地址
-    protected string $fatherRouter = '';
     protected ReflectionClass $annotationClass;
 
     // routerAttributeNames
@@ -44,7 +41,6 @@ class Router
     public function __make(App $app, ReflectionClass $annotationClass)
     {
         $this->app = $app;
-        $this->fatherRouter = $this->rule;
         $this->annotationClass = $annotationClass;
 
         // 定义路由数据
@@ -63,15 +59,15 @@ class Router
             foreach ($annotations as $annotation) {
                 if (in_array($annotation -> getName(), $this->routerAttributeNames)) {
                     $routerAnnotation = $annotation -> newInstance();
-                    $router = $routerAnnotation -> getRouter($this->fatherRouter, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->options);
+                    $router = $routerAnnotation -> getRouter($this->rule, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->methods, $this->options);
                     $router['parameter'] = array_merge($parameter, $router['parameter']);
 
-                    if (empty($this->routers['router'][$this->fatherRouter]))
-                        $this->routers['router'][$this->fatherRouter] = [];
+                    if (empty($this->routers['router'][$this->rule]))
+                        $this->routers['router'][$this->rule] = [];
 
                     // 验证是否存在该路由
-                    if (!in_array($router, $this->routers['router'][$this->fatherRouter]))
-                        $this->routers['router'][$this->fatherRouter][] = $router;
+                    if (!in_array($router, $this->routers['router'][$this->rule]))
+                        $this->routers['router'][$this->rule][] = $router;
                 }
             }
         }
@@ -123,11 +119,11 @@ class Router
         return $parameter;
     }
 
-    public function getRouter(string $fatherRouter, string $action = '', array $options = []) : array
+    public function getRouter(string $fatherRouter, string $action = '', string $methods = '*', array $options = []) : array
     {
         return [
-            'rule' => str_replace('//', '/', $fatherRouter. $this->rule),
-            'method' => $this->methods !== ''? strtolower($this->methods) :'*',
+            'rule' => str_replace('//', '/', $fatherRouter. '/' .$this->rule),
+            'method' => $this->methods !== ''? strtolower($this->methods) : ($methods === '' ? '*' : $methods),
             'action' => $action,
             'ext' => $this->ext,
             'parameter' => $this->parameter,

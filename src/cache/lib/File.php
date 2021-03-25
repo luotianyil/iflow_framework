@@ -58,7 +58,7 @@ class File
             $data = file_get_contents($file);
             if ($data !== '') {
                 $data = unserialize(gzuncompress($data));
-                return time() > $data['iflow_expired'] ? [] : $data;
+                return $data;
             }
         }
         return [];

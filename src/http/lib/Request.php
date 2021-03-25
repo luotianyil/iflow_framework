@@ -28,10 +28,11 @@ class Request
     // 获取原始POST包体
     public function getContent(): array
     {
-        if ('application/x-www-form-urlencoded' == explode(';', $this->header['content-type'])[0]) {
+        $contentType = $this->header['content-type'] ?? $this->header['accept'];
+        if ('application/x-www-form-urlencoded' == explode(';', $contentType)[0]) {
             parse_str($this->input, $this->rowContent);
-        } elseif (str_contains('json', $this->header['content-type'])) {
-            $this->rowContent = json_decode($this->input, true);
+        } elseif (str_contains($contentType, 'json')) {
+            $this->rowContent = (array) json_decode($this->input, true);
         }
         return $this->rowContent ?: $this->post;
     }

@@ -56,7 +56,7 @@ class RouterAnnotation
             } elseif (file_exists($value)) {
                 $class = str_replace('.php', '', str_replace($this->app -> getRootPath(), '', $value));
                 $class = str_replace('/', '\\', $class);
-                app(annotationInitializer::class) -> loadAnnotations(new \ReflectionClass($class));
+                if (class_exists($class)) app(annotationInitializer::class) -> loadAnnotations(new \ReflectionClass($class));
             }
         }
     }

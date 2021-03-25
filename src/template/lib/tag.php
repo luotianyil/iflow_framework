@@ -78,10 +78,10 @@ class tag extends tags
             $tags);
         $templateTags = $this->getTags($tags);
         foreach ($templateTags as $tag) {
-            [$tps, $paramName, $params] = $this->TagsType($tag);
+            [$tps, $paramName, $params, $func] = $this->TagsType($tag);
             if (array_key_exists($tps[0], $this->config['tags'])) {
                 $info = "<?php ";
-                $info .= "$paramName app('{$this->config['tags'][$tps[0]]['class']}') -> handle({$params});";
+                $info .= "$paramName app('{$this->config['tags'][$tps[0]]['class']}') -> $func($params);";
                 $info .= "?>";
                 $this->content = str_replace($tag[0], $info, $this->content);
             }
@@ -121,7 +121,8 @@ class tag extends tags
         return [
             $tps,
             $type,
-            trim($param, ',')
+            trim($param, ','),
+            $tps[3] ?? 'handle'
         ];
     }
 
