@@ -18,7 +18,7 @@ class Request
     {
         $this->request = $request;
         $this->server = $request -> server;
-        $this->request_uri = $request -> server['path_info'] ?? $request -> server['request_uri'];
+        $this->request_uri = $this->request_uri = explode('?', $request -> server['path_info'] ?? $request -> server['request_uri'])[0];;
         $this->query_string = $request -> server['query_string'] ?? '';
         $this->request_method = $request -> server['request_method'];
 
