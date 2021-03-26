@@ -89,6 +89,7 @@ class Router
         foreach ($parameters as $key) {
             $type = $key -> getType();
             $name = $key -> getName();
+            if (!$type instanceof \ReflectionType) continue;
             if (class_exists($type -> getName())) {
                 $className = $type -> getName();
                 $parametersType = new ReflectionClass($className);
