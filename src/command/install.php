@@ -60,8 +60,12 @@ class install extends Command
     protected function installLib() {
         $this->Console -> outPut -> writeLine('start install library');
         $composer = $this->config['composer']['rootPath'];
-        foreach($this->composerShell as $key => $value) {
-            (new basicTools()) -> execShell(php_run_path() . ' ' . $composer . ' ' . $value);
+        if (file_exists($composer)) {
+            foreach($this->composerShell as $key => $value) {
+                (new basicTools()) -> execShell(php_run_path() . ' ' . $composer . ' ' . $value);
+            }
+        } else {
+            $this->Console -> outPut -> writeLine('install library error: composerPath' . $composer . ' not exists');
         }
     }
 

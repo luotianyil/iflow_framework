@@ -38,7 +38,7 @@ class File
             $old_data = $this->get($name);
             flock($fileStream, LOCK_EX);
 
-            $data['iflow_expired'] = strtotime('+'. $this->getExpired() . 'second');
+            $data['iflow_expired'] = strtotime('+'. $this->getExpired() . ' second');
 
             $data = $old_data ? array_replace_recursive($old_data, $data) : $data;
             $data = serialize($data);
