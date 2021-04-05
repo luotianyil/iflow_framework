@@ -40,7 +40,7 @@ class tag extends tags
     protected function varParser(): static
     {
         preg_match_all(
-            "/(?:\{(\W\w+)\})/i",
+            "/(?:\{v_(.*?)\})/i",
             $this->content,
             $tags);
         if (empty($tags[1])) return $this;
