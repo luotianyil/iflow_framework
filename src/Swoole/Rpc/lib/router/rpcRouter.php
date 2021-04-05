@@ -15,7 +15,6 @@ class rpcRouter extends Router
     public function __make(App $app, ReflectionClass $annotationClass)
     {
         $this->app = $app;
-        $this->fatherRouter = $this->rule;
         $this->annotationClass = $annotationClass;
 
         $this->routerAttributeNames[] = rpcRouter::class;

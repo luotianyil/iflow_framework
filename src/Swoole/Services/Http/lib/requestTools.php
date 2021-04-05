@@ -41,7 +41,7 @@ class requestTools
         return false;
     }
 
-    protected function isStaticResources(string $url = '')
+    protected function isStaticResources(string $url = ''): bool
     {
         $url = explode('/', trim($url, '/'));
         $rule = config('app@resources.file');
@@ -54,7 +54,7 @@ class requestTools
         return false;
     }
 
-    protected function isSocketIo($url = '')
+    protected function isSocketIo($url = ''): bool
     {
         $url = explode('/', trim($url, '/'));
         if (config('service@websocket.enable')) {
@@ -110,7 +110,7 @@ class requestTools
         return false;
     }
 
-    protected function send($response)
+    protected function send($response): bool
     {
         if ($response instanceof Response) {
             $response -> send();

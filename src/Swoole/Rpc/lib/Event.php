@@ -60,7 +60,7 @@ class Event extends HttpServer
     public function onClose()
     {}
 
-    public function rpcValidateRouter()
+    public function rpcValidateRouter(): bool
     {
         if (empty($this->data['request_uri'])) {
             return $this->send(404);

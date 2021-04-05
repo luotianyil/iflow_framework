@@ -3,6 +3,8 @@
 
 namespace iflow\template\lib;
 
+use iflow\Utils\basicTools;
+
 class tag extends tags
 {
 
@@ -133,21 +135,19 @@ class tag extends tags
             $this->content,
             $tags);
         $templateTags = $this->getTags($tags);
+        $utils = new basicTools();
         foreach ($templateTags as $tag) {
-            $this->literal[] = $tag;
+            $uuid = uniqid('iflowTemplate_'). $utils -> create_uuid();
+            $this->content = str_replace($tag[0], $uuid, $this->content);
+            $this->literal[$uuid] = $tag;
         }
         return $this;
     }
 
     protected function literalEnd(): static {
-        preg_match_all(
-            '/(<\?php literal\?>)([\s\S]*?)(<\?php echo \/literal;\?>)/i',
-            $this->content,
-            $tags
-        );
-        $templateTags = $this->getTags($tags);
-        foreach ($templateTags as $key => $tag) {
-            $this->content = str_replace($tag[0], $this->literal[$key][2], $this->content);
+
+        foreach ($this->literal as $key => $value) {
+            $this->content = str_replace($key, $this->literal[$key][2], $this->content);
         }
         return $this;
     }

@@ -7,35 +7,48 @@ use iflow\pipeline\pipeline;
 
 class Middleware
 {
-
-    protected Response $response;
-    protected Request $request;
     protected App $app;
     protected pipeline $pipeline;
+    protected Response $response;
 
-    public function initializer(App $app, Request $request, Response $response)
+    protected array $middleware = [];
+
+    public function initializer(App $app): bool
     {
         $this->app = $app;
-        $this->response = $response;
         $this->pipeline = new pipeline();
-        $this->request = $request;
-        return $this->addMiddleware();
+        return $this->throughMiddleware()
+            -> thenMiddleware();
     }
 
-    // add Middleware
-    public function addMiddleware()
+    // 中间件预处理
+    public function throughMiddleware(): static
     {
-        foreach (config('middleware') as $key) {
-            $this->pipeline -> through($key);
+        $this->middleware = config('middleware');
+        $this->pipeline -> through(
+            array_map(function ($middleware) {
+                return function ($request, $next) use ($middleware) {
+                    [$class, $params] = is_array($middleware) ? $middleware : [$middleware, []];
+                    $response = call_user_func([$this->app->make($class), 'handle'], $request, $next, ...$params);
+                    if ($response instanceof Response) {
+                        $this->response = $response;
+                        throw new \Exception('middleware returns response');
+                    }
+                };
+            }, $this->middleware)
+        );
+        return $this;
+    }
+
+    // 执行中间件
+    public function thenMiddleware(): Response|bool
+    {
+        try {
+            $this->pipeline -> process($this->app);
+            return true;
+        } catch (\Exception) {
+            return $this->response;
         }
-        return $this->thenMiddleware();
-    }
-
-    public function thenMiddleware()
-    {
-        $then = $this->pipeline -> process($this->app, $this -> request, $this->response);
-        if ($then instanceof Response) return $then;
-        return $then;
     }
 
 }
