@@ -8,7 +8,7 @@
 
 
 
-iflowFramework是基于 Php 8.0+ 和 Swoole 4.5+ 的高性能、简单易用的开发框架。支持在 Swoole Server/FPM 同时 支持 windows 上运行。内置了 Http ，Tcp，WebSocket，MQTT，RPC服务。
+iflowFramework是基于 Php 8.0+ 和 Swoole 4.5+ 的高性能、简单易用的开发框架。支持在 Swoole Server/FPM 同时 支持 windows 上运行 (无需安装swoole扩展、仅支持http服务)。内置了 Http ，Tcp，WebSocket，MQTT，RPC服务。
 
 
 
@@ -21,8 +21,7 @@ Gitee : https://gitee.com/mkccl/iflow_application
 
 # 安装
 
-
-更改镜像
+composer install 前更改 composer 源，防止报错。
 
 ```
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
@@ -116,5 +115,7 @@ https://framework.mzshe.cn
 - Elasticsearch 客户端
 
 - Kafka
+
+- DHT 爬虫
 
 - 更多有趣的助手函数
