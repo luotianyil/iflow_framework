@@ -74,4 +74,9 @@ class config
         return $this->nodeId;
     }
 
+    public function getHandle()
+    {
+        return $this->arrayTools -> offsetGet('handle') ?: '';
+    }
+
 }

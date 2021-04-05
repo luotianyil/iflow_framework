@@ -7,9 +7,7 @@ use iflow\Swoole\dht\lib\event\client\packet;
 use iflow\Swoole\dht\lib\node;
 use iflow\Swoole\dht\lib\nodes;
 use iflow\Swoole\dht\lib\utils\coding\client\Encode;
-use Swoole\Client;
 use Swoole\Coroutine\Socket;
-use Swoole\Server;
 
 trait dhtClientEvent
 {
@@ -53,21 +51,7 @@ trait dhtClientEvent
     }
 
     public function Receive($serv, $fd, $from_id, $data)
-    {
-        var_dump($data);
-    }
-
-    public function task(Server $server, $task_id, $reactor_id, $data)
-    {
-        $ip = $data['ip'];
-        $port = $data['port'];
-        $infohash = $data['infohash'];
-        $client = new Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
-        if ($client->connect($ip, $port, 1)){
-            var_dump($infohash);
-        }
-        $client -> close();
-    }
+    {}
 
     protected function ping($pack, $address)
     {
@@ -99,9 +83,8 @@ trait dhtClientEvent
         $infoHash = $pack['a']['info_hash'];
         $id = $pack['a']['id'];
 
-        var_dump($infoHash. "- HASH");
-
         $this->nodes -> addNodes(new node($id, $address[0], $address[1]));
+        $this -> callBack($pack);
         $this->send([
             't' => $pack['t'],
             'y' => 'r',
@@ -190,5 +173,13 @@ trait dhtClientEvent
     protected function NodeTableMaxCount(): bool
     {
         return $this->packet -> NodeTableMaxCount();
+    }
+
+    protected function callBack($data)
+    {
+        $class = $this->dht -> config -> getHandle();
+        if (class_exists($class)) {
+            app() -> make($class) -> handle($data);
+        }
     }
 }

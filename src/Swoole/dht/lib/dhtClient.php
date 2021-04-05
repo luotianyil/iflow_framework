@@ -3,12 +3,12 @@
 
 namespace iflow\Swoole\dht\lib;
 
-use iflow\facade\Cache;
 use iflow\Swoole\dht\lib\event\client\packet;
-use iflow\Utils\Tools\Timer;
+use iflow\Swoole\dht\lib\utils\Metadata;
+use Swoole\Client;
 use Swoole\Coroutine\Socket;
 use Swoole\Server;
-use \iflow\Swoole\dht\lib\event\dhtClientEvent;
+use iflow\Swoole\dht\lib\event\dhtClientEvent;
 
 class dhtClient extends dhtBase
 {
@@ -34,8 +34,7 @@ class dhtClient extends dhtBase
 
         $this->server->on('start', function (Server $server) {
             $this->nodes->deleteNodes();
-            $send = false;
-            $server->tick(3000, function () use (&$send){
+            $server->tick(3000, function () {
                 $nodes = $this->nodes->getNodes();
                 if ($this->NodeTableMaxCount() && $nodes['count'] === 0) $this->joinDht();
                 else $this->autoFindNode();
@@ -46,5 +45,18 @@ class dhtClient extends dhtBase
             $this->packet->Packet(...func_get_args());
         });
         return $this;
+    }
+
+    public function task(Server $server, $task_id, $reactor_id, $data)
+    {
+        $ip = $data['ip'];
+        $port = $data['port'];
+        $infoHash = $data['infohash'];
+        $client = new Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
+        if ($client->connect($ip, $port, 3)){
+            $meta = new Metadata($client, $infoHash, $this -> dht -> config);
+            $this->callBack($meta -> downloadMetaData());
+        }
+        $client -> close();
     }
 }

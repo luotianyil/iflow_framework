@@ -19,7 +19,6 @@ class packet
         protected dhtClient $dhtClient
     ) {}
 
-
     public function NodeTableMaxCount(): bool
     {
         return $this->nodes -> getNodes()['count'] < $this -> config -> getNodeTables()['maxNumber'];
