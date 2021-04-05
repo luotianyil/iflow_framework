@@ -51,6 +51,9 @@ class Config
 
     public function set(string $name, array $config = [])
     {
+        if (count($config) === 0) {
+            return $this->config[$name] = $config;
+        }
         return $this->config[$name] = isset($this->config[$name]) ? array_replace_recursive($this->config[$name], $config) : $config;
     }
 

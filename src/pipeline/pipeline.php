@@ -9,25 +9,33 @@ use iflow\Response;
 
 class pipeline
 {
-    protected array $queue = [];
+    protected array $pipes = [];
 
-    public function through($class)
+    public function through($pipes)
     {
-        $this->queue[] = $class;
+        $this->pipes = is_array($pipes) ? $pipes : func_get_args();
+        return $this;
     }
 
-    public function process(App $app): array|object
-    {
-        $call = [];
-        foreach ($this->queue as $key => $value) {
-            $class = is_numeric($key) ? $value : $key;
-            $method = is_numeric($key) ? 'handle' : $value;
-            $callBack = call_user_func([$app->make($class), $method], ...func_get_args());
 
-            unset($this->queue[$key]);
-            if ($callBack instanceof Response) return $callBack;
-            $call[] = $callBack;
-        }
-        return $call;
+    public function process($app, $destination = null)
+    {
+        $pipeline = array_reduce(
+            array_reverse($this->pipes),
+            $this->carry(),
+            function ($passable) use ($destination) {
+                return $destination === null ? true : $destination($passable);
+            }
+        );
+        $pipeline($app);
+    }
+
+    protected function carry(): \Closure
+    {
+        return function ($stack, $pipe) {
+            return function ($passable) use ($stack, $pipe) {
+                return $pipe($passable, $stack);
+            };
+        };
     }
 }

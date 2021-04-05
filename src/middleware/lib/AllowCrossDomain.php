@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\middleware;
+namespace iflow\middleware\lib;
 
 
 /**
@@ -16,15 +16,7 @@ class AllowCrossDomain
         'Access-Control-Allow-Headers'     => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
     ];
 
-    /**
-     * 允许跨域请求
-     * @param $app
-     * @param $request
-     * @param $response
-     * @param array $header
-     * @return bool
-     */
-    public function handle($app, $request, $response, array $header = []): bool
+    public function handle($app, $next, array $header = [])
     {
         $header = !empty($header) ? array_merge($this->header, $header) : $this->header;
 
@@ -38,7 +30,7 @@ class AllowCrossDomain
                 $header['Access-Control-Allow-Origin'] = '*';
             }
         }
-        $response -> headers($header);
-        return true;
+        response() -> headers($header);
+        return $next($app);
     }
 }
