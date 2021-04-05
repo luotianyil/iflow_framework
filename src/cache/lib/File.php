@@ -66,7 +66,8 @@ class File
 
     public function delete(string $name): bool
     {
-        return @unlink($this->getStorePath($name));
+        $file = $this->getStorePath($name);
+        return file_exists($file) && unlink($this->getStorePath($name));
     }
 
     public function gc($lifetime) {

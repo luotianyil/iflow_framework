@@ -23,11 +23,9 @@ class Services extends Command
     public array $userEvent = [];
     public float $runMemoryUsage = 0.00;
 
-    public function handle($event = '')
+    public function handle(array $event = [])
     {
-        $this->userEvent =
-            explode('-', $event ? $event : $this->Console -> input -> getUserCommand()[1]);
-
+        $this->userEvent = $event;
         if ($this->userEvent[1] !== 'service') {
             $configKeys = $this->userEvent[1];
             $configKeys = 'swoole.'. $configKeys . '@' . (empty($this->userEvent[2]) ? 'server' : $this->userEvent[2]);

@@ -50,7 +50,7 @@ class Input
                     $commandClass = $app -> invokeClass($commandClass, $this->argv);
                     $commandClass -> setApp($app);
                     $commandClass -> setConsole($console);
-                    return $app -> invoke([$commandClass, 'handle']);
+                    return $app -> invoke([$commandClass, 'handle'], [$userCommand]);
                 }
             }
         }

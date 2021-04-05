@@ -17,7 +17,8 @@
     "ext-bcmath": "*",
     "ext-zlib": "*",
     "ext-fileinfo": "*",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "ext-ctype": "*"
   },
   "license": "MulanPSL-1.0",
   "authors": [
