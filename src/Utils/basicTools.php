@@ -73,6 +73,13 @@ class basicTools
         return $order_id_main . str_pad((100 - $order_id_sum % 100) % 100,2,'0',STR_PAD_LEFT);
     }
 
+    public function gen_random_string($length=20): string {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $str = '';
+        for($i = 0; $i < $length; $i++) $str .= substr($chars, mt_rand(0, 62), 1);
+        return $str;
+    }
+
     // 创建随机数
     public function make_random_number() : string
     {

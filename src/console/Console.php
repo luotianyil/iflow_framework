@@ -5,6 +5,7 @@ namespace iflow\console;
 
 
 use iflow\App;
+use iflow\command\dht;
 use iflow\command\install;
 use iflow\console\lib\Help;
 use iflow\console\lib\Input;
@@ -26,6 +27,7 @@ class Console
         '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,
         '<start|stop|reload>-rpc-<client|server>' => \iflow\Swoole\Rpc\Services::class,
         '<start|stop|reload>-kafka-consumer' => \iflow\Swoole\Kafka\Services::class,
+        '<start|stop|reload>-dht-<client|server>' => dht::class,
         'start' => HttpServer::class,
         'help' => Help::class,
         'install' => install::class
