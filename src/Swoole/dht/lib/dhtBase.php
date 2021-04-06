@@ -33,6 +33,13 @@ abstract class dhtBase
     public function start()
     {
         $this->server -> set($this->dht -> config -> getSwConfig());
+        $this->dht -> console -> outPut -> writeLine(
+            sprintf(
+                "wait startUp dht address: %s:%s",
+                $this->server -> host,
+                $this->server -> port
+            )
+        );
         $this->server -> start();
     }
 

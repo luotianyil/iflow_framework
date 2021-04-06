@@ -98,8 +98,7 @@ class App extends Container
     protected function load() : static
     {
         // 加载助手函数
-        include_once $this->frameWorkPath . DIRECTORY_SEPARATOR . 'helper.php';
-
+        include_once __DIR__ . DIRECTORY_SEPARATOR . 'helper/helper.php';
         if (is_file($this->appPath . DIRECTORY_SEPARATOR . 'common.php')) {
             include_once $this->appPath . DIRECTORY_SEPARATOR . 'common.php';
         }

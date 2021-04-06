@@ -4,18 +4,30 @@
 namespace iflow\http\lib;
 
 
+use iflow\fileSystem\File;
+
 class Response
 {
 
     public function sendFile($path): bool
     {
-        if (file_exists($path)) return $this->end(file_get_contents($path));
-        return $this->end('404 - notFond');
+        $content = app() -> make(File::class) -> readFile($path);
+        if ($content instanceof \Generator) {
+            foreach ($content as $info) {
+                echo $info;
+            }
+        }
+        return $this->finish();
     }
 
     public function end($data): bool
     {
         echo $data;
+        return $this->finish();
+    }
+
+    public function finish(): bool
+    {
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }

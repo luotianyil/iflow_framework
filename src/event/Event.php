@@ -24,7 +24,7 @@ class Event
         $this->events = array_replace_recursive($this->events, $events) ?: [];
     }
 
-    public function callEvent(string $event, array $args = [])
+    public function trigger(string $event, array $args = [])
     {
         if ($this->arrayTools -> offsetExists($event)) {
             $event = $this->app -> make($this->arrayTools -> offsetGet($event), isNew: true);

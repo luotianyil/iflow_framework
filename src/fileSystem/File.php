@@ -30,4 +30,16 @@ class File
         $class = 'iflow\\fileSystem\\lib\\'.$this->config['type'].'\\'.$this->config['type'];
         return Container::getInstance()->invokeClass($class, [$file, $this->config]);
     }
+
+    public function readFile($path): string|\Generator
+    {
+        if (file_exists($path)) {
+            $fp = fopen($path, "r");
+            while (!feof($fp)) {
+                yield fgets($fp);
+            }
+            fclose($fp);
+        }
+        return "";
+    }
 }
