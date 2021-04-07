@@ -2,7 +2,7 @@
 [![Swoole Version](https://img.shields.io/badge/swoole-%3E=4.5.0-brightgreen.svg)](https://github.com/swoole/swoole-src)
 [![iflow Framework Version](https://img.shields.io/badge/iflow_framework-%3E=0.0.1-brightgreen.svg)](https://github.com/luotianyil/iflow_framework)
 [![think-orm Version](https://img.shields.io/badge/think/orm-%3E=2.0.x-brightgreen.svg)](https://www.kancloud.cn/manual/think-orm/1257998)
-[![iflowFramework Doc](https://img.shields.io/badge/docs-passing-green.svg?maxAge=2592000)](https://mzshe.cn/#/open_api)
+[![iflowFramework Doc](https://img.shields.io/badge/docs-passing-green.svg?maxAge=2592000)](https://www.yuque.com/youzhiyuandemao/ftorkm)
 
 # iflowFramework
 
@@ -21,7 +21,7 @@ Gitee : https://gitee.com/mkccl/iflow_application
 
 # 安装
 
-composer install 前更改 composer 源，防止报错。
+composer install 前更改 composer 国内源
 
 ```
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
@@ -57,7 +57,8 @@ php iflow start or php iflow start-service
 
 # 文档
 
-https://mzshe.cn/#/open_api
+[旧文档地址，已停止更新](https://mzshe.cn/#/open_api)
+[最新文档地址](https://www.yuque.com/youzhiyuandemao/ftorkm)
 
 
 
