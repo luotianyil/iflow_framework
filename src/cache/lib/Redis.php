@@ -14,17 +14,17 @@ class Redis extends SwRedis
     {
         $this->config = $config;
         $this->connect($config['host'], $config['port']);
-        if ($this->config['sentinel_name'] !== '') {
-            $this->sentinelToAddress();
+        if (is_string($this->config['sentinel_name']) && $this->config['sentinel_name'] !== '') {
+            $this->sentinelToAddress($this->config['sentinel_name']);
         }
         $this->setOptions($config['options']);
         return $this;
     }
 
-    protected function sentinelToAddress()
+    protected function sentinelToAddress(string $sentinel_name)
     {
         $sentinel = $this -> request([
-            'SENTINEL', 'get-master-addr-by-name', $this->config['sentinel_name']
+            'SENTINEL', 'get-master-addr-by-name', $sentinel_name
         ]);
 
         if (!$sentinel) {

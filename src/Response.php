@@ -90,6 +90,24 @@ class Response
         return $this->response -> end($this->output($this->data));
     }
 
+    /**
+     * 设置重定向地址
+     * @param string $url
+     * @return $this
+     */
+    public function setRedirect(string $url = ""): static
+    {
+        $this->code = 302;
+        $this->headers["Location"] = $url;
+        return $this;
+    }
+
+    /**
+     * 发送文件
+     * @param string $path
+     * @param bool $isConfigRootPath
+     * @return File
+     */
     private function sendFile(string $path = '', bool $isConfigRootPath = true): File
     {
         $this->setResponseHeader();

@@ -28,46 +28,89 @@ class upLoadFile extends fileSystem
         return $this;
     }
 
+    /**
+     * 获取上传文件列表
+     * @return array
+     */
     public function getFileList(): array
     {
         return $this->fileList;
     }
 
+    /**
+     * 获取单个文件
+     * @param string $index
+     * @return mixed|null
+     */
     public function getFile(string $index)
     {
         return $this->fileList[$index] ?? null;
     }
 
+    // 读取文件
     public function read(): string
     {
         return file_get_contents($this->getPathname());
     }
 
+    /**
+     * 保存文件至服务器
+     * @param string $savePath
+     * @param array $config
+     * @return $this|false|string[]|void|null
+     */
     public function move(string $savePath, array $config = [])
     {
         $validate = $this->validate($config);
         if ($validate) {
-            $fileNameType = $config['type'] ?? 'hash';
-            $fileNameType = is_string($fileNameType) ? [
-                $fileNameType
-            ] : [
-                array_keys($fileNameType),
-                $fileNameType['algo'] ?? 'sha1'
-            ];
-            $fileName = call_user_func([$this, $fileNameType[0]], $fileNameType[1] ?? 'sha1');
-            $savePath = rtrim($this->config['rootPath'], DIRECTORY_SEPARATOR)
-                . DIRECTORY_SEPARATOR
-                . $savePath
-                . DIRECTORY_SEPARATOR
-                . $fileName
-                . '.' . $this->getExtension();
-            !is_dir(dirname($savePath)) && mkdir($savePath, 0755, true);
-            return move_uploaded_file($this->getPathname(), $savePath) ? $savePath
-                : false;
+            $fileName = $this->fileNameHash($config);
+            $path = $this->getSavePath($savePath, $fileName);
+            $basePath = dirname($path['path']);
+            !is_dir($basePath) && mkdir($basePath, 0755, true);
+            return move_uploaded_file($this->getPathname(), $path['path']) ? $path : false;
         }
         return $validate;
     }
 
+    /**
+     * 文件名重命名
+     * @param array $config
+     * @return false|mixed
+     */
+    protected function fileNameHash(array $config = [])
+    {
+        $fileNameType = $config['type'] ?? 'hash';
+        $fileNameType = is_string($fileNameType) ? [
+            $fileNameType
+        ] : [
+            array_keys($fileNameType),
+            $fileNameType['algo'] ?? 'sha1'
+        ];
+        return call_user_func([$this, $fileNameType[0]], $fileNameType[1] ?? 'sha1');
+    }
+
+    /**
+     * 获取文件存储路径
+     * @param string $savePath
+     * @param string $fileName
+     * @return string[]
+     */
+    protected function getSavePath(string $savePath, string $fileName) {
+        $saveRoot = rtrim($this->config['rootPath'], DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR;
+        $savePath = str_replace("\\", "/", $savePath . DIRECTORY_SEPARATOR . $fileName . '.' . $this->getExtension());
+        $path = $saveRoot . $savePath;
+        return [
+            'savePath' => $savePath,
+            'saveRoot' => $saveRoot,
+            'path' => $path
+        ];
+    }
+
+    /**
+     * 验证文件规则
+     * @param array $validate
+     * @return $this
+     */
     protected function validate(array $validate): static
     {
         $validate = array_merge($this->defValidate, $validate);
@@ -83,6 +126,10 @@ class upLoadFile extends fileSystem
         return $this;
     }
 
+    /**
+     * 获取上传错误信息
+     * @return array
+     */
     public function getError(): array
     {
         return $this->error;

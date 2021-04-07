@@ -21,7 +21,7 @@ class Event
 
     public function bindEvent(array $events = [])
     {
-        $this->events = array_replace_recursive($this->events, $events) ?: [];
+        $this->events = array_merge($events, $this->events);
     }
 
     public function trigger(string $event, array $args = [])
