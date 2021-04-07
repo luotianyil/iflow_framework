@@ -7,7 +7,7 @@ namespace iflow\console\lib;
 use iflow\App;
 use iflow\console\Console;
 
-class Command
+abstract class Command
 {
     public App $app;
     public Console $Console;
@@ -27,4 +27,6 @@ class Command
     {
         $this->Console = $Console;
     }
+
+    abstract public function handle(array $event = []);
 }

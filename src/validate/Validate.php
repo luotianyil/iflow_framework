@@ -33,26 +33,36 @@ class Validate extends validateBase
 
     protected function validate(): static
     {
-        foreach ($this->rule as $key => $value) {
-            $key = explode(':', $key);
-            $this->error[$key[0]] = match ($value instanceof \Closure) {
-                true => call_user_func($value, $this->validateData[$key[0]] ?? ''),
-                default => $this->explodeValidateRule($key, $value)
-            };
+        if (count($this->validateData) === 0) {
+            $this->error[] = "validateData is empty";
+        } else {
+            foreach ($this->rule as $key => $value) {
+                $key = explode('|', $key);
+                $error = match ($value instanceof \Closure) {
+                    true => $this->runClosure($value, $key),
+                    default => $this->explodeValidateRule($key, $value)
+                };
+                if (count($error) > 0) $this->error[$key[0]] = $error;
+            }
         }
         return $this;
     }
 
-    protected function explodeValidateRule($key, $rule)
+    protected function explodeValidateRule($key, $rule): array
     {
         $rule = explode('|', $rule);
         $error = [];
-        foreach ($rule as $key => $value) {
+        foreach ($rule as $value) {
             $value = explode(':', $value);
+            $value[1] = $value[1] ?? null;
+
             if (strtolower($value[0]) === 'validatefunc') {
-                $error[] = $this->validateFunc($key[0], $value[1]);
-            } elseif (call_user_func([$this, $value[0]], ...[$this->validateData[$key[0]] ?? null, $value[1]])) {
-                $error[] = $this->message[$value[0].$value[1]] ?? ($key[1] ?? $key[0]. $value);
+                $err = $this->validateFunc($key[0], $value[1]);
+                if ($err !== true) $error[] = $err;
+            } elseif (!call_user_func([$this, $value[0]], ...[$this->validateData[$key[0]] ?? null, $value[1] ?? null])) {
+                $error[] = $this->message[
+                                $key[0]. "." . $value[0]
+                            ] ?? ($key[1] ?? $key[0]). implode(" ", $value);
             }
         }
         return $error;
@@ -60,7 +70,18 @@ class Validate extends validateBase
 
     protected function validateFunc($key, $method)
     {
-        return call_user_func([$this, $method], [$this->validateData[$key], $this->validateData]);
+        if (method_exists($this, $method))
+            return call_user_func([$this, $method], ...[$this->validateData[$key] ?? null, $this->validateData]);
+        return true;
+    }
+
+    protected function runClosure(\Closure $closure, $key): bool|array
+    {
+        $err = call_user_func($closure, ...[$this->validateData[$key[0]] ?? null, $this->validateData]);
+        if ($err !== true) {
+            return is_array($err) ? $err : [$err];
+        }
+        return [];
     }
 
 }

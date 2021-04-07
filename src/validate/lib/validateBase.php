@@ -32,17 +32,17 @@ class validateBase
 
     protected array $error = [];
 
-    public function min(mixed $value, int $rule = 0): bool
+    public function min(mixed $value, $rule = 0): bool
     {
         return $this->getLength($value) >= $rule;
     }
 
-    public function max(mixed $value, int $rule = 0): bool
+    public function max(mixed $value, $rule = 0): bool
     {
         return $this->getLength($value) <= $rule;
     }
 
-    public function email($value)
+    public function email($value): bool
     {
         return $this->filter($value, $this->filter['email']);
     }
@@ -75,6 +75,7 @@ class validateBase
 
     protected function getLength(mixed $value): int
     {
+        if (is_numeric($value)) return intval($value);
         if ($value instanceof fileSystem) {
             $length = $value -> getSize();
         } else {
@@ -85,7 +86,7 @@ class validateBase
 
     protected function required($value): bool
     {
-        return is_null($value) || $value === '';
+        return !is_null($value) || !$value === '';
     }
 
     public function getError(): array

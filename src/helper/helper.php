@@ -376,3 +376,18 @@ if (!function_exists('i18n')) {
         return app(\iflow\i18n\I18n::class) -> i18n($key, $default, $lan);
     }
 }
+
+if (!function_exists('validate')) {
+    function validate(array $rule = [], array $data = [], array $message = []) {
+        $validate = new \iflow\validate\Validate();
+        $error = $validate
+                    -> rule($rule, $message)
+                    -> check($data)
+                    -> findError();
+
+        if ($error !== null) {
+            throw new Exception($error);
+        }
+        return null;
+    }
+}
