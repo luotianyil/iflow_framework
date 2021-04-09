@@ -112,13 +112,16 @@ class Container implements ContainerInterface
         $args = [];
         foreach ($parameters as $parameter) {
             $name = $parameter -> getName();
-            $class = $parameter -> getType();
-            if ($class instanceof ReflectionNamedType) {
-                if (class_exists($class -> getName())) {
-                    $args[] = $this->getObjectParam($class -> getName(), $vars);
-                } elseif (1 == $type && !empty($vars)) {
+            $types = $this->getParameterType($parameter);
+
+            if (count($types) > 0) {
+                if (class_exists($types[0])) {
+                    $args[] = $this->getObjectParam($types[0], $vars);
+                }
+                elseif (1 == $type && !empty($vars)) {
                     $args[] = array_shift($vars);
-                } else if ($parameter -> isDefaultValueAvailable()) {
+                }
+                elseif ($parameter -> isDefaultValueAvailable()) {
                     $args[] = $parameter -> getDefaultValue();
                 } else {
                     throw new \Error('method param miss:' . $name);
@@ -217,5 +220,25 @@ class Container implements ContainerInterface
             return false;
         }
         return true;
+    }
+
+    /**
+     * 反射获取 变量类型 支持 ReflectionUnionType
+     * @param \ReflectionProperty|\ReflectionParameter $property
+     * @return array
+     */
+    public function getParameterType(\ReflectionProperty|\ReflectionParameter $property): array
+    {
+        $type = $property -> getType();
+        $types = [];
+        if ($type instanceof \ReflectionUnionType) {
+            foreach ($type -> getTypes() as $t) {
+                $types[] = $t -> getName();
+            }
+        } else if ($type instanceof ReflectionNamedType) {
+            $types[] = $type -> getName();
+        }
+
+        return $types;
     }
 }

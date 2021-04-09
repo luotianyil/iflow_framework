@@ -18,7 +18,7 @@ class install extends Command
         'dump-autoload'
     ];
 
-    public function handle() {
+    public function handle(array $event = []) {
         $this->config = config('install');
         $this -> includeDataBase() ->  installLib();
         $this->Console -> outPut -> writeLine('installed');
@@ -65,7 +65,7 @@ class install extends Command
                 (new basicTools()) -> execShell(php_run_path() . ' ' . $composer . ' ' . $value);
             }
         } else {
-            $this->Console -> outPut -> writeLine('install library error: composerPath' . $composer . ' not exists');
+            $this->Console -> outPut -> writeLine('install library error: composerPath ' . $composer . ' not exists');
         }
     }
 

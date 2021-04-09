@@ -47,13 +47,14 @@ class tag extends tags
             $tags);
         if (empty($tags[1])) return $this;
         if (is_string($tags[1])) {
-            $this->content = str_replace($tags[0], "<?php echo ".$tags[1].";?>", $this->content);
+
+            $this->content = str_replace($tags[0], "<?php echo $".ltrim($tags[1], '$').";?>", $this->content);
             return $this;
         }
         $templateTags = $this->getTags($tags);
 
         foreach ($templateTags as $tag) {
-            $this->content = str_replace($tag[0], "<?php echo ".$tag[1].";?>", $this->content);
+            $this->content = str_replace($tag[0], "<?php echo $".ltrim($tags[1], '$').";?>", $this->content);
         }
         return $this;
     }

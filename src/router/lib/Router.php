@@ -7,7 +7,6 @@ namespace iflow\router\lib;
 use iflow\App;
 use ReflectionClass;
 use ReflectionMethod;
-use function GuzzleHttp\Psr7\str;
 
 #[\Attribute]
 class Router
@@ -98,12 +97,14 @@ class Router
                 foreach ($parametersType -> getProperties() as $param) {
                     $p = $param -> getName();
                     $defaultValue = $parametersType -> getProperty($p);
-                    $this->routers['routerParams'][$className][$param -> getName()] = [
-                        'type' => $defaultValue -> getType() -> getName(),
-                        'class' => $parametersTypeInstance::class,
-                        'name' => $param -> getName(),
-                        'default' => $defaultValue -> getDefaultValue()
-                    ];
+                    if ($defaultValue -> isPublic()) {
+                        $this->routers['routerParams'][$className][$param -> getName()] = [
+                            'type' => app() -> getParameterType($param),
+                            'class' => $parametersTypeInstance::class,
+                            'name' => $param -> getName(),
+                            'default' => $defaultValue -> getDefaultValue()
+                        ];
+                    }
                 }
                 $parameter[$name] = [
                     'type' => 'class',
@@ -111,7 +112,7 @@ class Router
                 ];
             } else {
                 $parameter[$name] = [
-                    'type' => $type -> getName(),
+                    'type' => app() -> getParameterType($key),
                     'name' => $name,
                     'default' => $key -> isDefaultValueAvailable() ? $key -> getDefaultValue() : ''
                 ];
