@@ -177,12 +177,12 @@ if (!function_exists('app_class_name')) {
 // rpc
 if (!function_exists('rpc')) {
     function rpc($clientName, $url, array &$param = []) {
-        $config = config('rpc');
+        $config = config('swoole.rpc');
         $param['request_uri'] = $url;
         $config['server']['enable'] = $config['server']['enable'] ?? false;
         if ($config['server']['enable']) {
             $config = $config['server']['clientList'];
-            $clientList = Config::getConfigFile($config['path'] . $config['name'])['clientList'] ?? [];
+            $clientList = \iflow\facade\Cache::store($config) -> get($config['cacheName']);
             foreach ($clientList as $key) {
                 if ($key['name'] === $clientName) {
                     return app_server() -> send($key['fd'],

@@ -72,29 +72,4 @@ class Config
     {
         return $this->config -> offsetExists($name);
     }
-
-    public function saveConfigFile($config, $name, $path)
-    {
-        !is_dir($path) && mkdir($path, 0755, true);
-        $file = $path. $name. '.php';
-        $fileStream = fopen($file, "w+");
-        fwrite($fileStream, serialize($config));
-        return fclose($fileStream);
-    }
-
-    public function getConfigFile($name)
-    {
-        $file = $name. '.php';
-        if (file_exists($file))
-            return unserialize(file_get_contents($file));
-        return [];
-    }
-
-    public function delConfigFile($path)
-    {
-        $file = $path. '.php';
-        if (file_exists($file))
-            return @unlink($file);
-        return true;
-    }
 }

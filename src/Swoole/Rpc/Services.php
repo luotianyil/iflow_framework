@@ -4,6 +4,7 @@
 namespace iflow\Swoole\Rpc;
 
 
+use iflow\facade\Cache;
 use iflow\facade\Config;
 use iflow\Swoole\Rpc\lib\rpcService;
 
@@ -24,12 +25,13 @@ class Services extends \iflow\Swoole\Services\Services
                 $this->config['swConfig']
             );
 
-            config('rpc', [
+            config('swoole.rpc', [
                 'server' => [
                     'enable' => true
                 ]
             ]);
-            Config::delConfigFile($this->config['clientList']['path'] . $this->config['clientList']['name']);
+
+            Cache::store($this->config['clientList']) -> delete($this->config['clientList']['cacheName']);
             $this->initializers[] = rpcService::class;
         }
         $this->initializer();

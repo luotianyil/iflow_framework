@@ -3,6 +3,7 @@
 
 namespace iflow\Swoole\Rpc\lib;
 
+use iflow\facade\Cache;
 use iflow\facade\Config;
 use iflow\Swoole\Services\Http\lib\initializer;
 use Swoole\Server;
@@ -23,9 +24,8 @@ class rpcReceive extends initializer
         $this->config = config('swoole.rpc@server');
         $info = json_decode($data, true);
 
-        $this->clientList = Config::getConfigFile(
-            $this->config['clientList']['path'] . $this->config['clientList']['name']
-        );
+        $this->clientList = Cache::store($this->config['clientList'])
+                            -> get($this->config['clientList']['cacheName']);
 
         if ($info) {
             if (isset($info['isClientConnection']) && isset($info['client_name'])) {
@@ -45,16 +45,12 @@ class rpcReceive extends initializer
             if (isset($this->clientList[$fd])) {
                 return true;
             }
-
             if (empty($this->clientList['clientList'])) $this->clientList['clientList'] = [];
             $info['status'] = 1;
             $info['fd'] = $fd;
             $this->clientList['clientList'][$fd] = $info;
-
-            Config::saveConfigFile($this->clientList,
-                $this->config['clientList']['name'],
-                $this->config['clientList']['path']
-            );
+            Cache::store($this->config['clientList'])
+                -> set($this->config['clientList']['cacheName'], $this->clientList);
             return true;
         }
         return false;

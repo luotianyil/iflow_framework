@@ -19,17 +19,17 @@ class Cache
 
     protected string $namespace = '\\iflow\\cache\\lib\\';
 
-    protected function getConfig(string $default = '')
+    protected function getConfig(string|array $default = '')
     {
-        $this->config = config('cache@stores.'.$default);
+        $this->config = is_string($default) ? config('cache@stores.'.$default) : $default;
     }
 
-    public function store(string $name = ''): Redis | File
+    public function store(string|array $name = ''): Redis | File
     {
-
-        $name = $name ?: config('cache@default');
+        if (is_string($name)) {
+            $name = $name ?: config('cache@default');
+        }
         $this->getConfig($name);
-
         if (!$this->config) throw new \Exception('cache config null');
         $class = $this->namespace . ucfirst($this->config['type']);
         return (new $class) -> initializer($this->config);

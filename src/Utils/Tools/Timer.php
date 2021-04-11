@@ -13,7 +13,7 @@ class Timer
             return \Swoole\Timer::tick($ms, $closure);
         }
         do {
-            sleep($ms / 1000);
+            sleep(floatval(bcdiv("{$ms}", "1000")));
             call_user_func($closure);
         } while(true);
     }

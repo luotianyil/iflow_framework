@@ -22,7 +22,7 @@ class appMonitoring
 
     protected function appMonitoring(): bool {
         if (!swoole_success() && !$this->config['enable']) return false;
-        Timer::tick(floatval(bcdiv("{$this -> config['delayTime']}", "1000")), function () {
+        Timer::tick($this -> config['delayTime'], function () {
             $this->Monitoring();
         });
         return true;

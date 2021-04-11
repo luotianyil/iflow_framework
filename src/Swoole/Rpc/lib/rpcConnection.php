@@ -4,7 +4,7 @@
 namespace iflow\Swoole\Rpc\lib;
 
 
-use iflow\facade\Config;
+use iflow\facade\Cache;
 
 class rpcConnection
 {
@@ -15,12 +15,11 @@ class rpcConnection
     public function onClose($server, $fd)
     {
         $config = config('swoole.rpc@server.clientList');
-        $client = Config::getConfigFile($config['path'] . $config['name']);
+
+        $cache = Cache::store($config);
+        $client = $cache -> get($config['cacheName']);
         unset($client['clientList'][$fd]);
-        Config::saveConfigFile($client,
-            $config['name'],
-            $config['path']
-        );
+        $cache -> set($config['cacheName'], $client);
         $server -> close($fd);
     }
 

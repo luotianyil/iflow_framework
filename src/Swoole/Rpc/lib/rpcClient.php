@@ -120,4 +120,7 @@ class rpcClient
     {
         $this->services -> eventInit($class, $event, $this->server);
     }
+
+    public function onClose()
+    {}
 }
