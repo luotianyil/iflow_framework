@@ -6,6 +6,7 @@ namespace iflow\initializer;
 // 加载应用配置
 use iflow\App;
 use iflow\fileSystem\File;
+use iflow\Utils\ArrayTools;
 
 /**
  * Class Config
@@ -15,13 +16,14 @@ use iflow\fileSystem\File;
 class Config
 {
     public App $app;
-    public array $config = [];
+    public ArrayTools $config;
     protected File $file;
 
     public function initializer(App $app)
     {
         // 加载基本配置
         $this->app = $app;
+        $this->config = new ArrayTools();
         $this->file = app(File::class) -> initializer();
         $this->load($this->file -> fileList -> loadFileList($this->app->getConfigPath(), $this->app -> getConfigExt() ,true));
     }
@@ -52,45 +54,23 @@ class Config
     public function set(string $name, array $config = [])
     {
         if (count($config) === 0) {
-            return $this->config[$name] = $config;
+            return $this->config -> offsetSet($name, $config);
         }
-        return $this->config[$name] = isset($this->config[$name]) ? array_replace_recursive($this->config[$name], $config) : $config;
+
+        return $this->config -> offsetSet(
+            $name, isset($this->config[$name]) ? array_replace_recursive($this->config[$name], $config) : $config
+        );
     }
 
-    public function get(string $name = '', $default = null)
+    public function get(string $name = '', $default = []): array|string
     {
-        if ($name === '') return $this->config;
-        $keys = explode('@', $name);
-        if (!$this->has($keys[0])) return [];
-        // 返回全部
-        if (empty($keys[1])) return $this->config[$keys[0]];
-        $names = explode('.', $keys[1]);
-        $info = [];
-        if (count($names) <= 1) {
-            foreach ($names as $val) {
-                if (isset($this->config[$keys[0]][$val])) {
-                    $info = $this->config[$keys[0]][$val];
-                }
-            }
-        } else {
-            return $this->getConfigValue($names, $this->config[$keys[0]]);
-        }
-        return $info;
-    }
 
-    protected function getConfigValue($names, array $config = [])
-    {
-        // 按.拆分成多维数组进行判断
-        if (count($names) === 1) {
-            return $config[array_shift($names)] ?: [];
-        }
-        $key = array_shift($names);
-        return $this->getConfigValue($names, $config[$key]);
+        return $this->config -> get($name, $default);
     }
 
     public function has(string $name) : bool
     {
-        return empty($this->config[$name]) ? false : true;
+        return $this->config -> offsetExists($name);
     }
 
     public function saveConfigFile($config, $name, $path)

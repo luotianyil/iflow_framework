@@ -35,10 +35,9 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
     {
         // TODO: Implement offsetSet() method.
         if (is_null($offset)) {
-            $this->items[] = $value;
-        } else {
-            $this->items[$offset] = $value;
+            return $this->items[] = $value;
         }
+        return $this->items[$offset] = $value;
     }
 
     public function offsetUnset($offset)

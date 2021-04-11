@@ -29,6 +29,12 @@ class File
         return $this->config['expired'];
     }
 
+    /**
+     * 设置/更新 缓存
+     * @param string $name
+     * @param array $data
+     * @return array
+     */
     public function set(string $name, array $data)
     {
         go(function () use ($name, $data) {
@@ -37,7 +43,6 @@ class File
             $fileStream = fopen($file, "w+");
             $old_data = $this->get($name);
             flock($fileStream, LOCK_EX);
-
             $data['iflow_expired'] = strtotime('+'. $this->getExpired() . ' second');
 
             $data = $old_data ? array_replace_recursive($old_data, $data) : $data;
@@ -51,6 +56,11 @@ class File
         return $data;
     }
 
+    /**
+     * 获取缓存
+     * @param string $name
+     * @return array|mixed
+     */
     public function get(string $name)
     {
         $file = $this->getStorePath($name);
@@ -64,12 +74,21 @@ class File
         return [];
     }
 
+    /**
+     * 删除缓存
+     * @param string $name
+     * @return bool
+     */
     public function delete(string $name): bool
     {
         $file = $this->getStorePath($name);
         return file_exists($file) && unlink($this->getStorePath($name));
     }
 
+    /**
+     * 过期缓存回收
+     * @param $lifetime
+     */
     public function gc($lifetime) {
         $now = time();
         $files = find_files($this->getStoreRoot(), function (\SplFileInfo $item) use ($lifetime, $now) {

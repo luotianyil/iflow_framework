@@ -9,14 +9,12 @@ use iflow\Utils\basicTools;
 class HttpServer extends Command
 {
 
-    private array $config = [];
-
-    public function handle()
+    public function handle(array $event = [])
     {
-        $this->config = config('devServer');
+        $config = config('devServer');
         $this->Console -> outPut ->writeLine(
             (new basicTools()) -> execShell(
-            php_run_path() . " -S {$this -> config['host']}:{$this -> config['port']} -t " . $this -> config['document_root']
+            php_run_path() . " -S {$config['host']}:{$config['port']} -t " . $config['document_root']
             )
         );
     }

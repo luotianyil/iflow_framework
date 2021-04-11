@@ -10,7 +10,7 @@ class Session
 {
     public function handle(App $app, $next)
     {
-        $app -> make(\iflow\session\Session::class) -> initializer();
+        \iflow\facade\Session::initializer();
         return $next($app);
     }
 }

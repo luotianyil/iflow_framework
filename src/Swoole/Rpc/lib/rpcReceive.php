@@ -60,9 +60,9 @@ class rpcReceive extends initializer
         return false;
     }
 
-    protected function send($response)
+    protected function send($response): bool
     {
-        $this->server -> send($this->fd,
+        return $this->server -> send($this->fd,
             match (!is_string($response)) {
                 true => json_encode($response, JSON_UNESCAPED_UNICODE),
                 default => $response
