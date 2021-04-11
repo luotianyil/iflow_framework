@@ -36,6 +36,9 @@ class tag extends tags
             $this->content = str_replace($value[0], $tagInfo, $this->content);
         }
 
+        $this->content = str_replace('{', "<?php ", $this->content);
+        $this->content = str_replace('}', ";?>", $this->content);
+
         return $this->literalEnd() -> saveStore();
     }
 
@@ -47,14 +50,13 @@ class tag extends tags
             $tags);
         if (empty($tags[1])) return $this;
         if (is_string($tags[1])) {
-
             $this->content = str_replace($tags[0], "<?php echo $".ltrim($tags[1], '$').";?>", $this->content);
             return $this;
         }
         $templateTags = $this->getTags($tags);
 
         foreach ($templateTags as $tag) {
-            $this->content = str_replace($tag[0], "<?php echo $".ltrim($tags[1], '$').";?>", $this->content);
+            $this->content = str_replace($tag[0], "<?php echo $".ltrim($tag[1], '$').";?>", $this->content);
         }
         return $this;
     }
@@ -178,7 +180,7 @@ class tag extends tags
     private function saveStore(): string {
         $store = $this->getStoreFile();
         !is_dir($this->config['store_path']) && mkdir($this->config['store_path'], 0755, true);
-        file_put_contents($store, str_replace("\r\n", '', $this->content));
+        file_put_contents($store, $this->content);
         return $store;
     }
 

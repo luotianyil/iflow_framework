@@ -60,7 +60,6 @@ class Session
                 'sessionName' => $this->sessionName
             ]);
         }
-
         return $this->session -> set($this->sessionId, $this->sessionTools -> all());
     }
 
