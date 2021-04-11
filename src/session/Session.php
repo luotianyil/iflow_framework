@@ -12,6 +12,7 @@ class Session
     protected array $config = [];
     protected ?object $session = null;
     protected mixed $sessionId = '';
+    protected mixed $sessionName = '';
 
     // 存放的session信息
     protected ArrayTools $sessionTools;
@@ -25,21 +26,16 @@ class Session
         $class = $this->namespace . ucfirst($this->config['type']);
         $this -> session = app($class) -> initializer($this->config);
 
-        $sessionName = $this->config['session_name'] ?? 'PHPSESSIONID';
+        $this->sessionName = $this->config['session_name'] ?? 'PHPSESSIONID';
 
         // 通过 请求参数或者 请求头 获取sessionId
-        $this->sessionId = request() -> params($sessionName);
-        $this->sessionId = $this->sessionId ?: request() -> getHeader($sessionName);
-
-        // 不存在即创建 SessionId
-        if (!$this->sessionId) {
-            $this->sessionId = $this->session -> set(null, [
-                'sessionName' => $sessionName
-            ]);
-        }
+        $this->sessionId = request() -> params($this->sessionName);
+        $this->sessionId = $this->sessionId ?: request() -> getHeader($this->sessionName);
 
         // 初始化 SessionTools
-        $this->sessionTools = new ArrayTools($this->session -> get($this->sessionId));
+        $this->sessionTools = new ArrayTools(
+            $this->sessionId ? $this->session -> get($this->sessionId): []
+        );
 
         return $this;
     }
@@ -57,6 +53,14 @@ class Session
      */
     public function set(string|null $name = null, array $data = []) {
         $this->sessionTools -> offsetSet($name, $data);
+
+        // 不存在即创建 SessionId
+        if (!$this->sessionId) {
+            $this->sessionId = $this->session -> set(null, [
+                'sessionName' => $this->sessionName
+            ]);
+        }
+
         return $this->session -> set($this->sessionId, $this->sessionTools -> all());
     }
 

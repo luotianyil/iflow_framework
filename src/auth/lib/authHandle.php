@@ -27,9 +27,7 @@ class authHandle
 
     public function setUserInfo(): static
     {
-        $token_key = request() -> params('Authorization');
-        $token_key = $token_key ?: request() -> getHeader('Authorization');
-        if ($token_key) $this->userInfo = session($token_key);
+        $this->userInfo = session('userInfo');
         return $this;
     }
 
