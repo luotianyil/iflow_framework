@@ -6,11 +6,11 @@ namespace iflow\console;
 
 use iflow\App;
 use iflow\command\dht;
+use iflow\command\http;
 use iflow\command\install;
 use iflow\console\lib\Help;
 use iflow\console\lib\Input;
 use iflow\console\lib\outPut;
-use iflow\http\HttpServer;
 use iflow\Swoole\Services\Services;
 
 class Console
@@ -28,7 +28,7 @@ class Console
         '<start|stop|reload>-rpc-<client|server>' => \iflow\Swoole\Rpc\Services::class,
         'start-kafka-consumer' => \iflow\Swoole\Kafka\Services::class,
         '<start|stop>-dht' => dht::class,
-        'start' => HttpServer::class,
+        'start' => http::class,
         'help' => Help::class,
         'install' => install::class
     ];

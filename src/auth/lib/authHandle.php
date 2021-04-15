@@ -25,6 +25,10 @@ class authHandle
         return $this->userInfo;
     }
 
+    /**
+     * 设置请求用户信息
+     * @return $this
+     */
     public function setUserInfo(): static
     {
         $this->userInfo = session('userInfo');
@@ -36,6 +40,10 @@ class authHandle
         return $this->authRoles;
     }
 
+    /**
+     * 设置当前验证器 角色
+     * @return $this
+     */
     public function setAuthRoles(): static
     {
         $this->authRoles = explode('|', $this->authAnnotation -> role);

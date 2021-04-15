@@ -22,18 +22,12 @@ class Request
     public function __construct()
     {
         $this->input = file_get_contents('php://input');
-        $this->setServer() -> setHeader() -> setParams();
+        $this->setServer() -> setHeader() -> setParams() -> setRowContent();
     }
 
     // 获取原始POST包体
     public function getContent(): array
     {
-        $contentType = $this->header['content-type'] ?? $this->header['accept'];
-        if ('application/x-www-form-urlencoded' == explode(';', $contentType)[0]) {
-            parse_str($this->input, $this->rowContent);
-        } elseif (str_contains($contentType, 'json')) {
-            $this->rowContent = (array) json_decode($this->input, true);
-        }
         return $this->rowContent ?: $this->post;
     }
 
@@ -59,7 +53,7 @@ class Request
         return $this;
     }
 
-    protected function setParams()
+    protected function setParams(): static
     {
         $this->get     = $_GET;
         $this->post    = $_POST;
@@ -68,6 +62,7 @@ class Request
             $_COOKIE
         ]);
         $this->files    = $_FILES ?? [];
+        return $this;
     }
 
     protected function array_key_lower($array): array {
@@ -77,5 +72,15 @@ class Request
             $temp[strtolower(str_replace('-', '_', $name))] = $value;
         }
         return $temp;
+    }
+
+    protected function setRowContent()
+    {
+        $contentType = $this->header['content-type'] ?? $this->header['accept'];
+        if ('application/x-www-form-urlencoded' == explode(';', $contentType)[0]) {
+            parse_str($this->input, $this->rowContent);
+        } elseif (str_contains($contentType, 'json')) {
+            $this->rowContent = (array) json_decode($this->input, true);
+        }
     }
 }

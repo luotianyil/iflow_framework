@@ -3,11 +3,11 @@
 
 namespace iflow\http\lib;
 
-use iflow\http\App;
-
 class service
 {
+    public float $runMemoryUsage = 0.00;
+
     public function __construct(
-        public App $app
+        public $app
     ){}
 }

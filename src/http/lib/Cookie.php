@@ -22,7 +22,7 @@ class Cookie
     ];
 
     public function __construct(
-        protected array $cookie = []
+        protected $cookie = []
     ) {
         $this->config = array_replace_recursive($this->config, config('cookie')) ?: $this->config;
     }
@@ -59,7 +59,7 @@ class Cookie
     }
 
 
-    private function saveCookie(string $name, $value, array $options = [])
+    protected function saveCookie(string $name, $value, array $options = [])
     {
         if (is_array($value)) $value = serialize($value);
         response() -> response -> cookie(

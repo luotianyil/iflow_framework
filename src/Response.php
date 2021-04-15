@@ -110,8 +110,35 @@ class Response
      */
     private function sendFile(string $path = '', bool $isConfigRootPath = true): File
     {
+        if (request() -> isGet()) {
+            $this->setLastModified() -> setCacheControl() -> steExpiresTimes();
+        }
         $this->setResponseHeader();
         return sendFile($path, isConfigRootPath: $isConfigRootPath);
+    }
+
+    public function setLastModified(string $value = ""): static
+    {
+        $this->headers([
+            'Last-Modified' => $value ?: gmdate('D,d M Y H:i:s')."GMT"
+        ]);
+        return $this;
+    }
+
+    public function setCacheControl(string $value = ""): static
+    {
+        $this->headers([
+            'Cache-Control' => $value ?: "max-age=36000,must-revalidata"
+        ]);
+        return $this;
+    }
+
+    public function steExpiresTimes(string $value = ""): static
+    {
+        $this->headers([
+            'Expires' => $value ?: gmdate('D,d M Y H:i:s',time() + 36000)."GMT"
+        ]);
+        return $this;
     }
 
     protected function setResponseHeader()

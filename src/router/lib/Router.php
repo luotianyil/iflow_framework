@@ -5,6 +5,7 @@ namespace iflow\router\lib;
 
 // 路由方法
 use iflow\App;
+use iflow\Utils\Tools\StrTools;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -50,6 +51,7 @@ class Router
 
     public function bindRouter()
     {
+        $strTools = new StrTools();
         // 获取全部方法
         foreach ($this->annotationClass -> getMethods() as $key) {
             // 获取方法调用的注解
@@ -58,7 +60,12 @@ class Router
             foreach ($annotations as $annotation) {
                 if (in_array($annotation -> getName(), $this->routerAttributeNames)) {
                     $routerAnnotation = $annotation -> newInstance();
-                    $router = $routerAnnotation -> getRouter($this->rule, "{$this->annotationClass -> getName()}@{$key -> getName()}", $this->methods, $this->options);
+                    $router = $routerAnnotation -> getRouter(
+                        $this->rule ?: $strTools -> unHumpToLower($key -> getName()),
+                        "{$this->annotationClass -> getName()}@{$key -> getName()}",
+                        $this->methods,
+                        $this->options
+                    );
                     $router['parameter'] = array_merge($parameter, $router['parameter']);
 
                     if (empty($this->routers['router'][$this->rule]))

@@ -49,7 +49,7 @@ class ArrayTools extends Collection
             return $array[array_shift($names)] ?: [];
         }
         $key = array_shift($names);
-        return $this->getConfigValue($names, $array[$key]);
+        return empty($array[$key]) ? null: $this->getConfigValue($names, $array[$key]);
     }
 
 }

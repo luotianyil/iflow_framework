@@ -102,8 +102,15 @@ class tag extends tags
             $tags);
         $templateTags = $this->getTags($tags);
         foreach ($templateTags as $tag) {
-            [$tps, $type] = $this->TagsType($tag);
-            $info = "<?php $type {$tps[0]}; ?>";
+            $index = strrpos($tag[1], ":") + 1;
+
+            // 获取执行方法
+            $tps = substr($tag[1], 0, $index - 1);
+
+            // 获取输出类型
+            $type = substr($tag[1], $index);
+            $type = $type !== 'echo' ? "$$type =" : 'echo';
+            $info = "<?php $type {$tps}; ?>";
             $this->content = str_replace($tag[0], $info, $this->content);
         }
         return $this;

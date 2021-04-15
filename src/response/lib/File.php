@@ -9,7 +9,10 @@ class File extends Response
 {
     protected array $mimeType = [
         'js' => 'text/javascript',
-        'css' => 'text/css'
+        'css' => 'text/css',
+        'html' => 'text/html',
+        'htm' => 'text/html',
+        'shtml' => 'text/html',
     ];
 
     public string $contentType = 'text/html';
@@ -30,7 +33,7 @@ class File extends Response
             $mimetype = finfo_file($finfo, $data);
             finfo_close($finfo);
             $ext = pathinfo($data, PATHINFO_EXTENSION);
-            if (in_array($ext, $this->mimeType)) $mimetype = $this->mimeType[$ext];
+            if (isset($this->mimeType[$ext])) $mimetype = $this->mimeType[$ext];
             return $this->contentType($mimetype) -> end($data);
         } else $this->notFount();
         return false;

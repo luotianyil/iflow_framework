@@ -9,7 +9,7 @@ use iflow\fileSystem\File;
 class Response
 {
 
-    public function sendFile($path): bool
+    public function sendFile(string $path): bool
     {
         $content = app() -> make(File::class) -> readFile($path);
         if ($content instanceof \Generator) {
