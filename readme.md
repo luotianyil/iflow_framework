@@ -92,7 +92,7 @@ https://framework.mzshe.cn
 
 - 数据库连接池
 
-- ORM 模型 ([think-orm](https://laravel-china.org/docs/laravel/5.5/eloquent/1332))
+- ORM 模型 ([think-orm](https://www.kancloud.cn/manual/think-orm/1257998))
 
 - 日志系统 (PSR-3) (支持类型：File/Elasticsearch)
 
