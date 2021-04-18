@@ -10,7 +10,7 @@ class RouterBase
     protected array $router = [];
 
     /**
-     * get Router List
+     * 获取路由列表
      * @return array
      */
     public function getRouterList() : array
@@ -37,7 +37,7 @@ class RouterBase
     }
 
     /**
-     * validate Router
+     * 验证路由
      * @param string $url
      * @param string $method
      * @param array $param
@@ -188,12 +188,12 @@ class RouterBase
     /**
      * 验证请求方法
      * @param string $method
-     * @param string $rule
+     * @param array $rule
      * @return bool
      */
-    protected function validateMethod($method = '', $rule = ''): bool
+    protected function validateMethod($method = '', array $rule = []): bool
     {
-        if ($rule === '*') return true;
-        return strtolower($method) === $rule;
+        if (in_array('*', $rule)) return true;
+        return in_array(strtolower($method), $rule);
     }
 }

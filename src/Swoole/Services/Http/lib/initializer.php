@@ -79,19 +79,6 @@ class initializer extends requestTools
         )));
     }
 
-    protected function bindParam(array $params = []): array
-    {
-        $parameter = [];
-        foreach ($params as $key => $value) {
-            if (isset($value['default'])) {
-                $parameter[] = $value['default'];
-            } else {
-                $parameter[] = $this->setInstanceValue($value);
-            }
-        }
-        return $parameter;
-    }
-
     protected function setInstanceValue(array $params): mixed
     {
         $keys = array_keys($params);

@@ -26,7 +26,7 @@ class HttpServer extends initializer
     {
         $startTime = microtime(true);
         if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
-            $file = config('app@favicon');
+            $file = config('app@favicon') ?: '';
             if (file_exists($file)) $response->sendfile($file);
             else $response -> end();
             return;

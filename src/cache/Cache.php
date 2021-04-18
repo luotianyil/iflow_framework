@@ -34,7 +34,4 @@ class Cache
         $class = $this->namespace . ucfirst($this->config['type']);
         return (new $class) -> initializer($this->config);
     }
-
-
-
 }

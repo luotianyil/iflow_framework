@@ -5,7 +5,6 @@ namespace iflow;
 
 use iflow\console\Console;
 use iflow\event\Event;
-use iflow\http\HttpServer;
 use iflow\initializer\annotationInitializer;
 use iflow\initializer\appMonitoring;
 use iflow\initializer\appSurroundings;

@@ -31,7 +31,7 @@ class Router
 
     public function __construct(
         protected string $rule = '',
-        protected string $methods = '',
+        protected string|array $methods = '',
         protected string $ext = '',
         protected array $parameter = [],
         protected array $options = [],
@@ -56,14 +56,13 @@ class Router
         foreach ($this->annotationClass -> getMethods() as $key) {
             // 获取方法调用的注解
             $annotations = $key -> getAttributes();
-            $parameter = $this->getRouterMethodParameter($key);
             foreach ($annotations as $annotation) {
                 if (in_array($annotation -> getName(), $this->routerAttributeNames)) {
+                    $parameter = $this->getRouterMethodParameter($key);
                     $routerAnnotation = $annotation -> newInstance();
                     $router = $routerAnnotation -> getRouter(
                         $this->rule ?: $strTools -> unHumpToLower($key -> getName()),
                         "{$this->annotationClass -> getName()}@{$key -> getName()}",
-                        $this->methods,
                         $this->options
                     );
                     $router['parameter'] = array_merge($parameter, $router['parameter']);
@@ -128,11 +127,13 @@ class Router
         return $parameter;
     }
 
-    public function getRouter(string $fatherRouter, string $action = '', string $methods = '*', array $options = []) : array
+    public function getRouter(string $fatherRouter, string $action = '', array $options = []) : array
     {
+        if (is_array($this->methods)) $this->methods = implode("|", $this->methods);
+        $methods = explode('|', strtolower($this -> methods));
         return [
             'rule' => str_replace('//', '/', $fatherRouter. '/' .$this->rule),
-            'method' => $this->methods !== ''? strtolower($this->methods) : ($methods === '' ? '*' : $methods),
+            'method' => empty($methods[0]) ? ['*'] : $methods,
             'action' => $action,
             'ext' => $this->ext,
             'parameter' => $this->parameter,

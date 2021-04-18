@@ -11,7 +11,7 @@ class pipeline
 {
     protected array $pipes = [];
 
-    public function through($pipes)
+    public function through($pipes): static
     {
         $this->pipes = is_array($pipes) ? $pipes : func_get_args();
         return $this;

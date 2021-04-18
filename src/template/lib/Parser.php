@@ -18,21 +18,29 @@ class Parser extends tag implements TemplateParser
         return file_exists($this->file);
     }
 
-    public function display(string $template, array $data = [])
+    public function display(string $template, array $data = []): \iflow\Response | bool
     {
         // TODO: Implement display() method.
         $this->data = $data;
         $view_suffix = $this->config['view_suffix'] === '' ? '' : ".{$this->config['view_suffix']}";
         $this->file = $this->config['view_root_path'] . $template . $view_suffix;
-        return $this->fetch();
+        try {
+            return $this->fetch();
+        } catch (\Exception $e) {
+            return response() -> notFount($e -> getMessage());
+        }
     }
 
-    public function fetch()
+    public function fetch(): \iflow\Response
     {
         // TODO: Implement fetch() method.
         if ($this->exists()) {
             $storeFile = $this->getStoreFile();
-            if (file_exists($storeFile)) return $this->send($storeFile);
+            if (file_exists($storeFile)) {
+                if ($this->config['cache_enable']) return $this->send($storeFile);
+                // 删除缓存文件
+                unlink($storeFile);
+            }
             return $this->send($this->templateParser());
         } else {
             throw new \Exception('template file not exists');

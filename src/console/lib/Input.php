@@ -24,16 +24,21 @@ class Input
     public function parsingInputCommand(array $command, Console $console)
     {
         if (count($this->argv) < 2) {
-            return false;
+            return $this->invokeClass($console, Help::class, $command);
         }
-
-        $app = $console -> app;
 
         $userCommand = explode('-', $this->argv[1]);
         // 用户指令
         $methods = count($userCommand) < 2 ? $userCommand[0] : $userCommand[1];
 
+        // 验证 指令是否存在
         foreach ($command as $key => $value) {
+
+            // 直接验证是否存在
+            if ($methods === $key) {
+                return $this->invokeClass($console, $value, $userCommand);
+            }
+
             // 配置指令
             $key_command = explode('-', $key);
             $commandClass = '';
@@ -47,14 +52,20 @@ class Input
             if ($commandClass !== '') {
                 if (!class_exists($commandClass)) throw new \Error("class {$commandClass} not exists");
                 else {
-                    $commandClass = $app -> invokeClass($commandClass, $this->argv);
-                    $commandClass -> setApp($app);
-                    $commandClass -> setConsole($console);
-                    return $app -> invoke([$commandClass, 'handle'], [$userCommand]);
+                    return $this->invokeClass($console, $commandClass, $userCommand);
                 }
             }
         }
-        return false;
+
+        return $this->invokeClass($console, Help::class, $userCommand);
+    }
+
+    public function invokeClass($console, $commandClass, $userCommand)
+    {
+        $commandClass = $console -> app -> invokeClass($commandClass, $this->argv);
+        $commandClass -> setApp($console -> app);
+        $commandClass -> setConsole($console);
+        return $console -> app -> invoke([$commandClass, 'handle'], [$userCommand]);
     }
 
 }

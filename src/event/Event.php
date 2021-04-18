@@ -19,19 +19,33 @@ class Event
         $this->arrayTools = new \iflow\Utils\ArrayTools($this->events);
     }
 
+    /**
+     * 绑定事件
+     * @param array $events
+     */
     public function bindEvent(array $events = [])
     {
         $this->events = array_merge($events, $this->events);
     }
 
-    public function trigger(string $event, array $args = [])
+    /**
+     * 触发事件
+     * @param string $event
+     * @param array $args
+     * @return mixed
+     */
+    public function trigger(string $event, array $args = []): mixed
     {
+        $eventName = explode('.', $event);
+        $method = "";
+
+        if (count($eventName) > 1) [$eventName, $method] = $event;
+
         if ($this->arrayTools -> offsetExists($event)) {
-            $event = $this->app -> make($this->arrayTools -> offsetGet($event), isNew: true);
-            return $this->app -> invokeMethod([$event, 'handle'], $args);
-        } else {
-            throw new \Error("event error: ${event} not exists");
+            $class = $this->app -> make($this->arrayTools -> offsetGet($eventName), isNew: true);
+            return $this->app -> invokeMethod([$class, $method ?: 'handle'], $args);
         }
+        throw new \Error("event error: ${$eventName} not exists");
     }
 
 }

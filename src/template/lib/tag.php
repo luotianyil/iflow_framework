@@ -191,7 +191,11 @@ class tag extends tags
         return $store;
     }
 
+    /**
+     * 设置缓存地址
+     * @return string
+     */
     protected function getStoreFile(): string {
-        return $this->config['store_path'] . DIRECTORY_SEPARATOR . md5_file($this->file). '.php';
+        return $this->config['store_path'] . DIRECTORY_SEPARATOR . md5($this->file). '.php';
     }
 }

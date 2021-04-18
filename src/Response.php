@@ -72,7 +72,7 @@ class Response
         return $response;
     }
 
-    public function notFount(): response\lib\File | bool
+    public function notFount(string $msg = '404 Not-Found'): bool
     {
         $this -> code = 404;
         if (request() -> isAjax() === false) {
@@ -81,7 +81,7 @@ class Response
                 return $this->sendFile($path, false) -> send();
             }
         }
-        return message() -> nodata('404 Not-Found') -> send();
+        return message() -> nodata($msg) -> send();
     }
 
     public function send()
