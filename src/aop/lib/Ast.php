@@ -60,7 +60,7 @@ class Ast
         $root = explode("\\", $class)[0] === "iflow" ?
             app() -> getFrameWorkPath() : app() -> getDefaultRootPath();
 
-        $filePath = $root . $class . ".php";
+        $filePath = str_replace("\\", "/", $root . $class . ".php");
         return file_exists($filePath) ? file_get_contents($filePath) : "";
     }
 }

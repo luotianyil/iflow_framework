@@ -55,11 +55,11 @@ class Aop
                 // 生成代理类
                 if (!$this->CacheExists($hashClass)) {
                     $ast = (new Ast()) -> proxy($class, aspectClass: $aspect);
-                    if ($ast === "") throw new \Exception("proxyClass not exists");
+                    if ($ast === "") throw new \Exception("proxyClass {$class} not exists");
                     $this->saveCache($hashClass, $ast);
                 }
                 include_once $this->config['cache_path']. DIRECTORY_SEPARATOR . $hashClass . ".php";
-                $aspects[] = (new \ReflectionClass(dirname($className) . "\\$hashClass")) -> newInstance();
+                $aspects[] = (new \ReflectionClass(substr($className, 0, strrpos($className, "\\"))."\\$hashClass")) -> newInstance();
                 break;
             }
         }
