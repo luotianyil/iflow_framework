@@ -39,5 +39,4 @@ class I18n
         }
         return $default;
     }
-
 }

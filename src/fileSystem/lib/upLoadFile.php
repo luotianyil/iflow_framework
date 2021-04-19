@@ -24,13 +24,7 @@ class upLoadFile extends fileSystem
 
     public function setFile($name, $file): static
     {
-        if (is_array($file)) {
-            foreach ($file as $val) {
-                $this->fileList[$name][] = new self($file['tmp_name']);
-            }
-        } else {
-            $this->fileList[$name][] = new self($file['tmp_name']);
-        }
+        $this->fileList[$name][] = new self($file['tmp_name']);
         return $this;
     }
 

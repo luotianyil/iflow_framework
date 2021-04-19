@@ -190,7 +190,7 @@ class request
                     $tempPath = $this->options['tempDir'] . DIRECTORY_SEPARATOR . $reg[4];
                     $this->saveTempFile($tempPath, $val);
 
-                    $this->files[$reg[1]][] = [
+                    $this->files[$reg[1]] = [
                         'tmp_name' => $tempPath,
                         'content-type' => $header[2]
                     ];

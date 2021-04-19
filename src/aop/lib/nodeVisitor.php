@@ -39,13 +39,20 @@ class nodeVisitor extends NodeVisitorAbstract
     public function leaveNode(Node $node): ClassMethod|Class_|null
     {
         // 生成临时类
-        if ($node instanceof Class_) {
+        if ($node instanceof Class_ || $node instanceof Node\Stmt\Trait_) {
             // 返回类
-            return new Class_($this->getProxyClassName(), [
-                'flags' => $node->flags,
-                'stmts' => $node->stmts,
-                'extends' => new Name('\\' . $this->className)
-            ]);
+            $params = [
+                'flags' => $node->flags
+            ];
+
+            if ($node instanceof Class_) {
+                $params['extends'] = new Name('\\' . $this->className);
+            } else {
+                array_unshift($node -> stmts,  new Node\Stmt\TraitUse([new Name('\\' . $this->className)]));
+            }
+
+            $params['stmts'] = $node->stmts;
+            return new Class_($this->getProxyClassName(), $params);
         }
 
         // 重写方法
@@ -89,7 +96,7 @@ class nodeVisitor extends NodeVisitorAbstract
                 'byRef' => $node->byRef,
                 'params' => $node->params,
                 'returnType' => $returnType,
-                'stmts' => $stmts,
+                'stmts' => $stmts
             ]);
         }
         return null;
