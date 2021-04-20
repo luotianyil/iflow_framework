@@ -113,7 +113,6 @@ class Container implements ContainerInterface
         foreach ($parameters as $parameter) {
             $name = $parameter -> getName();
             $types = $this->getParameterType($parameter);
-
             if (count($types) > 0) {
                 if (class_exists($types[0])) {
                     $args[] = $this->getObjectParam($types[0], $vars);
@@ -237,6 +236,8 @@ class Container implements ContainerInterface
             }
         } else if ($type instanceof ReflectionNamedType) {
             $types[] = $type -> getName();
+        } else {
+            $types = ['mixed'];
         }
 
         return $types;

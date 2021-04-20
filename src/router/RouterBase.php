@@ -154,35 +154,46 @@ class RouterBase
             }
 
             if (isset($value['default'])) {
-                $router['parameter'][$key]['default'] = match ($value['type']) {
-                    'array' => array_merge($value['default'], $param[$value['name']] ?? []),
-                    default => function () use ($param, $key, $value) {
-                        $params = $param[$key] ?? null;
-                        $t = gettype($value['default']);
-                        if (is_numeric($params) && $t !== 'string') $params = intval($params);
-                        if (gettype($params) !== $t) return $value['default'];
-                        return $params;
-                    }
-                };
-                $router['parameter'][$key]['default'] = is_object($router['parameter'][$key]['default']) ? call_user_func($router['parameter'][$key]['default']): $router['parameter'][$key]['default'];
+                $this->setDefaultValue(
+                    $router['parameter'][$key]['default'],
+                    $key, $value, $param[$value['name']]
+                );
             } else {
                 foreach ($value as $k => $v) {
-                    $router['parameter'][$key][$k]['default'] = match ($v['type']) {
-                        'array' => array_merge($v['default'], $param[$key][$v['name']] ?? []),
-                        default => function () use ($param, $key, $v) {
-                            $params = $param[$key][$v['name']] ?? null;
-                            $t = gettype($v['default']);
-                            if (is_numeric($params) && $t !== 'string') $params = intval($params);
-                            if (gettype($params) !== $t) return $v['default'];
-                            return $params;
-                        }
-                    };
-                    $router['parameter'][$key][$k]['default'] = is_object($router['parameter'][$key][$k]['default']) ? call_user_func($router['parameter'][$key][$k]['default']): $router['parameter'][$key][$k]['default'];
+                    $this->setDefaultValue(
+                        $router['parameter'][$key][$k]['default'],
+                        $key, $v, $param[$key][$v['name']]
+                    );
                 }
             }
         }
         $this->router = $router;
         return $router;
+    }
+
+    /**
+     * 设置传参值
+     * @param $default
+     * @param $key
+     * @param $value
+     * @param $param
+     * @param $routerParamDefault
+     */
+    private function setDefaultValue(&$default, $key, $value, $param)
+    {
+        $val = match ($value['type']) {
+            'array' => array_merge($value['default'], $param ?? []),
+            default => function () use ($param, $key, $value) {
+                $params = $param ?: null;
+                $type = gettype($value['default']);
+                if (is_numeric($params) && $type !== 'string') $params = intval($params);
+                // 当无 默认值时
+                if ($type === 'NULL') return $params;
+                if (gettype($params) !== $type) return $value['default'];
+                return $params;
+            }
+        };
+        $default = is_object($val) ? call_user_func($val) : $default;
     }
 
     /**

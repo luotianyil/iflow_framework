@@ -94,7 +94,15 @@ class Router
         foreach ($parameters as $key) {
             $type = $key -> getType();
             $name = $key -> getName();
-            if (!$type instanceof \ReflectionType) continue;
+            // 当无法获取类型时 即为 mixed
+            if (!$type instanceof \ReflectionType) {
+                $parameter[$name] = [
+                    'type' => 'mixed',
+                    'name' => $name,
+                    'default' => $this->getTypesDefault($key, ['mixed'])
+                ];
+                continue;
+            }
             if (class_exists($type -> getName())) {
                 $className = $type -> getName();
                 $parametersType = new ReflectionClass($className);
@@ -104,11 +112,13 @@ class Router
                     $p = $param -> getName();
                     $defaultValue = $parametersType -> getProperty($p);
                     if ($defaultValue -> isPublic()) {
+                        // 参数类型
+                        $t = app() -> getParameterType($param);
                         $this->routers['routerParams'][$className][$param -> getName()] = [
-                            'type' => app() -> getParameterType($param),
+                            'type' => $t,
                             'class' => $parametersTypeInstance::class,
                             'name' => $param -> getName(),
-                            'default' => $defaultValue -> getDefaultValue()
+                            'default' => $this->getTypesDefault($param, $t)
                         ];
                     }
                 }
@@ -117,10 +127,11 @@ class Router
                     'class' => $className
                 ];
             } else {
+                $t = app() -> getParameterType($key);
                 $parameter[$name] = [
-                    'type' => app() -> getParameterType($key),
+                    'type' => $t,
                     'name' => $name,
-                    'default' => $key -> isDefaultValueAvailable() ? $key -> getDefaultValue() : ''
+                    'default' => $this->getTypesDefault($key, $t)
                 ];
             }
         }
@@ -139,5 +150,32 @@ class Router
             'parameter' => $this->parameter,
             'options' => array_replace_recursive($options, $this->options)
         ];
+    }
+
+    /**
+     * 检测参数是否有默认值
+     * @param \ReflectionProperty|\ReflectionParameter $param
+     * @param string|array $type
+     * @return mixed|string
+     * @throws \ReflectionException
+     */
+    private function getTypesDefault(\ReflectionProperty|\ReflectionParameter $param, string|array $type): mixed
+    {
+        $isDefault = $param instanceof \ReflectionProperty ? $param -> isDefault() : $param -> isDefaultValueAvailable();
+        $default = $isDefault ? $param -> getDefaultValue(): '';
+        if ($default !== '') return $default;
+        $type = is_string($type) ? [$type] : $type;
+
+        // 如果是类 即返回对象
+        if (class_exists($type[0])) return $this->app -> make($type[0], isNew: true);
+        // 如果是 其他类型
+        $default = match ($type[0]) {
+            'mixed', 'string' => '',
+            'int' => 0,
+            'array' => [],
+            'bool' => true,
+            'float' => 0.00
+        };
+        return $default;
     }
 }

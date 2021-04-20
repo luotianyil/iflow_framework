@@ -75,9 +75,9 @@ class upLoadFile extends fileSystem
     /**
      * 文件名重命名
      * @param array $config
-     * @return false|mixed
+     * @return mixed
      */
-    protected function fileNameHash(array $config = [])
+    protected function fileNameHash(array $config = []): mixed
     {
         $fileNameType = $config['type'] ?? 'hash';
         $fileNameType = is_string($fileNameType) ? [

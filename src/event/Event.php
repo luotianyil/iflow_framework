@@ -39,9 +39,10 @@ class Event
         $eventName = explode('.', $event);
         $method = "";
 
-        if (count($eventName) > 1) [$eventName, $method] = $event;
+        if (count($eventName) > 1) [$eventName, $method] = $eventName;
+        else $eventName = $eventName[0];
 
-        if ($this->arrayTools -> offsetExists($event)) {
+        if ($this->arrayTools -> offsetExists($eventName)) {
             $class = $this->app -> make($this->arrayTools -> offsetGet($eventName), isNew: true);
             return $this->app -> invokeMethod([$class, $method ?: 'handle'], $args);
         }
