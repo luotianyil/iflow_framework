@@ -59,6 +59,10 @@ class nodeVisitor extends NodeVisitorAbstract
         if ($node instanceof ClassMethod && !$node->isStatic() && ($node->isPublic() || $node->isProtected())) {
             // 获取调用方法
             $methodName = $node->name->toString();
+
+            // 验证是否为构造函数
+            if ($methodName === '__construct') return null;
+
             $uses = [];
             // 方法参数
             foreach ($node->params as $key => $param) {

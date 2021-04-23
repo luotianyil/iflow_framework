@@ -117,6 +117,7 @@ if (!function_exists('message')) {
     }
 }
 
+// 发送邮件 仅支持 swoole
 if (!function_exists('emails')) {
     function emails(
         array $to,
@@ -137,6 +138,7 @@ if (!function_exists('emails')) {
     }
 }
 
+// 获取系统信息 仅支持 linux
 if (!function_exists('systemInfo')) {
     function systemInfo(): array {
         return (new \iflow\Utils\Tools\SystemTools()) -> getSystemInfo();
@@ -224,6 +226,7 @@ if (!function_exists('rpcRequest')) {
     }
 }
 
+// 发送 http请求
 if (!function_exists('httpRequest')) {
     function httpRequest(
         string $host,
@@ -296,6 +299,7 @@ if (!function_exists('xml')) {
     }
 }
 
+// 发送文件
 if (!function_exists('sendFile')) {
     function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\lib\File
     {
@@ -305,43 +309,49 @@ if (!function_exists('sendFile')) {
     }
 }
 
+// 返回视图文件
 if (!function_exists('view')) {
     function view(string $template, array $data = []) {
         return (new \iflow\template\Template()) -> display($template, $data);
     }
 }
 
+// 哈希加盐
 if (!function_exists('hasha')) {
     function hasha($string, string $key = '@QU8LP!90YB'): string {
         return md5(hash_hmac("sha512", $string, $key));
     }
 }
 
+// 种子文件解析
 if (!function_exists('bt_to_magnet')) {
     function bt_to_magnet($torrent) {
         return (new \iflow\Utils\torrent\Lightbenc()) -> bdecode_getinfo($torrent);
     }
 }
 
+// 验证是否为cli模式
 if (!function_exists('is_cli')) {
     function is_cli(): bool {
         return (new \iflow\Utils\Tools\SystemTools()) -> isCli();
     }
 }
 
+// 验证是否为swoole cli模式
 if (!function_exists('swoole_success')) {
     function swoole_success(): bool {
         return is_cli() && extension_loaded('swoole');
     }
 }
 
-
+// 部分代码使用 go 所以为了兼容 未安装swoole 扩展 提供此方法
 if (!function_exists('go')) {
     function go(\Closure $closure) {
         return call_user_func($closure);
     }
 }
 
+// 获取php可执行文件目录
 if (!function_exists('php_run_path')) {
     function php_run_path(): string {
         if(str_contains(PHP_OS, 'WIN')){
@@ -355,6 +365,7 @@ if (!function_exists('php_run_path')) {
     }
 }
 
+// 数组转一维数组
 if (!function_exists('array_multi_to_one')) {
     function array_multi_to_one($array, &$arr, ?\Closure $closure = null) {
         foreach ($array as $key => $value) {
@@ -370,12 +381,14 @@ if (!function_exists('array_multi_to_one')) {
     }
 }
 
+// i18n国际化
 if (!function_exists('i18n')) {
     function i18n(string $key, string|array $default = '', string $lan = ''): string {
         return app(\iflow\i18n\I18n::class) -> i18n($key, $default, $lan);
     }
 }
 
+// 验证器
 if (!function_exists('validate')) {
     function validate(array $rule = [], array $data = [], array $message = []) {
         $validate = new \iflow\validate\Validate();
@@ -388,5 +401,24 @@ if (!function_exists('validate')) {
             throw new Exception($error);
         }
         return null;
+    }
+}
+
+if (!function_exists('dump')) {
+    function dump(...$args): bool {
+        ob_start();
+        var_dump(...$args);
+        $output = ob_get_clean();
+
+        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
+        if (PHP_SAPI == 'cli') {
+            app(\iflow\console\Console::class) -> outPut -> write(PHP_EOL . $output . PHP_EOL);
+        } else {
+            if (!extension_loaded('xdebug')) {
+                $output = htmlspecialchars($output, ENT_SUBSTITUTE);
+            }
+            response() -> data('<pre>' . $output . '</pre>') -> send();
+        }
+        return true;
     }
 }

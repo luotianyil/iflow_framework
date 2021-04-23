@@ -236,10 +236,7 @@ class Container implements ContainerInterface
             }
         } else if ($type instanceof ReflectionNamedType) {
             $types[] = $type -> getName();
-        } else {
-            $types = ['mixed'];
         }
-
-        return $types;
+        return $types ?: ['mixed'];
     }
 }

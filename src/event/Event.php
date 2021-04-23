@@ -46,7 +46,7 @@ class Event
             $class = $this->app -> make($this->arrayTools -> offsetGet($eventName), isNew: true);
             return $this->app -> invokeMethod([$class, $method ?: 'handle'], $args);
         }
-        throw new \Error("event error: ${$eventName} not exists");
+        throw new \Error("event error: ${eventName} not exists");
     }
 
 }

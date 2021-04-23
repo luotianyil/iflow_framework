@@ -4,16 +4,16 @@
 namespace iflow\facade;
 
 
-use iflow\Facede;
+use iflow\Faceted;
 
 /**
  * Class Log
  * @mixin \iflow\log\Log
  * @package iflow\facade
  */
-class Log extends Facede
+class Log extends Faceted
 {
-    protected static function getFacedeClass(): string
+    protected static function getFaceClass(): string
     {
         return 'iflow\log\Log';
     }

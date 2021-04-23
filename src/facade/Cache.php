@@ -4,17 +4,17 @@
 namespace iflow\facade;
 
 
-use iflow\Facede;
+use iflow\Faceted;
 
 /**
  * @mixin \iflow\cache\Cache
  * Class Cache
  * @package iflow\facade
  */
-class Cache extends Facede
+class Cache extends Faceted
 {
 
-    protected static function getFacedeClass(): string
+    protected static function getFaceClass(): string
     {
         return "iflow\cache\Cache";
     }

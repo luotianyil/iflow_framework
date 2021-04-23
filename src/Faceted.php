@@ -3,21 +3,20 @@
 
 namespace iflow;
 
-class Facede
+abstract class Faceted
 {
 
     protected static bool $isNew = false;
 
     protected static function  createFacade(string $class = '', array $args = [], bool $isNew = false) {
         $class = $class?:static::class;
-        $class =  static::getFacedeClass()?:$class;
+        $class =  static::getFaceClass()?:$class;
         $isNew = static::$isNew?:$isNew;
         return Container::getInstance() -> make($class, $args, $isNew);
     }
 
     // 获取类
-    protected static function getFacedeClass() : string
-    { return ''; }
+    abstract protected static function getFaceClass() : string;
 
     public static function instance(...$args) {
         if (__CLASS__ != static::class) {

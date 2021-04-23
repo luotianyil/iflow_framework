@@ -156,13 +156,13 @@ class RouterBase
             if (isset($value['default'])) {
                 $this->setDefaultValue(
                     $router['parameter'][$key]['default'],
-                    $key, $value, $param[$value['name']]
+                    $key, $value, $param[$value['name']] ?? ''
                 );
             } else {
                 foreach ($value as $k => $v) {
                     $this->setDefaultValue(
                         $router['parameter'][$key][$k]['default'],
-                        $key, $v, $param[$key][$v['name']]
+                        $key, $v, $param[$key][$v['name']] ?? ''
                     );
                 }
             }

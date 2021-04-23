@@ -4,16 +4,16 @@
 namespace iflow\facade;
 
 
-use iflow\Facede;
+use iflow\Faceted;
 
 /**
  * Class Session
  * @mixin \iflow\session\Session
  * @package iflow\facade
  */
-class Session extends Facede
+class Session extends Faceted
 {
-    protected static function getFacedeClass(): string
+    protected static function getFaceClass(): string
     {
         return \iflow\session\Session::class;
     }

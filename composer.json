@@ -13,6 +13,7 @@
     "topthink/think-orm": "2.0.x",
     "simps/mqtt": "^1.1.4",
     "nikic/php-parser": "^4.10",
+    "phpunit/phpunit": "^9.5",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-bcmath": "*",

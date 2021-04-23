@@ -52,11 +52,21 @@ class authHandle
 
     public function validateAuth(Request $request): static
     {
-        if (empty($this->userInfo['role'])) {
+        if (!$this->userInfo) {
             $this->error = true;
         } else {
-            $this->authRoles = array_merge(explode('|', $this->authAnnotation -> role), $this->authRoles);
-            if ($this->authAnnotation -> role !== '*') $this->error = !in_array($this->userInfo['role'], $this->authRoles);
+            $this->userInfo['role'] =
+                is_string($this->userInfo['role']) ? [$this->userInfo['role']]
+                    : $this->userInfo['role'];
+
+            if (empty($this->userInfo['role'])) {
+                $this->error = true;
+            } else {
+                $this->authRoles = array_merge(explode('|', $this->authAnnotation -> role), $this->authRoles);
+                if ($this->authAnnotation -> role !== '*') {
+                    $this->error = count(array_intersect($this->userInfo['role'], $this->authRoles)) === 0;
+                }
+            }
         }
         return $this;
     }

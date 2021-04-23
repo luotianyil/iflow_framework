@@ -55,25 +55,25 @@ class Router
         // 获取全部方法
         foreach ($this->annotationClass -> getMethods() as $key) {
             // 获取方法调用的注解
-            $annotations = $key -> getAttributes();
-            foreach ($annotations as $annotation) {
-                if (in_array($annotation -> getName(), $this->routerAttributeNames)) {
-                    $parameter = $this->getRouterMethodParameter($key);
-                    $routerAnnotation = $annotation -> newInstance();
-                    $router = $routerAnnotation -> getRouter(
-                        $this->rule ?: $strTools -> unHumpToLower($key -> getName()),
-                        "{$this->annotationClass -> getName()}@{$key -> getName()}",
-                        $this->options
-                    );
-                    $router['parameter'] = array_merge($parameter, $router['parameter']);
+            $annotations = $key -> getAttributes(__CLASS__);
+            $annotation = $annotations[0] ?? '';
+            if ($annotation) {
+                $parameter = $this->getRouterMethodParameter($key);
+                $routerAnnotation = $annotation -> newInstance();
+                $router = $routerAnnotation -> getRouter(
+                    $this->rule ?: $strTools -> humpToLower($this->annotationClass -> getName()),
+                    "{$this->annotationClass -> getName()}@{$key -> getName()}",
+                    $strTools -> humpToLower($key -> getName()),
+                    $this->options
+                );
+                $router['parameter'] = array_merge($parameter, $router['parameter']);
 
-                    if (empty($this->routers['router'][$this->rule]))
-                        $this->routers['router'][$this->rule] = [];
+                if (empty($this->routers['router'][$this->rule]))
+                    $this->routers['router'][$this->rule] = [];
 
-                    // 验证是否存在该路由
-                    if (!in_array($router, $this->routers['router'][$this->rule]))
-                        $this->routers['router'][$this->rule][] = $router;
-                }
+                // 验证是否存在该路由
+                if (!in_array($router, $this->routers['router'][$this->rule]))
+                    $this->routers['router'][$this->rule][] = $router;
             }
         }
         config($this->routers, $this->routerKey);
@@ -97,7 +97,7 @@ class Router
             // 当无法获取类型时 即为 mixed
             if (!$type instanceof \ReflectionType) {
                 $parameter[$name] = [
-                    'type' => 'mixed',
+                    'type' => ['mixed'],
                     'name' => $name,
                     'default' => $this->getTypesDefault($key, ['mixed'])
                 ];
@@ -138,12 +138,18 @@ class Router
         return $parameter;
     }
 
-    public function getRouter(string $fatherRouter, string $action = '', array $options = []) : array
+    public function getRouter(string $fatherRouter, string $action = '', $method = '', array $options = []) : array
     {
         if (is_array($this->methods)) $this->methods = implode("|", $this->methods);
         $methods = explode('|', strtolower($this -> methods));
+
+        $rule = $this->rule ?: $method;
+
         return [
-            'rule' => str_replace('//', '/', $fatherRouter. '/' .$this->rule),
+            'rule' => str_replace('//', '/', $fatherRouter. '/' .(
+                    $rule ?: throw new \Error('Router rule is empty')
+                )
+            ),
             'method' => empty($methods[0]) ? ['*'] : $methods,
             'action' => $action,
             'ext' => $this->ext,

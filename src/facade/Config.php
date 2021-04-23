@@ -4,7 +4,7 @@
 namespace iflow\facade;
 
 
-use iflow\Facede;
+use iflow\Faceted;
 
 /**
  * @see \iflow\initializer\Config
@@ -12,10 +12,10 @@ use iflow\Facede;
  * Class Config
  * @package iflow\facade
  */
-class Config extends Facede
+class Config extends Faceted
 {
 
-    protected static function getFacedeClass(): string
+    protected static function getFaceClass(): string
     {
         return 'iflow\initializer\Config';
     }
