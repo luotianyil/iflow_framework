@@ -147,7 +147,7 @@ class Router
 
         return [
             'rule' => str_replace('//', '/', $fatherRouter. '/' .(
-                    $rule ?: throw new \Error('Router rule is empty')
+                $rule ?: throw new \Error('Router rule is empty')
                 )
             ),
             'method' => empty($methods[0]) ? ['*'] : $methods,

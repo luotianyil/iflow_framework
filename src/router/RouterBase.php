@@ -48,6 +48,7 @@ class RouterBase
         $routerList = $this->getRouterList();
         $router = [];
 
+        if (!$routerList['router']) return $router;
         foreach ($routerList['router'] as $key) {
             $router = $this->getRouterParam($key, $url, $method);
             if ($router) break;
