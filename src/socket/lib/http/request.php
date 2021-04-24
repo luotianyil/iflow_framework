@@ -52,7 +52,8 @@ class request
         [$header, $this->input] = explode("\r\n\r\n", $this->body);
         $header = explode("\r\n", $header);
         if (count(explode(" ", $header[0])) < 3) {
-            return $this->error = "请求头获取失败";
+            $this->error = "请求头获取失败";
+            return false;
         }
 
         [
@@ -67,7 +68,8 @@ class request
         $length = $this->getLength();
 
         if ($length > $this->options['packSize']) {
-            return $this->error = "请求长度超限";
+            $this->error = "请求长度超限";
+            return false;
         }
 
         // 获取全部请求数据
