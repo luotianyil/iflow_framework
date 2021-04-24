@@ -117,7 +117,7 @@ if (!function_exists('message')) {
     }
 }
 
-// 发送邮件 仅支持 swoole
+// 发送邮件
 if (!function_exists('emails')) {
     function emails(
         array $to,

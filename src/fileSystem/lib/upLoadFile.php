@@ -65,15 +65,18 @@ class upLoadFile extends fileSystem
         if ($validate) {
             $fileName = $this->fileNameHash($config);
             $path = $this->getSavePath($savePath, $fileName);
+            $path['path'] = str_replace("\\", "/", $path['path']);
             $basePath = dirname($path['path']);
             !is_dir($basePath) && mkdir($basePath, 0755, true);
-            return move_uploaded_file($this->getPathname(), $path['path']) ? $path : false;
+            // 当 move_uploaded_file 无法使用时(非框架自带HTTP服务时) 直接使用 rename
+            $upload = move_uploaded_file($this->getPathname(), $path['path']) ?: rename($this->getPathname(), $path['path']);
+            return $upload ? $path : false;
         }
         return $validate;
     }
 
     /**
-     * 文件名重命名
+     * 文件重命名
      * @param array $config
      * @return mixed
      */

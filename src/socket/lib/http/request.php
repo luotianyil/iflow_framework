@@ -24,6 +24,8 @@ class request
     public array $rowContent = [];
     public cookie $cookie;
 
+    public string $error = "";
+
     public function __construct(
         // 客户端请求主体
         protected string $body,
@@ -32,17 +34,25 @@ class request
     ) {
         $this->options['tempDir'] = $this->options['tempDir'] ?: sys_get_temp_dir();
        if ($this->initRequest() === false) {
-           throw new \Exception("server_protocol is null");
+           throw new \Exception($this->error);
        }
     }
 
+    /**
+     * 获取包体总长度
+     * @return int
+     */
+    public function getLength(): int
+    {
+        return intval($this->header['content_length']);
+    }
 
     protected function initRequest(): static|bool
     {
         [$header, $this->input] = explode("\r\n\r\n", $this->body);
         $header = explode("\r\n", $header);
         if (count(explode(" ", $header[0])) < 3) {
-            return false;
+            return $this->error = "请求头获取失败";
         }
 
         [
@@ -50,7 +60,25 @@ class request
             $this->request_uri,
             $this->request_protocol
         ] = explode(" ", array_shift($header));
-        return $this -> setHeaders($header) -> setServer() -> setRowContent() -> setParams();
+
+        // 初始化请求头 和 基础服务
+        $this -> setHeaders($header) -> setServer();
+
+        $length = $this->getLength();
+
+        if ($length > $this->options['packSize']) {
+            return $this->error = "请求长度超限";
+        }
+
+        // 获取全部请求数据
+        $length -= 1024;
+        while ($length > 0) {
+            $flag = socket_recv($this->socket, $read, 1024, 0);
+            if ($flag === false || $flag === 0 || strlen($this->body) > $this->options['packSize']) break;
+            $this->body .= $read;
+            $length -= 1024;
+        }
+        return $this -> setRowContent() -> setParams();
     }
 
     /**
@@ -177,7 +205,10 @@ class request
         // 格式化包体数据
         foreach ($data as $key => $value) {
             // 分割 内容与头部信息
-            [$name, $val] = explode("\r\n\r\n", $value);
+            $exp = explode("\r\n\r\n", $value);
+            if (count($exp) < 2) break;
+
+            [$name, $val] = $exp;
 
             $header = explode("\r\n", $name);
 
@@ -209,7 +240,7 @@ class request
     protected function saveTempFile($path, $content)
     {
         $dir = dirname($path);
-        is_dir($dir) && mkdir($dir);
+        !is_dir($dir) && mkdir($dir);
         file_put_contents($path, $content);
     }
 }

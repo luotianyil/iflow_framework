@@ -3,7 +3,7 @@
 
 namespace iflow\Swoole\email\lib;
 
-use \Co\Client as swClient;
+use iflow\socket\lib\client\Client as sClient;
 use iflow\Swoole\email\lib\Exception\mailerException;
 use iflow\Swoole\email\lib\Message\Html;
 use iflow\Swoole\email\lib\Message\Text;
@@ -11,7 +11,7 @@ use iflow\Swoole\email\Mailer;
 
 class client
 {
-    protected swClient $client;
+    protected mixed $client;
 
     public function __construct(
         protected Mailer $mailer,
@@ -20,9 +20,10 @@ class client
 
     protected function connection(): static
     {
-        $this->client = new swClient(
+
+        $this->client = class_exists(\Swoole\Coroutine\Client::class) ? new \Swoole\Coroutine\Client(
             $this->config -> getSsl() ? SWOOLE_SSL | SWOOLE_TCP : SWOOLE_TCP
-        );
+        ) : new sClient($this->config -> getSsl());
         $this->client -> set($this->config -> getOptions());
 
         if (!$this->client -> connect(

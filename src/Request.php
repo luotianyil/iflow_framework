@@ -68,7 +68,8 @@ class Request
     public function file(string $name = ''): upLoadFile|array
     {
         $upLoadFile = app() -> make(upLoadFile::class);
-        return $name === '' ? $upLoadFile -> getFileList() : $upLoadFile -> getFile($name);
+        $file = $name === '' ? $upLoadFile -> getFileList() : $upLoadFile -> getFile($name);
+        return $file ?: [];
     }
 
     public function postParams(string $name = '')

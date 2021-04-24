@@ -61,23 +61,17 @@ class http implements services
             $sock = socket_accept($this->socketServer);
             // 验证请求数据
             if ($sock) {
-                // 设置数据获取超时时间
-                socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, ["sec" => 0, "usec" => 1000000]);
-                $pack = "";
-                while (true) {
-                    $flag = socket_recv($sock, $read, 1024, 0);
-                    if ($flag === false || $flag === 0 || strlen($pack) > $this->options['packSize']) break;
-                    $pack .= $read;
-                }
+                $pack = socket_read($sock, 2048);
                 if ($pack) {
                     try {
                         $this->request = new request($pack, $sock, $this->options);
                         $this->response = new response($sock);
                         // 接收到 请求后的回调
                         $this->triggerEvent('request', $this->request, $this->response);
-                    } catch (\Exception $exception) {}
+                    } catch (\Exception $exception) {
+                        $this->close($sock);
+                    }
                 }
-                $this->close($sock);
             }
         });
         return $this;
