@@ -8,6 +8,7 @@ use iflow\App;
 use iflow\command\dht;
 use iflow\command\http;
 use iflow\command\install;
+use iflow\command\netPenetrate;
 use iflow\console\lib\Help;
 use iflow\console\lib\Input;
 use iflow\console\lib\outPut;
@@ -28,7 +29,8 @@ class Console
         '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,
         '<start|stop|reload>-rpc-<client|server>' => \iflow\Swoole\Rpc\Services::class,
         'start-kafka-consumer' => \iflow\Swoole\Kafka\Services::class,
-        '<start|stop>-dht' => dht::class,
+        'start-dht' => dht::class,
+        'start-proxy-<client|server>' => netPenetrate::class,
         'start' => http::class,
         'start-dev' => HttpServer::class,
         'help' => Help::class,

@@ -70,8 +70,8 @@ class http implements services
                         $this->triggerEvent('request', $this->request, $this->response);
                     } catch (\Exception) {}
                 }
+                $this->close($sock);
             }
-            $this->close($sock);
         });
         return $this;
     }
