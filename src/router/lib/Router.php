@@ -147,7 +147,7 @@ class Router
 
         return [
             'rule' => str_replace('//', '/', $fatherRouter. '/' .(
-                $rule ?: throw new \Error('Router rule is empty')
+                    $rule ?: throw new \Error('Router rule is empty')
                 )
             ),
             'method' => empty($methods[0]) ? ['*'] : $methods,
@@ -162,7 +162,7 @@ class Router
      * 检测参数是否有默认值
      * @param \ReflectionProperty|\ReflectionParameter $param
      * @param string|array $type
-     * @return mixed|string
+     * @return mixed
      * @throws \ReflectionException
      */
     private function getTypesDefault(\ReflectionProperty|\ReflectionParameter $param, string|array $type): mixed
