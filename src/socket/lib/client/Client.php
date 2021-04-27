@@ -31,7 +31,8 @@ class Client
             if ($this->enableSSL) {
                 $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT;
                 if (defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT')) {
-                    $crypto_method = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+                    $crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+                    $crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
                 }
                 stream_socket_enable_crypto($this->handle, true, $crypto_method);
             }

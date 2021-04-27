@@ -44,7 +44,7 @@ class request
      */
     public function getLength(): int
     {
-        return intval($this->header['content_length']);
+        return intval($this->header['content_length'] ?? 0);
     }
 
     protected function initRequest(): static|bool
