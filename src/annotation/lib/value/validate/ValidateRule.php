@@ -4,36 +4,40 @@
 namespace iflow\annotation\lib\value\validate;
 
 
+use iflow\annotation\lib\value\Exception\valueException;
+
 #[\Attribute]
 class ValidateRule
 {
     public function __construct(
-        protected string $rule = "",
-        protected array $errMsg = [],
-        protected string $defaultValue = ""
+        protected string|array $rule = [],
+        protected string|array $errMsg = [],
+        protected mixed $defaultValue = ""
     ) {}
 
-    /**
-     * @return string
-     */
-    public function getRule(): string
+    public function handle(\ReflectionProperty $ref, $object)
     {
-        return $this->rule;
+        $name = $ref -> getName();
+
+        $this->rule = $this->toArray($this->rule, $name);
+        $this->errMsg = $this->toArray($this->errMsg, $name);
+
+        $ref -> setValue(
+            $object, $ref -> getDefaultValue() ?: $this->defaultValue
+        );
+
+        $this->defaultValue = $this->toArray($this->defaultValue, $name);
+
+        try {
+            validate($this->rule, $this->defaultValue, $this->errMsg);
+        } catch (\Exception $exception) {
+            throw (new valueException()) -> setError(message() -> parameter_error($exception -> getMessage()));
+        }
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultValue(): string
-    {
-        return $this->defaultValue;
-    }
-
-    /**
-     * @return array
-     */
-    public function getErrMsg(): array
-    {
-        return $this->errMsg;
+    private function toArray($value, $name): array {
+        return !is_array($value) ? [
+            $name => $value
+        ]: $value;
     }
 }

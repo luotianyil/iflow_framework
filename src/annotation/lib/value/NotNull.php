@@ -13,8 +13,13 @@ class NotNull
       private string $error = ""
     ) {}
 
-    public function handle($value = null)
+    public function handle(\ReflectionProperty $ref, $object)
     {
-        if (!$value) throw (new valueException()) -> setError($this->error);
+        try {
+            // 获取数值 如果未初始化 抛出异常
+            return $ref -> getValue($object);
+        } catch (\Error) {
+            throw (new valueException()) -> setError(message() -> parameter_error($this->error));
+        }
     }
 }

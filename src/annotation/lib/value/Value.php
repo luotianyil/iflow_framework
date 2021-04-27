@@ -11,10 +11,22 @@ class Value
         private string $desc = ""
     ) {}
 
+    public function handle(\ReflectionProperty $ref, $object)
+    {
+        try {
+            return $ref -> getValue($object);
+        } catch (\Error) {
+            $ref -> setValue(
+                $object, $ref -> getDefaultValue() ?: $this->default
+            );
+        }
+        return true;
+    }
+
     /**
      * @return mixed
      */
-    public function setDefault(): mixed
+    public function getDefault(): mixed
     {
         return $this->default;
     }

@@ -108,6 +108,8 @@ class Router
                 $parametersType = new ReflectionClass($className);
                 $parametersTypeInstance = $parametersType -> newInstance();
                 $this->routers['routerParams'][$className] = $this->routers['routerParams'][$className] ?? [];
+
+                // 遍历方法内 参数
                 foreach ($parametersType -> getProperties() as $param) {
                     $p = $param -> getName();
                     $defaultValue = $parametersType -> getProperty($p);
@@ -184,4 +186,5 @@ class Router
         };
         return $default;
     }
+
 }

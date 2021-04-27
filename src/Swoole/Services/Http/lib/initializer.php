@@ -20,7 +20,11 @@ class initializer extends requestTools
             -> setResponse($response);
 
         foreach ($this->runProcess as $key) {
-            if (method_exists($this, $key) && call_user_func([$this, $key])) {
+            try {
+                if (method_exists($this, $key) && call_user_func([$this, $key])) break;
+            } catch (valueException $valueException) {
+                // 此处捕获参数异常
+                $this->validateResponse($valueException -> getError());
                 break;
             }
         }
@@ -89,16 +93,15 @@ class initializer extends requestTools
             $ref = new \ReflectionClass($class);
             $object = $ref -> newInstance();
             foreach ($params as $key => $value) {
-                $ref -> getProperty($value['name']) -> setValue($object, $value['default']);
+                if ($value['default']) {
+                    $ref -> getProperty($value['name']) -> setValue($object, $value['default']);
+                }
             }
+
+            // 进入Data 验证数据
             $attributes = $ref -> getAttributes();
             foreach ($attributes as $attr) {
-                $attr = app($attr -> getName());
-                try {
-                    call_user_func([$attr, 'handle'], $ref);
-                } catch (valueException $valueException) {
-                    return $this->validateResponse($valueException -> getError());
-                }
+                call_user_func([$attr -> newInstance(), 'handle'], ...[$ref, $object, $this]);
             }
         } else return $object['default'];
         return $object;

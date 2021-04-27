@@ -8,18 +8,31 @@ use iflow\annotation\lib\value\validate\ValidateRule;
 #[\Attribute]
 class Data
 {
+
+    private object $object;
+
     private array $methodAttribute = [
         Value::class,
         NotNull::class,
         ValidateRule::class
     ];
 
-    public function handle(\ReflectionClass $ref)
+    public function handle(\ReflectionClass $ref, $object)
     {
-        $methods = $ref -> getMethods();
-        foreach ($methods as $method) {
-            $attrMethod = $method -> getAttributes($this->methodAttribute);
+        $this->object = $object;
+        $properties = $ref -> getProperties();
+        foreach ($properties as $proper) {
+            foreach ($this->methodAttribute as $attrName) {
+                $this->properAttributes($proper, $attrName);
+            }
+        }
+    }
 
+    private function properAttributes(\ReflectionProperty $reflectionProperty, string $name)
+    {
+        $attribute = $reflectionProperty -> getAttributes($name)[0] ?? null;
+        if ($attribute) {
+            call_user_func([$attribute -> newInstance(), 'handle'], ...[$reflectionProperty, $this->object]);
         }
     }
 }
