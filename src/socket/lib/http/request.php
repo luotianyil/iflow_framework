@@ -73,7 +73,7 @@ class request
         }
 
         // 获取全部请求数据
-        $length -= 1024;
+        $length -= 2048;
         while ($length > 0) {
             $flag = socket_recv($this->socket, $read, 1024, 0);
             if ($flag === false || $flag === 0 || strlen($this->body) > $this->options['packSize']) break;

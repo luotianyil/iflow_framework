@@ -4,6 +4,7 @@
 namespace iflow\Swoole\Services\Http\lib;
 
 
+use iflow\annotation\lib\value\Exception\valueException;
 use iflow\http\lib\Cookie;
 use iflow\Request;
 use iflow\Response;
@@ -89,6 +90,15 @@ class initializer extends requestTools
             $object = $ref -> newInstance();
             foreach ($params as $key => $value) {
                 $ref -> getProperty($value['name']) -> setValue($object, $value['default']);
+            }
+            $attributes = $ref -> getAttributes();
+            foreach ($attributes as $attr) {
+                $attr = app($attr -> getName());
+                try {
+                    call_user_func([$attr, 'handle'], $ref);
+                } catch (valueException $valueException) {
+                    return $this->validateResponse($valueException -> getError());
+                }
             }
         } else return $object['default'];
         return $object;
