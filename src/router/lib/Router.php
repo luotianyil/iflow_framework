@@ -29,6 +29,12 @@ class Router
 
     protected string $routerKey = '';
 
+    private array $config = [
+        'key' => 'router',
+        // 路由前缀列表
+        'routerPrefix' => []
+    ];
+
     public function __construct(
         protected string $rule = '',
         protected string|array $methods = '',
@@ -43,15 +49,32 @@ class Router
         $this->app = $app;
         $this->annotationClass = $annotationClass;
 
+        $config = config('app@router');
+
+        // 验证数据类型 兼容以前版本
+        if (is_string($config)) {
+            $this->config['key'] = $config;
+        } else {
+            $this->config = array_merge($this->config, $config);
+        }
+
         // 定义路由数据
-        $this->routerKey = (string) config('app@router');
-        $this->routers = (array) config($this->routerKey);
+        $this->routerKey = $this->config['key'];
+        $this->routers = config($this->routerKey);
         $this->bindRouter();
     }
 
+    /**
+     * 获取类方法中所有路由
+     * @throws \ReflectionException
+     */
     public function bindRouter()
     {
         $strTools = new StrTools();
+
+        // 初始化类 路由数据
+        $this->rule = $this->routerPrefix($this->rule ?: $strTools -> humpToLower($this->annotationClass -> getName()));
+
         // 获取全部方法
         foreach ($this->annotationClass -> getMethods() as $key) {
             // 获取方法调用的注解
@@ -60,8 +83,8 @@ class Router
             if ($annotation) {
                 $parameter = $this->getRouterMethodParameter($key);
                 $routerAnnotation = $annotation -> newInstance();
-                $router = $routerAnnotation -> getRouter(
-                    $this->rule ?: $strTools -> humpToLower($this->annotationClass -> getName()),
+                $router = $routerAnnotation -> setConfig($this->config) -> getRouter(
+                    $this->rule,
                     "{$this->annotationClass -> getName()}@{$key -> getName()}",
                     $strTools -> humpToLower($key -> getName()),
                     $this->options
@@ -140,12 +163,20 @@ class Router
         return $parameter;
     }
 
-    public function getRouter(string $fatherRouter, string $action = '', $method = '', array $options = []) : array
+    /**
+     * 获取方法路由
+     * @param string $fatherRouter
+     * @param string $action 执行方法
+     * @param string $rule   执行路由
+     * @param array $options 其他参数
+     * @return array
+     */
+    public function getRouter(string $fatherRouter, string $action = '', $rule = '', array $options = []) : array
     {
         if (is_array($this->methods)) $this->methods = implode("|", $this->methods);
         $methods = explode('|', strtolower($this -> methods));
 
-        $rule = $this->rule ?: $method;
+        $rule = $this->rule ?: $rule;
 
         return [
             'rule' => str_replace('//', '/', $fatherRouter. '/' .(
@@ -187,4 +218,28 @@ class Router
         return $default;
     }
 
+    /**
+     * 检测路由是否使用前缀
+     * @param string $router
+     * @return string
+     */
+    private function routerPrefix(string $router): string
+    {
+        $startStr = explode('/', $router)[0];
+        preg_match("/^%(.*?)%$/", $startStr, $prefix);
+        if (count($prefix) > 1) {
+            $router = str_replace($startStr, $this->config['routerPrefix'][$prefix[1]] ?? '', $router);
+        }
+        return $router;
+    }
+
+    /**
+     * @param array $config
+     * @return static
+     */
+    public function setConfig(array $config): static
+    {
+        $this->config = $config;
+        return $this;
+    }
 }

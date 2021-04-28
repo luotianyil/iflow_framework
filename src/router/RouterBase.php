@@ -15,7 +15,13 @@ class RouterBase
      */
     public function getRouterList() : array
     {
-        return config(config('app@router'));
+
+        $router = config('app@router');
+        // 验证数据类型 兼容以前版本
+        if (is_array($router)) {
+            $router = $router['key'] ?? 'router';
+        }
+        return config($router);
     }
 
     /**

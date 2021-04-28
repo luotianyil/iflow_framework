@@ -120,7 +120,6 @@ class App extends Container
 
     /**
      * 获取应用根目录
-     * @access protected
      * @return string
      */
     public function getDefaultRootPath(): string
