@@ -37,14 +37,16 @@ class FileList
      */
     public function loadDirFile(string $dir, array $fileList = []) : array
     {
-        $dir = glob($dir. DIRECTORY_SEPARATOR . '*' . (is_dir($dir) ? '' : $this->ext));
-        foreach ($dir as $key) {
-            $fileDir = explode(DIRECTORY_SEPARATOR, $key);
-            if (is_file($key)) {
-                $fileList[str_replace($this->ext, '', $fileDir[count($fileDir) - 1])] = str_replace('//', '/', $key);
-            } else if (is_dir($key)) {
-                $fileList[$fileDir[count($fileDir) - 1]] = $this->loadDirFile($key, $fileList);
+        $iterator = new \FilesystemIterator($dir. DIRECTORY_SEPARATOR);
+        while ($iterator -> valid()) {
+            if (is_dir($iterator -> getPathname())) {
+                $fileList[$iterator -> getBasename()] = $this->loadDirFile($iterator -> getPathname());
+            } else {
+                $fileList[
+                    str_replace('.php', '', $iterator -> getBasename())
+                ] = str_replace('//', '/', $iterator -> getPathname());
             }
+            $iterator -> next();
         }
         return $fileList;
     }
