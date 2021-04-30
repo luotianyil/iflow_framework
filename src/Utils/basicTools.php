@@ -111,6 +111,15 @@ class basicTools
         return $card_id_start.$card_id_end;
     }
 
+    public function xmlToArray(string $xml, string $className = 'SimpleXMLElement', $option = LIBXML_NOCDATA): array
+    {
+        return json_decode(
+            json_encode(simplexml_load_string($xml, 'SimpleXMLElement', $option), JSON_UNESCAPED_UNICODE),
+            true
+        );
+    }
+
+    // 执行shell
     public function execShell($shell) {
         return trim(shell_exec($shell), PHP_EOL);
     }

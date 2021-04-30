@@ -26,7 +26,7 @@ class Request
     }
 
     // 获取原始POST包体
-    public function getContent(): array
+    public function getContent()
     {
         return $this->rowContent ?: $this->post;
     }

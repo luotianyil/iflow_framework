@@ -1,8 +1,6 @@
 <?php
 
-
 namespace iflow;
-
 
 use iflow\response\lib\File;
 
@@ -168,5 +166,4 @@ class Response
         if (method_exists($this->response, $name)) return call_user_func($name, ...$arguments);
         return null;
     }
-
 }

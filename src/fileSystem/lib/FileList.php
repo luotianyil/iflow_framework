@@ -43,7 +43,7 @@ class FileList
                 $fileList[$iterator -> getBasename()] = $this->loadDirFile($iterator -> getPathname());
             } else {
                 $fileList[
-                    str_replace('.php', '', $iterator -> getBasename())
+                    str_replace($this->ext, '', $iterator -> getBasename())
                 ] = str_replace('//', '/', $iterator -> getPathname());
             }
             $iterator -> next();
