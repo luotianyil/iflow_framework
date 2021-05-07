@@ -19,7 +19,7 @@ class NotNull
             // 获取数值 如果未初始化 抛出异常
             return $ref -> getValue($object);
         } catch (\Error) {
-            throw (new valueException()) -> setError(message() -> parameter_error($this->error));
+            throw (new valueException()) -> setError(message() -> parameter_error($this->error ?: "{$ref -> getName()} required"));
         }
     }
 }

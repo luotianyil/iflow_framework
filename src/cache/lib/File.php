@@ -95,7 +95,7 @@ class File
             return $now - $lifetime > $item -> getMTime();
         });
         foreach ($files as $file) {
-            @unlink($file->getPathname());
+            file_exists($file->getPathname()) && unlink($file->getPathname());
         }
     }
 }

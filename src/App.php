@@ -112,7 +112,7 @@ class App extends Container
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
         foreach ($this->frameWorkFolder as $key) {
             if (!file_exists($this->getDefaultRootPath() . $key)) {
-                @mkdir($this->getDefaultRootPath() . $key);
+                throw new \Exception("file ${$key} not exists");
             }
         }
         return true;

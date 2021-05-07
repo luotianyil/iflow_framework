@@ -44,7 +44,7 @@ class FileList
             } else {
                 $fileList[
                     str_replace($this->ext, '', $iterator -> getBasename())
-                ] = str_replace('//', '/', $iterator -> getPathname());
+                ] = $iterator -> getPathname();
             }
             $iterator -> next();
         }

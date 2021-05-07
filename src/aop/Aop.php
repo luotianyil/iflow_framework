@@ -14,7 +14,7 @@ class Aop
     private array $aspects = [];
 
     // AOP 配置
-    private array $config = [];
+    private array $config;
 
     // 管道
     protected pipeline $pipeline;
@@ -34,7 +34,7 @@ class Aop
      * @param string $class 执行类
      * @param string $method 执行方法
      * @param mixed ...$args
-     * @return bool|object|null
+     * @return bool|Aop
      * @throws \ReflectionException
      */
     public function process(string $class, string $method, ...$args): bool|static

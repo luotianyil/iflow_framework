@@ -5,6 +5,7 @@ namespace iflow\console;
 
 
 use iflow\App;
+use iflow\command\buildPhar;
 use iflow\command\dht;
 use iflow\command\http;
 use iflow\command\install;
@@ -34,7 +35,8 @@ class Console
         'start' => http::class,
         'start-dev' => HttpServer::class,
         'help' => Help::class,
-        'install' => install::class
+        'install' => install::class,
+        'build' => buildPhar::class
     ];
 
     protected array $userCommand = [];

@@ -225,7 +225,8 @@ class request
 
                     $this->files[$reg[1]] = [
                         'tmp_name' => $tempPath,
-                        'content-type' => $header[2]
+                        'content-type' => $header[2],
+                        'error' => 0
                     ];
                 } else {
                     $this->rowContent[$reg[1]] = explode("\r\n", $val)[0];

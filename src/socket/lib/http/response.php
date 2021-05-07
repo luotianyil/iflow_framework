@@ -164,7 +164,7 @@ class response
      * @param int $expires
      * @param string $path
      * @param string $domain
-     * @param string $secure
+     * @param bool $secure
      * @param bool $httponly
      * @param string $samesite
      * @param string $priority

@@ -8,7 +8,7 @@ class Message
 {
     use baseMessage;
 
-    private function message($code = [], $msg = "", $items = [], $page_info = [])
+    private function message(int $code, $msg = "", $items = [], $page_info = [])
     {
         $_msg = [ 'code' => $code,  'msg' => $msg, 'items' => $items];
         $_msg = count($page_info) > 0 ? array_merge($page_info, $_msg): $_msg;
@@ -46,9 +46,17 @@ class Message
     }
 
     // 服务器处理错误
-    public function server_error($code = 500, $msg = "", $items = [])
+    public function server_error(int $code = 500, $msg = "", $items = [])
     {
         return $this->message($code, $msg, $items);
+    }
+
+    // 重定向
+    public function redirect(string $url)
+    {
+        return $this->message(302, 'URL Redirect', [
+            'url' => $url
+        ]);
     }
 
 }

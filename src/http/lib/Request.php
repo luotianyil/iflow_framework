@@ -15,7 +15,7 @@ class Request
     public array $files = [];
     public Cookie $cookie;
     public array $request;
-    public array $rowContent = [];
+    public array|string $rowContent = [];
 
     public string $input;
 
@@ -26,7 +26,7 @@ class Request
     }
 
     // 获取原始POST包体
-    public function getContent()
+    public function getContent(): array|string
     {
         return $this->rowContent ?: $this->post;
     }
@@ -80,7 +80,9 @@ class Request
         if ('application/x-www-form-urlencoded' == explode(';', $contentType)[0]) {
             parse_str($this->input, $this->rowContent);
         } elseif (str_contains($contentType, 'json')) {
-            $this->rowContent = (array) json_decode($this->input, true);
+            $this->rowContent = json_decode($this->input, true);
+        } else {
+            $this->rowContent = $this->input;
         }
     }
 }
