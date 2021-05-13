@@ -63,6 +63,11 @@ class initializer extends requestTools
         return $this->newInstanceController();
     }
 
+    /**
+     * 实例化控制器
+     * @return bool
+     * @throws \ReflectionException
+     */
     protected function newInstanceController(): bool
     {
         $this->requestController = explode('@', $this->router['action']);
@@ -72,6 +77,11 @@ class initializer extends requestTools
         return false;
     }
 
+    /**
+     * 执行控制器方法
+     * @return bool
+     * @throws \ReflectionException
+     */
     protected function startController(): bool
     {
         $controller =
@@ -84,21 +94,32 @@ class initializer extends requestTools
         )));
     }
 
+    /**
+     * 设置Bean 参数
+     * @param array $params
+     * @return mixed
+     * @throws \ReflectionException
+     */
     protected function setInstanceValue(array $params): mixed
     {
         $keys = array_keys($params);
-        $class = $params[$keys[0]]['class'] ?? '';
+        $class = $params[$keys[0]]['class'];
         $object = [];
+
         if (count($params) > 0 && class_exists($class)) {
             $ref = new \ReflectionClass($class);
             $object = $ref -> newInstance();
             foreach ($params as $key => $value) {
-                if ($value['default']) {
-                    $ref -> getProperty($value['name']) -> setValue($object, $value['default']);
+                if (isset($value['default'])) {
+                    if ($value['type'][0] === 'class') {
+                        $value['default'] = $this->setInstanceValue($value['default']);
+                    }
+                    $ref -> getProperty($value['name']) -> setValue(
+                        $object, $value['default'] ?? ''
+                    );
                 }
             }
-
-            // 进入Data 验证数据
+            // 获取 Bean注解 并执行
             $attributes = $ref -> getAttributes();
             foreach ($attributes as $attr) {
                 call_user_func([$attr -> newInstance(), 'handle'], ...[$ref, $object, $this]);

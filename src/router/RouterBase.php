@@ -9,6 +9,8 @@ class RouterBase
 
     protected array $router = [];
 
+    protected array $routerList;
+
     /**
      * 获取路由列表
      * @return array
@@ -21,7 +23,7 @@ class RouterBase
         if (is_array($router)) {
             $router = $router['key'] ?? 'router';
         }
-        return config($router);
+        return $this->routerList = config($router);
     }
 
     /**
@@ -95,7 +97,7 @@ class RouterBase
      * @param array $rule
      * @param string $method
      * @param $key
-     * @return array|mixed
+     * @return mixed
      */
     protected function regxRouter(array $url,array $rule, string $method, $key): mixed
     {
@@ -154,6 +156,7 @@ class RouterBase
      */
     protected function bindParam(array $router, array $param, array $routerList): array
     {
+        // 遍历路由变量
         foreach ($router['parameter'] as $key => $value) {
             if ($value['type'] === 'class') {
                 $router['parameter'][$key] =
@@ -166,11 +169,23 @@ class RouterBase
                     $key, $value, $param[$value['name']] ?? ''
                 );
             } else {
-                foreach ($value as $k => $v) {
-                    $this->setDefaultValue(
-                        $router['parameter'][$key][$k]['default'],
-                        $key, $v, $param[$key][$v['name']] ?? ''
-                    );
+                foreach ($value as $paramsName => $paramsValue) {
+                    if ($paramsValue['type'][0] === 'class') {
+                        // 参数为 类时
+                        $paramsValue['default'] =
+                        $router['parameter'][$key][$paramsName]['default'] = $routerList['routerParams'][$paramsValue['class']];
+                        $this->setClassDefaultValue(
+                            $router['parameter'][$key][$paramsName]['default'],
+                            $paramsValue,
+                            $paramsName,
+                            $param[$key][$paramsValue['name']] ?? ''
+                        );
+                    } else {
+                        $this->setDefaultValue(
+                            $router['parameter'][$key][$paramsName]['default'],
+                            $key, $paramsValue, $param[$key][$paramsValue['name']] ?? ''
+                        );
+                    }
                 }
             }
         }
@@ -179,18 +194,48 @@ class RouterBase
     }
 
     /**
+     * 递归类参数
+     * @param $router
+     * @param $value
+     * @param $paramsName
+     * @param $params
+     */
+    private function setClassDefaultValue(&$router, $value, $paramsName, $params)
+    {
+        foreach ($value['default'] as $paramsName => $paramsValue) {
+            if ($paramsValue['type'][0] === 'class') {
+                if (isset($params[$paramsValue['name']])) {
+                    $paramsValue['default'] =
+                    $router[$paramsName]['default'] = $this->routerList['routerParams'][$paramsValue['class']];
+                    $this->setClassDefaultValue(
+                        $router[$paramsName]['default'],
+                        $paramsValue,
+                        $paramsName,
+                        $params[$paramsValue['name']] ?? ''
+                    );
+                }
+            } else {
+                $this->setDefaultValue(
+                    $router[$paramsName]['default'],
+                    $paramsName, $paramsValue, $params[$paramsValue['name']] ?? ''
+                );
+            }
+        }
+    }
+
+    /**
      * 设置传参值
      * @param $default
      * @param $key
      * @param $value
      * @param $param
-     * @param $routerParamDefault
+     * @return mixed
      */
-    private function setDefaultValue(&$default, $key, $value, $param)
+    private function setDefaultValue(&$default, $key, $value, $param): mixed
     {
         $val = match ($value['type']) {
             'array' => array_merge($value['default'], $param ?? []),
-            default => function () use ($param, $key, $value) {
+            default => function () use ($default, $key, $value, $param) {
                 $params = $param ?: null;
                 $type = gettype($value['default']);
                 if (is_numeric($params) && $type !== 'string') $params = intval($params);
@@ -200,7 +245,7 @@ class RouterBase
                 return $params;
             }
         };
-        $default = is_object($val) ? call_user_func($val) : $default;
+        return $default = is_object($val) ? call_user_func($val) : $default;
     }
 
     /**

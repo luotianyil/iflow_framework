@@ -22,7 +22,7 @@ class Aop
     protected App $app;
 
     // 执行切面返回数据
-    private mixed $response;
+    private mixed $response = "";
 
     public function __construct()
     {
@@ -151,8 +151,8 @@ class Aop
         try {
             $this->pipeline -> process(app());
             return true;
-        } catch (\Exception) {
-            return $this->response;
+        } catch (\Exception $exception) {
+            return $this->response ?: $exception -> getMessage();
         }
     }
 }

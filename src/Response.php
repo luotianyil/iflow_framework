@@ -19,7 +19,7 @@ class Response
         $this->data($data);
     }
 
-    protected function contentType($contentType = 'application/json') : static {
+    public function contentType($contentType = 'application/json') : static {
         $this -> contentType = $contentType;
         return $this;
     }
@@ -141,11 +141,11 @@ class Response
 
     protected function setResponseHeader()
     {
+        $this->response -> status($this->code);
+        $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
         foreach ($this->headers as $key => $value) {
             $this->response -> header($key, $value);
         }
-        $this->response -> status($this->code);
-        $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
     }
 
     public function initializer($response): static

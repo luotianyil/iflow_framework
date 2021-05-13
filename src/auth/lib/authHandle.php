@@ -55,15 +55,15 @@ class authHandle
         if (!$this->userInfo) {
             $this->error = true;
         } else {
-            $this->userInfo['role'] =
-                is_string($this->userInfo['role']) ? [$this->userInfo['role']]
-                    : $this->userInfo['role'];
+            if ($this->authAnnotation -> role !== '*') {
+                $this->userInfo['role'] =
+                    is_string($this->userInfo['role']) ? [$this->userInfo['role']]
+                        : $this->userInfo['role'];
 
-            if (empty($this->userInfo['role'])) {
-                $this->error = true;
-            } else {
-                $this->authRoles = array_merge(explode('|', $this->authAnnotation -> role), $this->authRoles);
-                if ($this->authAnnotation -> role !== '*') {
+                if (empty($this->userInfo['role'])) {
+                    $this->error = true;
+                } else {
+                    $this->authRoles = array_merge(explode('|', $this->authAnnotation -> role), $this->authRoles);
                     $this->error = count(array_intersect($this->userInfo['role'], $this->authRoles)) === 0;
                 }
             }

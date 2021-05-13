@@ -126,30 +126,14 @@ class Router
                 ];
                 continue;
             }
-            if (class_exists($type -> getName())) {
-                $className = $type -> getName();
-                $parametersType = new ReflectionClass($className);
-                $parametersTypeInstance = $parametersType -> newInstance();
-                $this->routers['routerParams'][$className] = $this->routers['routerParams'][$className] ?? [];
 
-                // 遍历方法内 参数
-                foreach ($parametersType -> getProperties() as $param) {
-                    $p = $param -> getName();
-                    $defaultValue = $parametersType -> getProperty($p);
-                    if ($defaultValue -> isPublic()) {
-                        // 参数类型
-                        $t = app() -> getParameterType($param);
-                        $this->routers['routerParams'][$className][$param -> getName()] = [
-                            'type' => $t,
-                            'class' => $parametersTypeInstance::class,
-                            'name' => $param -> getName(),
-                            'default' => $this->getTypesDefault($param, $t)
-                        ];
-                    }
-                }
+            $typeName = $type -> getName();
+
+            if (class_exists($typeName)) {
+                $this->getClassParams($typeName);
                 $parameter[$name] = [
                     'type' => 'class',
-                    'class' => $className
+                    'class' => $typeName
                 ];
             } else {
                 $t = app() -> getParameterType($key);
@@ -164,7 +148,48 @@ class Router
     }
 
     /**
-     * 获取方法路由
+     * 如果是类参数则遍历 获取类参数
+     * @param string $className
+     * @throws \ReflectionException
+     */
+    public function getClassParams(string $className)
+    {
+        $parametersType = new ReflectionClass($className);
+        $parametersTypeInstance = $parametersType -> newInstance();
+        $this->routers['routerParams'][$className] = $this->routers['routerParams'][$className] ?? [];
+
+        // 遍历方法内 参数
+        foreach ($parametersType -> getProperties() as $param) {
+            $p = $param -> getName();
+            $defaultValue = $parametersType -> getProperty($p);
+            if ($defaultValue -> isPublic()) {
+                // 参数类型
+                $t = app() -> getParameterType($param);
+
+                // 设定参数
+                $params = [
+                    'type' => $t,
+                    'class' => $parametersTypeInstance::class,
+                    'name' => $param -> getName(),
+                    'default' => $this->getTypesDefault($param, $t)
+                ];
+
+                // 如果是类 即遍历
+                if (class_exists($t[0])) {
+                    $params['class'] = $t[0];
+                    $params['type'] = ['class'];
+                }
+
+                if (class_exists($t[0]) && $t[0] !== $className) {
+                    $this->getClassParams($t[0]);
+                }
+                $this->routers['routerParams'][$className][$param -> getName()] = $params;
+            }
+        }
+    }
+
+    /**
+     * 设置方法路由
      * @param string $fatherRouter
      * @param string $action 执行方法
      * @param string $rule   执行路由
@@ -204,7 +229,6 @@ class Router
         $default = $isDefault ? $param -> getDefaultValue(): '';
         if ($default !== '') return $default;
         $type = is_string($type) ? [$type] : $type;
-
         // 如果是类 即返回对象
         if (class_exists($type[0])) return $this->app -> make($type[0], isNew: true);
         // 如果是 其他类型

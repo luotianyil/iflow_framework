@@ -13,13 +13,24 @@ class NotNull
       private string $error = ""
     ) {}
 
+    /**
+     * @param \ReflectionProperty $ref
+     * @param $object
+     * @throws valueException
+     */
     public function handle(\ReflectionProperty $ref, $object)
     {
         try {
             // 获取数值 如果未初始化 抛出异常
-            return $ref -> getValue($object);
+            $value = $ref -> getValue($object);
+            if (!is_bool($value) && !$value) $this->throwError($ref);
         } catch (\Error) {
-            throw (new valueException()) -> setError(message() -> parameter_error($this->error ?: "{$ref -> getName()} required"));
+            $this->throwError($ref);
         }
+    }
+
+    private function throwError($ref)
+    {
+        throw (new valueException()) -> setError(message() -> parameter_error($this->error ?: "{$ref -> getName()} required"));
     }
 }

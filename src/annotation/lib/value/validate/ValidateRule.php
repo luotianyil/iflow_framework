@@ -22,11 +22,15 @@ class ValidateRule
         $this->rule = $this->toArray($this->rule, $name);
         $this->errMsg = $this->toArray($this->errMsg, $name);
 
-        $ref -> setValue(
-            $object, $ref -> getDefaultValue() ?: $this->defaultValue
-        );
+        // 获取验证参数
+        try {
+            $value = $ref -> getValue($object);
+        } catch (\Error $error) {
+            $value = $ref -> getDefaultValue() ?: $this->defaultValue;
+        }
 
-        $this->defaultValue = $this->toArray($this->defaultValue, $name);
+        $ref -> setValue($object, $value);
+        $this->defaultValue = $this->toArray($ref->getValue($object), $name);
 
         try {
             validate($this->rule, $this->defaultValue, $this->errMsg);
