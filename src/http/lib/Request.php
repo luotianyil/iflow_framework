@@ -15,7 +15,7 @@ class Request
     public array $files = [];
     public Cookie $cookie;
     public array $request;
-    public array|string $rowContent = [];
+    public array|string|null $rowContent = [];
 
     public string $input;
 
@@ -26,7 +26,7 @@ class Request
     }
 
     // 获取原始POST包体
-    public function getContent(): array|string
+    public function getContent(): array|string|null
     {
         return $this->rowContent ?: $this->post;
     }
@@ -61,7 +61,7 @@ class Request
         $this->cookie  = app() -> make(Cookie::class, [
             $_COOKIE
         ]);
-        $this->files    = $_FILES ?? [];
+        $this->files   = $_FILES ?? [];
         return $this;
     }
 

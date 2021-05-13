@@ -33,6 +33,7 @@ class PictureCrop
         }
         $this->sourceImageSize = getimagesize($this->imagePath) ?: throw new \Exception('文件格式错误，需为图片文件');
         $this->imageCreateFromType = "imagecreatefrom".image_type_to_extension($this->sourceImageSize[2], false);
+        $this->source = call_user_func($this->imageCreateFromType, $this->imagePath);
     }
 
     /**
@@ -61,7 +62,6 @@ class PictureCrop
      */
     public function compressionImage(): static
     {
-        $this->source = call_user_func($this->imageCreateFromType, $this->imagePath);
         $this->crop = imagecreatetruecolor($this->width, $this->height);
         imagecopyresampled($this->crop, $this->source, 0, 0, 0, 0, $this->width, $this->height, $this->sourceImageSize[0], $this->sourceImageSize[1]);
 
@@ -78,7 +78,6 @@ class PictureCrop
      */
     public function PicCrop(int $dst_x = 0, int $dst_y = 0, int $src_x = 0, int $src_y = 0): static
     {
-        $this->source = call_user_func($this->imageCreateFromType, $this->imagePath);
         $this->crop = imagecreatetruecolor($this->width, $this->height);
         imagecopy($this->crop, $this->source, $dst_x, $dst_y, $src_x, $src_y, $this->sourceImageSize[0], $this->sourceImageSize[1]);
         return $this;
