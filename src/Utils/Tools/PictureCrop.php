@@ -14,7 +14,7 @@ class PictureCrop
     // 原图片
     public $source;
     // 生成的目标图片
-    public $crop;
+    public $crop = null;
 
     // 压缩后文件 图片
     public array $imageFile = [
@@ -91,13 +91,14 @@ class PictureCrop
     public function out(string $savePath = null)
     {
         ob_start();
-        imagejpeg($this->crop, $savePath);
+        imagejpeg($this->crop ?: $this->source, $savePath);
         $info = ob_get_contents();
         ob_end_clean();
 
         // 释放图片
         imagedestroy($this->source);
-        imagedestroy($this->crop);
+        if ($this->crop) imagedestroy($this->crop);
+
         return $info;
     }
 
@@ -131,7 +132,7 @@ class PictureCrop
         } else {
             $water = imagecreatefrompng($waterText);
         }
-        imagecopymerge($this->crop, $water, $dst_x, $dst_y, 0, 0, $this->width, $this->height, 30);
+        imagecopymerge($this->crop ?: $this->source, $water, $dst_x, $dst_y, 0, 0, $this->width, $this->height, 30);
         imagedestroy($water);
         return $this;
     }
