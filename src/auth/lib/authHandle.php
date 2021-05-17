@@ -76,6 +76,7 @@ class authHandle
         $class = explode('@', $this->authAnnotation -> callBack);
         $method = '';
         if (count($class) > 1) [$class, $method] = $class;
+        else $class = $class[0];
         // 回调参数
         if (!class_exists($class)) {
             return !$this->error;
