@@ -72,7 +72,7 @@ class Logger implements LoggerInterface
         return $this->setLogs('log', $message, $context);
     }
 
-    protected function setLogs(string $type, $message, $content)
+    protected function setLogs(string $type, $message, $content): static
     {
         $content = $message. trim(var_export(count($content) <= 0 ? '' : $content, true), "'");
         $timer = \DateTime::createFromFormat('0.u00 U', microtime())->setTimezone(new \DateTimeZone(date_default_timezone_get()))->format($this->config['time_format']);
@@ -95,7 +95,7 @@ class Logger implements LoggerInterface
         return $this;
     }
 
-    public function clear()
+    public function clear(): bool
     {
         $this->logs = [];
         return true;

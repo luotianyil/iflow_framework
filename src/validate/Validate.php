@@ -9,7 +9,6 @@ class Validate extends validateBase
 {
 
     protected array $rule = [];
-    protected array $validateData = [];
     protected array $message = [];
 
     public function rule(array $rule, array $message = []): static

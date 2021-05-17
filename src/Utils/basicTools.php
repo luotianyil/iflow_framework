@@ -123,4 +123,13 @@ class basicTools
     public function execShell($shell) {
         return trim(shell_exec($shell), PHP_EOL);
     }
+
+    // 对象转 数组
+    public function objectToArray(object $object): array
+    {
+        if (method_exists($object, 'toArray')) {
+            return $object -> toArray();
+        }
+        return get_object_vars($object);
+    }
 }

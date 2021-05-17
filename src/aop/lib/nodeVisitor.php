@@ -46,7 +46,7 @@ class nodeVisitor extends NodeVisitorAbstract
             ];
 
             if ($node instanceof Class_) {
-                $params['extends'] = new Name('\\' . $this->className);
+                if ($node->extends) $params['extends'] = $node ->extends;
             } else {
                 array_unshift($node -> stmts,  new Node\Stmt\TraitUse([new Name('\\' . $this->className)]));
             }
@@ -60,8 +60,8 @@ class nodeVisitor extends NodeVisitorAbstract
             // 获取调用方法
             $methodName = $node->name->toString();
 
-            // 验证是否为构造函数
-            if ($methodName === '__construct') return null;
+            // 验证方法 前两个字符是否为 下划线
+            if (substr($methodName, 0, 2) === '__') return null;
 
             $uses = [];
             // 方法参数

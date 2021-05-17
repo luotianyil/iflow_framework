@@ -73,9 +73,13 @@ class authHandle
 
     public function callback(): bool
     {
-        if (!class_exists($this->authAnnotation -> callBack)) {
+        $class = explode('@', $this->authAnnotation -> callBack);
+        $method = '';
+        if (count($class) > 1) [$class, $method] = $class;
+        // 回调参数
+        if (!class_exists($class)) {
             return !$this->error;
         }
-        return $this->authAnnotation -> app -> make($this->authAnnotation -> callBack) -> handle($this);
+        return call_user_func([$this->authAnnotation -> app -> make($class), $method ?: 'handle'], $this);
     }
 }

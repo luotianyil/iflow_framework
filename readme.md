@@ -122,4 +122,6 @@ https://framework.mzshe.cn
 
 - DHT 爬虫
 
+- 支持Phar打包
+
 - 更多有趣的助手函数

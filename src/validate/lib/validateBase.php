@@ -32,6 +32,8 @@ class validateBase
 
     protected array $error = [];
 
+    protected array $validateData = [];
+
     public function min(mixed $value, $rule = 0): bool
     {
         return $this->getLength($value) >= $rule;
@@ -114,7 +116,7 @@ class validateBase
         return is_scalar($value) && 1 === preg_match($rule, (string) $value);
     }
 
-    public function filter($value, $rule)
+    public function filter($value, $rule): bool
     {
         $param = null;
         if (is_string($rule)) {
@@ -126,4 +128,12 @@ class validateBase
         return false !== filter_var($value, is_int($rule) ? $rule : filter_id($rule), $param);
     }
 
+    // 确认字段
+    public function confirm($value, $rule): bool
+    {
+        if (isset($this->validateData[$rule])) {
+            return $value === $this->validateData[$rule];
+        }
+        return false;
+    }
 }
