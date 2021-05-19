@@ -14,7 +14,7 @@ class tag extends tags
     protected array $literal = [];
     protected string $file;
 
-    protected function funcParser(): string
+    protected function funcParser(bool $save = true): string
     {
         $this->literal()
             ->includeParser()
@@ -39,7 +39,7 @@ class tag extends tags
         $this->content = str_replace('{', "<?php ", $this->content);
         $this->content = str_replace('}', ";?>", $this->content);
 
-        return $this->literalEnd() -> saveStore();
+        return $save ? $this->literalEnd() -> saveStore() : $this -> literalEnd() -> content;
     }
 
     protected function varParser(): static
@@ -70,7 +70,13 @@ class tag extends tags
         $templateTags = $this->getTags($tags);
         foreach ($templateTags as $tag) {
             $file = trim(str_replace('"', '', $tag[1]));
-            $this->content = str_replace($tag[0], file_get_contents($this->config['view_root_path']. $file. '.' . $this->config['view_suffix']), $this->content);
+
+            // 解析导入的文件
+            $tagInfo = new tag();
+            $tagInfo -> content = file_get_contents($this->config['view_root_path']. $file. '.' . $this->config['view_suffix']);
+            $tagInfo -> config = $this -> config;
+
+            $this->content = str_replace($tag[0], $tagInfo -> funcParser(false), $this->content);
         }
         return $this;
     }

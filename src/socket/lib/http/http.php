@@ -57,7 +57,7 @@ class http implements services
     {
         // TODO: Implement wait() method.
         socket_listen($this->socketServer, 4);
-        Timer::tick(0, function () {
+        while (true) {
             $sock = socket_accept($this->socketServer);
             // 验证请求数据
             if ($sock) {
@@ -72,8 +72,7 @@ class http implements services
                 }
                 $this->close($sock);
             }
-        });
-        return $this;
+        }
     }
 
     /**

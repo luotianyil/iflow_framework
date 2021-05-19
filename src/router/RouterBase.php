@@ -236,7 +236,8 @@ class RouterBase
         $val = match ($value['type']) {
             'array' => array_merge($value['default'], $param ?? []),
             default => function () use ($default, $key, $value, $param) {
-                $params = $param ?: null;
+                // 验证参数是否存在或是否为空
+                $params = isset($param) && $param !== "" ? $param : null;
                 $type = gettype($value['default']);
                 if (is_numeric($params) && $type !== 'string') $params = intval($params);
                 // 当无 默认值时
