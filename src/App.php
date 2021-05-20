@@ -6,7 +6,6 @@ namespace iflow;
 use iflow\console\Console;
 use iflow\event\Event;
 use iflow\initializer\annotationInitializer;
-use iflow\initializer\appMonitoring;
 use iflow\initializer\appSurroundings;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
@@ -37,14 +36,13 @@ class App extends Container
     // 初始化服务
     protected array $initializers = [
         Config::class,
+        appSurroundings::class,
         Log::class,
         Error::class,
-        appSurroundings::class,
         annotationInitializer::class,
         initializer::class,
         Event::class,
-        Console::class,
-        appMonitoring::class
+        Console::class
     ];
 
     protected array $frameWorkFolder = [

@@ -6,6 +6,7 @@ namespace iflow\Swoole;
 
 use iflow\console\lib\Command;
 use iflow\fileSystem\Watch;
+use iflow\initializer\appMonitoring;
 use Swoole\Process;
 
 class Services extends Command
@@ -74,6 +75,7 @@ class Services extends Command
         $process = new Process(function () {
             \Co\run(function () {
                 (new Watch()) -> initializer($this->app);
+                (new appMonitoring) -> initializer($this->app);
             });
         });
         $this->getServer() -> addProcess($process);
