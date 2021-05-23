@@ -15,7 +15,7 @@ class initializer
     {
         // 初始化全局依赖
        if (swoole_success()) {
-           \Co::set(['hook_flags' => SWOOLE_HOOK_ALL | SWOOLE_HOOK_CURL]);
+           \Co::set(['hook_flags' => SWOOLE_HOOK_ALL]);
            \GuzzleHttp\DefaultHandler::setDefaultHandler(\Yurun\Util\Swoole\Guzzle\SwooleHandler::class);
        }
         Db::setConfig(config('database'));

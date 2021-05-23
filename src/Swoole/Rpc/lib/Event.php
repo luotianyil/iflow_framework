@@ -66,7 +66,7 @@ class Event extends HttpServer
             return $this->send(404);
         }
 
-        $this->router = app() -> make(rpcRouterBase::class) -> validateRouter(
+        $this->router = app() -> make(rpcRouterBase::class) -> checkRule(
             $this->data['request_uri'],
             $this->data['method'] ?? 'get',
             $this->data

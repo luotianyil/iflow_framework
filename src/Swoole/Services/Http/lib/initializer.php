@@ -50,7 +50,7 @@ class initializer extends requestTools
     // 验证路由
     protected function validateRouter(): bool
     {
-        $this->router = app() -> make(RouterBase::class) -> validateRouter(
+        $this->router = app() -> make(RouterBase::class) -> checkRule(
             $this->request -> request_uri,
             $this->request -> request_method,
             $this->request -> params() ?? []

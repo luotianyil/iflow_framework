@@ -35,6 +35,7 @@ class Annotation
 
     /**
      * 扫描全局文件
+     * @throws \ReflectionException
      */
     protected function scanPacks()
     {
@@ -67,6 +68,10 @@ class Annotation
     public function __make(App $app)
     {
         $this->app = $app;
-        $this->scanPacks();
+        try {
+            $this->scanPacks();
+        } catch (\ReflectionException $e) {
+            logs('error', $e -> getMessage());
+        }
     }
 }

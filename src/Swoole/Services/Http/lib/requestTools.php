@@ -44,7 +44,7 @@ class requestTools
         $url = trim($url, '/');
         $apiPath = config('app@api_path') ?: false;
         if ($apiPath && $url === $apiPath) {
-            message() -> success('success', config('router')) -> send();
+            message() -> success('success', config(config('app@router')['key'])) -> send();
             return true;
         }
         return false;
