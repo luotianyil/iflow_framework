@@ -17,6 +17,8 @@ class Controller extends RequestMapping
     protected StrTools $strTools;
     protected setRouterRule $setRouterRule;
 
+    protected string $routerConfigKey = 'app@router';
+
     // 绑定路由
     protected array $routers = [
         // 路由表
@@ -25,7 +27,7 @@ class Controller extends RequestMapping
         'routerParams' => [],
     ];
     protected string $routerKey = '';
-    private array $config = [
+    protected array $config = [
         'key' => 'router',
         // 路由前缀列表
         'routerPrefix' => []
@@ -53,12 +55,7 @@ class Controller extends RequestMapping
         $this->app = $app;
         $this->annotationClass = $annotationClass;
 
-        $config = config('app@router');
-        $this->config = array_merge($this->config, $config);
-
-        // 定义路由数据
-        $this->routerKey = $this->config['key'];
-        $this->routers = array_merge(config($this->routerKey), $this->routers);
+        $this->setRouterConfig();
 
         // 初始化工具类
         $this->strTools = new StrTools();
@@ -71,6 +68,16 @@ class Controller extends RequestMapping
 
         $this->getControllerClass()
             -> getControllerAction();
+    }
+
+    public function setRouterConfig()
+    {
+        $config = config($this->routerConfigKey);
+        $this->config = array_merge($this->config, $config);
+
+        // 定义路由数据
+        $this->routerKey = $this->config['key'];
+        $this->routers = array_merge(config($this->routerKey), $this->routers);
     }
 
     /**

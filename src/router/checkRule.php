@@ -14,6 +14,8 @@ class checkRule
     protected array $routerList;
     protected checkRouter $checkRouter;
 
+    protected string $routerConfigKey = 'app@router';
+
     // 当前请求参数
     protected array $parameters = [];
 
@@ -23,7 +25,7 @@ class checkRule
      */
     public function getRouterList() : array
     {
-        $router = config('app@router');
+        $router = config($this -> routerConfigKey);
         return $this->routerList = config($router['key']);
     }
 
