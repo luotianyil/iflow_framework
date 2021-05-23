@@ -105,7 +105,10 @@ class checkRouter
      */
     protected function domain(): bool
     {
-        if (empty($this->router['domain']) || count($this->router['domain']) === 0) return true;
+        if (
+            count($this->router['domain']) === 0 ||
+            in_array('*', $this->router['domain'])
+        ) return true;
         return in_array(request() -> getDomain(), $this->router['domain']);
     }
 
