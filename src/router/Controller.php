@@ -77,7 +77,7 @@ class Controller extends RequestMapping
 
         // 定义路由数据
         $this->routerKey = $this->config['key'];
-        $this->routers = array_merge(config($this->routerKey), $this->routers);
+        $this->routers = array_replace_recursive(config($this->routerKey), $this->routers) ?: $this->routers;
     }
 
     /**
