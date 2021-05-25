@@ -5,7 +5,6 @@ namespace iflow\Swoole\Services\WebSocket;
 
 use iflow\Swoole\Services\Services;
 use iflow\Swoole\Services\WebSocket\socketio\packet;
-use iflow\Swoole\Services\WebSocket\socketio\Parser;
 
 class webSocket
 {
@@ -31,12 +30,12 @@ class webSocket
 
     public function emit($event, $data)
     {
-        $data = Parser::encode(packet::create('4'.packet::EVENT . $this->nsp. ',', [
+        $data = packet::create('4'.packet::EVENT . $this->nsp. ',', [
             'data' => [
                 $event,
                 $data
             ]
-        ]));
+        ]) -> toString();
         try {
             if (empty($this->to)) return false;
             foreach ($this->to as $key) {

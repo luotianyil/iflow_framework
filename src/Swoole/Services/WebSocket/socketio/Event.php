@@ -13,7 +13,7 @@ class Event
 {
     protected array $config = [];
     protected webSocket $websocket;
-    public Parser $parser;
+    public Packet $packet;
 
     public Server $server;
     public Request $request;
@@ -28,7 +28,7 @@ class Event
     {
         $this->websocket = $websocket;
         $this->config = $websocket -> services -> config;
-        $this->parser = new Parser();
+        $this->packet = new Packet();
     }
 
     public function onOpen(Server $server, Request $frame)
@@ -54,7 +54,7 @@ class Event
                 'pingTimeout'  => $this->config['websocket']['ping_timeout'],
             ]
         );
-        $server->push($this->fd, Parser::OPEN . $payload);
+        $server->push($this->fd, Packet::OPEN . $payload);
         if ($this->EIO < 4) {
             $this -> ping -> clearPingTimeOut();
             $this->onConnect();
@@ -81,7 +81,7 @@ class Event
 
     public function onMessage(Server $server, $frame)
     {
-        $data = $this->parser::fromString($frame -> data);
+        $data = $this->packet::fromString($frame -> data);
         $this -> ping -> clearPingTimeOut();
         match (intval($data -> type)) {
             Packet::MESSAGE => $this->Parser($data -> data),
@@ -95,7 +95,7 @@ class Event
     protected function Parser($data)
     {
         $this->websocket -> fd = $this -> fd;
-        $data = Parser::decode($data);
+        $data = Packet::decode($data);
         $this->websocket -> nsp = $data -> nsp;
 
         $event = match (intval($data -> type)) {

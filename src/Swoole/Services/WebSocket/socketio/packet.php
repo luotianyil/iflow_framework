@@ -102,6 +102,42 @@ class packet
         return $new;
     }
 
+    public static function decode(string $str)
+    {
+        $i = 0;
+        $packet = new Packet((int) substr($str, 0, 1));
+        if ('/' === substr($str, $i + 1, 1)) {
+            $packet->nsp = explode(',', substr($str, 1))[0];
+        } else {
+            $packet->nsp = '/';
+        }
+        $i = strlen($packet -> nsp) + 1;
+
+        $next = substr($str, $i + 1, 1);
+
+        if ('' !== $next && is_numeric($next)) {
+            $id = '';
+            while (++$i) {
+                $c = substr($str, $i, 1);
+                if (null == $c || !is_numeric($c)) {
+                    --$i;
+                    break;
+                }
+                $id .= substr($str, $i, 1);
+                if ($i === strlen($str)) {
+                    break;
+                }
+            }
+            $packet->id = intval($id);
+        }
+
+        if (substr($str, ++$i, 1)) {
+            $packet->data = json_decode(substr($str, $i), true) ?: substr($str, $i);
+        }
+
+        return $packet;
+    }
+
     public function toString(): string
     {
         if (is_array($this->data)) {
