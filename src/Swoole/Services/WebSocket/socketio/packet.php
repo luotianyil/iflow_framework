@@ -54,30 +54,34 @@ class packet
         'BINARY_ACK',
     ];
 
+    public string $nsp = '/';
+    public int|string $id;
+
     public function __construct(
-        protected string $type = '',
-        protected string $data = ''
-    )
-    {}
+        public string $type = '',
+        public string|array $data = ''
+    ){}
 
     public function open($data)
     {
-        return new static(self::OPEN, $data);
+        return (new static(self::OPEN, $data)) -> toString();
     }
 
     public function pong($data)
     {
-        return new static(self::PONG, $data);
+        return (new static(self::PONG, $data)) -> toString();
     }
 
     public static function ping()
     {
-        return new static(self::PING);
+        return self::PING;
     }
 
-    public static function message($payload)
+    public static function message($payload, int $offset = 1, string $nsp = '/')
     {
-        return new static(self::MESSAGE, $payload);
+        $type = substr($payload, 0, $offset);
+        $payload = substr($payload, $offset);
+        return (new static(self::MESSAGE.$type . "$nsp,", $payload)) -> toString();
     }
 
     public static function fromString(string $packet)
@@ -85,8 +89,24 @@ class packet
         return new static(substr($packet, 0, 1), substr($packet, 1) ?? '');
     }
 
-    public function toString()
+    public static function create($type, array $decoded = [])
     {
+        $new     = new static($type);
+        $new->id = $decoded['id'] ?? '';
+        if (isset($decoded['nsp'])) {
+            $new->nsp = $decoded['nsp'] ?: '/';
+        } else {
+            $new->nsp = '/';
+        }
+        $new->data = $decoded['data'] ?? '';
+        return $new;
+    }
+
+    public function toString(): string
+    {
+        if (is_array($this->data)) {
+            $this->data = json_encode($this->data);
+        }
         return $this->type . $this->data;
     }
 }

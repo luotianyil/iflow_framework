@@ -76,7 +76,7 @@ class requestTools
     protected function isSocketIo($url = ''): bool
     {
         $url = explode('/', trim($url, '/'));
-        if (config('service@websocket.enable')) {
+        if (config('swoole.service@websocket.enable')) {
             if ($url[0] === 'socket.io') {
                 $SocketIo = new SocketIo();
                 $SocketIo -> config = $this->services -> configs['websocket'];
