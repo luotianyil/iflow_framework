@@ -6,76 +6,70 @@ namespace iflow\Swoole\Services\WebSocket\socketio;
 
 class Parser extends packet
 {
-
-    public static function heartbeat($server, $fd, $packet)
+    public static function encode(Packet $packet)
     {
-        $packetLength = strlen($packet);
-        $payload      = '';
-
-        if ($isPing = self::isSocketType($packet, 'ping')) {
-            $payload .= self::PONG;
+        $str = '' . $packet->type;
+        if ($packet->nsp && '/' !== $packet->nsp) {
+            $str .= $packet->nsp . ',';
         }
 
-        if ($isPing && $packetLength > 1) {
-            $payload .= substr($packet, 1, $packetLength - 1);
+        if ($packet->id !== null) {
+            $str .= $packet->id;
         }
 
-        if ($isPing) {
-            $server->push($fd, $payload);
+        if (null !== $packet->data) {
+            $str .= json_encode($packet->data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
+        return $str;
     }
 
-    public static function getSocketType(string $packet)
+    public static function decode(string $str)
     {
-        $type = $packet[0] ?? null;
-        if (!array_key_exists($type, static::$socketTypes)) {
-            return false;
-        }
-        return (int) $type;
-    }
+        $i = 0;
 
-    public static function isSocketType($packet, string $typeName)
-    {
-        $type = array_search(strtoupper($typeName), static::$socketTypes);
-        return $type === false ? false : static::getSocketType($packet) === $type;
-    }
+        $packet = new Packet((int) substr($str, 0, 1));
 
-    public static function getPayload(string $data)
-    {
-        $len = strlen($data);
-        $start = strpos($data, '[');
-
-        if ($start === false || substr($data, -1) !== ']') {
-            return false;
-        }
-
-        $data = substr($data, $start, $len - $start);
-        $data = self::decode($data);
-
-        if (is_null($data)) {
-            return false;
+        // look up namespace (if any)
+        if ('/' === substr($str, $i + 1, 1)) {
+            $nsp = '';
+            while (++$i) {
+                $c = substr($str, $i, 1);
+                if (',' === $c) {
+                    break;
+                }
+                $nsp .= $c;
+                if ($i === strlen($str)) {
+                    break;
+                }
+            }
+            $packet->nsp = $nsp;
+        } else {
+            $packet->nsp = '/';
         }
 
-        return [
-            'event' => $data[0],
-            'data'  => $data[1] ?? null,
-        ];
-    }
+        // look up id
+        $next = substr($str, $i + 1, 1);
+        if ('' !== $next && is_numeric($next)) {
+            $id = '';
+            while (++$i) {
+                $c = substr($str, $i, 1);
+                if (null == $c || !is_numeric($c)) {
+                    --$i;
+                    break;
+                }
+                $id .= substr($str, $i, 1);
+                if ($i === strlen($str)) {
+                    break;
+                }
+            }
+            $packet->id = intval($id);
+        }
 
-    public static function encode($event, $data)
-    {
-        return json_encode([
-            'event' => $event,
-            'data' => $data
-        ]);
-    }
+        // look up json data
+        if (substr($str, ++$i, 1)) {
+            $packet->data = json_decode(substr($str, $i), true);
+        }
 
-    public static function decode($data)
-    {
-        $data = json_decode($data, true);
-        return [
-            'event' => $data['event'] ?? null,
-            'data'  => $data['data'] ?? null,
-        ];
+        return $packet;
     }
 }

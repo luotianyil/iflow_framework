@@ -21,20 +21,19 @@ class SocketIo
                 'msg' => 'Transport unknown'
             ], 400);
         }
-        if (!empty($request -> getParams('sid'))) {
+        if ($request -> params('sid') !== null) {
             return '1:16';
-        } else {
-            $sid     = base64_encode(uniqid());
-            $payload = json_encode(
-                [
-                    'sid'          => $sid,
-                    'upgrades'     => ['websocket'],
-                    'pingInterval' => $this -> config['ping_interval'],
-                    'pingTimeout'  => $this -> config['ping_timeout'],
-                ], JSON_UNESCAPED_UNICODE);
-            $response -> response -> cookie('io', $sid);
-            return '97:0' . $payload . '2:40';
         }
+        $sid     = base64_encode(uniqid());
+        $payload = json_encode(
+            [
+                'sid'          => $sid,
+                'upgrades'     => ['websocket'],
+                'pingInterval' => $this -> config['ping_interval'],
+                'pingTimeout'  => $this -> config['ping_timeout'],
+            ], JSON_UNESCAPED_UNICODE);
+        $response -> response -> cookie('io', $sid);
+        return '97:0' . $payload . '2:40';
     }
 
 }
