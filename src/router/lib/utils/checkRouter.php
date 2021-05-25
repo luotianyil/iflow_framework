@@ -57,7 +57,7 @@ class checkRouter
      */
     protected function regx(array $rule, array $url): bool
     {
-        if (!count($rule) === count($url)) return false;
+        if (count($rule) !== count($url)) return false;
         $ruleIsSuccess = true;
         foreach ($url as $urlKey => $urlValue) {
             $ruleRegx = preg_replace('/[<|>]/', '', $rule[$urlKey]);
@@ -79,7 +79,7 @@ class checkRouter
             } else if (count($ruleRegx) > 1) {
                 if (
                     is_string($ruleRegx[0]) &&
-                    0 !== strpos($ruleRegx[0], '/') &&
+                    !str_starts_with($ruleRegx[0], '/') &&
                     !preg_match('/\/[imsU]{0,4}$/', $ruleRegx[0])
                 ) {
                     $ruleRegx[0] = '/^'. $ruleRegx[0] .'$/';

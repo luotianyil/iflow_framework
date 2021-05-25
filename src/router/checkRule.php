@@ -65,8 +65,12 @@ class checkRule
     public function check(array $ruleAll, string $url, string $method): array|bool
     {
         $router = [];
-        foreach ($ruleAll as $rule) {
+        foreach ($ruleAll as $ruleKey => $rule) {
             if (is_array($rule) && empty($rule['rule'])) {
+                // 验证路由
+                if (!str_starts_with(ltrim($url, '/'), ltrim($ruleKey, '/'))) {
+                    continue;
+                }
                 $router = $this->check($rule, $url, $method);
             } else if (is_array($rule)) {
                 $router = $this->checkRouter -> check(
@@ -81,6 +85,7 @@ class checkRule
     // 绑定参数
     public function bindParam(array $router): array
     {
+        if (count($this->parameters) === 0) return $router;
         return (new bindRequestParams(
             $router,
             $this->routerList,

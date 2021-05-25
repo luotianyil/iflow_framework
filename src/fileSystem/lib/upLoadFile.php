@@ -3,7 +3,10 @@
 
 namespace iflow\fileSystem\lib;
 
-class upLoadFile extends fileSystem
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
+
+class upLoadFile extends fileSystem implements UploadedFileInterface
 {
 
     protected array $fileList = [];
@@ -58,7 +61,7 @@ class upLoadFile extends fileSystem
      * 保存文件至服务器
      * @param string $savePath
      * @param array $config
-     * @return $this|false|string[]|void|null
+     * @return mixed
      */
     public function move(string $savePath, array $config = [])
     {
@@ -137,5 +140,29 @@ class upLoadFile extends fileSystem
     public function getError(): array
     {
         return $this->error;
+    }
+
+    public function getStream(): bool|StreamInterface|string
+    {
+        // TODO: Implement getStream() method.
+        return $this->read();
+    }
+
+    public function moveTo($targetPath)
+    {
+        // TODO: Implement moveTo() method.
+        return $this->move($targetPath);
+    }
+
+    public function getClientFilename(): ?string
+    {
+        // TODO: Implement getClientFilename() method.
+        return $this->getFilename();
+    }
+
+    public function getClientMediaType(): ?string
+    {
+        // TODO: Implement getClientMediaType() method.
+        return $this->getFileMine();
     }
 }

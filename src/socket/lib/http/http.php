@@ -68,7 +68,9 @@ class http implements services
                         $this->response = new response($sock);
                         // 接收到 请求后的回调
                         $this->triggerEvent('request', $this->request, $this->response);
-                    } catch (\Exception) {}
+                    } catch (\Exception|\Error $exception) {
+                        logs('warning', $exception -> getMessage());
+                    }
                 }
                 $this->close($sock);
             }
