@@ -63,10 +63,15 @@ class Parser extends tag implements TemplateParser
         return $this->content;
     }
 
-    private function templateParser(): string
+    protected function templateParser(): string
     {
         $this->content = file_get_contents($this->file);
+        if ($this->content === '') {
+            throw new \Exception('Template Content is Empty');
+        }
+        if ($this->FileIsTemplateLibrary()) {
+            throw new \Exception('TemplateFile is templateLibrary');
+        }
         return $this->funcParser();
     }
-
 }

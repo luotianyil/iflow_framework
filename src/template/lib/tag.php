@@ -17,7 +17,7 @@ class tag extends tags
     protected function funcParser(bool $save = true): string
     {
         $this->literal()
-            ->includeParser()
+            -> includeParser()
             -> varParser()
             -> classParser()
             -> functionParser();
@@ -42,6 +42,10 @@ class tag extends tags
         return $save ? $this->literalEnd() -> saveStore() : $this -> literalEnd() -> content;
     }
 
+    /**
+     * 验证变量
+     * @return $this
+     */
     protected function varParser(): static
     {
         preg_match_all(
@@ -61,6 +65,10 @@ class tag extends tags
         return $this;
     }
 
+    /**
+     * 引入模板库
+     * @return $this
+     */
     protected function includeParser(): static
     {
         preg_match_all(
@@ -72,15 +80,18 @@ class tag extends tags
             $file = trim(str_replace('"', '', $tag[1]));
 
             // 解析导入的文件
-            $tagInfo = new tag();
+            $tagInfo = clone $this;
             $tagInfo -> content = file_get_contents($this->config['view_root_path']. $file. '.' . $this->config['view_suffix']);
-            $tagInfo -> config = $this -> config;
-
+            $tagInfo -> FileIsTemplateLibrary(true);
             $this->content = str_replace($tag[0], $tagInfo -> funcParser(false), $this->content);
         }
         return $this;
     }
 
+    /**
+     * 检测是否执行PHP类
+     * @return $this
+     */
     protected function classParser(): static
     {
         preg_match_all(
@@ -100,6 +111,10 @@ class tag extends tags
         return $this;
     }
 
+    /**
+     * 检测是否执行方法
+     * @return $this
+     */
     protected function functionParser(): static
     {
         preg_match_all(
@@ -122,6 +137,12 @@ class tag extends tags
         return $this;
     }
 
+    /**
+     * 处理 执行方法/类 标签格式
+     * @param $tag
+     * @param string $type
+     * @return array
+     */
     protected function TagsType($tag, $type = ''): array
     {
         $tps = explode(':', $tag[1]);
@@ -144,6 +165,10 @@ class tag extends tags
         ];
     }
 
+    /**
+     * 原样输出开始处理
+     * @return $this
+     */
     protected function literal(): static
     {
         preg_match_all(
@@ -160,6 +185,10 @@ class tag extends tags
         return $this;
     }
 
+    /**
+     * 原样输出结束
+     * @return $this
+     */
     protected function literalEnd(): static {
 
         foreach ($this->literal as $key => $value) {
@@ -168,6 +197,11 @@ class tag extends tags
         return $this;
     }
 
+    /**
+     * 获取需要处理的TAG 标签
+     * @param array $tags
+     * @return array
+     */
     protected function getTags($tags = []): array {
         $templateTags = [];
         foreach ($tags as $key => $value) {
@@ -203,5 +237,17 @@ class tag extends tags
      */
     protected function getStoreFile(): string {
         return $this->config['store_path'] . DIRECTORY_SEPARATOR . md5($this->file). '.php';
+    }
+
+    protected function FileIsTemplateLibrary(bool $splitStart = false): bool
+    {
+        $content = explode("\r\n", $this->content);
+        $templateLibrary = $content[0] === '{templateLibrary}';
+
+        if ($templateLibrary && $splitStart) {
+            array_shift($content);
+            $this->content = implode("\r\n", $content);
+        }
+        return $templateLibrary;
     }
 }
