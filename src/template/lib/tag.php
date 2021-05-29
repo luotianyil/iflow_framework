@@ -241,7 +241,7 @@ class tag extends tags
 
     protected function FileIsTemplateLibrary(bool $splitStart = false): bool
     {
-        $content = explode("\r\n", $this->content);
+        $content = explode(PHP_EOL, $this->content);
         $templateLibrary = $content[0] === '{templateLibrary}';
 
         if ($templateLibrary && $splitStart) {
