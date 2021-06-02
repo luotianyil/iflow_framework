@@ -72,7 +72,7 @@ class checkRouter
             // 验证是否需要正则验证
             if ($ruleRegx[0] === '?') {
                 $this->router['parameter'][$ruleRegx[1]] = [
-                    'type' => '',
+                    'type' => ['mixed'],
                     'name' => $ruleRegx[1],
                     'default' => $urlValue
                 ];
@@ -90,7 +90,7 @@ class checkRouter
                 }
 
                 $this->router['parameter'][$ruleRegx[1]] = [
-                    'type' => '',
+                    'type' => ['mixed'],
                     'name' => $ruleRegx[1],
                     'default' => $urlValue
                 ];

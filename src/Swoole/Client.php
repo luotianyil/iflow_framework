@@ -55,14 +55,17 @@ trait Client
         if (isset($this->services -> config['keep_alive']) && $this -> timeSincePing < (time() - $this->services -> config['keep_alive'])) {
             $buffer = $this->send($data);
             if ($buffer) $this -> timeSincePing = time();
-            else $this->client -> close();
+            else {
+                return $this->client -> close();
+            }
         }
+        return true;
     }
 
     public function send($data)
     {
         return $this -> client -> send(
-            match (!is_string($data)) {
+            match (!is_string($data) && !is_numeric($data)) {
                 true => json_encode($data, JSON_UNESCAPED_UNICODE),
                 default => $data
             }

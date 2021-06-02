@@ -59,7 +59,7 @@ class rpcClient
                         $this -> send([
                             'name' => $this->services->config['clientName'],
                             'tcpHost' => $this->services->config['host'],
-                            'httpHost' => config('service@host'),
+                            'httpHost' => config('swoole.service@host'),
                             'initializer' => 1
                         ]);
                         $this->app -> instance(\Swoole\Coroutine\Client::class, $this->client);

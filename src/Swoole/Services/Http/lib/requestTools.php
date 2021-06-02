@@ -4,7 +4,6 @@
 namespace iflow\Swoole\Services\Http\lib;
 
 
-use iflow\annotation\lib\value\Exception\valueException;
 use iflow\aop\Aop;
 use iflow\Middleware;
 use iflow\Request;
@@ -22,7 +21,6 @@ class requestTools
     public array $router;
 
     public array $requestController = [];
-
     protected array $runProcess = [
         'runMiddleware',
         'validateRouterBefore',
@@ -33,6 +31,7 @@ class requestTools
     ];
 
     protected \ReflectionClass $refController;
+    protected array $routerBindParams = [];
 
     /**
      * 是否查询为 api 信息
@@ -136,10 +135,11 @@ class requestTools
      */
     protected function runAop(): bool
     {
+        $this->routerBindParams = $this->bindParam(
+            $this->router['parameter']
+        );
         $aop = $this->services -> app -> make(Aop::class) -> process(
-            $this->requestController[0], $this->requestController[1], ...$this->bindParam(
-                $this->router['parameter']
-            )
+            $this->requestController[0], $this->requestController[1], ...$this -> routerBindParams
         );
         if ($aop === false) return false;
         $res = $aop -> then();

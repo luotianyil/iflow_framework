@@ -246,7 +246,7 @@ class tag extends tags
 
         if ($templateLibrary && $splitStart) {
             array_shift($content);
-            $this->content = implode("\r\n", $content);
+            $this->content = implode(PHP_EOL, $content);
         }
         return $templateLibrary;
     }

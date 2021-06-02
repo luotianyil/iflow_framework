@@ -21,6 +21,9 @@ class rpcReceive extends initializer
     {
         $this->server = $server;
         $this->fd = $fd;
+        // 返回 PONG
+        if (intval($data) === 1) return $this->send(2);
+
         $this->config = config('swoole.rpc@server');
         $info = json_decode($data, true);
 
@@ -59,7 +62,7 @@ class rpcReceive extends initializer
     protected function send($response): bool
     {
         return $this->server -> send($this->fd,
-            match (!is_string($response)) {
+            match (!is_string($response) || !is_numeric($response)) {
                 true => json_encode($response, JSON_UNESCAPED_UNICODE),
                 default => $response
             }

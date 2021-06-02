@@ -5,7 +5,6 @@ namespace iflow\Swoole\Rpc;
 
 
 use iflow\facade\Cache;
-use iflow\facade\Config;
 use iflow\Swoole\Rpc\lib\rpcService;
 
 class Services extends \iflow\Swoole\Services\Services

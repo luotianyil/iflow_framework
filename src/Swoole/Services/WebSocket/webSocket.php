@@ -16,12 +16,12 @@ class webSocket
     ];
 
     private array $to = [];
-    public Services $services;
+    public object $services;
     public int $fd = 0;
 
     public string $nsp = '/';
 
-    public function initializer(Services $services)
+    public function initializer(object $services)
     {
         $this->services = $services;
         $event = $services -> config['event'];

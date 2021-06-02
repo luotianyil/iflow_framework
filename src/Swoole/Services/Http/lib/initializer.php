@@ -89,42 +89,39 @@ class initializer extends requestTools
                 $this->refController -> newInstance(...[$this->request, $this->response])
                 : $this->refController -> newInstance();
 
-        return $this->send(call_user_func([$controller, $this->requestController[1]], ...$this->bindParam(
-            $this->router['parameter']
-        )));
+        $this->services -> app -> runAttributes($this->refController, $this->refController, $controller);
+
+        return $this->send(call_user_func([$controller, $this->requestController[1]], ...$this->routerBindParams));
     }
 
     /**
      * 设置Bean 参数
      * @param array $params
      * @return mixed
-     * @throws \ReflectionException
+     * @throws \ReflectionException|valueException
      */
     protected function setInstanceValue(array $params): mixed
     {
         $keys = array_keys($params);
         $class = $params[$keys[0]]['class'];
-        $object = [];
 
-        if (count($params) > 0 && class_exists($class)) {
+        // 当类存在时
+        if (class_exists($class)) {
             $ref = new \ReflectionClass($class);
             $object = $ref -> newInstance();
-            foreach ($params as $key => $value) {
-                if (isset($value['default'])) {
-                    if ($value['type'][0] === 'class') {
-                        $value['default'] = $this->setInstanceValue($value['default']);
-                    }
-                    $ref -> getProperty($value['name']) -> setValue(
-                        $object, $value['default'] ?? ''
-                    );
+
+            foreach ($params as $paramName => $paramValue) {
+                if (!$paramValue['default']) continue;
+                if ($paramValue['type'][0] === 'class') {
+                    $paramValue['default'] = $this -> setInstanceValue($paramValue['default']);
                 }
+                $ref -> getProperty($paramName) -> setValue(
+                    $object, $paramValue['default']
+                );
             }
-            // 获取 Bean注解 并执行
-            $attributes = $ref -> getAttributes();
-            foreach ($attributes as $attr) {
-                call_user_func([$attr -> newInstance(), 'handle'], ...[$ref, $object, $this]);
-            }
-        } else return $object['default'];
+            // 执行Bean注解
+            $this->services -> app -> runAttributes($ref, ...[$ref, $object, $this]);
+        } else throw (new valueException()) -> setError(message() -> parameter_error("dataObject: ${class} IsNull"));
         return $object;
     }
 }

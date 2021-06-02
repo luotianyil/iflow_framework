@@ -64,7 +64,7 @@ class Response
         $response -> response = response() -> response;
         foreach (array_merge((array) $response, (array) response()) as $key => $value) {
             if (method_exists($response, $key)) {
-                if (!is_string($response -> $key)) $response -> $key($value);
+                if (!is_string($response -> {$key})) $response -> {$key}($value);
             }
         }
         return $response;

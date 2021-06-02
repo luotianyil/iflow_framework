@@ -55,7 +55,7 @@ class Container implements ContainerInterface
             $constructor = $ref -> getConstructor();
             $vars = $constructor ? $this->bindParameters($constructor, $vars) : [];
             $object = $ref -> newInstanceArgs($vars);
-
+            $this->runAttributes($ref, ...[$ref, $object]);
             if (!$this->has($class)) $this->bind[$class] = new \stdClass();
 
             $this->containers[$this->bind[$class]] = $object;
@@ -197,7 +197,7 @@ class Container implements ContainerInterface
      * @param string $id
      * @return mixed
      */
-    public function get($id): object
+    public function get(string $id): object
     {
         // TODO: Implement get() method.
         if ($this->has($id)) {
@@ -211,7 +211,7 @@ class Container implements ContainerInterface
      * @param string $id 类名
      * @return bool
      */
-    public function has($id): bool
+    public function has(string $id): bool
     {
         // TODO: Implement has() method.
         if (empty($this->bind[$id]) || !$this->containers -> offsetExists($this->bind[$id])) {
@@ -238,5 +238,21 @@ class Container implements ContainerInterface
             $types[] = $type -> getName();
         }
         return $types ?: ['mixed'];
+    }
+
+    /**
+     * 获取反射类注解并执行
+     * @param \ReflectionClass $ref
+     * @param mixed ...$args
+     */
+    public function runAttributes(\ReflectionClass $ref, ...$args)
+    {
+        $attributes = $ref -> getAttributes();
+        foreach ($attributes as $attr) {
+            $attrObject = $attr -> newInstance();
+            if (method_exists($attrObject, 'handle')) {
+                call_user_func([$attrObject, 'handle'], ...$args);
+            }
+        }
     }
 }

@@ -24,7 +24,7 @@ class setRouterParams
     }
 
     // 获取路由方法参数
-    public function getRouterMethodParameter(\ReflectionMethod $method)
+    public function getRouterMethodParameter(\ReflectionMethod $method): array
     {
         $this->method = $method;
         $this->params = $this->nextParameter();
@@ -58,7 +58,7 @@ class setRouterParams
                     $this->getClassParams($typeName);
                 }
                 $parameter[$name] = [
-                    'type' => 'class',
+                    'type' => ['class'],
                     'class' => $typeName,
                     'name' => $name
                 ];

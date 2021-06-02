@@ -25,7 +25,6 @@ class tcpService
 
     public function onReceive(Server $server, $fd, $reactor_id, $data)
     {
-        var_dump($data);
         if (class_exists($this->services -> Handle)) {
             call_user_func([new $this->services -> Handle, 'handle'], ...func_get_args());
         }
