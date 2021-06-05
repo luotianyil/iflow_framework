@@ -89,18 +89,25 @@ class initializer extends requestTools
                 $this->refController -> newInstance(...[$this->request, $this->response])
                 : $this->refController -> newInstance();
 
+        // 执行控制器类注解
         $this->services -> app -> runAttributes($this->refController, $this->refController, $controller);
 
-        return $this->send(call_user_func([$controller, $this->requestController[1]], ...$this->routerBindParams));
+        // 执行方法
+        return $this->send(
+            $this->services -> app -> invokeMethod(
+                [$controller, $this->requestController[1]],
+                $this->routerBindParams
+            )
+        );
     }
 
     /**
      * 设置Bean 参数
      * @param array $params
-     * @return mixed
+     * @return object
      * @throws \ReflectionException|valueException
      */
-    protected function setInstanceValue(array $params): mixed
+    protected function setInstanceValue(array $params): object
     {
         $keys = array_keys($params);
         $class = $params[$keys[0]]['class'];

@@ -7,6 +7,7 @@ namespace iflow\router\lib\utils;
 use iflow\router\lib\request\DeleteMapping;
 use iflow\router\lib\request\GetMapping;
 use iflow\router\lib\request\HeadMapping;
+use iflow\router\lib\request\PatchMapping;
 use iflow\router\lib\request\PostMapping;
 use iflow\router\lib\request\PutMapping;
 use iflow\router\lib\request\RequestMapping;
@@ -22,7 +23,8 @@ class setRouterRule
         HeadMapping::class,
         DeleteMapping::class,
         RequestMapping::class,
-        Router::class
+        Router::class,
+        PatchMapping::class
     ];
     protected array $methods = [];
     protected string $parentRule = "";

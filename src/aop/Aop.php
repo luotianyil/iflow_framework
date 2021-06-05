@@ -131,7 +131,8 @@ class Aop
         $this->pipeline = new pipeline();
         $this->pipeline -> through(array_map(function ($aspect) use ($args, $action) {
             return function ($app, $next) use ($aspect, $args, $action) {
-                $callback = call_user_func([$aspect, $action], ...$args);
+                // 通过容器反射执行
+                $callback = app() -> invokeMethod([$aspect, $action], $args);
                 if ($callback !== true) {
                     $this->response = $callback;
                     throw new \Exception('Aop returns not true');

@@ -83,6 +83,12 @@ class Container implements ContainerInterface
         try {
             $ref = new \ReflectionMethod($class, $methods);
             $args = $this->bindParameters($ref, $vars);
+
+            // 执行方法参数注解
+            array_map(function ($parameter) use ($class) {
+                $this -> runAttributes($parameter, ...[$parameter, $class]);
+            }, $ref -> getParameters());
+
             return $ref->invokeArgs(is_object($class) ? $class : null, $args);
         } catch (\ReflectionException $e) {
             throw new \Error("function not exists: ${methods}");
@@ -241,18 +247,17 @@ class Container implements ContainerInterface
     }
 
     /**
-     * 获取反射类注解并执行
-     * @param \ReflectionClass $ref
+     * 获取注解并执行
+     * @param \Reflector $ref
      * @param mixed ...$args
      */
-    public function runAttributes(\ReflectionClass $ref, ...$args)
+    public function runAttributes(\Reflector $ref, ...$args)
     {
-        $attributes = $ref -> getAttributes();
-        foreach ($attributes as $attr) {
+        array_map(function ($attr) use ($args) {
             $attrObject = $attr -> newInstance();
             if (method_exists($attrObject, 'handle')) {
                 call_user_func([$attrObject, 'handle'], ...$args);
             }
-        }
+        }, $ref -> getAttributes());
     }
 }
