@@ -43,7 +43,7 @@ class initializer extends requestTools
     // 初始化响应数据
     public function setResponse($response): static
     {
-        $this->response = $this -> services -> app -> make(Response::class, [],true) -> initializer($response);
+        $this->response = $this -> services -> app -> make(Response::class, [], true) -> initializer($response);
         return $this;
     }
 
@@ -110,6 +110,9 @@ class initializer extends requestTools
     protected function setInstanceValue(array $params): object
     {
         $keys = array_keys($params);
+        if (empty($params[$keys[0]]['class']) || isset($params['class'])) {
+            return new $params['class'];
+        }
         $class = $params[$keys[0]]['class'];
 
         // 当类存在时

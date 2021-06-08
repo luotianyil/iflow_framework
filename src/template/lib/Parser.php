@@ -3,6 +3,8 @@
 
 namespace iflow\template\lib;
 
+use iflow\Response;
+
 class Parser extends tag implements TemplateParser
 {
 
@@ -18,7 +20,7 @@ class Parser extends tag implements TemplateParser
         return file_exists($this->file);
     }
 
-    public function display(string $template, array $data = []): \iflow\Response | bool
+    public function display(string $template, array $data = []): Response | bool
     {
         // TODO: Implement display() method.
         $this->data = $data;
@@ -31,7 +33,7 @@ class Parser extends tag implements TemplateParser
         }
     }
 
-    public function fetch(): \iflow\Response
+    public function fetch(): Response
     {
         // TODO: Implement fetch() method.
         if ($this->exists()) {
@@ -47,7 +49,7 @@ class Parser extends tag implements TemplateParser
         }
     }
 
-    public function send($filePath = '')
+    public function send($filePath = ''): Response
     {
         ob_start();
         extract($this->data, EXTR_OVERWRITE);

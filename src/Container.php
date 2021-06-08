@@ -6,6 +6,7 @@ namespace iflow;
 use Psr\Container\ContainerInterface;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
+use Reflector;
 
 class Container implements ContainerInterface
 {
@@ -90,7 +91,7 @@ class Container implements ContainerInterface
             }, $ref -> getParameters());
 
             return $ref->invokeArgs(is_object($class) ? $class : null, $args);
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
             throw new \Error("function not exists: ${methods}");
         }
     }
@@ -114,6 +115,7 @@ class Container implements ContainerInterface
         $parameters = $methods -> getParameters();
 
         reset($vars);
+
         $type = key($vars) === 0 ? 1 : 0;
         $args = [];
         foreach ($parameters as $parameter) {
@@ -139,9 +141,7 @@ class Container implements ContainerInterface
     // 获取方法参数 返回实例化
     public function getObjectParam(string $className, array &$vars)
     {
-        $array = $vars;
-        $value = array_shift($array);
-
+        $value = array_shift($vars);
         if ($value instanceof $className) {
             $result = $value;
         } else {
@@ -175,7 +175,7 @@ class Container implements ContainerInterface
      * @param object $instance 类的实例
      * @return $this
      */
-    public function instance(string $abstract, object $instance)
+    public function instance(string $abstract, object $instance): static
     {
         $this->containers = $this->containers ?: new \WeakMap();
         if (!$this->has($abstract)) $this->bind[$abstract] = new \stdClass();
@@ -248,10 +248,10 @@ class Container implements ContainerInterface
 
     /**
      * 获取注解并执行
-     * @param \Reflector $ref
+     * @param Reflector $ref
      * @param mixed ...$args
      */
-    public function runAttributes(\Reflector $ref, ...$args)
+    public function runAttributes(Reflector $ref, ...$args)
     {
         array_map(function ($attr) use ($args) {
             $attrObject = $attr -> newInstance();

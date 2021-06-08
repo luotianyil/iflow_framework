@@ -39,7 +39,8 @@ if (!function_exists('loadConfigFile')) {
                     return yaml_parse_file($file);
                 }
                 return [];
-            }
+            },
+            default => []
         };
         $config = is_numeric($config)?[] : $config;
         return is_object($config) ? call_user_func($config) : $config;
