@@ -24,7 +24,7 @@ class Controller extends RequestMapping
         // 路由表
         'router' => [],
         // 路由类参数
-        'routerParams' => [],
+        'routerParams' => []
     ];
     protected string $routerKey = '';
     protected array $config = [

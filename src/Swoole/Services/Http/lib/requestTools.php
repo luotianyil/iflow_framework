@@ -8,6 +8,7 @@ use iflow\aop\Aop;
 use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;
+use iflow\router\lib\Swagger;
 use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
 
 class requestTools
@@ -43,7 +44,7 @@ class requestTools
         $url = trim($url, '/');
         $apiPath = config('app@api_path') ?: false;
         if ($apiPath && $url === $apiPath) {
-            message() -> success('success', config(config('app@router')['key'])) -> send();
+            json((new Swagger()) -> buildSwaggerApiJson()) -> send();
             return true;
         }
         return false;
