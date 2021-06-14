@@ -14,7 +14,7 @@ class install extends Command
     protected array $config = [];
 
     protected array $composerShell = [
-        'update',
+        'update --ignore-platform-reqs',
         'dump-autoload'
     ];
 

@@ -13,7 +13,7 @@ class SystemTools
         $memeInfo = $this->getMemInfo();
         return [
             'os' => [
-                'name' => php_uname('s'). ' - ' . $_SERVER['DESKTOP_SESSION'] ?? '',
+                'name' => php_uname('s'). ' - ' . ($_SERVER['DESKTOP_SESSION'] ?? ''),
                 'version' => php_uname('r'),
                 'user_name' => $_SERVER['USERNAME'] ?? ''
             ],
