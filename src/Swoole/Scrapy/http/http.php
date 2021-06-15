@@ -71,8 +71,8 @@ class http
             -> bindQueryParam($data)
             -> initClient($this->param, $data)
             -> setHeader($data['header'])
-            -> setData($this->parse_url['query'], $data['data'])
-            -> setMethod($data['method']);
+            -> setMethod($data['method'])
+            -> setData($this->parse_url['query'], $data['data']);
         $query = $this -> before($data['call'] ?? null);
         if ($query instanceof self) {
             return $query -> request($this->parse_url['path']);

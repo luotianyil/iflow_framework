@@ -44,16 +44,23 @@ class Client
      */
     public function setHeaders(array $headers): static
     {
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
+        $h = [];
+        array_walk($headers, function ($v, $k) use (&$h) {
+            $h[] = "$k:$v";
+        });
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $h);
         return $this;
     }
 
     /**
-     * @param array $data
+     * @param array|string $data
      * @return static
      */
-    public function setData(array $data): static
+    public function setData(array|string $data): static
     {
+        if (is_string($data)) {
+            $data = json_decode($data, true);
+        }
         if ($this->method === 'POST')  curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
         return $this;
     }
@@ -87,7 +94,13 @@ class Client
     {
         if ($this->curl === null) return false;
         $scheme = $this->isSSL ? 'https://' : 'http://';
-        $url = $scheme . $this->host . $path;
+        $host = $this->host;
+
+        if ($this->port !== 0) {
+            $host = $this->host.':'.$this->port;
+        }
+
+        $url = $scheme . $host . $path;
         curl_setopt($this->curl, CURLOPT_URL, $url);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION,true);

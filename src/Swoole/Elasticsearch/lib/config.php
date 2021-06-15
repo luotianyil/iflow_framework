@@ -17,7 +17,8 @@ class config
 
     public function getHost(): string
     {
-        return explode(':', $this->config['host'])[1] ?: '127.0.0.1';
+        $url = explode(':', $this->config['host']);
+        return "${url[0]}:${url[1]}";
     }
 
     public function getPort(): int
@@ -55,16 +56,16 @@ class config
         return $this;
     }
 
-    public function getHeader()
+    public function getHeader(): array
     {
         if (empty($this->config['headers']['Authorization'])) {
             $this->setApiKey();
         }
 
-        return [
+        return array_merge($this->config['headers'] ?? [], [
             'Content-Type' => 'application/json',
             'Accept' => 'text/html,application/xhtml+xml,application/xml,application/json;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'Accept-Encoding' => 'gzip',
+//            'Accept-Encoding' => 'gzip',
             'User-Agent' => sprintf(
                 "iflow-elasticsearch-php/%s (%s %s; PHP %s)",
                 '0.0.1',
@@ -73,7 +74,7 @@ class config
                 phpversion()
             ),
             'x-elastic-client-meta' => $this->getElsMate()
-        ];
+        ]);
     }
 
     public function getOptions()

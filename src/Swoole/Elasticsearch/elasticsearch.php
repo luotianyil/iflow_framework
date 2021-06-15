@@ -32,4 +32,12 @@ class elasticsearch
     {
         return new docs($this->config);
     }
+
+    /**
+     * @return config
+     */
+    public function getConfig(): config
+    {
+        return $this->config;
+    }
 }
