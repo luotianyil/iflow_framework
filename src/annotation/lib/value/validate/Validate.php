@@ -13,7 +13,7 @@ class Validate
         try {
             validate($validate['rule'], $validate['data'], $validate['message']);
         } catch (\Exception $exception) {
-            throw (new valueException()) -> setError(message() -> parameter_error($exception -> getMessage()));
+            throw new valueException(message() -> parameter_error($exception -> getMessage()));
         }
     }
 }

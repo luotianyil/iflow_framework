@@ -33,7 +33,7 @@ class Value
 
     /**
      * 验证是否为类
-     * @return mixed|string
+     * @return mixed
      */
     private function defaultIsClass(): mixed
     {

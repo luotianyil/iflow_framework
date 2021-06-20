@@ -20,12 +20,16 @@ class install extends Command
 
     public function handle(array $event = []) {
         $this->config = config('install');
-        $this -> includeDataBase() ->  installLib();
+        $this -> includeDataBase() ?->  installLib();
         $this->Console -> outPut -> writeLine('installed');
     }
 
-    protected function includeDataBase(): static
+    protected function includeDataBase(): static|null
     {
+        if (!extension_loaded('pdo_mysql')) {
+            $this->Console -> outPut -> writeLine('pdo_mysql not extension! initializer database fail');
+            return null;
+        }
         $files = find_files($this->config['database']['rootPath'], function (\SplFileInfo $item) {
             return $item -> getExtension() === 'sql';
         });

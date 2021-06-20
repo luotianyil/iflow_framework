@@ -2,6 +2,7 @@
 
 namespace iflow;
 
+use iflow\exception\lib\HttpResponseException;
 use iflow\response\lib\File;
 
 class Response
@@ -76,10 +77,10 @@ class Response
         if (request() -> isAjax() === false) {
             $path = config('app@404_error_page');
             if (file_exists($path)) {
-                return $this->sendFile($path, false) -> send();
+                throw new HttpResponseException($this->sendFile($path, false));
             }
         }
-        return message() -> nodata($msg) -> send();
+        throw new HttpResponseException(message() -> nodata($msg));
     }
 
     public function send()
@@ -154,7 +155,7 @@ class Response
         return $this;
     }
 
-    public function trailer(string $key, string $value, bool $ucwords = true)
+    public function trailer(string $key, string $value, bool $ucwords = true): static
     {
         $this->response -> trailer(...func_get_args());
         return $this;

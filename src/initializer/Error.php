@@ -5,15 +5,22 @@ namespace iflow\initializer;
 
 
 use iflow\App;
+use iflow\exception\Handle;
+use iflow\exception\lib\errorException;
 use Throwable;
 // 异常接管
 class Error
 {
     protected App $app;
+    protected array $config = [];
+    protected string $handle = Handle::class;
 
     public function initializer(App $app)
     {
         $this->app = $app;
+        $this->config = config('app');
+        $this->handle = $this->config['exceptionHandle'] ?: $this->handle;
+
         // 全部接管
         error_reporting(E_ALL);
         set_exception_handler([$this, 'appHandler']);
@@ -23,15 +30,26 @@ class Error
         register_shutdown_function([$this, 'appShuDown']);
     }
 
-    public function appError(int $errno, string $str, string $file = '', int $line = 0)
+    public function appError(int $errno, string $message, string $file = '', int $line = 0)
     {
-        $type = $this->isFatal($errno) ? 'warning' : 'error';
-        logs($type, $type.": $str file: $file in line $line");
+        // 致命错误处理
+        $exception = new errorException(
+            $errno, $message, $file, $line
+        );
+        if (error_reporting() & $errno) {
+            throw $exception;
+        }
     }
 
     public function appHandler(Throwable $e)
     {
-        $this->appError($e -> getCode(), $e -> getMessage(), $e -> getFile(), $e -> getLine());
+        $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
+        if (class_exists($this->handle)) {
+            // 异常处理回调
+            (new $this->handle($type)) -> render(
+                $this->app, $e
+            ) ?-> send();
+        }
     }
 
     public function appShuDown()

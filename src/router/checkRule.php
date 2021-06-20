@@ -4,6 +4,7 @@
 namespace iflow\router;
 
 
+use iflow\router\exception\RouterNotFoundException;
 use iflow\router\lib\utils\bindRequestParams;
 use iflow\router\lib\utils\checkRouter;
 
@@ -59,7 +60,7 @@ class checkRule
             if ($router) break;
         }
         // 验证通过绑定参数
-        return $router ? $this->bindParam($router) : $router;
+        return $router ? $this->bindParam($router) : throw new RouterNotFoundException();
     }
 
     public function check(array $ruleAll, string $url, string $method): array|bool

@@ -3,6 +3,8 @@
 
 namespace iflow\template\lib;
 
+use iflow\exception\lib\HttpException;
+use iflow\exception\lib\HttpResponseException;
 use iflow\Response;
 
 class Parser extends tag implements TemplateParser
@@ -45,7 +47,7 @@ class Parser extends tag implements TemplateParser
             }
             return $this->send($this->templateParser());
         } else {
-            throw new \Exception('template file not exists');
+            throw new HttpException('template file not exists');
         }
     }
 
@@ -69,10 +71,14 @@ class Parser extends tag implements TemplateParser
     {
         $this->content = file_get_contents($this->file);
         if ($this->content === '') {
-            throw new \Exception('Template Content is Empty');
+            throw new HttpResponseException(
+                message() -> nodata('Template Content is Empty')
+            );
         }
         if ($this->FileIsTemplateLibrary()) {
-            throw new \Exception('TemplateFile is templateLibrary');
+            throw new HttpResponseException(
+                message() -> nodata('TemplateFile is templateLibrary')
+            );
         }
         return $this->funcParser();
     }

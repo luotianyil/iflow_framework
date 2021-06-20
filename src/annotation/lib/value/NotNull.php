@@ -31,6 +31,6 @@ class NotNull
 
     private function throwError($ref)
     {
-        throw (new valueException()) -> setError(message() -> parameter_error($this->error ?: "{$ref -> getName()} required"));
+        throw new valueException(message() -> parameter_error($this->error ?: "{$ref -> getName()} required"));
     }
 }

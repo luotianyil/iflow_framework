@@ -22,20 +22,30 @@ class ValidateRule
         $this->rule = $this->toArray($this->rule, $name);
         $this->errMsg = $this->toArray($this->errMsg, $name);
 
+        $defaultValue = $ref -> getDefaultValue() ?: $this->defaultValue;
+
         // 获取验证参数
         try {
-            $value = $ref -> getValue($object);
-        } catch (\Error $error) {
-            $value = $ref -> getDefaultValue() ?: $this->defaultValue;
+            $defaultValue = $ref -> getValue($object);
+        } catch (\Error) {}
+
+        try {
+            // 设置验证参数
+            $ref -> setValue($object, $defaultValue);
+        } catch (\Error) {
+            throw new valueException(message() -> parameter_error(
+                '参数异常 请重试'
+            ));
         }
 
-        $ref -> setValue($object, $value);
         $this->defaultValue = $this->toArray($ref->getValue($object), $name);
 
         try {
             validate($this->rule, $this->defaultValue, $this->errMsg);
         } catch (\Exception $exception) {
-            throw (new valueException()) -> setError(message() -> parameter_error($exception -> getMessage()));
+            throw new valueException(
+                message() -> parameter_error($exception -> getMessage())
+            );
         }
     }
 

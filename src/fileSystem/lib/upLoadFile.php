@@ -5,6 +5,7 @@ namespace iflow\fileSystem\lib;
 
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use think\Exception;
 
 class upLoadFile extends fileSystem implements UploadedFileInterface
 {
@@ -66,17 +67,18 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
     public function move(string $savePath, array $config = [])
     {
         $validate = $this->validate($config);
-        if ($validate) {
-            $fileName = $this->fileNameHash($config);
-            $path = $this->getSavePath($savePath, $fileName);
-            $path['path'] = str_replace("\\", "/", $path['path']);
-            $basePath = dirname($path['path']);
-            !is_dir($basePath) && mkdir($basePath, 0755, true);
-            // 当 move_uploaded_file 无法使用时(非框架自带HTTP服务时) 直接使用 rename
-            $upload = move_uploaded_file($this->getPathname(), $path['path']) ?: rename($this->getPathname(), $path['path']);
-            return $upload ? $path : false;
+        if ($validate -> error) {
+            throw new \Exception($validate -> error[0]);
         }
-        return $validate;
+
+        $fileName = $this->fileNameHash($config);
+        $path = $this->getSavePath($savePath, $fileName);
+        $path['path'] = str_replace("\\", "/", $path['path']);
+        $basePath = dirname($path['path']);
+        !is_dir($basePath) && mkdir($basePath, 0755, true);
+        // 当 move_uploaded_file 无法使用时(非框架自带HTTP服务时) 直接使用 rename
+        $upload = move_uploaded_file($this->getPathname(), $path['path']) ?: rename($this->getPathname(), $path['path']);
+        return $upload ? $path : false;
     }
 
     /**

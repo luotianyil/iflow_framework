@@ -100,6 +100,8 @@ https://framework.mzshe.cn
 
 - 缓存 （支持类型： File/Redis）
 
+- 异常处理
+
 - 自定义配置
 
 - 自定义指令
@@ -111,6 +113,8 @@ https://framework.mzshe.cn
 - Session
 
 - 自定义权限验证
+
+- JWT
 
 - SMTP 发送邮件
 

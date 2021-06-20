@@ -20,13 +20,7 @@ class initializer extends requestTools
             -> setResponse($response);
 
         foreach ($this->runProcess as $key) {
-            try {
-                if (method_exists($this, $key) && call_user_func([$this, $key])) break;
-            } catch (valueException $valueException) {
-                // 此处捕获参数异常
-                $this->validateResponse($valueException -> getError());
-                break;
-            }
+            if (method_exists($this, $key) && call_user_func([$this, $key])) break;
         }
     }
 
@@ -131,7 +125,7 @@ class initializer extends requestTools
             }
             // 执行Bean注解
             $this->services -> app -> runAttributes($ref, ...[$ref, $object, $this]);
-        } else throw (new valueException()) -> setError(message() -> parameter_error("dataObject: ${class} IsNull"));
+        } else throw new valueException(message() -> parameter_error("dataObject: ${class} IsNull"));
         return $object;
     }
 }
