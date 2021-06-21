@@ -37,7 +37,7 @@ class FileList
      */
     public function loadDirFile(string $dir, array $fileList = []) : array
     {
-        $iterator = new \FilesystemIterator(trim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR);
+        $iterator = new \FilesystemIterator($dir. DIRECTORY_SEPARATOR);
         while ($iterator -> valid()) {
             if (is_dir($iterator -> getPathname())) {
                 $fileList[$iterator -> getBasename()] = $this->loadDirFile($iterator -> getPathname());
