@@ -28,11 +28,7 @@ class Parser extends tag implements TemplateParser
         $this->data = $data;
         $view_suffix = $this->config['view_suffix'] === '' ? '' : ".{$this->config['view_suffix']}";
         $this->file = $this->config['view_root_path'] . $template . $view_suffix;
-        try {
-            return $this->fetch();
-        } catch (\Exception $e) {
-            return response() -> notFount($e -> getMessage());
-        }
+        return $this->fetch();
     }
 
     public function fetch(): Response
@@ -47,7 +43,7 @@ class Parser extends tag implements TemplateParser
             }
             return $this->send($this->templateParser());
         } else {
-            throw new HttpException('template file not exists');
+            throw new HttpException(404, 'template file not exists');
         }
     }
 
