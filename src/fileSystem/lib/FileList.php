@@ -65,7 +65,7 @@ class FileList
             if (is_dir($iterator -> getPathname())) {
                 $fileList[$iterator -> getBasename()] = [
                     'root' => $iterator -> getPathname(),
-                    'chilrend' => $this->loadDir($iterator -> getPathname())
+                    'children' => $this->loadDir($iterator -> getPathname())
                 ];
             }
             $iterator -> next();
@@ -77,9 +77,9 @@ class FileList
      * 删除目录
      * @param string $dir 需要删除的目录
      * @param array $ignore 忽略的目录
-     * @return int[]
+     * @return array
      */
-    public function removeDir(string $dir, array $ignore = [])
+    public function removeDir(string $dir, array $ignore = []): array
     {
         $iterator = new \FilesystemIterator(trim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR);
         $count = 0;

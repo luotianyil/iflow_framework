@@ -3,13 +3,13 @@
 
 namespace iflow;
 
+use iflow\exception\lib\HttpResponseException;
 use iflow\pipeline\pipeline;
 
 class Middleware
 {
     protected App $app;
     protected pipeline $pipeline;
-    protected Response $response;
 
     protected array $middleware = [];
 
@@ -31,8 +31,10 @@ class Middleware
                     [$class, $params] = is_array($middleware) ? $middleware : [$middleware, []];
                     $response = call_user_func([$this->app->make($class), 'handle'], $request, $next, ...$params);
                     if ($response instanceof Response) {
-                        $this->response = $response;
-                        throw new \Exception('middleware returns response');
+                        // 抛出响应异常
+                        throw new HttpResponseException(
+                            $response
+                        );
                     }
                 };
             }, $this->middleware)
@@ -41,14 +43,9 @@ class Middleware
     }
 
     // 执行中间件
-    public function thenMiddleware(): Response|bool
+    public function thenMiddleware(): bool
     {
-        try {
-            $this->pipeline -> process($this->app);
-            return true;
-        } catch (\Exception) {
-            return $this->response;
-        }
+        $this->pipeline -> process($this->app);
+        return true;
     }
-
 }
