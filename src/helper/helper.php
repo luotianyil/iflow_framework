@@ -32,7 +32,7 @@ if (!function_exists('loadConfigFile')) {
         $type = pathinfo($file, PATHINFO_EXTENSION);
         $config = match ($type) {
             'php' => include $file,
-            'ini' => parse_ini_file($file, true, INI_SCANNER_TYPED) ?: [],
+            'ini', 'env' => parse_ini_file($file, true, INI_SCANNER_TYPED) ?: [],
             'json' => json_decode(file_get_contents($file), true),
             'yaml' => function () use ($file) {
                 if (function_exists('yaml_parse_file')) {
@@ -125,17 +125,22 @@ if (!function_exists('emails')) {
         string $body = '',
         array $files = [],
         string $subject = ''
-    ) {
-        $content = new \iflow\Swoole\email\lib\Message\Html();
-        $content = $content -> setHtml($body) -> setSubject($subject);
-        foreach ($files as $file) {
-            $content = $content -> addAttachment(
-                $file['filename'],
-                $file['filePath'],
-                $file['mime']
-            );
+    ): bool|string {
+        try {
+            if (count($to) < 1) return false;
+            $content = new \iflow\Swoole\email\lib\Message\Html();
+            $content = $content -> setHtml($body) -> setSubject($subject);
+            foreach ($files as $file) {
+                $content = $content -> addAttachment(
+                    $file['filename'],
+                    $file['filePath'],
+                    $file['mime']
+                );
+            }
+            return (new \iflow\Swoole\email\Mailer()) -> setTo($to) -> send($content);
+        } catch (\iflow\Swoole\email\lib\Exception\mailerException $exception) {
+            return $exception -> getMessage();
         }
-        return (new \iflow\Swoole\email\Mailer()) -> setTo($to) -> send($content);
     }
 }
 
@@ -179,7 +184,7 @@ if (!function_exists('app_class_name')) {
 
 // rpc
 if (!function_exists('rpc')) {
-    function rpc($clientName, $url, array &$param = []) {
+    function rpc($clientName, $url, array $param = []) {
         $config = config('swoole.rpc');
         $param['request_uri'] = $url;
         $config['server']['enable'] = $config['server']['enable'] ?? false;

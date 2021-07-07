@@ -59,6 +59,7 @@ class Response
     public function __call(string $name, array $arguments)
     {
         // TODO: Implement __call() method.
+        return null;
     }
 
 }

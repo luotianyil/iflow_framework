@@ -4,11 +4,10 @@
 namespace iflow\Swoole\Rpc\lib;
 
 use iflow\facade\Cache;
-use iflow\facade\Config;
-use iflow\Swoole\Services\Http\lib\initializer;
+use iflow\Swoole\Rpc\lib\router\checkRequest;
 use Swoole\Server;
 
-class rpcReceive extends initializer
+class rpcReceive
 {
 
     public array $router;
@@ -17,7 +16,7 @@ class rpcReceive extends initializer
     protected ?array $clientList = [];
     protected mixed $config = [];
 
-    public function handle(Server $server, $fd, $reactor_id, $data)
+    public function handle(Server $server, $fd, $reactor_id, $data): bool
     {
         $this->server = $server;
         $this->fd = $fd;
@@ -29,20 +28,25 @@ class rpcReceive extends initializer
 
         $this->clientList = Cache::store($this->config['clientList'])
                             -> get($this->config['clientList']['cacheName']);
-
         if ($info) {
+            // 向子服务器发送请求
             if (isset($info['isClientConnection']) && isset($info['client_name'])) {
+                // 验证是否请求自己
+                if ($info['client_name'] === $this->config['client_name']) {
+                    return (new checkRequest())
+                        -> init($server, $fd, $info);
+                }
+
                 return $this -> send(rpc($info['client_name'], $info['request_uri'], $info));
             }
             if ($this->addClient($info, $fd)) {
-                $this -> send($info);
+                return $this -> send($info);
             }
-            return true;
         }
-        return true;
+        return $this->send(404);
     }
 
-    public function addClient($info, $fd)
+    public function addClient($info, $fd): bool
     {
         if (!empty($info['initializer']) && $info['initializer'] == 1) {
             if (isset($this->clientList[$fd])) {

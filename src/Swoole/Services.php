@@ -129,7 +129,7 @@ class Services extends Command
         return true;
     }
 
-    public function callConfigHandle($pack = '', $param = [])
+    public function callConfigHandle($object = '', $param = [])
     {
         if (class_exists($this->services -> Handle)) {
             return call_user_func([new $this->services -> Handle, 'Handle'], ...$param);

@@ -15,8 +15,8 @@ class requestTools
 {
 
     public object $services;
-    public Request $request;
-    public Response $response;
+    public ?Request $request = null;
+    public ?Response $response = null;
 
     public bool $isTpc = false;
     public array $router;
@@ -62,8 +62,7 @@ class requestTools
         if ($url[0] === $rule['rule']) {
             array_splice($url, 0, 1);
             $url = str_replace('/', DIRECTORY_SEPARATOR, implode('/', $url));
-            sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url, isConfigRootPath: false) -> send();
-            return true;
+            return sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url, isConfigRootPath: false) -> send();
         }
         return false;
     }
@@ -139,7 +138,7 @@ class requestTools
         $this->routerBindParams = $this->bindParam(
             $this->router['parameter']
         );
-        $aop = $this->services -> app -> make(Aop::class) -> process(
+        $aop = app() -> make(Aop::class) -> process(
             $this->requestController[0], $this->requestController[1], ...$this -> routerBindParams
         );
         if ($aop === false) return false;

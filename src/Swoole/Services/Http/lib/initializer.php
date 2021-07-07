@@ -84,11 +84,11 @@ class initializer extends requestTools
                 : $this->refController -> newInstance();
 
         // 执行控制器类注解
-        $this->services -> app -> runAttributes($this->refController, $this->refController, $controller);
+        app() -> runAttributes($this->refController, $this->refController, $controller);
 
         // 执行方法
         return $this->send(
-            $this->services -> app -> invokeMethod(
+            app() -> invokeMethod(
                 [$controller, $this->requestController[1]],
                 $this->routerBindParams
             )
@@ -124,7 +124,7 @@ class initializer extends requestTools
                 );
             }
             // 执行Bean注解
-            $this->services -> app -> runAttributes($ref, ...[$ref, $object, $this]);
+            app() -> runAttributes($ref, ...[$ref, $object, $this]);
         } else throw new valueException(message() -> parameter_error("dataObject: ${class} IsNull"));
         return $object;
     }

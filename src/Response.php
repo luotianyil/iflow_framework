@@ -83,8 +83,12 @@ class Response
         throw new HttpResponseException(message() -> nodata($msg));
     }
 
-    public function send()
+    public function send(): bool
     {
+        if ($this->response === null) return false;
+
+        // Swoole 验证是否已经结束请求
+        if ($this->response -> isWritable() === false) return false;
         $this->setResponseHeader();
         return $this->response -> end($this->output($this->data));
     }
@@ -109,10 +113,6 @@ class Response
      */
     private function sendFile(string $path = '', bool $isConfigRootPath = true): File
     {
-        if (request() -> isGet()) {
-            $this->setLastModified() -> setCacheControl() -> steExpiresTimes();
-        }
-        $this->setResponseHeader();
         return sendFile($path, isConfigRootPath: $isConfigRootPath);
     }
 

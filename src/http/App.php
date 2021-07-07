@@ -28,7 +28,6 @@ class App extends \iflow\App
 
     protected float $startTime;
 
-
     protected function initializer(): void
     {
         $this -> startTime = microtime(true);

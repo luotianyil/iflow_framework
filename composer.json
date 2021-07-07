@@ -24,7 +24,7 @@
     "ext-sockets": "*",
     "ext-gd": "*"
   },
-  "license": "MulanPSL-1.0",
+  "license": "MulanPSL-2.0",
   "authors": [
     {
       "name": "洛水天依",

@@ -28,7 +28,7 @@ class webSocket
         $services -> eventInit(new $event($this), $this->events);
     }
 
-    public function emit($event, $data)
+    public function emit($event, $data): bool
     {
         $data = packet::create('4'.packet::EVENT . $this->nsp. ',', [
             'data' => [
@@ -44,6 +44,7 @@ class webSocket
             return true;
         } finally {
             $this->to = [];
+            return false;
         }
     }
 

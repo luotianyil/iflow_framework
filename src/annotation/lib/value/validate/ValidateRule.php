@@ -34,7 +34,7 @@ class ValidateRule
             $ref -> setValue($object, $defaultValue);
         } catch (\Error) {
             throw new valueException(message() -> parameter_error(
-                '参数异常 请重试'
+                $this -> errMsg ? $this -> errMsg[0] : '参数异常 请重试'
             ));
         }
 

@@ -6,6 +6,7 @@ namespace iflow\aop;
 
 use iflow\aop\lib\Ast;
 use iflow\App;
+use iflow\exception\lib\HttpException;
 use iflow\pipeline\pipeline;
 
 class Aop
@@ -55,7 +56,7 @@ class Aop
                 // 生成代理类
                 if (!$this->CacheExists($hashClass)) {
                     $ast = (new Ast()) -> proxy($class, aspectClass: $aspect);
-                    if ($ast === "") throw new \Exception("proxyClass {$class} not exists");
+                    if ($ast === "") throw new HttpException(502, "proxyClass {$class} not exists");
                     $this->saveCache($hashClass, $ast);
                 }
                 include_once $this->config['cache_path']. DIRECTORY_SEPARATOR . $hashClass . ".php";
@@ -81,9 +82,9 @@ class Aop
      * 存储 代理缓存
      * @param string $class
      * @param string $content
-     * @return false|int
+     * @return bool|int
      */
-    private function saveCache(string $class, string $content)
+    private function saveCache(string $class, string $content): bool|int
     {
         $path = $this->config['cache_path']. DIRECTORY_SEPARATOR . $class. ".php";
         !is_dir(dirname($path)) && mkdir(dirname($path));

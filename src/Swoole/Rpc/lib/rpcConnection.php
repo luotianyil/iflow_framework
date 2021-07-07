@@ -5,12 +5,12 @@ namespace iflow\Swoole\Rpc\lib;
 
 
 use iflow\facade\Cache;
+use Swoole\Server;
 
 class rpcConnection
 {
 
-    public function onConnect($server, $fd)
-    {}
+    public function onConnect(Server $server, $fd) {}
 
     public function onClose($server, $fd)
     {
@@ -22,5 +22,4 @@ class rpcConnection
         $cache -> set($config['cacheName'], $client);
         $server -> close($fd);
     }
-
 }

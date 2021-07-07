@@ -72,5 +72,4 @@ class install extends Command
             $this->Console -> outPut -> writeLine('install library error: composerPath ' . $composer . ' not exists');
         }
     }
-
 }

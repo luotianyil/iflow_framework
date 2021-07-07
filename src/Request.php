@@ -8,11 +8,19 @@ use iflow\fileSystem\lib\upLoadFile;
 class Request
 {
 
-    public mixed $request;
-    public array $server;
+    public mixed $request = null;
+    public array $server = [];
     public string $request_uri = '';
     public string $query_string = '';
     public string $request_method = '';
+
+    protected string $realIp = '';
+
+    protected array $proxyIpHeader = [
+        'X_REAL_IP', 'X_FORWARDED_FOR',
+        'CLIENT_IP', 'X_CLIENT_IP',
+        'X_CLUSTER_CLIENT_IP'
+    ];
 
     public function initializer($request): static
     {
@@ -23,20 +31,30 @@ class Request
         $this->query_string = $request -> server['query_string'] ?? '';
         $this->request_method = $request -> server['request_method'];
 
-        $this->initFile();
-        return $this;
+        return $this->initFile();
     }
 
-    protected function initFile()
+    /**
+     * 初始化上传文件
+     * @return $this
+     */
+    protected function initFile(): static
     {
         $files = $this->request -> files ?? [];
         $upLoadFile = app() -> make(upLoadFile::class);
         foreach ($files as $key => $value) {
             $upLoadFile -> setFile($key, $value);
         }
+
+        return $this;
     }
 
-    // validate param
+    /**
+     * 验证参数是否存在
+     * @param $param
+     * @param string $type
+     * @return bool
+     */
     public function has($param, $type = 'get'): bool
     {
         if (!in_array($type, ['post', 'get', 'header'])) {
@@ -45,24 +63,43 @@ class Request
         return !empty($this->request -> {$type}[$param]);
     }
 
-    // get param
-    public function getParams(string $name = '')
+    /**
+     * 获取get参数
+     * @param string $name
+     * @param string $default
+     * @return string|array|null
+     */
+    public function getParams(string $name = '', string $default = ''): string|array|null
     {
         if ($name === '') return $this->request -> get;
-        return $this->get($name, 'get');
+        return $this->get($name, 'get', $default);
     }
 
-    public function getHeader(string $name = '')
+    /**
+     * 获取头部参数
+     * @param string $name
+     * @param string $default
+     * @return string|array|null
+     */
+    public function getHeader(string $name = '', string $default = ''): string|array|null
     {
         if ($name === '') return $this->request -> header;
-        return $this->get(strtolower(str_replace('_', '-', $name)), 'header');
+        return $this->get(strtolower(str_replace('_', '-', $name)), 'header', $default);
     }
 
-    protected function get(string $name, string $type) {
+    /**
+     * 获取请求参数
+     * @param string $name
+     * @param string $type
+     * @param string $default
+     * @return string|array|null
+     */
+    protected function get(string $name, string $type, string $default = ''): string|array|null
+    {
         if ($this->has($name, $type)) {
-            return $this->request -> {$type}[$name];
+            return $this->request -> {$type}[$name] ?? $default;
         }
-        return null;
+        return $default;
     }
 
     public function file(string $name = ''): upLoadFile|array
@@ -72,13 +109,13 @@ class Request
         return $file ?: [];
     }
 
-    public function postParams(string $name = '')
+    public function postParams(string $name = '', string $default = '')
     {
         if (!$this->isPost()) return [];
         $row = $this->request -> getContent();
         $params = is_array($row) ? $row : (json_decode($row, true)?: $this->request -> post);
         if ($name === '') return $params;
-        return $params[$name] ?? null;
+        return $params[$name] ?? $default;
     }
 
     public function params(string $name = '')
@@ -156,6 +193,39 @@ class Request
     public function getDomain(): string
     {
         return $this->getHeader('host');
+    }
+
+    /**
+     * 获取ip 地址
+     * @return string
+     */
+    public function ip(): string
+    {
+        if (!empty($this->realIp)) return $this->realIp;
+        foreach ($this->proxyIpHeader as $proxyHeader) {
+            $this->realIp = $this->getHeader($proxyHeader);
+            // 验证IP类型 如果通过退出
+            if ($this->validIP($this->realIp) || $this->validIP($this->realIp, 'ipv6')) {
+                break;
+            }
+        }
+
+        if (!$this->realIp) $this->realIp = '127.0.0.1';
+        return $this->realIp;
+    }
+
+    /**
+     * 验证ip格式
+     * @param string $ip
+     * @param string $type
+     * @return bool
+     */
+    public function validIP(string $ip, string $type = 'ipv4'): bool
+    {
+        if (!$ip) return false;
+
+        $flag = strtolower($type) === 'ipv4' ? FILTER_FLAG_IPV4 : FILTER_FLAG_IPV6;
+        return boolval(filter_var($ip, $flag));
     }
 
     public function __call(string $name, array $arguments)

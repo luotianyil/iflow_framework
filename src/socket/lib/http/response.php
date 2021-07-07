@@ -78,10 +78,12 @@ class response
         511 => 'Network Authentication Required',                             // RFC6585
     ];
 
+    // 是否已经结束请求
+    protected bool $isWritable = true;
+
     public function __construct(
         protected $socket
-    )
-    {
+    ) {
         $this->header = [
             'date' => gmdate('D, d M Y H:i:s T'),
             'content-type' => 'text/html',
@@ -98,6 +100,7 @@ class response
     {
         $this->body = $this->setResponseBody() . $data;
         socket_write($this->socket, $this->body, strlen($this->body));
+        $this->isWritable = false;
         return true;
     }
 
@@ -220,5 +223,16 @@ class response
             }
         }
         return true;
+    }
+
+    public function isWritable(): bool
+    {
+        return $this->isWritable;
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        // TODO: Implement __call() method.
+        return null;
     }
 }

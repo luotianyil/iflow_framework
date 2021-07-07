@@ -3,11 +3,14 @@
 
 namespace iflow\Swoole\Rpc\lib;
 
+use iflow\Swoole\Rpc\lib\router\checkRequest;
 use iflow\Swoole\Server;
 use iflow\Swoole\Services\WebSocket\webSocket;
 use Swoole\Coroutine\Client as SwooleClient;
 use Swoole\Http\Server as HttpServer;
+use Swoole\Process;
 use Swoole\WebSocket\Server as WebSocketServer;
+use function Co\run;
 
 class rpcClient
 {
@@ -49,11 +52,11 @@ class rpcClient
 
     protected function connectionRpcServer()
     {
-        $process = new \Swoole\Process(function () {
+        $process = new Process(function () {
             $this->client = new SwooleClient(SWOOLE_SOCK_TCP);
             $this->rpcBindParam = array_values($this->services -> configs['server']);
             swoole_set_process_name(uniqid('rpc_bind_server_'));
-            \Co\run(
+            run(
                 function () {
                     if ($this->client -> connect(...$this->rpcBindParam)) {
                         $this -> send([
@@ -62,7 +65,7 @@ class rpcClient
                             'httpHost' => config('swoole.service@host'),
                             'initializer' => 1
                         ]);
-                        $this->app -> instance(\Swoole\Coroutine\Client::class, $this->client);
+                        $this->app -> instance(SwooleClient::class, $this->client);
                         while ($this->client -> isConnected()) {
                             $pack = $this->client -> recv();
                             if ($pack) {
@@ -92,26 +95,29 @@ class rpcClient
             $event = new $key;
             $event -> initializer($this);
 
-            if ($key === Event::class) {
+            if ($event instanceof Event) {
                 $this->eventInit($event, $event -> events);
             }
         }
         $this->server -> start();
     }
 
-    public function handle($server, $pack)
+    /**
+     * 消息处理回调
+     * @param $server
+     * @param $pack
+     * @return bool
+     */
+    public function handle($server, $pack): bool
     {
         $pack = json_decode($pack, true);
-        if ($pack) {
-            $event = new Event();
-            $event -> data = $pack;
-            $event -> server = $server;
-            return $event -> startRpcResponse();
-        }
-        return $server -> send('404 - no data');
+        if (!is_array($pack)) return true;
+        return (
+            new checkRequest()
+        ) -> init($server, 0, $pack);
     }
 
-    public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|\Swoole\Coroutine\Client
+    public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|SwooleClient
     {
         return $this->server;
     }

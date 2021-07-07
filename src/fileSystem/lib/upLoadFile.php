@@ -3,9 +3,9 @@
 
 namespace iflow\fileSystem\lib;
 
+use iflow\exception\lib\HttpException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use think\Exception;
 
 class upLoadFile extends fileSystem implements UploadedFileInterface
 {
@@ -68,7 +68,7 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
     {
         $validate = $this->validate($config);
         if ($validate -> error) {
-            throw new \Exception($validate -> error[0]);
+            throw new HttpException(403, $validate -> error[0]);
         }
 
         $fileName = $this->fileNameHash($config);

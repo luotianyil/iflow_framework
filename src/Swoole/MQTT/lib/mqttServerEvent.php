@@ -7,9 +7,8 @@ namespace iflow\Swoole\MQTT\lib;
 use iflow\Swoole\Event;
 use iflow\Swoole\MQTT\Services;
 
-class mqttServerEvent
+class mqttServerEvent extends Event
 {
-    use Event;
 
     protected Parser $parser;
     protected Services $services;
@@ -48,4 +47,19 @@ class mqttServerEvent
 
     public function onClose($server, $fd)
     {}
+
+    public function onOpen($server, $req)
+    {
+        // TODO: Implement onOpen() method.
+    }
+
+    public function onMessage($server, $req)
+    {
+        // TODO: Implement onMessage() method.
+    }
+
+    public function onConnection($server, $fd)
+    {
+        // TODO: Implement onConnection() method.
+    }
 }

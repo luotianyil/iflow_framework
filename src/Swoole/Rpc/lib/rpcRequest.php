@@ -3,8 +3,7 @@
 
 namespace iflow\Swoole\Rpc\lib;
 
-
-use Swoole\Coroutine\Client as SwooleClient;
+use iflow\socket\lib\client\Client;
 
 class rpcRequest
 {
@@ -15,26 +14,32 @@ class rpcRequest
     public function __construct(
         protected string $host = '',
         protected int $port = 0,
-        protected bool $isSsl = false,
         protected string $url = '',
+        protected bool $isSsl = false,
         protected array $param = [],
         protected array $options = []
-    ) {
-    }
+    ) {}
 
     public function request()
     {
         $this->param['request_uri'] = $this->url;
-        $this->client = $this->client ?: new SwooleClient(
-            $this->isSsl ? SWOOLE_TCP | SWOOLE_SSL : SWOOLE_TCP
-        );
+
+        if ($this->client === null) {
+            if (class_exists(\Swoole\Coroutine\Client::class)) {
+                $this->client = new \Swoole\Coroutine\Client(
+                    $this->isSsl ? SWOOLE_TCP | SWOOLE_SSL : SWOOLE_TCP
+                );
+            } else {
+                $this->client = new Client($this->isSsl);
+            }
+        }
         $this->client -> set($this->options);
-        if (!$this->client -> connect($this->host, $this->port)) {
+        if (!$this->client -> connect($this->host, $this->port, 0.5)) {
             $this->error = $this->client -> errMsg;
         } else {
             $this->client -> send(json_encode($this->param, JSON_UNESCAPED_UNICODE));
-            $this->data = $this->client -> recv();
-            $this->client -> close();
+            $this->data = $this->client -> recv(30);
+            $this->error = $this->client -> close() ? '' : 'Close Connection Fail';
         }
     }
 
@@ -43,7 +48,7 @@ class rpcRequest
         return json_decode($this->data, true) ?? $this->data;
     }
 
-    public function getError()
+    public function getError(): string
     {
         return $this->error;
     }

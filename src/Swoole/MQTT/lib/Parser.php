@@ -9,7 +9,7 @@ use Simps\MQTT\ProtocolV5;
 class Parser
 {
 
-    public function unpack($data, $protocol_level = 5)
+    public function unpack($data, $protocol_level = 5): array
     {
         $data = trim(trim($data, '"'), '');
         if (is_string($data) && strlen($data) > 0 && $data !== '') {
@@ -18,7 +18,7 @@ class Parser
         return [];
     }
 
-    protected function Protocol($class, $data)
+    protected function Protocol($class, $data): array
     {
         try {
             if (class_exists($class)) $class::unpack($data);
