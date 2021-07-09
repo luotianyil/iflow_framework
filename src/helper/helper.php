@@ -188,26 +188,27 @@ if (!function_exists('rpc')) {
         $config = config('swoole.rpc');
         $param['request_uri'] = $url;
         $config['server']['enable'] = $config['server']['enable'] ?? false;
-        if ($config['server']['enable']) {
+        try {
             $config = $config['server']['clientList'];
             $clientList = \iflow\facade\Cache::store($config) -> get($config['cacheName']);
-            foreach ($clientList as $key) {
-                if ($key['name'] === $clientName) {
-                    return app_server() -> send($key['fd'],
+            foreach ($clientList as $clientValue) {
+                $clientValue = array_values($clientValue)[0];
+                if ($clientValue['name'] === $clientName) {
+                    return app_server() -> send($clientValue['fd'],
                         json_encode($param, JSON_UNESCAPED_UNICODE)
                     );
                 }
             }
-        } else {
+        } catch (Error $exception) {
             $param['client_name'] = $clientName;
             $param['isClientConnection'] = true;
             $client = app_client();
-            $client  -> send(
+            $client -> send(
                 json_encode($param, JSON_UNESCAPED_UNICODE)
             );
             return $client -> recv(30);
         }
-        return null;
+        return false;
     }
 }
 

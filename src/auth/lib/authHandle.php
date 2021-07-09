@@ -4,6 +4,7 @@
 namespace iflow\auth\lib;
 
 use iflow\Request;
+use iflow\Response;
 
 class authHandle
 {
@@ -71,7 +72,7 @@ class authHandle
         return $this;
     }
 
-    public function callback(): bool
+    public function callback(): bool|Response
     {
         $class = explode('@', $this->authAnnotation -> callBack);
         $method = '';

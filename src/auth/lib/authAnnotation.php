@@ -29,7 +29,7 @@ class authAnnotation
     {
         $this->app = $requestTools -> services -> app;
         $this->router = $requestTools -> router;
-        $this->callBack = $this -> callBack ? $this -> config['callBack'] : $this->callBack;
+        $this->callBack = $this -> callBack ?: ($this -> config['callBack'] ?? '');
 
         $this->config = config('auth');
         $handle = $this->app -> make($this->config['Handle'], [$this], true);

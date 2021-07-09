@@ -131,7 +131,7 @@ class Container implements ContainerInterface
                 elseif ($parameter -> isDefaultValueAvailable()) {
                     $args[] = $parameter -> getDefaultValue();
                 } else {
-                    throw new \Error('method param miss:' . $name);
+                    throw new \Error('method '. $methods -> getName() .' param miss:' . $name);
                 }
             }
         }

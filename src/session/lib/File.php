@@ -43,6 +43,11 @@ class File implements Session
     }
 
     protected function makeSessionName(): string {
-        return uniqid($this->config['prefix']) . (new basicTools()) -> make_random_number();
+        $number = (new basicTools()) -> make_random_number();
+        $host = request() -> getHeader('host');
+        $ip = request() -> ip();
+        return uniqid($this->config['prefix']) . hash(
+            'sha256', "${number}-${host}-${ip}"
+            );
     }
 }
