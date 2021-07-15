@@ -15,7 +15,7 @@ class IRedis
     public function initializer(array $config): static
     {
         if (!extension_loaded('redis')) {
-            throw new \Exception('Redis Extension does not exist', 502);
+            throw new \Exception('Redis Extension does not exist');
         }
         $this->redis = new Redis();
         $this->config = $config;
@@ -40,7 +40,7 @@ class IRedis
         ]);
 
         if (!$sentinel) {
-            throw new \Exception('Redis Sentinel does not exist', 502);
+            throw new \Exception('Redis Sentinel does not exist');
         }
 
         $this->redis -> close();

@@ -15,7 +15,7 @@ class Redis extends IRedis
     public function initializer(array $config): static
     {
         if (!extension_loaded('swoole')) {
-            throw new \Exception('Swoole Extension does not exist', 502);
+            throw new \Exception('Swoole Extension does not exist');
         }
         $this->redis = new SwRedis();
         $this->config = $config;
