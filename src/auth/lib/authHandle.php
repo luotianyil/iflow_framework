@@ -84,4 +84,20 @@ class authHandle
         }
         return call_user_func([$this->authAnnotation -> app -> make($class), $method ?: 'handle'], $this);
     }
+
+    /**
+     * @return authAnnotation
+     */
+    public function getAuthAnnotation(): authAnnotation
+    {
+        return $this->authAnnotation;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRouter(): array
+    {
+        return $this->router;
+    }
 }

@@ -30,7 +30,7 @@ class webSocket
 
     public function emit($event, $data): bool
     {
-        $data = packet::create('4'.packet::EVENT . $this->nsp. ',', [
+        $data = Packet::create('4'.Packet::EVENT . $this->nsp. ',', [
             'data' => [
                 $event,
                 $data

@@ -19,6 +19,9 @@ class checkRouter
     protected string $url = '';
     protected string $method = '';
 
+    // 路由请求尾缀
+    protected string $ext = '';
+
     /**
      * 批量验证数据
      * @param array $router
@@ -34,7 +37,9 @@ class checkRouter
     {
 
         $this->router = $router;
-        $this->url = $url;
+        $this->ext = pathinfo($url, PATHINFO_EXTENSION);
+        $this->url = str_replace(strrchr($url, "."),"", $url);
+
         $this->method = $method;
 
         if ($this->url === $this->router['rule']) {
@@ -130,7 +135,7 @@ class checkRouter
     {
         if (in_array('*', $this->router['ext'])) return true;
         return in_array(
-            pathinfo($this->url, PATHINFO_EXTENSION),
+            $this->ext,
             $this->router['ext']
         );
     }

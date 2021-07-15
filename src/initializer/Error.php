@@ -7,6 +7,7 @@ namespace iflow\initializer;
 use iflow\App;
 use iflow\exception\Handle;
 use iflow\exception\lib\errorException;
+use iflow\Response;
 use Throwable;
 // 异常接管
 class Error
@@ -46,9 +47,15 @@ class Error
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
         if (class_exists($this->handle)) {
             // 异常处理回调
-            (new $this->handle($type)) -> render(
+            $res = (new $this->handle($type)) -> render(
                 $this->app, $e
-            ) ?-> send();
+            );
+            if ($res instanceof Response) {
+                $res -> send();
+            } else {
+                message() -> server_error(502, 'Server Error') -> send();
+            }
+
         }
     }
 

@@ -22,16 +22,22 @@ class authAnnotation
     public function __construct(
         public string $key = '',
         public string $role = 'admin|user',
-        public string $callBack = ''
+        public array|string $callBack = []
     ) {}
 
     public function handle($requestTools)
     {
         $this->app = $requestTools -> services -> app;
         $this->router = $requestTools -> router;
-        $this->callBack = $this -> callBack ?: ($this -> config['callBack'] ?? '');
-
         $this->config = config('auth');
+
+        // 处理回调方法
+        $configCallBack = is_string($this -> config['callBack']) ? [
+            $this -> config['callBack']
+        ] : $this -> config['callBack'];
+        $this->callBack = is_string($this->callBack) ? [$this->callBack] : $this->callBack;
+        $this->callBack = array_merge($configCallBack, $configCallBack);
+
         $handle = $this->app -> make($this->config['Handle'], [$this], true);
         foreach ($this->initializers as $key) {
             call_user_func([$handle, $key], $requestTools -> request);

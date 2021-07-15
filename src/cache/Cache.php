@@ -4,6 +4,7 @@
 namespace iflow\cache;
 
 use iflow\cache\lib\File;
+use iflow\cache\lib\IRedis;
 use iflow\cache\lib\Redis;
 
 /**
@@ -24,7 +25,7 @@ class Cache
         $this->config = is_string($default) ? config('cache@stores.'.$default) : $default;
     }
 
-    public function store(string|array $name = ''): Redis | File
+    public function store(string|array $name = ''): Redis | File | IRedis
     {
         if (is_string($name)) {
             $name = $name ?: config('cache@default');

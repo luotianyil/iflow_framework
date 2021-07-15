@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace iflow\socket\lib\http;
 
 
+use iflow\initializer\Error;
 use iflow\socket\lib\interfaces\services;
 use iflow\Utils\Tools\Timer;
 
@@ -68,8 +69,8 @@ class http implements services
                         $this->response = new response($sock);
                         // 接收到 请求后的回调
                         $this->triggerEvent('request', $this->request, $this->response);
-                    } catch (\Exception|\Error $exception) {
-                        logs('warning', $exception -> getMessage());
+                    } catch (\Throwable $exception) {
+                        app() -> make(Error::class) -> appHandler($exception);
                     }
                 }
                 $this->close($sock);

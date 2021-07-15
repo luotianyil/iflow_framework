@@ -35,14 +35,22 @@ class Services extends Command
         }
 
         $this->config = config($configKeys);
+
+        if (empty($this->config['swConfig'])) {
+            $this->Console -> outPut -> writeLine('Swoole Config is Empty !!!');
+            return true;
+        }
+
         $this->initializers($this);
         match($this->userEvent[0]) {
             'stop' => $this->stop(),
             'reload' => $this->reStart(),
             default => ''
         };
-        if ($this->userEvent[0] !== 'start') exit(1);
+
+        if ($this->userEvent[0] !== 'start') return true;
         $this->run();
+        return true;
     }
 
     public function run()

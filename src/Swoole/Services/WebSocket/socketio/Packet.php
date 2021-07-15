@@ -4,7 +4,7 @@
 namespace iflow\Swoole\Services\WebSocket\socketio;
 
 
-class packet
+class Packet
 {
     const OPEN = 0;
 

@@ -45,15 +45,14 @@ class checkRule
         string $url = "/",
         string $method = 'get',
         array $param = []
-    ): array|bool
-    {
+    ): array|bool {
         $routerList = $this->getRouterList();
         $this->checkRouter = new checkRouter();
 
         $this->parameters = $param;
 
         $router = [];
-        if (!$routerList['router']) return $router;
+        if (empty($routerList['router'])) return $router;
 
         foreach ($routerList as $rule) {
             $router = $this->check($rule, $url, $method);

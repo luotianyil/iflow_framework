@@ -22,7 +22,9 @@
     "ext-curl": "*",
     "ext-ctype": "*",
     "ext-sockets": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "workerman/workerman": "^4.0",
+    "ext-redis": "*"
   },
   "license": "MulanPSL-2.0",
   "authors": [

@@ -1,31 +1,29 @@
 <?php
 
 
-namespace iflow\Swoole\Services\WebSocket\socketio\lib;
+namespace iflow\socket\workman\websocket;
 
 
-use iflow\Swoole\Services\WebSocket\socketio\packet;
-use Swoole\Http\Request;
-use Swoole\Server;
-use Swoole\Timer;
+use iflow\Swoole\Services\WebSocket\socketio\Packet;
+use iflow\Utils\Tools\Timer;
+use Workerman\Connection\TcpConnection;
 
 class Ping
 {
-
     protected mixed $pingTimeoutTimer = null;
     protected mixed $pingIntervalTimer = null;
 
     public function __construct(
-        protected Server $server,
-        protected Request $request,
+        protected TcpConnection $connection,
         protected float $pingTimer,
         protected float $pingTimeOut
     ){}
 
-    public function ping() {
+    public function ping(): bool
+    {
         Timer::clear($this->pingIntervalTimer);
         $this->pingIntervalTimer = Timer::after($this->pingTimer, function () {
-            $this->server->push($this->request -> fd, packet::ping());
+            $this->connection->send(packet::ping());
             $this->clearPingTimeOut($this->pingTimeOut);
         });
         return true;
@@ -51,7 +49,6 @@ class Ping
     public function close()
     {
         // 断开服务
-        $this->server -> disconnect($this->request -> fd);
-        $this->server -> close($this->request -> fd);
+        $this->connection -> close();
     }
 }

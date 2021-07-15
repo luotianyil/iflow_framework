@@ -11,6 +11,7 @@ use iflow\command\dht;
 use iflow\command\http;
 use iflow\command\install;
 use iflow\command\netPenetrate;
+use iflow\command\workMan;
 use iflow\console\lib\Help;
 use iflow\console\lib\Input;
 use iflow\console\lib\outPut;
@@ -26,6 +27,7 @@ class Console
 
     public array $command = [
         '<start|stop|reload>-service' => Services::class,
+        '<start|stop|reload>-serviceWorkman' => workMan::class,
         '<start|stop|reload>-tcp-<client|server>' => \iflow\Swoole\Tcp\Services::class,
         '<start|stop|reload>-udp-<client|server>' => \iflow\Swoole\Udp\Services::class,
         '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,

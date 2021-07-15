@@ -27,17 +27,17 @@ class initializer extends requestTools
     // 初始化请求数据
     public function setRequest($request): static
     {
-        $this->services -> app -> make(Cookie::class, [
+        app() -> make(Cookie::class, [
             $request -> cookie ?: []
         ]);
-        $this->request = $this -> services -> app -> make(Request::class, [], true) -> initializer($request);
+        $this->request = app() -> make(Request::class, [], true) -> initializer($request);
         return $this;
     }
 
     // 初始化响应数据
     public function setResponse($response): static
     {
-        $this->response = $this -> services -> app -> make(Response::class, [], true) -> initializer($response);
+        app() ->  make(Response::class, [], true) -> initializer($response);
         return $this;
     }
 
