@@ -103,7 +103,9 @@ class Event
             Packet::EVENT => function () use ($data) {
                 $this->websocket ->services -> callConfigHandle($this -> config['Handle'], [$this->websocket, [
                     'event' => $data -> data [0],
-                    'data' => $data -> data[1],
+                    'data' => isset($data -> data[1]) ? (
+                        json_decode($data -> data[1], JSON_UNESCAPED_UNICODE) ?: $data -> data[1]
+                    ) : ''
                 ]]);
             },
             default => $this->server -> close($this->fd)

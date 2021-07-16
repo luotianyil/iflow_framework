@@ -14,6 +14,7 @@
     "simps/mqtt": "^1.1.4",
     "nikic/php-parser": "^4.10",
     "phpunit/phpunit": "^9.5",
+    "workerman/workerman": "^4.0",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-bcmath": "*",
@@ -22,8 +23,7 @@
     "ext-curl": "*",
     "ext-ctype": "*",
     "ext-sockets": "*",
-    "ext-gd": "*",
-    "workerman/workerman": "^4.0"
+    "ext-gd": "*"
   },
   "license": "MulanPSL-2.0",
   "authors": [
