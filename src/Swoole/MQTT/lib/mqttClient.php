@@ -5,87 +5,184 @@ namespace iflow\Swoole\MQTT\lib;
 
 use Simps\MQTT\Client;
 use iflow\Swoole\MQTT\Services;
+use Simps\MQTT\Config\ClientConfig;
+use Simps\MQTT\Hex\ReasonCode;
 
 class mqttClient
 {
-
-    private Client $client;
-    public Services $services;
+    protected Client $client;
     protected array $inputConfig = [
         'connect' => [
             'clean' => true,
             'will' => []
         ],
-        'topics' => [
-            'test' => [
-                'qos' => 1,
-                'no_local' => true,
-                'retain_as_published' => true,
-                'retain_handling' => 2,
-            ]
-        ]
+        'topics' => []
     ];
 
-    protected $pingTimerId;
-    private int $timeSincePing = 0;
+    protected array $config = [];
 
-    public function initializer(Services $services)
-    {
-        $this->services = $services;
-        \Co\run(function () {
-            $this->client = new Client(
-                $this->services -> configs['host'],
-                $this->services -> configs['port'],
-                $this->services -> configs['swConfig'],
-                $this->services -> configs['sockType']
-            );
-            if ($this->connect()) {
-                if ($this->client -> subscribe($this->inputConfig['topics'])) {
-                    $this->wait();
-                } else {
-                    throw new \Exception('MQTT Subscribe Error');
-                }
-            }
-        });
-    }
+    // PING 定时id
+    protected int $pingTimerId;
+    protected int $timeSincePing = 0;
 
-    private function wait()
+    /**
+     * @param mixed $services MQTT CONFIG
+     */
+    public function initializer(array|Services $services)
     {
-        while(true)
-        {
-            $packet = $this->client->recv();
-            if ($packet && $packet !== true) {
-                $this -> timeSincePing = time();
-                $this -> services->callConfigHandle($packet, [$this, $packet]);
-            }
-            $this -> ping();
+        // 初始化连接
+        $this->inputConfig['connect'] = $services['connect'] ?? [];
+        $this->inputConfig['topics'] = $services['topics'] ?? [];
+        $this->config = $services;
+
+
+        $config = new ClientConfig($services);
+        $this->client = new Client(
+            $services['host'],
+            $services['port'],
+            $config,
+            $services['sockType']
+        );
+
+        // 等待连接成功
+        while (!$this->connect()) {
+            \Swoole\Coroutine::sleep(1);
         }
     }
 
-    private function connect(): bool
+    // 发送Connection请求
+    protected function connect(): bool
     {
-        $inputConfig = $this -> services ->callConfigHandle($this->services -> config['connectBefore'], [$this]);
+        $inputConfig = $this -> callConfigHandle($this-> config['connectBefore'], [$this]);
 
         $this->inputConfig = empty($inputConfig) ? $this->inputConfig : $inputConfig;
 
-        if (!$this->client->connect(...array_values($this->inputConfig['connect'] ?? []))) {
-            $this->services -> Console -> outPut -> writeLine("connect failed. Error");
+        if (!$res = $this->client->connect(...array_values($this->inputConfig['connect'] ?? []))) {
+            logs('error', 'connect failed. Error', $res);
             return false;
         }
         return true;
     }
 
-    private function ping()
+    // 发送PING
+    protected function ping()
     {
-        if (isset($this->services -> config['keep_alive']) && $this -> timeSincePing < (time() - $this->services -> config['keep_alive'])) {
-            $buffer = $this -> client ->ping();
+        if (isset($this -> config['keep_alive']) && $this -> timeSincePing < (time() - $this -> config['keep_alive'])) {
+            $buffer = $this -> client -> ping();
             if ($buffer) $this -> timeSincePing = time();
-            else $this->client -> close();
+            else $this -> close();
         }
     }
 
+    /**
+     * 获取Swoole Client
+     * @return Client
+     */
     public function getClient(): Client
     {
         return $this->client;
+    }
+
+    /**
+     * 设置topic主题
+     * @param string $topicName
+     * @param array $topic
+     * @return mqttClient
+     */
+    public function setTopic(string $topicName, array $topic): static
+    {
+        $this -> inputConfig['topics'][$topicName] = $topic;
+        return $this;
+    }
+
+    /**
+     * 设置连接配置信息
+     * @param array $connect
+     * @return $this
+     */
+    public function setConnection(array $connect): static
+    {
+        $this->inputConfig['connect'] = $connect;
+        return $this;
+    }
+
+    /**
+     * 关闭连接
+     * @param int $code
+     * @param array $properties
+     * @return bool
+     */
+    public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = []): bool
+    {
+        return $this->client -> close($code, $properties);
+    }
+
+    /**
+     * MQTT 订阅
+     * @param array $topics
+     * @param array $properties
+     * @return bool|array
+     */
+    public function subscribe(array $topics = [], array $properties = []): bool|array
+    {
+        $sub =  $this->client -> subscribe($topics, $properties);
+        if ($sub) return $sub;
+        return false;
+    }
+
+    /**
+     * 取消订阅
+     * @param array $topics
+     * @param array $properties
+     * @return bool
+     */
+    public function unsubscribe(array $topics, array $properties = []): bool|array
+    {
+        $un = $this->client -> unSubscribe($topics, $properties);
+        if ($un) return $un;
+        return false;
+    }
+
+    /**
+     * 发送信息
+     * @param array $data
+     * @param bool $response
+     * @return array|bool
+     */
+    public function send(array $data = [], bool $response = true): array|bool
+    {
+        return $this->client -> send($data, $response);
+    }
+
+    /**
+     * 发布
+     * @param string $topic
+     * @param string $message
+     * @param int $qos
+     * @param int $dup
+     * @param int $retain
+     * @param array $properties
+     * @return array|bool
+     */
+    public function publish(
+        string $topic,
+        string $message,
+        int $qos = 0,
+        int $dup = 0,
+        int $retain = 0,
+        array $properties = []
+    ): bool|array
+    {
+        return $this->client -> publish(
+            $topic, $message, $qos, $dup, $retain, $properties
+        );
+    }
+
+    protected function callConfigHandle($object = '', $param = [])
+    {
+        if (class_exists($object)) {
+            return call_user_func([new $object, 'Handle'], ...$param);
+        }
+        return [];
     }
 }

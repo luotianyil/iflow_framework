@@ -139,8 +139,11 @@ class Services extends Command
 
     public function callConfigHandle($object = '', $param = [])
     {
-        if (class_exists($this->services -> Handle)) {
-            return call_user_func([new $this->services -> Handle, 'Handle'], ...$param);
+        $object = $object !== '' ? $object : $this->services -> Handle;
+        if (class_exists($object)) {
+            $object = $this->app -> make($object);
+            if (method_exists($object, 'Handle'))
+                return call_user_func([new $object, 'Handle'], ...$param);
         }
         return [];
     }

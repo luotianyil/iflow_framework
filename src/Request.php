@@ -203,7 +203,7 @@ class Request
     {
         if (!empty($this->realIp)) return $this->realIp;
         foreach ($this->proxyIpHeader as $proxyHeader) {
-            $this->realIp = $this->getHeader($proxyHeader);
+            $this->realIp = (string) $this->getHeader($proxyHeader);
             // 验证IP类型 如果通过退出
             if ($this->validIP($this->realIp) || $this->validIP($this->realIp, 'ipv6')) {
                 break;
@@ -223,7 +223,6 @@ class Request
     public function validIP(string $ip, string $type = 'ipv4'): bool
     {
         if (!$ip) return false;
-
         $flag = strtolower($type) === 'ipv4' ? FILTER_FLAG_IPV4 : FILTER_FLAG_IPV6;
         return boolval(filter_var($ip, $flag));
     }

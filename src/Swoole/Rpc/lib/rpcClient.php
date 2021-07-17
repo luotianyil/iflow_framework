@@ -70,7 +70,7 @@ class rpcClient
                             $pack = $this->client -> recv();
                             if ($pack) {
                                 $this->timeSincePing = time();
-                                $this -> services->callConfigHandle('', [$this, $pack]);
+                                $this -> services->callConfigHandle(param: [$this, $pack]);
                             }
                             \Co::sleep(floatval(bcdiv("{$this->services -> config['keep_alive']}", "1000")));
                             $this->ping();
