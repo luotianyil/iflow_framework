@@ -15,12 +15,12 @@ class File
         return $this;
     }
 
-    protected function getStorePath(string $name)
+    protected function getStorePath(string $name): string
     {
         return $this->config['path'] . $name;
     }
 
-    protected function getStoreRoot() {
+    protected function getStoreRoot(): string {
         return rtrim($this->config['path'], DIRECTORY_SEPARATOR);
     }
 
@@ -35,7 +35,7 @@ class File
      * @param array $data
      * @return array
      */
-    public function set(string $name, array $data)
+    public function set(string $name, array $data): array
     {
         go(function () use ($name, $data) {
             !is_dir($this->config['path']) && mkdir($this->config['path'], 0755, true);
@@ -59,9 +59,9 @@ class File
     /**
      * 获取缓存
      * @param string $name
-     * @return array|mixed
+     * @return mixed
      */
-    public function get(string $name)
+    public function get(string $name): mixed
     {
         $file = $this->getStorePath($name);
         if (file_exists($file)) {
@@ -72,6 +72,16 @@ class File
             }
         }
         return [];
+    }
+
+    /**
+     * 验证指定缓存是否存在
+     * @param string $name
+     * @return bool
+     */
+    public function has(string $name): bool
+    {
+        return file_exists($this->getStorePath($name));
     }
 
     /**

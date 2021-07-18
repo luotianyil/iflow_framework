@@ -15,7 +15,8 @@ class Services extends Command
 
     protected array $event = [
         'start' => 'onStart',
-        'task' => 'onTask'
+        'task' => 'onTask',
+        'finish' => 'onFinish'
     ];
 
     protected array $initializers = [];
@@ -67,11 +68,14 @@ class Services extends Command
         }
     }
 
-    public function onStart($serve)
-    {}
+    // 服务启动回调
+    public function onStart($serve) {}
 
-    public function onTask()
-    {}
+    // 异步投递回调
+    public function onTask($serv, $task_id, $reactor_id, $data) {}
+
+    // 异步投递执行完毕回调
+    public function onFinish($serv, $task_id, $data) {}
 
     // 启动
     protected function start()
@@ -90,7 +94,10 @@ class Services extends Command
         $this->getServer() -> start();
     }
 
-    // 重启
+    /**
+     * 重启服务
+     * @return bool
+     */
     protected function reStart(): bool
     {
         if (!$this->pid->isRun()) {
@@ -110,7 +117,10 @@ class Services extends Command
         return true;
     }
 
-    // 停止
+    /**
+     * 停止服务
+     * @return bool
+     */
     protected function stop(): bool
     {
         if ($this->pid -> isRun()) {
@@ -122,6 +132,10 @@ class Services extends Command
         return true;
     }
 
+    /**
+     * 初始化服务
+     * @return bool
+     */
     public function initializer(): bool
     {
         if ($this->pid -> isRun()) {
@@ -137,6 +151,12 @@ class Services extends Command
         return true;
     }
 
+    /**
+     * 执行回调
+     * @param string $object
+     * @param array $param
+     * @return array|false|mixed
+     */
     public function callConfigHandle($object = '', $param = [])
     {
         $object = $object !== '' ? $object : $this->services -> Handle;

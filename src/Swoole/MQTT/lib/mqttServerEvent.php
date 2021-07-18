@@ -47,6 +47,11 @@ class mqttServerEvent extends Event
             return false;
         }
 
+        // 获取 客户端传来的 MQTT通讯协议 5 OR 3
+        if (isset($packet['protocol_level']) && is_numeric($packet['protocol_level'])) {
+            $this->protocol_level = $packet['protocol_level'];
+        }
+
         $handleClass = $this -> services -> config['messageType'] ?? '';
 
         if (class_exists($handleClass)) {

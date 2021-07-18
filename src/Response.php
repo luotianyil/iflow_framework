@@ -90,7 +90,9 @@ class Response
         // Swoole 验证是否已经结束请求
         if ($this->response -> isWritable() === false) return false;
         $this->setResponseHeader();
-        return $this->response -> end($this->output($this->data));
+        return $this->response -> end(
+            $this->output($this->data)
+        );
     }
 
     /**

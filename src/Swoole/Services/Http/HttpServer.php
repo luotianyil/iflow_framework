@@ -4,6 +4,7 @@
 namespace iflow\Swoole\Services\Http;
 
 use iflow\initializer\Error;
+use iflow\Swoole\Services;
 use iflow\Swoole\Services\Http\lib\initializer;
 
 class HttpServer extends initializer
@@ -12,7 +13,7 @@ class HttpServer extends initializer
      * 初始化HTTP服务
      * @param $services
      */
-    public function initializer($services)
+    public function initializer(Services $services)
     {
         $this->services = $services;
         // 初始化 HTTP 全局环境

@@ -181,9 +181,15 @@ class Request
         return $value && 'xmlhttprequest' == strtolower($value);
     }
 
+    /**
+     * 获取默认语言
+     * @return string
+     */
     public function getLanguage(): string
     {
-        return explode(',', $this->getHeader('Accept-Language'))[0];
+        $language = $this->getHeader('Accept-Language');
+        if ($language) return explode(',', $language)[0];
+        return 'zh-CN';
     }
 
     /**

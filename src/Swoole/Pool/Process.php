@@ -15,9 +15,7 @@ class Process extends pool
     ];
 
     public function setName()
-    {
-
-    }
+    {}
 
     public function startProcess(string|\Closure $WorkerStart, string|\Closure $WorkerStop)
     {
@@ -38,5 +36,20 @@ class Process extends pool
     public function stop()
     {
 
+    }
+
+    /**
+     * 批量创建协程
+     * @param array $coroutine
+     * @return array
+     */
+    public function create(array $coroutine)
+    {
+        $coroutineId = [];
+        foreach ($coroutine as $name => $value) {
+            $coroutineId[] = \Swoole\Coroutine::create($value['fn'], ...$value['params']);
+        }
+
+        return $coroutineId;
     }
 }
