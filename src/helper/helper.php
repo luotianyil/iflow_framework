@@ -27,6 +27,11 @@ if (!function_exists('config')) {
 }
 
 if (!function_exists('loadConfigFile')) {
+    /**
+     * 加载配置文件
+     * @param string $file
+     * @return mixed
+     */
     function loadConfigFile(string $file): mixed
     {
         $type = pathinfo($file, PATHINFO_EXTENSION);

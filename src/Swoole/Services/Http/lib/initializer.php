@@ -37,7 +37,7 @@ class initializer extends requestTools
     // 初始化响应数据
     public function setResponse($response): static
     {
-        app() ->  make(Response::class, [], true) -> initializer($response);
+        $this->response = app() ->  make(Response::class, [], true) -> initializer($response);
         return $this;
     }
 

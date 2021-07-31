@@ -38,15 +38,14 @@ class FileList
     public function loadDirFile(string $dir, array $fileList = []) : array
     {
         $iterator = new \FilesystemIterator($dir. DIRECTORY_SEPARATOR);
-        while ($iterator -> valid()) {
-            if (is_dir($iterator -> getPathname())) {
-                $fileList[$iterator -> getBasename()] = $this->loadDirFile($iterator -> getPathname());
+        foreach ($iterator as $file) {
+            if (is_dir($file -> getPathname())) {
+                $fileList[$file -> getBasename()] = $this->loadDirFile($file -> getPathname());
             } else {
                 $fileList[
-                str_replace($this->ext, '', $iterator -> getBasename())
-                ] = $iterator -> getPathname();
+                str_replace($this->ext, '', $file -> getBasename())
+                ] = $file -> getPathname();
             }
-            $iterator -> next();
         }
         return $fileList;
     }

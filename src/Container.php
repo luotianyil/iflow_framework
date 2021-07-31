@@ -155,7 +155,7 @@ class Container implements ContainerInterface
     {}
 
     // 获取当前容器
-    public static function getInstance()
+    public static function getInstance(): static
     {
         if (is_null(static::$instance)) {
             static::$instance = new static;

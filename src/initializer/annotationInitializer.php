@@ -15,13 +15,20 @@ class annotationInitializer
     // 类全部注解
     protected array $annotations = [];
 
-    // 实例化 入口类 全部注解
+    /**
+     * 初始化注解入口类
+     * @param App $app
+     */
     public function initializer(App $app)
     {
         $this->app = $app;
         $this->loadAnnotations($this->app -> appRunClass);
     }
 
+    /**
+     * 执行 App 入口类注解
+     * @param ReflectionClass $annotationClass
+     */
     public function loadAnnotations(ReflectionClass $annotationClass)
     {
         $annotations = $annotationClass -> getAttributes();

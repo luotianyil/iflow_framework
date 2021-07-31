@@ -6,6 +6,7 @@ namespace iflow\Swoole\Rpc\lib;
 use iflow\Swoole\Rpc\lib\router\checkRequest;
 use iflow\Swoole\Server;
 use iflow\Swoole\Services\WebSocket\webSocket;
+use iflow\Utils\Tools\Timer;
 use Swoole\Coroutine\Client as SwooleClient;
 use Swoole\Http\Server as HttpServer;
 use Swoole\Process;
@@ -72,8 +73,10 @@ class rpcClient
                                 $this->timeSincePing = time();
                                 $this -> services->callConfigHandle(param: [$this, $pack]);
                             }
-                            \Co::sleep(floatval(bcdiv("{$this->services -> config['keep_alive']}", "1000")));
-                            $this->ping();
+//                            \Co::sleep(floatval(bcdiv("{$this->services -> config['keep_alive']}", "1000")));
+                            Timer::after($this->services -> config['keep_alive'], function () {
+                                $this->ping();
+                            });
                         }
                     } else {
                         \Co::sleep(floatval(bcdiv("{$this->services -> config['re_connection']}", "1000")));

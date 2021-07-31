@@ -17,9 +17,9 @@ class ArrayTools extends Collection
      * 通过key 获取 value 支持多层级
      * @param string $name key
      * @param array $default 默认值
-     * @return string|array
+     * @return mixed
      */
-    public function get(string $name = '', $default = []): string | array
+    public function get(string $name = '', $default = []): mixed
     {
         if ($name === '') return $this->items;
         $keys = explode('@', $name);

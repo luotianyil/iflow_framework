@@ -4,6 +4,8 @@
 namespace iflow\Swoole\MQTT\lib\receiveCallbacks;
 
 
+use iflow\Swoole\MQTT\lib\Parser;
+use Simps\MQTT\Protocol\Types;
 use Swoole\Server;
 
 abstract class receiveCallback
@@ -13,7 +15,17 @@ abstract class receiveCallback
     abstract public function onMqConnect(Server $server, array $data, int $fd): bool;
 
     // MQTT PING
-    abstract public function onMqPingreq(Server $server, array $data, int $fd): bool;
+    public function onMqPingreq(Server $server, array $data, int $fd): bool {
+        $mqtt = new \iflow\Swoole\MQTT\lib\receiveCallbacks\MQTT(
+            new Parser()
+        );
+        $message = $mqtt
+            -> setType(Types::PINGRESP)
+            -> setCode(0)
+            -> setSessionPresent(0)
+            -> pack();
+        return $server -> send($fd, $message);
+    }
 
     // MQTT 断开连接
     abstract public function onMqDisconnect(Server $server, array $data, int $fd): bool;
