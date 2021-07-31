@@ -73,11 +73,9 @@ class rpcClient
                                 $this->timeSincePing = time();
                                 $this -> services->callConfigHandle(param: [$this, $pack]);
                             }
-                        }
-                        // \Co::sleep(floatval(bcdiv("{$this->services -> config['keep_alive']}", "1000")));
-                        Timer::after($this->services -> config['keep_alive'], function () {
+                            \Co::sleep(floatval(bcdiv("{$this->services -> config['keep_alive']}", "1000")));
                             $this->ping();
-                        });
+                        }
                     } else {
                         \Co::sleep(floatval(bcdiv("{$this->services -> config['re_connection']}", "1000")));
                     }
