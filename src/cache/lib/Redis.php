@@ -6,6 +6,11 @@ namespace iflow\cache\lib;
 
 use \Swoole\Coroutine\Redis as SwRedis;
 
+/**
+ * Class Redis
+ * @mixin SwRedis
+ * @package iflow\cache\lib
+ */
 class Redis extends IRedis
 {
 

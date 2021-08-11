@@ -4,6 +4,8 @@
 namespace iflow\middleware\lib;
 
 
+use iflow\App;
+
 /**
  * 跨域请求支持
  */
@@ -16,7 +18,7 @@ class AllowCrossDomain
         'Access-Control-Allow-Headers'     => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
     ];
 
-    public function handle($app, $next, array $header = [])
+    public function handle(App $app, $next, array $header = [])
     {
         $header = !empty($header) ? array_merge($this->header, $header) : $this->header;
 

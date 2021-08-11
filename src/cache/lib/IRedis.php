@@ -6,6 +6,11 @@ namespace iflow\cache\lib;
 
 use Redis;
 
+/**
+ * Class IRedis
+ * @mixin Redis
+ * @package iflow\cache\lib
+ */
 class IRedis
 {
 

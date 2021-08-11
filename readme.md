@@ -122,6 +122,8 @@ https://framework.mzshe.cn
 
 - Elasticsearch 客户端
 
+- GraphQL
+
 - Kafka
 
 - DHT 爬虫

@@ -9,9 +9,9 @@ use iflow\annotation\lib\value\validate\ValidateRule;
 class Data
 {
 
-    private object $object;
+    protected object $object;
 
-    private array $methodAttribute = [
+    protected array $methodAttribute = [
         Value::class,
         NotNull::class,
         ValidateRule::class
@@ -28,7 +28,7 @@ class Data
         }
     }
 
-    private function properAttributes(\ReflectionProperty $reflectionProperty, string $name)
+    protected function properAttributes(\ReflectionProperty $reflectionProperty, string $name)
     {
         $attribute = $reflectionProperty -> getAttributes($name)[0] ?? null;
         if ($attribute) {

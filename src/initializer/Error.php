@@ -51,12 +51,10 @@ class Error
                 $this->app, $e
             );
             if ($res instanceof Response) {
-                $res -> send();
-            } else {
-                message() -> server_error(502, 'Server Error') -> send();
+                return $res -> send();
             }
-
         }
+        return message() -> server_error(502, 'Server Error') -> send();
     }
 
     public function appShuDown()

@@ -62,9 +62,8 @@ class Config
         );
     }
 
-    public function get(string $name = '', $default = []): array|string
+    public function get(string $name = '', $default = []): mixed
     {
-
         return $this->config -> get($name, $default);
     }
 
