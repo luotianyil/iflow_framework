@@ -28,8 +28,7 @@ class typeFields extends AbstractType
         string $description = '',
         array $args = [],
         ?\Closure $resolve = null
-    ): static
-    {
+    ): static {
         $this->fields[$fieldName] = [
             'type' => $type,
             'description' => $description,
@@ -46,6 +45,16 @@ class typeFields extends AbstractType
         return function ($current, $args, $context, ResolveInfo $info) {
             // TODO: 执行方法
         };
+    }
+
+    /**
+     * 获取指定名称字段
+     * @param string $fieldName
+     * @return array|null
+     */
+    public function getFieldsByName(string $fieldName): array|null
+    {
+        return $this->fields[$fieldName] ?? null;
     }
 
 

@@ -4,12 +4,16 @@
 namespace iflow\Swoole\GraphQL\Types;
 
 
+use GraphQL\Type\Definition\InterfaceType;
+
 class typeName
 {
 
     public function __construct(
         protected string $typeName = '',
         protected string $typeDescription = '',
+        protected ?\Closure $resolveType = null,
+        protected ?InterfaceType $interfaceType = null,
     ) {}
 
     /**
@@ -46,6 +50,43 @@ class typeName
     public function getTypeDescription(): string
     {
         return $this->typeDescription;
+    }
+
+    /**
+     * @param \Closure $resolveType
+     * @return typeName
+     */
+    public function setResolveType(\Closure $resolveType): typeName
+    {
+        $this->resolveType = $resolveType;
+        return $this;
+    }
+
+
+    /**
+     * @return \Closure|null
+     */
+    public function getResolveType(): ?\Closure
+    {
+        return $this->resolveType;
+    }
+
+    /**
+     * @param InterfaceType $interfaceType
+     * @return typeName
+     */
+    public function setInterfaceType(InterfaceType $interfaceType): typeName
+    {
+        $this->interfaceType = $interfaceType;
+        return $this;
+    }
+
+    /**
+     * @return InterfaceType|null
+     */
+    public function getInterfaceType(): ?InterfaceType
+    {
+        return $this->interfaceType;
     }
 
 }

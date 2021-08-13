@@ -36,9 +36,13 @@ class TypeAnnotation
 
     public function __construct(
         protected string $typeName,
-        protected string $typeDescription = ''
+        protected string $typeDescription = '',
+        protected string $resolveType = '',
     ) {
-        $this->types = new typeName($this->typeName, $this->typeDescription);
+        $this->types = new typeName(
+            $this->typeName, $this->typeDescription,
+            valid_closure($this->resolveType)
+        );
         $this->typeFields = new typeFields();
     }
 
@@ -69,7 +73,13 @@ class TypeAnnotation
             foreach ($this->methodAttribute as $attrName) {
                 array_push($field, ...($this->properAttributes($property, $attrName, $object) ?: []));
             }
-            if (!empty($field)) $this->typeFields -> setFields(...$field);
+
+            try {
+                if (!empty($field)) $this->typeFields -> setFields(...$field);
+            } catch (\Throwable) {
+                throw new \Exception('fieldType/ArgsType/resolveType Prohibited to be empty');
+            }
+
         }
 
         config([

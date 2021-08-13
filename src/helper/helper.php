@@ -434,3 +434,30 @@ if (!function_exists('dump')) {
         return true;
     }
 }
+
+if (!function_exists('valid_closure')) {
+    /**
+     * 验证方法是否存在
+     * @param string|Closure $closure
+     * @param array $args
+     * @return ?Closure
+     */
+    function valid_closure(string|\Closure $closure, array $args = []): ?\Closure {
+        // 验证是否为闭包
+        if ($closure instanceof Closure) return fn() => call_user_func($closure, ...$args);
+        // 验证方法是否存在
+        if (function_exists($closure)) return fn() => call_user_func($closure, ...$args);
+
+        // 验证是否为类
+        $closure = explode('@', $closure);
+        if (count($closure) < 2 || !class_exists($closure[0])) return null;
+
+        $object = new $closure[0];
+        if (!method_exists($object, $closure[1])) return null;
+
+        // 执行方法闭包
+        return fn() => app() -> invokeMethod([
+            $object, $closure[1]
+        ], [...func_get_args(), $object]);
+    }
+}

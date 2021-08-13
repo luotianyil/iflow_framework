@@ -3,8 +3,7 @@
 
 namespace iflow\Swoole\GraphQL\Annotation\Type\lib;
 
-
-use GraphQL\Type\Definition\Type;
+use iflow\Swoole\GraphQL\Annotation\Type\lib\utils\Types;
 
 #[\Attribute]
 class ArgsType
@@ -14,7 +13,7 @@ class ArgsType
     public function handle(\ReflectionProperty $reflectionProperty, $object): array
     {
         foreach ($this->args as $argKey => $value) {
-            $this->args[$argKey]['type'] = call_user_func([Type::class, $this->args[$argKey]['type'] ?? 'string']);
+            $this->args[$argKey]['type'] = (new Types()) -> getType($this->args[$argKey]['type'] ?? 'string');
         }
         return [
             $this->getArgs()

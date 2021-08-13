@@ -5,22 +5,22 @@ namespace iflow\Swoole\GraphQL\Annotation\Type\lib;
 
 
 use GraphQL\Type\Definition\Type;
+use iflow\Swoole\GraphQL\Annotation\Type\lib\utils\Types;
 
 #[\Attribute]
 class fieldType
 {
     public function __construct(
         protected string $fieldName,
-        protected string|Type $type,
+        protected string $type,
         protected string $description = ''
     ) {}
 
     public function handle(\ReflectionProperty $reflectionProperty, $object)
     {
-        $this->type = call_user_func([Type::class, $this->type]);
         return [
             $this->fieldName,
-            $this->type,
+            (new Types()) -> getType($this->type),
             $this->description
         ];
     }
