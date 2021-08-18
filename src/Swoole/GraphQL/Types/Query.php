@@ -87,6 +87,15 @@ class Query extends AbstractType
     }
 
     /**
+     * 获取 ObjectType
+     * @return ObjectType
+     */
+    public function getTypeObject(): ObjectType
+    {
+        return $this->buildQueryFieldsObject();
+    }
+
+    /**
      * 生成UnionType
      * @param string $name
      * @param array $types

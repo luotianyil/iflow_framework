@@ -4,7 +4,6 @@
 namespace iflow\Swoole\GraphQL\Annotation\Type\lib;
 
 
-use GraphQL\Type\Definition\Type;
 use iflow\Swoole\GraphQL\Annotation\Type\lib\utils\Types;
 
 #[\Attribute]

@@ -10,6 +10,7 @@ use iflow\Request;
 use iflow\Response;
 use iflow\router\lib\Swagger;
 use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
+use Psr\Http\Message\ResponseInterface;
 
 class requestTools
 {
@@ -185,13 +186,25 @@ class requestTools
      */
     protected function send($response): bool
     {
-        if ($response instanceof Response) {
-            $response -> send();
-        } else if (!is_string($response)) {
-            json($response) -> send();
-        } else if ($this->response) {
-            $this->response -> data($response) -> send();
+
+        if (!$response)
+            return $this->response -> data($response) -> send();
+
+        switch ($response) {
+            case $response instanceof Response:
+                return $response ?-> send() ?: true;
+            case $response instanceof ResponseInterface:
+                // PSR7
+                return $this->response
+                    -> headers($response -> getHeaders())
+                    -> withStatus($response -> getStatusCode())
+                    -> data($response -> getBody() -> getContents())
+                    -> send();
+            case !is_string($response) && !is_numeric($response):
+                // 为非字符串时
+                return json($response) -> send();
+            default :
+                return $this->response -> data($response) -> send();
         }
-        return true;
     }
 }

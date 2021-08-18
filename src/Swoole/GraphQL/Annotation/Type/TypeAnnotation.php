@@ -50,12 +50,15 @@ class TypeAnnotation
      * 初始化当前 GraphQL 注解
      * @param App $app
      * @param ReflectionClass $annotationClass
+     * @return TypeAnnotation
      * @throws \ReflectionException
      */
     public function __make(App $app, ReflectionClass $annotationClass)
     {
         $this->app = $app;
         $this->annotationClass = $annotationClass;
+
+        if (config('graphql@'.$this->typeName)) return $this->getTypeObject();
 
         // 设置TypeName
         if ($this->typeName === '') {
@@ -85,6 +88,8 @@ class TypeAnnotation
         config([
             $this->typeName => new Query($this->types, $this->typeFields)
         ], 'graphql');
+
+        return $this;
     }
 
     /**
@@ -101,5 +106,11 @@ class TypeAnnotation
             return call_user_func([$attribute->newInstance(), 'handle'], ...[$reflectionProperty, $object]);
         }
         return null;
+    }
+
+
+    public function getTypeObject()
+    {
+        return config('graphql@'.$this->typeName) -> getTypeObject();
     }
 }

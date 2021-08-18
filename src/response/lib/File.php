@@ -51,8 +51,7 @@ class File extends Response
         if (request() -> isGet()) {
             $this->setLastModified() -> setCacheControl() -> steExpiresTimes();
         }
-        $this->setResponseHeader();
-        return $this->response -> sendFile($data);
+        return $this->setResponseHeader() ->response -> sendFile($data);
     }
 
 }

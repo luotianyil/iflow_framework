@@ -3,8 +3,6 @@
 
 namespace iflow\Swoole\GraphQL\Annotation\Type\lib\utils;
 
-
-use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\Type;
 
 class Types

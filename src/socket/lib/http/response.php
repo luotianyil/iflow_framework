@@ -138,7 +138,6 @@ class response
      * @return string
      */
     protected function setResponseBody(): string {
-
         // 初始化头部信息
         $header = $this->header['status']. "\r\n";
         unset($this->header['status']);

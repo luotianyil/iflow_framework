@@ -12,10 +12,9 @@ class Json extends Response
         'json_encode' => JSON_UNESCAPED_UNICODE
     ];
 
-    public string $contentType = 'application/json';
-
     public function __construct(mixed $data = [], int $code = 200)
     {
+        $this->contentType = 'application/json';
         $this->init($data, $code);
     }
 

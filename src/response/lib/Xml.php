@@ -8,9 +8,6 @@ use iflow\Response;
 
 class Xml extends Response
 {
-
-    public string $contentType = 'text/xml';
-
     // 输出参数
     public array $options = [
         // 根节点名
@@ -27,6 +24,7 @@ class Xml extends Response
 
     public function __construct(array $data = [], int $code = 200)
     {
+        $this->contentType = 'text/xml';
         $this->init($data, $code);
     }
 

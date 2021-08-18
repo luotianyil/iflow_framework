@@ -2,62 +2,26 @@
 
 namespace iflow;
 
-use iflow\exception\lib\HttpResponseException;
 use iflow\response\lib\File;
+use iflow\response\ResponseTrait;
+use Psr\Http\Message\ResponseInterface;
 
 class Response
 {
-    public string $contentType = 'text/html';
-    public string $charSet = 'utf-8';
-    public int $code = 200;
-    public mixed $data;
-    public array $options = [];
-    public array $headers = [];
-    public mixed $response = null;
+    use ResponseTrait;
 
     protected function init($data, $code) {
         $this->code = $code;
         $this->data($data);
     }
 
-    public function contentType($contentType = 'application/json') : static {
-        $this -> contentType = $contentType;
-        return $this;
-    }
-
-    protected function response($response): static {
-        $this->response = $response;
-        return $this;
-    }
-
-    public function data($data): static
-    {
-        $this->data = $data;
-        return $this;
-    }
-
-    public function charSet(string $charSet = 'utf-8')
-    {
-        $this->charSet = $charSet;
-    }
-
-    public function options($options = []): static
-    {
-        $this->options = array_merge($this->options, $options);
-        return $this;
-    }
-
-    public function headers(array $headers = []): static
-    {
-        $this->headers = array_merge($this->headers, $headers);
-        return $this;
-    }
-
-    public function output($data)
-    {
-        return $data;
-    }
-
+    /**
+     * 静态创建新的Response对象
+     * @param array $data
+     * @param int $code
+     * @param string $type
+     * @return object
+     */
     public static function create($data = [], int $code = 200, string $type = 'json')
     {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
@@ -71,40 +35,30 @@ class Response
         return $response;
     }
 
-    public function notFount(string $msg = '404 Not-Found'): bool
+    /**
+     * 普通输出
+     * @param $data
+     * @return mixed
+     */
+    public function output(mixed $data): mixed
     {
-        $this -> code = 404;
-        if (request() -> isAjax() === false) {
-            $path = config('app@404_error_page');
-            if (file_exists($path)) {
-                throw new HttpResponseException($this->sendFile($path, false));
-            }
-        }
-        throw new HttpResponseException(message() -> nodata($msg));
-    }
-
-    public function send(): bool
-    {
-        if ($this->response === null) return false;
-
-        // Swoole 验证是否已经结束请求
-        if ($this->response -> isWritable() === false) return false;
-        $this->setResponseHeader();
-        return $this->response -> end(
-            $this->output($this->data)
-        );
+        return $data;
     }
 
     /**
-     * 设置重定向地址
-     * @param string $url
-     * @return $this
+     * 结束请求发送数据
+     * @return bool
      */
-    public function setRedirect(string $url = ""): static
+    public function send(): bool
     {
-        $this->code = 302;
-        $this->headers["Location"] = $url;
-        return $this;
+        if ($this->response === null) return false;
+        // Swoole 验证是否已经结束请求
+        if ($this->response -> isWritable() === false) return false;
+
+        // 结束请求
+        return $this->setResponseHeader() -> response -> end(
+            $this->output($this->data)
+        );
     }
 
     /**
@@ -113,44 +67,30 @@ class Response
      * @param bool $isConfigRootPath
      * @return File
      */
-    private function sendFile(string $path = '', bool $isConfigRootPath = true): File
+    protected function sendFile(string $path = '', bool $isConfigRootPath = true): File
     {
         return sendFile($path, isConfigRootPath: $isConfigRootPath);
     }
 
-    public function setLastModified(string $value = ""): static
-    {
-        $this->headers([
-            'Last-Modified' => $value ?: gmdate('D,d M Y H:i:s')."GMT"
-        ]);
-        return $this;
-    }
-
-    public function setCacheControl(string $value = ""): static
-    {
-        $this->headers([
-            'Cache-Control' => $value ?: "max-age=36000,must-revalidata"
-        ]);
-        return $this;
-    }
-
-    public function steExpiresTimes(string $value = ""): static
-    {
-        $this->headers([
-            'Expires' => $value ?: gmdate('D,d M Y H:i:s',time() + 36000)."GMT"
-        ]);
-        return $this;
-    }
-
-    protected function setResponseHeader()
+    /**
+     * 结束响应时 设置请求头
+     * @return $this
+     */
+    protected function setResponseHeader(): static
     {
         $this->response -> status($this->code);
         $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
         foreach ($this->headers as $key => $value) {
             $this->response -> header($key, $value);
         }
+        return $this;
     }
 
+    /**
+     * 初始化响应类
+     * @param $response
+     * @return $this
+     */
     public function initializer($response): static
     {
         $this->response = $response;
@@ -163,7 +103,31 @@ class Response
         return $this;
     }
 
-    public function __call(string $name, array $arguments)
+    /**
+     * 获取PSR7 标准响应体
+     * @param string|null $reason
+     * @return ResponseInterface
+     */
+    public function getResponsePsr7(?string $reason = null): ResponseInterface
+    {
+        if ($this->responsePsr7 !== null) return $this->responsePsr7;
+        $this->responsePsr7 = new \GuzzleHttp\Psr7\Response(
+            $this->code,
+            $this->headers,
+            $this->data ?? '',
+            $this->version,
+            $reason
+        );
+        return $this->responsePsr7;
+    }
+
+    /**
+     * 请求 Response 原始方法
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments): mixed
     {
         // TODO: Implement __call() method.
         if (method_exists($this->response, $name)) return call_user_func($name, ...$arguments);

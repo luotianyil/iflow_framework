@@ -204,7 +204,7 @@ if (!function_exists('rpc')) {
                     );
                 }
             }
-        } catch (Error $exception) {
+        } catch (Throwable) {
             $param['client_name'] = $clientName;
             $param['isClientConnection'] = true;
             $client = app_client();
@@ -452,7 +452,7 @@ if (!function_exists('valid_closure')) {
         $closure = explode('@', $closure);
         if (count($closure) < 2 || !class_exists($closure[0])) return null;
 
-        $object = new $closure[0];
+        $object = app() -> make($closure[0]) ;
         if (!method_exists($object, $closure[1])) return null;
 
         // 执行方法闭包
