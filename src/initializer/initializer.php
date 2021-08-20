@@ -18,7 +18,7 @@ class initializer
            \Co::set(['hook_flags' => SWOOLE_HOOK_ALL]);
            \GuzzleHttp\DefaultHandler::setDefaultHandler(\Yurun\Util\Swoole\Guzzle\SwooleHandler::class);
        }
-        Db::setConfig(config('database'));
+       Db::setConfig(config('database'));
        app(I18n::class) -> initializer($app);
     }
 

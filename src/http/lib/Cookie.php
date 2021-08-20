@@ -27,7 +27,7 @@ class Cookie
         $this->config = array_replace_recursive($this->config, config('cookie')) ?: $this->config;
     }
 
-    public function get(string $name)
+    public function get(string $name = '')
     {
         if ($name === '') return $this->cookie;
         return $this->has($name) ? $this->cookie[$name] : null;

@@ -5,7 +5,6 @@ namespace iflow;
 
 use iflow\fileSystem\lib\upLoadFile;
 use iflow\request\RequestTrait;
-use Psr\Http\Message\RequestInterface;
 
 class Request
 {
@@ -19,17 +18,23 @@ class Request
      */
     public function initializer($request): static
     {
+        $url = $request -> server['path_info'] ?? $request -> server['request_uri'];
+
+        // 初始化 原生Request
         $this->request = $request;
         $this->server = $request -> server;
-        $this->request_uri =
-            str_replace("//", "/", explode('?', $request -> server['path_info'] ?? $request -> server['request_uri'])[0]);
+        $this->request_uri = str_replace("//", "/", explode('?', $url)[0]);
 
         // 设置HTTP VERSION
-        $this->version = explode('/', $this->server['server_protocol'])[1] ?? '1.1';
-        $this->query_string = $request -> server['query_string'] ?? '';
+        $this->version = str_replace('HTTP/', '', $this->server['server_protocol']);
+        $this->query_string = explode('?', $url)[1] ?? '';
+
+        // 获取请求方法
         $this->request_method = $request -> server['request_method'];
 
-        return $this->initFile();
+        return $this
+            -> initRequestParams()
+            -> initFile();
     }
 
     /**
@@ -44,23 +49,6 @@ class Request
             $upLoadFile -> setFile($key, $value);
         }
         return $this;
-    }
-
-    /**
-     * 获取标准 PSR7 Request
-     * @return RequestInterface
-     */
-    public function getRequestPsr7(): RequestInterface
-    {
-        if ($this->requestPsr7 !== null) $this->requestPsr7;
-        $this->requestPsr7 = new \GuzzleHttp\Psr7\Request(
-            $this->request_method,
-            $this->getRequestUri(),
-            $this->getHeader(),
-            null,
-            $this->version
-        );
-        return $this->requestPsr7;
     }
 
     /**

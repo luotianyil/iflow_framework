@@ -93,9 +93,9 @@ trait helper
      * 获取POST参数
      * @param string $name
      * @param string $default
-     * @return array|mixed|string
+     * @return mixed
      */
-    public function postParams(string $name = '', string $default = '')
+    public function postParams(string $name = '', string $default = ''): mixed
     {
         if (!$this->isPost()) return [];
         $row = $this->request -> getContent();
@@ -107,9 +107,9 @@ trait helper
     /**
      * 根据请求获取参数
      * @param string $name
-     * @return array|mixed|string|null
+     * @return mixed
      */
-    public function params(string $name = '')
+    public function params(string $name = ''): mixed
     {
         return match ($this->isPost()) {
             true => $this->postParams($name),

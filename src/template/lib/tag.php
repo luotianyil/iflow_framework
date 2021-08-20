@@ -5,7 +5,7 @@ namespace iflow\template\lib;
 
 use iflow\Utils\basicTools;
 
-class tag extends tags
+class tag
 {
 
     protected string $content = '';

@@ -16,7 +16,11 @@ class Parser extends tag implements TemplateParser
         $this->config = array_merge($this->config, $config);
     }
 
-    public function exists()
+    /**
+     * 验证模板文件是否存在
+     * @return bool
+     */
+    public function exists(): bool
     {
         // TODO: Implement exists() method.
         return file_exists($this->file);

@@ -5,11 +5,13 @@ namespace iflow;
 
 use iflow\console\Console;
 use iflow\event\Event;
-use iflow\initializer\annotationInitializer;
-use iflow\initializer\appSurroundings;
-use iflow\initializer\Config;
-use iflow\initializer\Error;
-use iflow\initializer\initializer;
+use iflow\initializer\{
+    annotationInitializer,
+    appSurroundings,
+    Config,
+    Error,
+    initializer
+};
 use iflow\log\Log;
 
 /**
