@@ -6,22 +6,22 @@ namespace iflow\Utils\Message;
 
 trait baseMessage
 {
-    public ?string $error = null;
-    public string $msg = "";
+    public string $error = '';
+    public string $msg = '';
     public int $code = 200;
     public array $items = [];
     public array $page_info = [];
     public string $filter = 'json';
-    public ?bool $isRest = false;
+    public bool $isRest = false;
 
     public function msgBaseInitialize()
     {
-        $this->error = null;
+        $this->error = '';
         $this->msg = '';
         $this->items = [];
         $this->page_info = [];
         $this->filter = 'json';
-        $this->isRest = null;
+        $this->isRest = false;
         $this->code = 200;
     }
 
@@ -44,6 +44,14 @@ trait baseMessage
         }
 
         if ($this->isRest) {
+
+            // 是否为重定向
+            if ($code === 302)
+                return response()
+                    -> data($data['msg'])
+                    -> setRedirect($data['items']['url']);
+
+            // 将请求信息写入 返回数据中
             $data['requestInfo'] = [
                 'requestUri' => request() -> request_uri,
                 'requestParam' => array_keys(request() -> getParams() ?? []),

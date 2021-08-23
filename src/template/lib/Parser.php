@@ -61,6 +61,16 @@ class Parser extends tag implements TemplateParser
         return response() -> data($info);
     }
 
+    /**
+     * @param array $data
+     * @return static
+     */
+    public function setData(array $data): static
+    {
+        $this->data = $data;
+        return $this;
+    }
+
     public function getContent(): string
     {
         $this->funcParser();

@@ -118,6 +118,11 @@ class App extends Container
         return true;
     }
 
+    public function isDebug(): bool
+    {
+        return config('app@debug') ? true : false;
+    }
+
     /**
      * 获取应用根目录
      * @return string

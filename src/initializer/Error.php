@@ -7,6 +7,7 @@ namespace iflow\initializer;
 use iflow\App;
 use iflow\exception\Handle;
 use iflow\exception\lib\errorException;
+use iflow\exception\lib\renderDebugView;
 use iflow\Response;
 use Throwable;
 // 异常接管
@@ -20,6 +21,7 @@ class Error
     {
         $this->app = $app;
         $this->config = config('app');
+
         $this->handle = $this->config['exceptionHandle'] ?: $this->handle;
 
         // 全部接管
@@ -42,14 +44,28 @@ class Error
         }
     }
 
-    public function appHandler(Throwable $e)
+    /**
+     * 错误回调处理
+     * @param Throwable $e
+     * @return bool
+     */
+    public function appHandler(Throwable $e): bool
     {
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
+
+        // 检测是否开启DEBUG
+        if ($this->app -> isDebug()) {
+            return (new renderDebugView($e, $this->config))
+                -> render()
+                -> send();
+        }
+
+        // 异常处理回调
         if (class_exists($this->handle)) {
-            // 异常处理回调
             $res = (new $this->handle($type)) -> render(
                 $this->app, $e
             );
+
             if ($res instanceof Response) {
                 return $res -> send();
             }
