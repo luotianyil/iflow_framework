@@ -17,9 +17,10 @@ class tag
 
     /**
      * 正则解析渲染
+     * @param bool $save
      * @return string
      */
-    protected function funcParser(): string
+    protected function funcParser(bool $save = true): string
     {
         $this->literal()
             -> includeParser()
@@ -44,7 +45,7 @@ class tag
         $this->content = str_replace('{', "<?php ", $this->content);
         $this->content = str_replace('}', ";?>", $this->content);
 
-        return $this->literalEnd() -> saveStore();
+        return $save ? $this->literalEnd() -> saveStore() : $this -> literalEnd() -> content;
     }
 
     /**
