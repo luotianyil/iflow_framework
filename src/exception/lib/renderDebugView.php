@@ -45,7 +45,8 @@ class renderDebugView
             'file' => $this->throwable -> getFile(),
             'line' => $this->throwable -> getLine(),
             'source' => $this->getThrowExceptionFileContent(),
-            'trace' => $this->trace
+            'trace' => $this->trace,
+            'traceArr' => $this->throwable -> getTrace()
         ];
     }
 

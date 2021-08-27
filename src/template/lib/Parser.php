@@ -85,6 +85,13 @@ class Parser extends tag implements TemplateParser
                 message() -> nodata('Template Content is Empty')
             );
         }
+
+        // DOM渲染
+        if (isset($this->config['rendering']) && $this->config['rendering'] === 'document') {
+            return $this->DocumentRender();
+        }
+
+        // 正则渲染
         if ($this->FileIsTemplateLibrary()) {
             throw new HttpResponseException(
                 message() -> nodata('TemplateFile is templateLibrary')

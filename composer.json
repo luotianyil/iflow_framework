@@ -23,7 +23,8 @@
     "ext-curl": "*",
     "ext-ctype": "*",
     "ext-sockets": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "ext-dom": "*"
   },
   "license": "MulanPSL-2.0",
   "authors": [
@@ -35,6 +36,11 @@
   "autoload": {
     "psr-4": {
       "iflow\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "iflowTest\\": "tests"
     }
   },
   "require-dev": {

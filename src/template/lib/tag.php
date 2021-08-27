@@ -3,6 +3,7 @@
 
 namespace iflow\template\lib;
 
+use iflow\template\lib\document\document;
 use iflow\Utils\basicTools;
 
 class tag
@@ -14,7 +15,11 @@ class tag
     protected array $literal = [];
     protected string $file;
 
-    protected function funcParser(bool $save = true): string
+    /**
+     * 正则解析渲染
+     * @return string
+     */
+    protected function funcParser(): string
     {
         $this->literal()
             -> includeParser()
@@ -39,7 +44,7 @@ class tag
         $this->content = str_replace('{', "<?php ", $this->content);
         $this->content = str_replace('}', ";?>", $this->content);
 
-        return $save ? $this->literalEnd() -> saveStore() : $this -> literalEnd() -> content;
+        return $this->literalEnd() -> saveStore();
     }
 
     /**
@@ -248,5 +253,17 @@ class tag
             $this->content = implode("\r\n", $content);
         }
         return $templateLibrary;
+    }
+
+    /**
+     * DOM 渲染方法
+     * @return string
+     */
+    protected function DocumentRender(): string
+    {
+        // HTML 标签渲染方法
+        $dom = new document($this->content);
+        $this->content = sprintf("<!doctype html><html> %s</html>", $dom -> htmlToPHPCode($this->config));
+        return $this -> saveStore();
     }
 }

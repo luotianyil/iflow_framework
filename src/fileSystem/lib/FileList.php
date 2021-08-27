@@ -60,14 +60,13 @@ class FileList
         // 获取目录
         $iterator = new \FilesystemIterator(trim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR);
         $fileList = [];
-        while ($iterator -> valid()) {
-            if (is_dir($iterator -> getPathname())) {
-                $fileList[$iterator -> getBasename()] = [
-                    'root' => $iterator -> getPathname(),
-                    'children' => $this->loadDir($iterator -> getPathname())
+        foreach ($iterator as $file) {
+            if (is_dir($file -> getPathname())) {
+                $fileList[$file -> getBasename()] = [
+                    'root' => $file -> getPathname(),
+                    'children' => $this->loadDir($file -> getPathname())
                 ];
             }
-            $iterator -> next();
         }
         return $fileList;
     }
@@ -83,8 +82,8 @@ class FileList
         $iterator = new \FilesystemIterator(trim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR);
         $count = 0;
         $ignoreCount = 0;
-        while ($iterator -> valid()) {
-            $path = $iterator -> getPathname();
+        foreach ($iterator as $file) {
+            $path = $file -> getPathname();
             if (is_dir($path)) {
                 if (!in_array($path, $ignore)) {
                     $remove = $this -> removeDir($path, $ignore);
@@ -98,12 +97,10 @@ class FileList
                     $ignoreCount += 1;
                 }
             } else {
-                unlink($iterator -> getPathname());
+                unlink($file -> getPathname());
             }
             $count += 1;
-            $iterator -> next();
         }
-
         return [
             'dirCount' => $count,
             'ignoreCount' => $ignoreCount
