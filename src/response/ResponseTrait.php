@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 trait ResponseTrait
 {
 
-    protected array $headers = [];
+    public array $headers = [];
     public string $contentType = 'text/html';
     public string $charSet = 'utf-8';
     public int $code = 200;
@@ -21,7 +21,7 @@ trait ResponseTrait
 
     // HTTP 版本
     public string $version = "1.1";
-    protected ?ResponseInterface $responsePsr7 = null;
+    public ?ResponseInterface $responsePsr7 = null;
 
     /**
      * 设置响应对象
