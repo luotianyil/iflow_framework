@@ -16,7 +16,8 @@ abstract class instructionAbstract
     public function parser(DOMNodeParser $DOMNodeParser): static
     {
         $this->DOMNodeParser = $DOMNodeParser;
-        $this->nextSibling = new DOMNodeParser($this->DOMNodeParser -> nextSibling);
+        $node = $this->DOMNodeParser -> nextSibling;
+        $this->nextSibling = $this->DOMNodeParser -> getNextNode($node) ?: new DOMNodeParser($node);
         return $this;
     }
 

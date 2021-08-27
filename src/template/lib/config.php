@@ -4,6 +4,8 @@
 namespace iflow\template\lib;
 
 
+use iflow\template\lib\document\Parser\instruction\forInstruction;
+use iflow\template\lib\document\Parser\instruction\ifInstruction;
 use iflow\template\lib\document\Tag\Db;
 use iflow\template\lib\document\Tag\echoTag;
 use iflow\template\lib\document\Tag\functionTag;
@@ -34,6 +36,12 @@ class config
             'include' => [
                 'class' => includeTag::class
             ]
+        ],
+        'instruction' => [
+            'i-if' => ifInstruction::class,
+            'i-elseif' => ifInstruction::class,
+            'i-else' => ifInstruction::class,
+            'i-for' => forInstruction::class
         ]
     ];
 
@@ -89,6 +97,11 @@ class config
     public function viewSuffix(): string
     {
         return $this->config['view_suffix'] ?? '';
+    }
+
+    public function getInstruction()
+    {
+        return $this->config['instruction'];
     }
 
     /**

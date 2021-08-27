@@ -18,7 +18,7 @@ class ParserHtml
         protected document $document
     ) {
         $this->PHPTag = new PHPTag($this->config);
-        $this->ParserInstruction = new ParserInstruction();
+        $this->ParserInstruction = new ParserInstruction($this->config);
     }
 
     /**
@@ -35,7 +35,6 @@ class ParserHtml
         }
 
         $html = "";
-
         foreach ($nodes -> childNodes as $item) {
             if ($item instanceof \DOMText) {
                 $html .= $item -> C14N();

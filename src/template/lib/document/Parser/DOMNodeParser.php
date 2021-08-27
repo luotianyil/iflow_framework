@@ -27,6 +27,9 @@ class DOMNodeParser
         array|string $keys = ""
     ): array|string|null
     {
+
+        if (!$this->DOMNode -> attributes) return null;
+
         $attr = [];
         // 当key为空时获取全部
         if (!$keys) {
@@ -89,6 +92,24 @@ class DOMNodeParser
     public function getChildrenList(): \DOMNodeList
     {
         return $this->DOMNode -> childNodes;
+    }
+
+    /**
+     * 获取下层DOM
+     * @param ?DOMNode $node
+     * @param bool $isText
+     * @return DOMNodeParser|null
+     */
+    public function getNextNode(?DOMNode $node, bool $isText = false): ?DOMNodeParser
+    {
+        if ($node instanceof \DOMText && !$isText) {
+            return $this->getNextNode($node -> nextSibling);
+        }
+
+        if (!$node) {
+            return null;
+        }
+        return new DOMNodeParser($node);
     }
 
     public function __get(string $name)

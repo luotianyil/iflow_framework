@@ -4,21 +4,19 @@
 namespace iflow\template\lib\document\Parser;
 
 
-use iflow\template\lib\document\Parser\instruction\forInstruction;
-use iflow\template\lib\document\Parser\instruction\ifInstruction;
+use iflow\template\lib\config;
 use iflow\template\lib\document\Parser\instruction\instructionAbstract;
 
 class ParserInstruction
 {
 
-    protected array $instruction = [
-        'i-if' => ifInstruction::class,
-        'i-for' => forInstruction::class
-    ];
-
+    protected array $instruction = [];
     protected DOMNodeParser $DOMNodeParser;
 
-    protected string $code = "<?php %s; ?>";
+    public function __construct(protected config $config)
+    {
+        $this->instruction = $this->config -> getInstruction();
+    }
 
     public function parserInstruction(DOMNodeParser $DOMNodeParser, string $html): string
     {
@@ -27,12 +25,16 @@ class ParserInstruction
         return sprintf($instructionCode, $html);
     }
 
+    /**
+     * 解析自定义指令
+     * @param array $instruction
+     * @param $instructionCode
+     * @return string
+     */
     protected function traverseInstruction(array $instruction, $instructionCode): string
     {
         foreach ($instruction as $instructionName => $instructionValue) {
-
             if ($this->DOMNodeParser -> getAttributes($instructionName) === null) continue;
-
             $instructionObject = new $instructionValue;
             if ($instructionObject instanceof instructionAbstract) {
                 $instructionCode = sprintf(
