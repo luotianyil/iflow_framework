@@ -85,7 +85,10 @@ class Session
         if ($this->sessionId === '') {
             // 通过 请求参数或者 请求头 获取sessionId
             $this->sessionId = request() -> params($this->sessionName);
+
+            // 通过请求头或者cookie获取sessionId
             $this->sessionId = $this->sessionId ?: request() -> getHeader($this->sessionName);
+            $this->sessionId = $this->sessionId ?: cookie($this->sessionName);
         }
 
         // 如果客户端未传递SessionId 即生成新的SessionId
@@ -93,6 +96,8 @@ class Session
             $this->sessionId = $this->session -> set(null, [
                 'sessionName' => $this->sessionName
             ]);
+            // 将sessionId 写入cookie
+            cookie($this->sessionName, $this->sessionId);
         }
         return $this->sessionId;
     }
