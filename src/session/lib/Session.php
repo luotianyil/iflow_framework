@@ -12,4 +12,6 @@ interface Session
     public function get(string $name);
     public function set(string|null $name, array $default);
     public function delete(string $name);
+
+    public function makeSessionID(): string;
 }

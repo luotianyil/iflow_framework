@@ -4,13 +4,14 @@
 namespace iflow\session;
 
 
+use iflow\session\lib\abstracts\sessionAbstracts;
 use iflow\Utils\ArrayTools;
 
 class Session
 {
     protected string $namespace = '\\iflow\\session\\lib\\';
     protected array $config = [];
-    protected ?object $session = null;
+    protected ?sessionAbstracts $session = null;
     protected mixed $sessionId = '';
     protected mixed $sessionName = '';
 
@@ -27,10 +28,7 @@ class Session
         $this -> session = app($class) -> initializer($this->config);
 
         $this->sessionName = $this->config['session_name'] ?? 'PHPSESSIONID';
-
-        // 通过 请求参数或者 请求头 获取sessionId
-        $this->sessionId = request() -> params($this->sessionName);
-        $this->sessionId = $this->sessionId ?: request() -> getHeader($this->sessionName);
+        $this->sessionId = $this->getSessionId();
 
         // 初始化 SessionTools
         $this->sessionTools = new ArrayTools(
@@ -53,7 +51,6 @@ class Session
      */
     public function set(string|null $name = null, array $data = []) {
         $this->sessionTools -> offsetSet($name, $data);
-
         // 不存在即创建 SessionId
         if (!$this->sessionId) {
             $this->sessionId = $this->session -> set(null, [
@@ -88,6 +85,19 @@ class Session
      */
     public function getSessionId(): mixed
     {
+        // 获取客户端传递的SessionId
+        if ($this->sessionId === '') {
+            // 通过 请求参数或者 请求头 获取sessionId
+            $this->sessionId = request() -> params($this->sessionName);
+            $this->sessionId = $this->sessionId ?: request() -> getHeader($this->sessionName);
+        }
+
+        // 如果客户端未传递SessionId 即生成新的SessionId
+        if (!$this->sessionId) {
+            $this->sessionId = $this->session -> set(null, [
+                'sessionName' => $this->sessionName
+            ]);
+        }
         return $this->sessionId;
     }
 }
