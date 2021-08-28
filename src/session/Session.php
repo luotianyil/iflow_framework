@@ -51,13 +51,7 @@ class Session
      */
     public function set(string|null $name = null, array $data = []) {
         $this->sessionTools -> offsetSet($name, $data);
-        // 不存在即创建 SessionId
-        if (!$this->sessionId) {
-            $this->sessionId = $this->session -> set(null, [
-                'sessionName' => $this->sessionName
-            ]);
-        }
-        return $this->session -> set($this->sessionId, $this->sessionTools -> all());
+        return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
     }
 
     /**
@@ -66,7 +60,7 @@ class Session
      */
     public function delete(): mixed
     {
-        return $this->session -> delete($this->sessionId);
+        return $this->session -> delete($this->getSessionId());
     }
 
     /**
@@ -77,7 +71,7 @@ class Session
     public function unsetKey(string $key): bool
     {
         $this->sessionTools -> offsetUnset($key);
-        return $this->session -> set($this->sessionId, $this->sessionTools -> all());
+        return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
     }
 
     /**
@@ -85,6 +79,8 @@ class Session
      */
     public function getSessionId(): mixed
     {
+        if ($this->sessionId) return $this->sessionId;
+
         // 获取客户端传递的SessionId
         if ($this->sessionId === '') {
             // 通过 请求参数或者 请求头 获取sessionId
