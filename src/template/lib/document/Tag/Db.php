@@ -11,7 +11,7 @@ use iflow\template\lib\document\Parser\ParserHtml;
 
 class Db extends tagAbstract
 {
-    public string $tagName = "sql";
+    public string $tagName = "db";
 
     // 查询语句
     protected string|null $sql = "";

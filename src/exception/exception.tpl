@@ -3,7 +3,7 @@
         function parse_suorce($source, $line) {
             $code = "";
             foreach ($source as $l => $content) {
-                $code .= ($l === $line ? "<span style=\"color:red;\">$l</span>" : $l ) ." : <span class=\"errCodeContent\">".str_replace(" ", "&nbsp;", $content)."</span> <br />";
+                $code .= ($l === $line ? "<span style=\"color:red;\">$l</span>" : $l ) ." : <span class=\"errCodeContent\">".htmlspecialchars_decode(str_replace(" ", "&nbsp;", $content))."</span> <br />";
             }
             return $code;
         }

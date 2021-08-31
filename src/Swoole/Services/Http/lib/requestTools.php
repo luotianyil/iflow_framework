@@ -198,7 +198,7 @@ class requestTools
                 return $this->response
                     -> headers($response -> getHeaders())
                     -> withStatus($response -> getStatusCode())
-                    -> data($response -> getBody() -> getContents())
+                    -> data($response -> getBody() -> __toString())
                     -> send();
             case !is_string($response) && !is_numeric($response):
                 // 为非字符串时

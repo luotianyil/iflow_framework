@@ -22,8 +22,11 @@ class Cookie
     ];
 
     public function __construct(
-        protected $cookie = []
+        protected $cookie
     ) {
+        if ($this->cookie instanceof Cookie) {
+            $this->cookie = $this->cookie -> toArray();
+        }
         $this->config = array_replace_recursive($this->config, config('cookie')) ?: $this->config;
     }
 
@@ -58,6 +61,11 @@ class Cookie
         return $this;
     }
 
+
+    public function toArray(): array
+    {
+        return $this->cookie;
+    }
 
     protected function saveCookie(string $name, $value, array $options = [])
     {

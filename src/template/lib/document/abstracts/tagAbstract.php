@@ -20,9 +20,22 @@ abstract class tagAbstract implements Tag
     protected PHPTag $PHPTag;
     protected ParserHtml $parserHtml;
 
+    /**
+     * 当前节点需要显示的TAG
+     * @var string
+     */
     protected string $defaultTagName = "";
 
+    /**
+     * 当前节点的 html代码
+     * @var string
+     */
     protected string $html = "";
+
+    /**
+     * 用户 指定的参数
+     * @var string
+     */
     protected string $props = "";
 
     // 敏感 Attributes TAG标签树形 可以指定
@@ -64,6 +77,7 @@ abstract class tagAbstract implements Tag
     /**
      * 遍历子节点 返回子节点HTML
      * @return string
+     * @throws \Exception
      */
     public function traverseNodesToHtml(): string {
         return $this->parserHtml -> traverseNodes(
