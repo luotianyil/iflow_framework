@@ -66,6 +66,10 @@ php iflow start or php iflow start-service
 # 演示
 https://framework.mzshe.cn
 
+# 项目支持
+
+[![jetbrains](https://mzshe.cn/jetbrains-variant-3.svg)](https://jb.gg/OpenSource)
+
 
 # 功能
 
