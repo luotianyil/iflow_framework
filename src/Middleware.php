@@ -5,6 +5,7 @@ namespace iflow;
 
 use iflow\exception\lib\HttpResponseException;
 use iflow\pipeline\pipeline;
+use Psr\Http\Message\ResponseInterface;
 
 class Middleware
 {
@@ -30,7 +31,7 @@ class Middleware
                 return function ($request, $next) use ($middleware) {
                     [$class, $params] = is_array($middleware) ? $middleware : [$middleware, []];
                     $response = call_user_func([$this->app->make($class), 'handle'], $request, $next, ...$params);
-                    if ($response instanceof Response) {
+                    if ($response instanceof Response || $response instanceof ResponseInterface) {
                         // 抛出响应异常
                         throw new HttpResponseException(
                             $response

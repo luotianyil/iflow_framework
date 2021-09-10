@@ -169,8 +169,8 @@ class requestTools
      */
     public function validateResponse($res): bool
     {
-        if ($res instanceof Response) {
-            return $res -> send();
+        if ($res instanceof Response || $res instanceof ResponseInterface) {
+            return $this->send($res);
         }
 
         if ($res === false) {
@@ -186,7 +186,6 @@ class requestTools
      */
     protected function send($response): bool
     {
-
         if (!$response)
             return $this->response -> data($response) -> send();
 

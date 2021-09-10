@@ -5,6 +5,7 @@ namespace iflow\exception\lib;
 
 use iflow\Response;
 use iflow\template\Template;
+use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
 class renderDebugView
@@ -14,6 +15,7 @@ class renderDebugView
     protected string $trace = "";
 
     public function __construct(protected Throwable $throwable, protected array $config) {
+
         $this->exception_tpl =
             $this->config['exception_tpl'] ?? str_replace("\\", '/', __DIR__ . "/../exception.tpl");
 
@@ -21,8 +23,27 @@ class renderDebugView
     }
 
 
+    /**
+     * 渲染数据
+     * @return Response
+     */
     public function render(): Response
     {
+        // 此处验证是否为Response异常
+        if ($this->throwable instanceof HttpResponseException) {
+            $response = $this->throwable -> getResponse();
+            switch ($response) {
+                case $response instanceof ResponseInterface:
+                    // PSR7
+                    return response()
+                        -> headers($response -> getHeaders())
+                        -> withStatus($response -> getStatusCode())
+                        -> data($response -> getBody() -> __toString());
+                default :
+                    return $response;
+            }
+        }
+
         if (!file_exists($this->exception_tpl)) {
             $this->exception_tpl = str_replace("\\", '/', __DIR__ . "/../exception.tpl");
         }
