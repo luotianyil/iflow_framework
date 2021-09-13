@@ -7,8 +7,6 @@ namespace iflow\template\lib\document\Parser\instruction;
 class forInstruction extends instructionAbstract
 {
 
-    protected string $code = "<?php %s: ?><?php %s; ?>";
-
     public function getInstructionCode(): string
     {
         // TODO: Implement getInstructionCode() method.

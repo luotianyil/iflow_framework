@@ -77,7 +77,7 @@ class Request
     protected function setRowContent()
     {
         $contentType = $this->header['content-type'] ?? $this->header['accept'];
-        if ('application/x-www-form-urlencoded' == explode(';', $contentType)[0]) {
+        if ('application/x-www-form-urlencoded' === explode(';', $contentType)[0]) {
             parse_str($this->input, $this->rowContent);
         } elseif (str_contains($contentType, 'json')) {
             $this->rowContent = json_decode($this->input, true);

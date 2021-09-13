@@ -92,6 +92,7 @@ class document
      * HTML TO PHPCode
      * @param array $config
      * @return string
+     * @throws \Exception
      */
     public function htmlToPHPCode(array $config): string
     {

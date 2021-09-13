@@ -259,6 +259,7 @@ class tag
     /**
      * DOM 渲染方法
      * @return string
+     * @throws \Exception
      */
     protected function DocumentRender(): string
     {
