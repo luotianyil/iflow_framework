@@ -44,9 +44,10 @@ class Request
 
         foreach ($this->server as $name => $value)
         {
-            if (substr($name, 0, 5) == 'http_')
-            {
+            if (substr($name, 0, 5) === 'http_') {
                 $this->header[substr($name, 5)] = $value;
+            } else {
+                $this->header[str_replace('_', '-', $name)] = $value;
             }
         }
 

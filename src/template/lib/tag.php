@@ -247,11 +247,11 @@ class tag
 
     protected function FileIsTemplateLibrary(bool $splitStart = false): bool
     {
-        $content = explode("\r\n", $this->content);
+        $content = explode(PHP_EOL, $this->content);
         $templateLibrary = str_starts_with(trim($content[0] ?? ''), '{templateLibrary}');
         if ($templateLibrary && $splitStart) {
             array_shift($content);
-            $this->content = implode("\r\n", $content);
+            $this->content = implode(PHP_EOL, $content);
         }
         return $templateLibrary;
     }

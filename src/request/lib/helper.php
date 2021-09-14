@@ -61,7 +61,7 @@ trait helper
     {
         if (!$ip) return false;
         $flag = strtolower($type) === 'ipv4' ? FILTER_FLAG_IPV4 : FILTER_FLAG_IPV6;
-        return boolval(filter_var($ip, $flag));
+        return boolval(filter_var($ip, FILTER_VALIDATE_IP, $flag));
     }
 
     /**
