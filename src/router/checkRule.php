@@ -39,8 +39,13 @@ class checkRule
         return $this->router;
     }
 
-
-    // 验证路由
+    /**
+     * 验证路由
+     * @param string $url
+     * @param string $method
+     * @param array $param
+     * @return array|bool
+     */
     public function checkRule(
         string $url = "/",
         string $method = 'get',
@@ -51,15 +56,15 @@ class checkRule
 
         $this->parameters = $param;
 
-        $router = [];
-        if (empty($routerList['router'])) return $router;
+        $this->router = [];
+        if (empty($routerList['router'])) return $this->router;
 
         foreach ($routerList as $rule) {
-            $router = $this->check($rule, $url, $method);
-            if ($router) break;
+            $this->router = $this->check($rule, $url, $method);
+            if ($this->router) break;
         }
         // 验证通过绑定参数
-        return $router ? $this->bindParam($router) : throw new RouterNotFoundException();
+        return $this->router ? $this->bindParam($this->router) : throw new RouterNotFoundException();
     }
 
     public function check(array $ruleAll, string $url, string $method): array|bool

@@ -48,7 +48,13 @@ class Aop
                 $list = explode("::", $className);
                 $action = "";
                 if (count($list) > 1) [$className, $action] = $list;
-                if ($className !== $class) continue;
+
+                // 验证当前类/方法是否需要设置切面
+                if ($className !== $class
+                    && (!str_starts_with($class, trim($className, '*')) || !str_ends_with($className, '*'))
+                ) {
+                    continue;
+                }
                 if (!$this->MethodsProxy($method, $action) && count($list) > 1) continue;
 
                 $hashClass = "_" . sha1($aspect . $class);
@@ -60,7 +66,7 @@ class Aop
                     $this->saveCache($hashClass, $ast);
                 }
                 include_once $this->config['cache_path']. DIRECTORY_SEPARATOR . $hashClass . ".php";
-                $aspects[] = (new \ReflectionClass(substr($className, 0, strrpos($className, "\\"))."\\$hashClass")) -> newInstance();
+                $aspects[] = (new \ReflectionClass(substr($class, 0, strrpos($class, "\\"))."\\$hashClass")) -> newInstance();
                 break;
             }
         }
