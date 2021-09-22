@@ -18,7 +18,14 @@ class workMan extends Command
             $this->Console -> outPut -> writeLine('WorkMan Config is empty !!!');
             return true;
         }
-        $this->Console -> outPut -> writeLine((new httpServer($config)) -> start());
+
+        $configName = $this->getArgument('--c');
+        $configName = $this->getArgument('config', $configName);
+        if (!$configName) {
+            $configName = $config['default'];
+        }
+
+        $this->Console -> outPut -> writeLine((new httpServer($config[$configName])) -> start());
         return true;
     }
 }

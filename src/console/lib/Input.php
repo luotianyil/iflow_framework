@@ -60,11 +60,12 @@ class Input
         return $this->invokeClass($console, Help::class, $userCommand);
     }
 
-    public function invokeClass($console, $commandClass, $userCommand)
+    public function invokeClass(Console $console, $commandClass, $userCommand)
     {
         $commandClass = $console -> app -> invokeClass($commandClass, $this->argv);
-        $commandClass -> setApp($console -> app);
-        $commandClass -> setConsole($console);
+        $commandClass -> setApp($console -> app)
+                      -> setConsole($console)
+                      -> setArgument();
         return $console -> app -> invoke([$commandClass, 'handle'], [$userCommand]);
     }
 

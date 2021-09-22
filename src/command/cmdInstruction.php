@@ -54,11 +54,9 @@ class cmdInstruction extends Command
             foreach ($this->shell as $shell) {
                 $shell = explode(':', $shell);
                 if (count($shell) > 1) {
-
                     if ($shell[0] === '-p') {
                         $shell[1] = explode('&', $shell[1]);
                     }
-
                     $run[$shell[0]] = $shell[1];
                 }
             }
@@ -94,15 +92,15 @@ class cmdInstruction extends Command
                 call_user_func([$this, $this->shellCommand[$this->shell[0]]]);
             }
         }
-        $this->outIflowStart();
+        $this->outIFlowStart();
     }
 
-    protected function outIflowStart() {
+    protected function outIFlowStart(): static {
         $this->Console -> outWrite('iflow:/> ');
         return $this;
     }
 
-    protected function outInputHelp()
+    protected function outInputHelp(): static
     {
         $this->Console -> outPut -> writeLine('iflow Shell, your out input: exit');
         $this->Console -> outPut -> writeLine('iflow Shell help:');
