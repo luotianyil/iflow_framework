@@ -127,11 +127,9 @@ class setRouterParams
             return app() -> make($type[0], isNew: true);
         }
         $default = match ($type[0]) {
-            'mixed', 'string' => '',
-            'int' => 0,
+            'mixed', 'string', 'int', 'float' => '',
             'array' => [],
-            'bool' => true,
-            'float' => 0.00
+            'bool' => true
         };
         return $default;
     }

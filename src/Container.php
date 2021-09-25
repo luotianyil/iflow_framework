@@ -30,7 +30,6 @@ class Container implements ContainerInterface
     {
 
         if ($isNew) $this->delete($class);
-
         $this->containers = $this->containers ?: new \WeakMap();
 
         // 判断容器是否存在 该对象
@@ -40,8 +39,13 @@ class Container implements ContainerInterface
         return $this->invokeClass($class, $vars);
     }
 
-    // 实例化 对象 返回
-    public function invokeClass(string $class, $vars)
+    /**
+     * 实例化 对象 返回
+     * @param string $class
+     * @param $vars
+     * @return object
+     */
+    public function invokeClass(string $class, $vars): object
     {
         $class = str_replace('\\\\', '\\', $class);
         try {
@@ -55,6 +59,8 @@ class Container implements ContainerInterface
             }
             $constructor = $ref -> getConstructor();
             $vars = $constructor ? $this->bindParameters($constructor, $vars) : [];
+
+            // 实例化后运行注解
             $object = $ref -> newInstanceArgs($vars);
             $this->runAttributes($ref, ...[$ref, $object]);
             if (!$this->has($class)) $this->bind[$class] = new \stdClass();
@@ -66,8 +72,13 @@ class Container implements ContainerInterface
         }
     }
 
-    // 执行闭包
-    public function invokeFunction($methods, array $vars = [])
+    /**
+     * 执行闭包
+     * @param $methods
+     * @param array $vars
+     * @return mixed
+     */
+    public function invokeFunction($methods, array $vars = []): mixed
     {
         try {
             $ref = new \ReflectionFunction($methods);
@@ -78,16 +89,21 @@ class Container implements ContainerInterface
         }
     }
 
-    public function invokeMethod($methods, array $vars = [])
+    /**
+     * 执行方法
+     * @param $methods
+     * @param array $vars
+     * @return mixed
+     */
+    public function invokeMethod($methods, array $vars = []): mixed
     {
         [$class, $methods] = is_array($methods) ? $methods : explode('::', $methods);
         try {
             $ref = new \ReflectionMethod($class, $methods);
             $args = $this->bindParameters($ref, $vars);
-
             // 执行方法参数注解
-            array_map(function ($parameter) use ($class) {
-                $this -> runAttributes($parameter, ...[$parameter, $class]);
+            array_map(function ($parameter) use ($class, &$args) {
+                $this -> runAttributes($parameter, $parameter, $class, $args);
             }, $ref -> getParameters());
 
             return $ref->invokeArgs(is_object($class) ? $class : null, $args);
@@ -96,8 +112,13 @@ class Container implements ContainerInterface
         }
     }
 
-    // 反射执行方法
-    public function invoke(array|string $callable, array $vars = [])
+    /**
+     * 反射执行方法
+     * @param array|string $callable
+     * @param array $vars
+     * @return mixed
+     */
+    public function invoke(array|string $callable, array $vars = []): mixed
     {
         if ($callable instanceof \Closure) {
             return $this->invokeFunction($callable, $vars);
@@ -151,8 +172,7 @@ class Container implements ContainerInterface
     }
 
     // 实例化后回调
-    public function invokeAfter($class, $object)
-    {}
+    public function invokeAfter($class, $object) {}
 
     // 获取当前容器
     public static function getInstance(): static
@@ -249,15 +269,18 @@ class Container implements ContainerInterface
     /**
      * 获取注解并执行
      * @param Reflector $ref
+     * @param array $parameter
+     * @param string $class
      * @param mixed ...$args
      */
-    public function runAttributes(Reflector $ref, ...$args)
+    public function runAttributes(Reflector $ref, $parameter = [], $class = "", &$args = [])
     {
-        array_map(function ($attr) use ($args) {
+        array_map(function ($attr) use ($parameter, $class, &$args) {
             $attrObject = $attr -> newInstance();
             if (method_exists($attrObject, 'handle')) {
-                call_user_func([$attrObject, 'handle'], ...$args);
+                return $attrObject -> handle($parameter, $class, $args);
             }
+            return null;
         }, $ref -> getAttributes());
     }
 }

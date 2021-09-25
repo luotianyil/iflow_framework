@@ -1,9 +1,10 @@
 <?php
 
 
-namespace iflow\annotation\lib\boot;
+namespace iflow\annotation\lib\utils;
 
 
+use iflow\annotation\lib\interfaces\bootInterface;
 use iflow\App;
 use ReflectionClass;
 

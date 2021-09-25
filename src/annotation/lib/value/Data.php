@@ -14,6 +14,7 @@ class Data
     protected array $methodAttribute = [
         Value::class,
         NotNull::class,
+        FilterArg::class,
         ValidateRule::class
     ];
 
@@ -30,9 +31,9 @@ class Data
 
     protected function properAttributes(\ReflectionProperty $reflectionProperty, string $name)
     {
-        $attribute = $reflectionProperty -> getAttributes($name)[0] ?? null;
-        if ($attribute) {
-            call_user_func([$attribute -> newInstance(), 'handle'], ...[$reflectionProperty, $this->object]);
-        }
+        array_map(
+            fn($attribute) => call_user_func([$attribute -> newInstance(), 'handle'], ...[$reflectionProperty, $this->object]),
+            $reflectionProperty -> getAttributes($name)
+        );
     }
 }

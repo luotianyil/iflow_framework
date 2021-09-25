@@ -44,7 +44,7 @@ class ArrayTools extends Collection
 
     protected function getConfigValue($names, array $array = [])
     {
-        // 按.拆分成多维数组进行判断
+        // 按.拆分成数组进行判断
         if (count($names) === 1) {
             return $array[array_shift($names)] ?: [];
         }

@@ -73,6 +73,11 @@ class basicTools
         return $order_id_main . str_pad((100 - $order_id_sum % 100) % 100,2,'0',STR_PAD_LEFT);
     }
 
+    /**
+     * 生成随机字符串
+     * @param int $length
+     * @return string
+     */
     public function gen_random_string(int $length = 20): string {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         $str = '';
@@ -80,7 +85,10 @@ class basicTools
         return $str;
     }
 
-    // 创建随机数
+    /**
+     * 创建随机数
+     * @return string
+     */
     public function make_random_number() : string
     {
         $mtime = explode(' ',microtime());
@@ -129,7 +137,11 @@ class basicTools
         return $guidv4;
     }
 
-    // 身份证号加密
+    /**
+     * 身份证号加密
+     * @param $card_id
+     * @return string
+     */
     public function card_id_replace($card_id) : string
     {
         $card_id_start = substr(substr_replace($card_id,"****",8,4), 0, 12);
@@ -137,6 +149,13 @@ class basicTools
         return $card_id_start.$card_id_end;
     }
 
+    /**
+     * xml转数组
+     * @param string $xml
+     * @param string $className
+     * @param int $option
+     * @return array
+     */
     public function xmlToArray(string $xml, string $className = 'SimpleXMLElement', $option = LIBXML_NOCDATA): array
     {
         return json_decode(
@@ -145,13 +164,21 @@ class basicTools
         );
     }
 
-    // 执行shell
+    /**
+     * 执行shell
+     * @param $shell
+     * @return string
+     */
     public function execShell($shell): string
     {
         return trim(shell_exec($shell), PHP_EOL);
     }
 
-    // 对象转 数组
+    /**
+     * 对象转 数组
+     * @param object $object
+     * @return array
+     */
     public function objectToArray(object $object): array
     {
         if (method_exists($object, 'toArray')) {

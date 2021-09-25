@@ -3,43 +3,33 @@
 
 namespace iflow\annotation\lib\value;
 
+use iflow\annotation\lib\abstracts\annotationAbstract;
+
 #[\Attribute]
-class Value
+class Value extends annotationAbstract
 {
     public function __construct(
-        private mixed $default = "",
-        private string $desc = ""
-    ) {}
-
-    public function handle(\ReflectionProperty $ref, $object)
-    {
-        try {
-            return $ref -> getValue($object);
-        } catch (\Error) {
-            $ref -> setValue(
-                $object, $ref -> getDefaultValue() ?: $this->defaultIsClass()
-            );
-        }
-        return true;
+        protected mixed $default = "",
+        protected string $desc = ""
+    ) {
     }
 
     /**
+     * 初始化数值
+     * @param \ReflectionProperty|\ReflectionParameter $ref
+     * @param $object
+     * @param array $args
      * @return mixed
+     * @throws \ReflectionException
      */
-    public function getDefault(): mixed
+    public function handle(\ReflectionProperty|\ReflectionParameter $ref, $object, array &$args = [])
     {
-        return $this->default;
-    }
-
-    /**
-     * 验证是否为类
-     * @return mixed
-     */
-    private function defaultIsClass(): mixed
-    {
-        if (is_string($this->default) && class_exists($this->default)) {
-            $this->default = app() -> make($this->default);
+        $value = $this->getValue($ref, $object, $args);
+        if ($ref instanceof \ReflectionProperty) {
+            $ref -> setValue($object, $value);
+        } else {
+            $args[$ref -> getPosition()] = $value;
         }
-        return $this->default;
+        return $value;
     }
 }

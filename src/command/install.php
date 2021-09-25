@@ -6,6 +6,7 @@ namespace iflow\command;
 
 use iflow\console\lib\Command;
 use iflow\Utils\basicTools;
+use think\db\exception\PDOException;
 use think\facade\Db;
 
 class install extends Command
@@ -24,23 +25,39 @@ class install extends Command
         $this->Console -> outPut -> writeLine('installed');
     }
 
-    protected function includeDataBase(): static|null
+    protected function includeDataBase(): ?static
     {
         if (!extension_loaded('pdo_mysql')) {
-            $this->Console -> outPut -> writeLine('pdo_mysql not extension! initializer database fail');
+            $this->Console -> outPut -> writeLine('pdo_mysql does not extension! initializer database fail');
             return null;
         }
-        $files = find_files($this->config['database']['rootPath'], function (\SplFileInfo $item) {
-            return $item -> getExtension() === 'sql';
-        });
-        $install = $this->config['database']['rootPath'] . DIRECTORY_SEPARATOR . 'install.sql';
-        $this->dataExecute($install);
-        foreach ($files as $file) {
-            if ($file -> getPathname() !== $install) {
-                $this->dataExecute($file -> getPathname());
+
+        try {
+            // 初始化数据库
+            $databaseConfig = config('database');
+            $databaseConfig['connections'][$databaseConfig['default']]['database'] = '';
+            Db::setConfig($databaseConfig);
+
+            // 写入数据库
+            $files = find_files($this->config['database']['rootPath'], function (\SplFileInfo $item) {
+                return $item -> getExtension() === 'sql';
+            });
+            $install = $this->config['database']['rootPath'] . DIRECTORY_SEPARATOR . 'install.sql';
+            $create = $this->dataExecute($install);
+
+            // 验证 install.sql 是否执行成功
+            if (!$create) return null;
+
+            foreach ($files as $file) {
+                if ($file -> getPathname() !== $install) {
+                    $this->dataExecute($file -> getPathname());
+                }
             }
+            return $this;
+        } catch (PDOException $exception) {
+            $this->Console -> outPut -> writeLine($exception -> getMessage());
+            return null;
         }
-        return $this;
     }
 
     protected function dataExecute(string $filePath = ''): bool

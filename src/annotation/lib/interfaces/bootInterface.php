@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\annotation\lib\boot;
+namespace iflow\annotation\lib\interfaces;
 
 
 interface bootInterface

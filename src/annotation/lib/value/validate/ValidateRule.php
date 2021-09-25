@@ -4,10 +4,11 @@
 namespace iflow\annotation\lib\value\validate;
 
 
+use iflow\annotation\lib\interfaces\annotationValueInterface;
 use iflow\annotation\lib\value\Exception\valueException;
 
 #[\Attribute]
-class ValidateRule
+class ValidateRule implements annotationValueInterface
 {
     public function __construct(
         protected string|array $rule = [],
@@ -15,7 +16,7 @@ class ValidateRule
         protected mixed $defaultValue = ""
     ) {}
 
-    public function handle(\ReflectionProperty $ref, $object)
+    public function handle(\ReflectionProperty|\ReflectionParameter $ref, $object, array &$args = [])
     {
         $name = $ref -> getName();
 

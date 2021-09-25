@@ -52,7 +52,6 @@ class Error
     public function appHandler(Throwable $e): bool
     {
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
-
         // 检测是否开启DEBUG
         if ($this->app -> isDebug()) {
             return (new renderDebugView($e, $this->config))
