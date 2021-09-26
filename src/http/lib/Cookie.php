@@ -22,7 +22,7 @@ class Cookie
     ];
 
     public function __construct(
-        protected $cookie
+        protected array $cookie = []
     ) {
         $this->config = array_replace_recursive($this->config, config('cookie')) ?: $this->config;
     }
