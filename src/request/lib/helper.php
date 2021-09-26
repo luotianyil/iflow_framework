@@ -24,12 +24,27 @@ trait helper
     ];
 
     /**
-     * 获取Host
+     * 获取当前请求地址
+     * @param bool $strict
      * @return string
      */
-    public function getDomain(): string
+    public function host(bool $strict = false): string
     {
-        return $this->getHeader('host');
+        $host = $this->getHeader('host');
+        if (!$host) {
+            $host = strval($this->server('X_FORWARDED_HOST') ?: $this->server('HTTP_HOST'));
+        }
+        return $strict ? strstr($host, ':', true) : $host;
+    }
+
+    /**
+     * 获取当前请求域名
+     * @param bool $port 是否去除当前请求端口
+     * @return string
+     */
+    public function getDomain(bool $port = false): string
+    {
+        return $this->host($port);
     }
 
     /**
@@ -138,6 +153,18 @@ trait helper
     {
         if ($name === '') return $this->request -> header;
         return $this->get(strtolower(str_replace('_', '-', $name)), 'header', '');
+    }
+
+
+    /**
+     * 获取Server参数
+     * @param string $name
+     * @return mixed|null
+     */
+    public function server(string $name = '')
+    {
+        if ($name === '') return $this->request -> header;
+        return $this->server[strtolower(str_replace('_', '-', $name))] ?? null;
     }
 
     /**

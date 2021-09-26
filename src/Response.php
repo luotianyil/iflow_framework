@@ -53,7 +53,7 @@ class Response
     {
         if ($this->response === null) return false;
         // Swoole 验证是否已经结束请求
-        if ($this->response -> isWritable() === false) return false;
+        if ($this->response -> isWritable() === false) return true;
 
         // 结束请求
         return $this->setResponseHeader() -> response -> end(

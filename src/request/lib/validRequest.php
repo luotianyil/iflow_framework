@@ -70,9 +70,16 @@ trait validRequest
      */
     public function isHTTPS(): bool
     {
-        $host = $this->getHeader('host');
-        $port = explode(':', $host)[1] ?? 80;
-        return $port === 443;
+        if (isset($this -> server['https']) && ('1' == $this -> server['https'] || 'on' == strtolower($this -> server['https']))) {
+            return true;
+        } elseif (isset($this -> server['request_scheme']) && 'https' === $this -> server['request_scheme']) {
+            return true;
+        } elseif (443 === intval($this -> server['server_port'])) {
+            return true;
+        } elseif ('https' == $this -> getHeader('X_FORWARDED_PROTO')) {
+            return true;
+        }
+        return false;
     }
 
 }

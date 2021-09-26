@@ -47,7 +47,7 @@ class File extends Response
     public function end($data): bool
     {
         // Swoole 验证是否已经结束请求
-        if ($this->response -> isWritable() === false) return false;
+        if ($this->response -> isWritable() === false) return true;
         if (request() -> isGet()) {
             $this->setLastModified() -> setCacheControl() -> steExpiresTimes();
         }

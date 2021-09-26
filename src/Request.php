@@ -27,7 +27,7 @@ class Request
 
         // 设置HTTP VERSION
         $this->version = str_replace('HTTP/', '', $this->server['server_protocol']);
-        $this->query_string = explode('?', $url)[1] ?? '';
+        $this->query_string = $this->server['query_string'] ?? '';
 
         // 获取请求方法
         $this->request_method = $request -> server['request_method'];

@@ -51,7 +51,7 @@ class renderDebugView
 
         if (!file_exists($this->exception_tpl)) {
             return message() -> server_error(
-                502, $this->exception_tpl.' template file not does exists', $this->getError());
+                502, $this->exception_tpl.' template file does not exists', $this->getError());
         }
 
         return (new Template())
