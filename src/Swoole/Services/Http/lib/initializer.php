@@ -24,12 +24,19 @@ class initializer extends requestTools
         }
     }
 
-    // 初始化请求数据
+    /**
+     * 初始化请求数据
+     * @param $request
+     * @return $this
+     */
     public function setRequest($request): static
     {
-        app() -> make(Cookie::class, [
-            $request -> cookie ?: []
-        ]);
+        // 验证当前cookie是否为对象
+        if (!$request -> cookie instanceof Cookie) {
+            $request -> cookie = app() -> make(Cookie::class, [
+                $request -> cookie ?: []
+            ]);
+        }
         $this->request = app() -> make(Request::class, [], true) -> initializer($request);
         return $this;
     }

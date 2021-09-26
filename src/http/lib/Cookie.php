@@ -24,9 +24,6 @@ class Cookie
     public function __construct(
         protected $cookie
     ) {
-        if ($this->cookie instanceof Cookie) {
-            $this->cookie = $this->cookie -> toArray();
-        }
         $this->config = array_replace_recursive($this->config, config('cookie')) ?: $this->config;
     }
 

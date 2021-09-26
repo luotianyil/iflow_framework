@@ -21,7 +21,7 @@ class appMonitoring
     }
 
     protected function appMonitoring(): bool {
-        if (!swoole_success() && !$this->config['enable']) return false;
+        if (!swoole_success() || !$this->config['enable']) return false;
         Timer::tick($this -> config['delayTime'], function () {
             $this->Monitoring();
         });
@@ -51,7 +51,7 @@ class appMonitoring
 
         if ($content !== '') {
             $content .= "<p>DateTime: ". date('Y-m-d H:i:s') ."</p>";
-            \Co\run(function () use ($content) {
+            go(function () use ($content) {
                 emails($this->config['toEmails'], $content, subject: config('app@appName') . ' - 应用预警');
             });
         }

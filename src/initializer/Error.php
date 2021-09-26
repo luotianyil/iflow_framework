@@ -22,7 +22,7 @@ class Error
         $this->app = $app;
         $this->config = config('app');
 
-        $this->handle = $this->config['exceptionHandle'] ?: $this->handle;
+        $this->handle = $this->config['exceptionHandle'] ?? $this->handle;
 
         // 全部接管
         error_reporting(E_ALL);
