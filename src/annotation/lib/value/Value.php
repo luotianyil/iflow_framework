@@ -11,8 +11,7 @@ class Value extends annotationAbstract
     public function __construct(
         protected mixed $default = "",
         protected string $desc = ""
-    ) {
-    }
+    ) {}
 
     /**
      * 初始化数值

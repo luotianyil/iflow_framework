@@ -26,7 +26,7 @@ class Handle
                 $this->type.
                 ": {$exception -> getMessage()} file: {$exception -> getFile()} in line {$exception -> getLine()}"
             );
-            return message() -> server_error(502, '服务器异常 - 请稍后进行重新请求');
+            return message() -> server_error($exception -> getCode(), $exception -> getMessage());
         }
     }
 }

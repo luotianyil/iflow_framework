@@ -25,6 +25,7 @@ abstract class annotationAbstract implements annotationValueInterface
             if ($refIsProperty) {
                 return $ref -> getValue($object);
             }
+
             $value = $args[$ref -> getPosition()];
             if (is_bool($value) || is_null($value) || is_numeric($value)) return $value;
 
@@ -33,7 +34,10 @@ abstract class annotationAbstract implements annotationValueInterface
             if ($refIsProperty) {
                 return $ref -> getDefaultValue() ?: $this->defaultIsClass();
             }
-            return $this->getDefault();
+            // 当方法参数 不存在且无默认值时
+            return $this->getDefault() ?: (
+                $ref -> isDefaultValueAvailable() ? $ref -> getDefaultValue() : null
+            );
         }
     }
 
@@ -55,5 +59,14 @@ abstract class annotationAbstract implements annotationValueInterface
     public function getDefault(): mixed
     {
         return $this->default;
+    }
+
+
+    public function getRefDefaultValue(\ReflectionProperty|\ReflectionParameter $ref)
+    {
+        if ($ref instanceof \ReflectionProperty) {
+            return $ref -> hasDefaultValue() ? $ref -> getDefaultValue() : null;
+        }
+        return $ref -> isDefaultValueAvailable() ? $ref -> getDefaultValue() : null;
     }
 }
