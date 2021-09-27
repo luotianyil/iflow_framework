@@ -4,10 +4,10 @@
 namespace iflow\router\exception;
 
 
-use Throwable;
+use iflow\exception\lib\HttpException;
 
-class RouterParamsException extends \Exception {
-    public function __construct($message = "", $code = 401, Throwable $previous = null)
+class RouterParamsException extends HttpException {
+    public function __construct($message = "", $code = 401, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
