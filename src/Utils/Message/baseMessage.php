@@ -48,8 +48,8 @@ trait baseMessage
             // 是否为重定向
             if ($code === 302)
                 return response()
-                    -> data($data['msg'])
-                    -> setRedirect($data ?: $data['items']['url']);
+                    -> data($data['msg'] ?: $data['items']['url'])
+                    -> setRedirect($data['items']['url']);
 
             // 将请求信息写入 返回数据中
             $data['requestInfo'] = [
