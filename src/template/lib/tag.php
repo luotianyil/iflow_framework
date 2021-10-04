@@ -3,9 +3,14 @@
 
 namespace iflow\template\lib;
 
-use iflow\template\lib\document\document;
+
 use iflow\Utils\basicTools;
 
+/**
+ * 正则编译视图
+ * Class tag
+ * @package iflow\template\lib
+ */
 class tag
 {
 
@@ -238,7 +243,7 @@ class tag
     }
 
     /**
-     * 设置缓存地址
+     * 获取缓存地址
      * @return string
      */
     protected function getStoreFile(): string {
@@ -254,18 +259,5 @@ class tag
             $this->content = implode(PHP_EOL, $content);
         }
         return $templateLibrary;
-    }
-
-    /**
-     * DOM 渲染方法
-     * @return string
-     * @throws \Exception
-     */
-    protected function DocumentRender(): string
-    {
-        // HTML 标签渲染方法
-        $dom = new document($this->content);
-        $this->content = sprintf("<!doctype html><html> %s</html>", $dom -> htmlToPHPCode($this->config));
-        return $this -> saveStore();
     }
 }

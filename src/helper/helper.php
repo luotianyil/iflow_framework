@@ -323,8 +323,8 @@ if (!function_exists('sendFile')) {
 
 // 返回视图文件
 if (!function_exists('view')) {
-    function view(string $template, array $data = []) {
-        return (new \iflow\template\Template()) -> display($template, $data);
+    function view(string $template, array $data = [], array $config = []): \iflow\Response {
+        return (new \iflow\template\View()) -> fetch($template, $data, $config);
     }
 }
 

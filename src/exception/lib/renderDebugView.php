@@ -4,7 +4,7 @@
 namespace iflow\exception\lib;
 
 use iflow\Response;
-use iflow\template\Template;
+use iflow\template\View;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -48,14 +48,14 @@ class renderDebugView
             $this->exception_tpl = str_replace("\\", '/', __DIR__ . "/../exception.tpl");
         }
 
-
         if (!file_exists($this->exception_tpl)) {
             return message() -> server_error(
                 502, $this->exception_tpl.' template file does not exists', $this->getError());
         }
 
-        return (new Template())
-            -> setData($this->getError()) -> send($this->exception_tpl);
+        return (new View()) -> render(
+            $this->exception_tpl, $this->getError()
+        );
     }
 
     public function getError(): array

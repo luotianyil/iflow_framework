@@ -49,7 +49,7 @@ trait baseMessage
             if ($code === 302)
                 return response()
                     -> data($data['msg'])
-                    -> setRedirect($data['items']['url']);
+                    -> setRedirect($data ?: $data['items']['url']);
 
             // 将请求信息写入 返回数据中
             $data['requestInfo'] = [

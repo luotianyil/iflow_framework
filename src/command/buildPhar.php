@@ -17,18 +17,12 @@ class buildPhar extends Command
     public function handle(array $event = [])
     {
         // TODO: Implement handle() method.
-        $command = $this->Console -> input -> getUserCommand();
         $info = [
-            'out' => $this->app -> getDefaultRootPath() . "build.phar",
-            'bin' => 'iflow',
-            'webindex' => 'public/index.php'
+            'out' => $this->getArgument('out', $this->app -> getDefaultRootPath() . "build.phar"),
+            'bin' => $this->getArgument('bin', 'iflow'),
+            'webindex' => $this->getArgument('webindex', '/public/index.php'),
+            'privatekey' => $this->getArgument('privatekey')
         ];
-        foreach ($command as $cmd) {
-            $cmd = explode("=", $cmd);
-            if (count($cmd) > 1) {
-                $info[strtolower($cmd[0])] = $cmd[1];
-            }
-        }
         $this -> Console -> outPut -> writeLine('build start ....');
         (new \iflow\Utils\buildPhar($info, $this)) -> build();
     }

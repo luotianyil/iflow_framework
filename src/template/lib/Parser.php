@@ -10,6 +10,11 @@ use iflow\Response;
 class Parser extends tag implements TemplateParser
 {
 
+    public function __construct(array $config = [])
+    {
+        $this->config = $config;
+    }
+
     public function config(array $config = [])
     {
         // TODO: Implement config() method.
@@ -26,32 +31,66 @@ class Parser extends tag implements TemplateParser
         return file_exists($this->file);
     }
 
-    public function display(string $template, array $data = []): Response | bool
+    /**
+     * 渲染视图代码
+     * @param string $template
+     * @param array $data
+     * @param array $config
+     * @return Response
+     */
+    public function display(string $template, array $data = [], array $config = []): Response
     {
         // TODO: Implement display() method.
-        $this->data = $data;
-        $view_suffix = $this->config['view_suffix'] === '' ? '' : ".{$this->config['view_suffix']}";
-        $this->file = $this->config['view_root_path'] . $template . $view_suffix;
-        return $this->fetch();
+        $this->content = $template;
+        $this->data = array_merge($this->data, $data);
+        $this->config($config);
+        return $this->render($this->templateParser());
     }
 
-    public function fetch(): Response
+    /**
+     * 渲染视图文件
+     * @param string $template
+     * @param array $data
+     * @param array $config
+     * @return Response
+     */
+    public function fetch(string $template, array $data = [], array $config = []): Response
     {
         // TODO: Implement fetch() method.
+        $this->data = array_merge($this->data, $data);
+        $this->config($config);
+
+        $view_suffix = $this->config['view_suffix'] === '' ? '' : ".{$this->config['view_suffix']}";
+        $this->file = $this->config['view_root_path'] . $template . $view_suffix;
+
         if ($this->exists()) {
+            // 验证缓存文件是否有效
             $storeFile = $this->getStoreFile();
             if (file_exists($storeFile)) {
-                if ($this->config['cache_enable']) return $this->send($storeFile);
-                // 删除缓存文件
-                unlink($storeFile);
+                if ($this->config['cache_enable']
+                    && (
+                        0 === $this->config['cache_time']
+                        || fileatime($this->file) + $this->config['cache_time'] > time()
+                    )
+                ) {
+                    return $this->render($storeFile);
+                }
             }
-            return $this->send($this->templateParser());
+
+            // 重新编译视图
+            $this->content = file_get_contents($this->file);
+            return $this->render($this->templateParser());
         } else {
             throw new HttpException(404, 'template file not exists');
         }
     }
 
-    public function send($filePath = ''): Response
+    /**
+     * 返回响应
+     * @param string $filePath
+     * @return Response
+     */
+    public function render($filePath = ''): Response
     {
         ob_start();
         extract($this->data, EXTR_OVERWRITE);
@@ -62,36 +101,39 @@ class Parser extends tag implements TemplateParser
     }
 
     /**
+     * 设置模板变量
+     * @param string $name
      * @param array $data
      * @return static
      */
-    public function setData(array $data): static
+    public function assign(string $name, mixed $data): static
     {
-        $this->data = $data;
+        $this->data[$name] = $data;
         return $this;
     }
 
+    /**
+     * 获取当前模板代码
+     * @return string
+     */
     public function getContent(): string
     {
         $this->funcParser();
         return $this->content;
     }
 
+    /**
+     * 视图模板渲染
+     * @return string
+     */
     protected function templateParser(): string
     {
-        $this->content = file_get_contents($this->file);
         if ($this->content === '') {
             throw new HttpResponseException(
                 message() -> nodata('Template Content is Empty')
             );
         }
 
-        // DOM渲染
-        if (isset($this->config['rendering']) && $this->config['rendering'] === 'document') {
-            return $this->DocumentRender();
-        }
-
-        // 正则渲染
         if ($this->FileIsTemplateLibrary()) {
             throw new HttpResponseException(
                 message() -> nodata('TemplateFile is templateLibrary')

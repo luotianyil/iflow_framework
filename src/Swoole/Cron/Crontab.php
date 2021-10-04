@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\Swoole\Crond;
+namespace iflow\Swoole\Cron;
 
 
 class Crontab
