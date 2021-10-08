@@ -41,10 +41,13 @@ trait Argument
 
     /**
      * 初始化参数
-     * @param Input $input
+     * @param Input|array $input
+     * @param int $offset
+     * @return Argument
      */
-    protected function parserArgumentInstruction(Input $input) {
-        $instruction = $input -> getUserCommand();
-        $this->instruction = array_slice($instruction, 1);
+    protected function parserArgumentInstruction(Input|array $input, int $offset = 1): static {
+        $instruction = is_array($input) ? $input : $input -> getUserCommand();
+        $this->instruction = array_slice($instruction, $offset);
+        return $this;
     }
 }

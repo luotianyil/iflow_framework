@@ -37,17 +37,15 @@ if (!function_exists('loadConfigFile')) {
         $type = pathinfo($file, PATHINFO_EXTENSION);
         $config = match ($type) {
             'php' => include $file,
-            'ini', 'env' => parse_ini_file($file, true, INI_SCANNER_TYPED) ?: [],
-            'json' => json_decode(file_get_contents($file), true),
-            'yaml' => function () use ($file) {
-                if (function_exists('yaml_parse_file')) {
-                    return yaml_parse_file($file);
-                }
-                return [];
-            },
+            'ini', 'env' =>
+                parse_ini_file($file, true, INI_SCANNER_TYPED) ?: [],
+            'json' =>
+                json_decode(file_get_contents($file), true),
+            'yaml' => fn () : array =>
+                function_exists('yaml_parse_file') ? yaml_parse_file($file) : [],
             default => []
         };
-        $config = is_numeric($config)?[] : $config;
+        $config = is_numeric($config) ? [] : $config;
         return is_object($config) ? call_user_func($config) : $config;
     }
 }
@@ -61,13 +59,14 @@ if (!function_exists('request')) {
 }
 
 // 文件
-if (!function_exists('files')) {
-    function files($file) : mixed
+if (!function_exists('local_file')) {
+    function local_file($file) : mixed
     {
         return app() -> make(\iflow\fileSystem\File::class) -> create($file);
     }
 }
 
+// 查找文件
 if (!function_exists('find_files')) {
     function find_files(string $root, \Closure $filter): Generator | null
     {

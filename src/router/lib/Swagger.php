@@ -34,6 +34,7 @@ class Swagger
         $this->routers = array_replace_recursive(
             config(config($this->routerConfigKey)['key']), $this->routers
         ) ?: $this->routers;
+        $this->swaggerJson['info']['title'] = config('app@appName', 'iflowFrameWork Application Apis');
     }
 
     /**

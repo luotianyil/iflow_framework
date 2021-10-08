@@ -3,6 +3,7 @@
 
 namespace iflow\Swoole\GraphQL\Annotation\Type\lib\utils;
 
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
 class Types
@@ -10,13 +11,21 @@ class Types
 
     /**
      * 获取Type类型
-     * @param string|Type $type
+     * @param string|array|Type $type
      * @return Type
      * @throws \ReflectionException
      */
-    public function getType(string|Type $type): Type
+    public function getType(string|array|Type $type): Type
     {
+        if (is_array($type)) {
+            return new ObjectType($type);
+        }
+
         if ($type instanceof Type) return $type;
+        if (class_exists($type)) {
+            return new $type;
+        }
+
         $typeObject = $this->getObjectType($type);
         if ($typeObject !== null) return $typeObject;
 

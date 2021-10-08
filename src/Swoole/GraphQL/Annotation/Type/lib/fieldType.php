@@ -11,7 +11,7 @@ class fieldType
 {
     public function __construct(
         protected string $fieldName,
-        protected string $type,
+        protected string|array $type,
         protected string $description = ''
     ) {}
 
