@@ -22,7 +22,7 @@ use iflow\log\Log;
 class App extends Container
 {
 
-    const VERSION = '0.0.1 beta';
+    CONST VERSION = '0.0.1 beta';
 
     // 用户路由
     public array $routers = [];

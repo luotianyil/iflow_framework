@@ -17,18 +17,9 @@ class Types
      */
     public function getType(string|array|Type $type): Type
     {
-        if (is_array($type)) {
-            return new ObjectType($type);
+        if (!is_array($type) && $typeObject = $this->isObjectType($type)) {
+            return $typeObject;
         }
-
-        if ($type instanceof Type) return $type;
-        if (class_exists($type)) {
-            return new $type;
-        }
-
-        $typeObject = $this->getObjectType($type);
-        if ($typeObject !== null) return $typeObject;
-
 
         $types = null;
         $type = array_reverse(
@@ -38,7 +29,7 @@ class Types
         array_map(
             function ($val) use (&$types) {
                 $val = trim($val);
-                $typeObject = $this->getObjectType($val);
+                $typeObject = $this->isObjectType($val);
 
                 $types = $typeObject === null
                     ? call_user_func([Type::class, $val], ...$types ? [$types] : [])
@@ -48,6 +39,23 @@ class Types
         );
 
         return $types;
+    }
+
+
+    /**
+     * 验证是否为Type类型对象
+     * @param string|Type $type
+     * @return Type|null
+     * @throws \ReflectionException
+     */
+    public function isObjectType(string|Type $type): ?Type
+    {
+        if ($type instanceof Type) return $type;
+        if (class_exists($type)) {
+            $type = new $type;
+            if ($type instanceof Type) return $type;
+        }
+        return $this->getObjectType($type);
     }
 
 
