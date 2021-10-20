@@ -28,7 +28,7 @@ class Mongo extends sessionAbstracts
         return $this;
     }
 
-    public function set(string|null $name = null, array $default = []): mixed
+    public function set(string|null $name = null, array|string $default = []): mixed
     {
         if ($name === null) {
             if (count($default) <= 0) return false;

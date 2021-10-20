@@ -46,10 +46,10 @@ class Session
 
     /**
      * @param string|null $name
-     * @param array $data
+     * @param array|string $data
      * @return mixed
      */
-    public function set(string|null $name = null, array $data = []) {
+    public function set(string|null $name = null, array|string $data = []) {
         $this->sessionTools -> offsetSet($name, $data);
         return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
     }

@@ -22,7 +22,7 @@ class Redis extends sessionAbstracts
         return $this;
     }
 
-    public function set(string|null $name = null, array $default = [])
+    public function set(string|null $name = null, array|string $default = [])
     {
         if (!$name) {
             if (count($default) <= 0) return false;
@@ -34,7 +34,7 @@ class Redis extends sessionAbstracts
         }
         return  $this -> cache -> set(
             $name,
-            array_replace_recursive($this->get($name), $default),
+            is_string($default) ? $default : array_replace_recursive($this->get($name), $default),
             strtotime('+'. $this->config['expire'] . 'second')
         ) ? $name : null;
     }

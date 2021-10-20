@@ -270,12 +270,11 @@ if (!function_exists('httpRequest')) {
 
 // session
 if (!function_exists('session')) {
-    function session(string|null $name = null, array|null $default = []) {
+    function session(string|null $name = null, array|string|null $default = []) {
         if ($default === null) {
             return \iflow\facade\Session::unsetKey($name);
         }
-
-        if (count($default) > 0) {
+        if (is_string($default) || count($default) > 0) {
             return \iflow\facade\Session::set($name, $default);
         }
         return \iflow\facade\Session::get($name ?: '');

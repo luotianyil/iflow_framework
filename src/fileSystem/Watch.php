@@ -14,9 +14,7 @@ class Watch
 {
 
     private App $app;
-
     protected File $file;
-
     private array $config = [
         'watchFolder' => [
             'app',
