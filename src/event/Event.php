@@ -3,29 +3,40 @@
 namespace iflow\event;
 
 use \iflow\App;
+use iflow\event\lib\Abstracts\SubjectAbstract;
+use \iflow\Utils\ArrayTools;
 
 class Event
 {
 
     protected App $app;
-    protected \iflow\Utils\ArrayTools $arrayTools;
+    protected ArrayTools $arrayTools;
 
     protected array $events = [];
 
     public function initializer(App $app)
     {
         $this->app = $app;
-        $this->bindEvent(config('event'));
-        $this->arrayTools = new \iflow\Utils\ArrayTools($this->events);
+        foreach (config('event') ?: [] as $name => $event) {
+            $event = new $event;
+            if (!$event instanceof SubjectAbstract) {
+                throw new \RuntimeException($event::class . ' instanceof SubjectAbstract fail');
+            }
+            $this->bind($name, $event);
+        }
+        $this->arrayTools = new ArrayTools($this->events);
     }
 
     /**
      * 绑定事件
-     * @param array $events
+     * @param string $name
+     * @param SubjectAbstract|\Closure $event
+     * @return Event
      */
-    public function bindEvent(array $events = [])
+    public function bind(string $name, SubjectAbstract|\Closure $event): static
     {
-        $this->events = array_merge($events, $this->events);
+        $this->events[$name] = $event;
+        return $this;
     }
 
     /**
@@ -36,17 +47,14 @@ class Event
      */
     public function trigger(string $event, array $args = []): mixed
     {
-        $eventName = explode('.', $event);
-        $method = "";
-
-        if (count($eventName) > 1) [$eventName, $method] = $eventName;
-        else $eventName = $eventName[0];
-
-        if ($this->arrayTools -> offsetExists($eventName)) {
-            $class = $this->app -> make($this->arrayTools -> offsetGet($eventName), isNew: true);
-            return $this->app -> invokeMethod([$class, $method ?: 'handle'], $args);
+        if (empty($this->events[$event])) {
+            throw new \Error("event error: ${event} not exists");
         }
-        throw new \Error("event error: ${eventName} not exists");
+        $event = $this->events[$event];
+        if ($event instanceof \Closure) {
+            return $event(...$args);
+        }
+        return $event -> trigger(...$args);
     }
 
 }

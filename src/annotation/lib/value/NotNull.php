@@ -21,7 +21,7 @@ class NotNull extends annotationAbstract
      * @return bool
      * @throws \ReflectionException
      */
-    public function handle(\ReflectionProperty|\ReflectionParameter $ref, $object, array &$args = [])
+    public function handle(\ReflectionProperty|\ReflectionParameter $ref, $object, array &$args = []): bool
     {
         try {
             // 获取初始化值

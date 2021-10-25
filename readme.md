@@ -74,7 +74,7 @@ https://framework.mzshe.cn
 # 功能
 
 
-- 基于 Swoole 扩展
+- 支持 Swoole 扩展
 
 - 容器 (PSR-11)
 

@@ -41,9 +41,9 @@ class App extends Container
         appSurroundings::class,
         Log::class,
         Error::class,
+        Event::class,
         annotationInitializer::class,
         initializer::class,
-        Event::class,
         Console::class
     ];
 

@@ -5,14 +5,13 @@ namespace iflow\facade;
 
 
 use iflow\Faceted;
-use iflow\Swoole\GraphQL\Buffer\Buffer;
 
-class GraphQLBuffer extends Faceted
+class Event extends Faceted
 {
 
     protected static function getFaceClass(): string
     {
         // TODO: Implement getFaceClass() method.
-        return Buffer::class;
+        return \iflow\event\Event::class;
     }
 }

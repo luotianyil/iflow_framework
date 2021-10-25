@@ -5,6 +5,7 @@ namespace iflow\annotation\lib\utils;
 
 
 use iflow\App;
+use iflow\console\lib\Command;
 use ReflectionClass;
 
 #[\Attribute]
@@ -29,7 +30,7 @@ class CommandAnnotation
     public function __make(App $app, ReflectionClass $annotationClass)
     {
         $command = $annotationClass -> newInstance();
-        if (!$command instanceof \iflow\console\lib\Command)
+        if (!$command instanceof Command)
             throw new \RuntimeException($command::class . ' instanceof Command fail');
 
         config([

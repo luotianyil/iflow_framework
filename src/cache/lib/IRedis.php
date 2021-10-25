@@ -40,7 +40,7 @@ class IRedis
 
     protected function sentinelToAddress(string $sentinel_name)
     {
-        $sentinel = $this->redis -> rawCommand(...[
+        $sentinel = $this->request(...[
             'SENTINEL', 'get-master-addr-by-name', $sentinel_name
         ]);
 
@@ -49,9 +49,19 @@ class IRedis
         }
 
         $this->redis -> close();
-        $this->redis -> connect(
-            $sentinel[0], $sentinel[1]
-        );
+        $this->redis -> connect($sentinel[0], $sentinel[1]);
+    }
+
+    /**
+     * Redis rawCommand
+     * @return mixed
+     */
+    public function request(): mixed {
+        $args = func_get_args();
+        if (method_exists($this->redis, 'request')) {
+            return $this->redis -> request($args[0]);
+        }
+        return $this->redis -> rawCommand(...$args);
     }
 
     /**
@@ -128,4 +138,5 @@ class IRedis
             $this->redis, $name
         ], ...$arguments);
     }
+
 }
