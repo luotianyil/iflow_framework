@@ -11,7 +11,7 @@ trait RequestTrait
 {
     use validRequest, helper;
 
-    protected string $version = "1.1";
+    protected string $version = "";
     protected ?RequestInterface $requestPsr7 = null;
     protected ?ServerRequestInterface $serverRequestPsr7 = null;
 

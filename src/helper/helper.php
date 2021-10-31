@@ -354,6 +354,15 @@ if (!function_exists('swoole_success')) {
     }
 }
 
+if (!function_exists('is_http_services')) {
+    function is_http_services() {
+        if (is_cli() && request() -> getVersion() !== '') {
+            return true;
+        }
+        return request() -> getVersion() !== '';
+    }
+}
+
 // 部分代码使用 go 所以为了兼容 未安装swoole 扩展 提供此方法
 if (!function_exists('go')) {
     function go(\Closure $closure) {
@@ -421,7 +430,7 @@ if (!function_exists('dump')) {
         $output = ob_get_clean();
 
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        if (PHP_SAPI == 'cli') {
+        if (!is_http_services()) {
             app(\iflow\console\Console::class) -> outPut -> write(PHP_EOL . $output . PHP_EOL);
         } else {
             if (!extension_loaded('xdebug')) {

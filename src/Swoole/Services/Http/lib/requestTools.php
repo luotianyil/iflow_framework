@@ -19,7 +19,7 @@ class requestTools
     public ?Request $request = null;
     public ?Response $response = null;
 
-    public bool $isTpc = false;
+    public bool $isTcp = false;
     public array $router;
 
     public array $requestController = [];

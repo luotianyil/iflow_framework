@@ -3,6 +3,7 @@
 
 namespace iflow\exception\lib;
 
+use iflow\console\Console;
 use iflow\Response;
 use iflow\template\View;
 use Psr\Http\Message\ResponseInterface;
@@ -25,9 +26,9 @@ class renderDebugView
 
     /**
      * 渲染数据
-     * @return Response
+     * @return ?Response
      */
-    public function render(): Response
+    public function render(): ?Response
     {
         // 此处验证是否为Response异常
         if ($this->throwable instanceof HttpResponseException) {
@@ -44,20 +45,18 @@ class renderDebugView
             }
         }
 
-        if (!file_exists($this->exception_tpl)) {
-            $this->exception_tpl = str_replace("\\", '/', __DIR__ . "/../exception.tpl");
+        if (is_http_services()) {
+            return $this->httpServerThrowException();
         }
 
-        if (!file_exists($this->exception_tpl)) {
-            return message() -> server_error(
-                502, $this->exception_tpl.' template file does not exists', $this->getError());
-        }
-
-        return (new View()) -> render(
-            $this->exception_tpl, $this->getError()
-        );
+        dump($this->getError());
+        return null;
     }
 
+    /**
+     * 获取异常数据
+     * @return array
+     */
     public function getError(): array
     {
         return [
@@ -71,8 +70,11 @@ class renderDebugView
         ];
     }
 
-
-    public function getThrowExceptionFileContent(): array
+    /**
+     * 获取异常文件内容
+     * @return array
+     */
+    protected function getThrowExceptionFileContent(): array
     {
         // 获取抛出异常文件内容 附近几行
         $file = $this->throwable -> getFile();
@@ -93,5 +95,30 @@ class renderDebugView
         return $source;
     }
 
+    /**
+     * 验证是否为HTTP服务
+     * @return array|Response
+     */
+    protected function httpServerThrowException(): Response|array
+    {
+        // 如果为Ajax请求
+        if (request() -> isAjax()) {
+            return message() -> server_error(
+                $this->throwable -> getCode(), $this->throwable->getMessage(), $this->getError()
+            );
+        }
 
+        if (!file_exists($this->exception_tpl)) {
+            $this->exception_tpl = str_replace("\\", '/', __DIR__ . "/../exception.tpl");
+        }
+
+        if (!file_exists($this->exception_tpl)) {
+            return message() -> server_error(
+                502, $this->exception_tpl.' template file does not exists', $this->getError());
+        }
+
+        return (new View()) -> render(
+            $this->exception_tpl, $this->getError()
+        );
+    }
 }

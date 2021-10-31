@@ -5,6 +5,8 @@ namespace iflow\auth\lib;
 
 
 use iflow\App;
+use iflow\auth\lib\exception\AuthorizationException;
+use iflow\Response;
 
 #[\Attribute]
 class authAnnotation
@@ -42,9 +44,13 @@ class authAnnotation
         foreach ($this->initializers as $key) {
             call_user_func([$handle, $key], $requestTools -> request);
         }
-        return
-            call_user_func([$handle, 'validateAuth'], $requestTools -> request)
+        $response = call_user_func([$handle, 'validateAuth'], $requestTools -> request)
                 -> callback();
+        if ($response instanceof Response || $response !== true) {
+            throw new AuthorizationException(
+                $response ?: 'Unauthorized'
+            );
+        }
     }
 
 }
