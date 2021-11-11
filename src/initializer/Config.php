@@ -3,12 +3,12 @@
 
 namespace iflow\initializer;
 
-// 加载应用配置
 use iflow\App;
 use iflow\fileSystem\File;
 use iflow\Utils\ArrayTools;
 
 /**
+ * 加载应用配置
  * Class Config
  * @package iflow\initializer
  * @property File $file

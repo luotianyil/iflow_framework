@@ -36,7 +36,6 @@ class Aop
      * @param string $method 执行方法
      * @param mixed ...$args
      * @return bool|Aop
-     * @throws \ReflectionException
      */
     public function process(string $class, string $method, ...$args): bool|static
     {
@@ -66,7 +65,7 @@ class Aop
                     $this->saveCache($hashClass, $ast);
                 }
                 include_once $this->config['cache_path']. DIRECTORY_SEPARATOR . $hashClass . ".php";
-                $aspects[] = (new \ReflectionClass(substr($class, 0, strrpos($class, "\\"))."\\$hashClass")) -> newInstance();
+                $aspects[] = app(substr($class, 0, strrpos($class, "\\"))."\\$hashClass");
                 break;
             }
         }

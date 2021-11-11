@@ -3,8 +3,29 @@
 declare (strict_types = 1);
 
 // 助手函数
+use iflow\console\Console;
 use iflow\Container;
+use iflow\event\Event;
 use iflow\facade\Config;
+use iflow\facade\Session;
+use iflow\fileSystem\File;
+use iflow\i18n\I18n;
+use iflow\log\Log;
+use iflow\Request;
+use iflow\Response;
+use iflow\router\RouterBase;
+use iflow\Swoole\email\lib\Message\Html;
+use iflow\Swoole\email\Mailer;
+use iflow\Swoole\Rpc\lib\rpcRequest;
+use iflow\Swoole\Scrapy\http\http;
+use iflow\Swoole\Scrapy\http\http2;
+use iflow\template\View;
+use iflow\Utils\Message\Message;
+use iflow\Utils\Tools\SystemTools;
+use iflow\Utils\torrent\Lightbenc;
+use iflow\validate\Validate;
+use Swoole\Coroutine\Client;
+use iflow\Swoole\email\lib\Exception\mailerException;
 
 // 应用
 if (!function_exists('app')) {
@@ -52,9 +73,9 @@ if (!function_exists('loadConfigFile')) {
 
 // 请求
 if (!function_exists('request')) {
-    function request(): \iflow\Request
+    function request(): Request
     {
-        return app(\iflow\Request::class);
+        return app(Request::class);
     }
 }
 
@@ -62,7 +83,7 @@ if (!function_exists('request')) {
 if (!function_exists('local_file')) {
     function local_file($file) : mixed
     {
-        return app() -> make(\iflow\fileSystem\File::class) -> create($file);
+        return app() -> make(File::class) -> create($file);
     }
 }
 
@@ -86,9 +107,9 @@ if (!function_exists('find_files')) {
 
 // 响应
 if (!function_exists('response')) {
-    function response() : \iflow\Response
+    function response() : Response
     {
-        return app(\iflow\Response::class);
+        return app(Response::class);
     }
 }
 
@@ -96,29 +117,29 @@ if (!function_exists('response')) {
 if (!function_exists('router')) {
     function router() : array
     {
-        return app(\iflow\router\RouterBase::class) -> getRouter();
+        return app(RouterBase::class) -> getRouter();
     }
 }
 
 if (!function_exists('app_server')) {
-    function app_server(): \Swoole\Server | \Swoole\Http\Server | \Swoole\WebSocket\Server | \Swoole\Coroutine\Client
+    function app_server(): \Swoole\Server | \Swoole\Http\Server | \Swoole\WebSocket\Server | Client
     {
         return app() -> make(\Swoole\Server::class);
     }
 }
 
 if (!function_exists('app_client')) {
-    function app_client(): \Swoole\Coroutine\Client
+    function app_client(): Client
     {
-        return app() -> make(\Swoole\Coroutine\Client::class);
+        return app() -> make(Client::class);
     }
 }
 
 // 信息
 if (!function_exists('message')) {
-    function message($type = 'json') : \iflow\Utils\Message\Message
+    function message($type = 'json') : Message
     {
-        return app() -> make(\iflow\Utils\Message\Message::class) -> setFilter($type);
+        return app() -> make(Message::class) -> setFilter($type);
     }
 }
 
@@ -132,7 +153,7 @@ if (!function_exists('emails')) {
     ): bool|string {
         try {
             if (count($to) < 1) return false;
-            $content = new \iflow\Swoole\email\lib\Message\Html();
+            $content = new Html();
             $content = $content -> setHtml($body) -> setSubject($subject);
             foreach ($files as $file) {
                 $content = $content -> addAttachment(
@@ -141,8 +162,8 @@ if (!function_exists('emails')) {
                     $file['mime']
                 );
             }
-            return (new \iflow\Swoole\email\Mailer()) -> setTo($to) -> send($content);
-        } catch (\iflow\Swoole\email\lib\Exception\mailerException $exception) {
+            return (new Mailer()) -> setTo($to) -> send($content);
+        } catch (mailerException $exception) {
             return $exception -> getMessage();
         }
     }
@@ -151,7 +172,7 @@ if (!function_exists('emails')) {
 // 获取系统信息 仅支持 linux
 if (!function_exists('systemInfo')) {
     function systemInfo(): array {
-        return (new \iflow\Utils\Tools\SystemTools()) -> getSystemInfo();
+        return (new SystemTools()) -> getSystemInfo();
     }
 }
 
@@ -159,14 +180,14 @@ if (!function_exists('systemInfo')) {
 if (!function_exists('logs')) {
     function logs(string $type = 'info', string $message = '', array $content = [])
     {
-        return app() -> make(\iflow\log\Log::class) -> write($type, $message, $content);
+        return app() -> make(Log::class) -> write($type, $message, $content);
     }
 }
 
 // event
 if (!function_exists('event')) {
     function event(string $event, ...$args) {
-        return app() -> make(\iflow\event\Event::class) -> trigger($event, $args);
+        return app() -> make(Event::class) -> trigger($event, $args);
     }
 }
 
@@ -225,10 +246,10 @@ if (!function_exists('rpcRequest')) {
         bool $isSsl = false,
         array $param = [],
         array $options = []
-    ): \iflow\Swoole\Rpc\lib\rpcRequest
+    ): rpcRequest
     {
         $res = app() -> make(
-            \iflow\Swoole\Rpc\lib\rpcRequest::class,
+            rpcRequest::class,
             func_get_args(),
             isNew: true
         );
@@ -250,9 +271,9 @@ if (!function_exists('httpRequest')) {
             'timeout' => 30
         ],
         string $type = "http"
-    ): \iflow\Swoole\Scrapy\http\http | \iflow\Swoole\Scrapy\http\http2
+    ): http | http2
     {
-        $class = $type === "http" ? \iflow\Swoole\Scrapy\http\http::class : \iflow\Swoole\Scrapy\http\http2::class;
+        $class = $type === "http" ? http::class : http2::class;
         return app() -> make(
             $class,
             isNew: true
@@ -272,12 +293,12 @@ if (!function_exists('httpRequest')) {
 if (!function_exists('session')) {
     function session(string|null $name = null, array|string|null $default = []) {
         if ($default === null) {
-            return \iflow\facade\Session::unsetKey($name);
+            return Session::unsetKey($name);
         }
         if (is_string($default) || count($default) > 0) {
-            return \iflow\facade\Session::set($name, $default);
+            return Session::set($name, $default);
         }
-        return \iflow\facade\Session::get($name ?: '');
+        return Session::get($name ?: '');
     }
 }
 
@@ -296,7 +317,7 @@ if (!function_exists('cookie')) {
 // 返回json
 if (!function_exists('json')) {
     function json($data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Json {
-        return \iflow\Response::create($data, $code, 'json')
+        return Response::create($data, $code, 'json')
             -> headers($headers) -> options($options);
     }
 }
@@ -304,7 +325,7 @@ if (!function_exists('json')) {
 // 返回xml
 if (!function_exists('xml')) {
     function xml(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Xml {
-        return \iflow\Response::create($data, $code, 'xml')
+        return Response::create($data, $code, 'xml')
             -> headers($headers) -> options($options);
     }
 }
@@ -314,15 +335,15 @@ if (!function_exists('sendFile')) {
     function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\lib\File
     {
         $path = ($isConfigRootPath ? config('app@resources.file.rootPath') . DIRECTORY_SEPARATOR : '') . $path;
-        return \iflow\Response::create($path, $code, 'file')
+        return Response::create($path, $code, 'file')
             -> headers($headers);
     }
 }
 
 // 返回视图文件
 if (!function_exists('view')) {
-    function view(string $template, array $data = [], array $config = []): \iflow\Response {
-        return (new \iflow\template\View()) -> fetch($template, $data, $config);
+    function view(string $template, array $data = [], array $config = []): Response {
+        return (new View()) -> fetch($template, $data, $config);
     }
 }
 
@@ -336,14 +357,14 @@ if (!function_exists('hasha')) {
 // 种子文件解析
 if (!function_exists('bt_to_magnet')) {
     function bt_to_magnet($torrent) {
-        return (new \iflow\Utils\torrent\Lightbenc()) -> bdecode_getinfo($torrent);
+        return (new Lightbenc()) -> bdecode_getinfo($torrent);
     }
 }
 
 // 验证是否为cli模式
 if (!function_exists('is_cli')) {
     function is_cli(): bool {
-        return (new \iflow\Utils\Tools\SystemTools()) -> isCli();
+        return (new SystemTools()) -> isCli();
     }
 }
 
@@ -403,14 +424,14 @@ if (!function_exists('array_multi_to_one')) {
 // i18n国际化
 if (!function_exists('i18n')) {
     function i18n(string $key, string|array $default = '', string $lan = ''): string {
-        return app(\iflow\i18n\I18n::class) -> i18n($key, $default, $lan);
+        return app(I18n::class) -> i18n($key, $default, $lan);
     }
 }
 
 // 验证器
 if (!function_exists('validate')) {
     function validate(array $rule = [], array $data = [], array $message = []) {
-        $validate = new \iflow\validate\Validate();
+        $validate = new Validate();
         $error = $validate
                     -> rule($rule, $message)
                     -> check($data)
@@ -431,7 +452,7 @@ if (!function_exists('dump')) {
 
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
         if (!is_http_services()) {
-            app(\iflow\console\Console::class) -> outPut -> write(PHP_EOL . $output . PHP_EOL);
+            app(Console::class) -> outPut -> write(PHP_EOL . $output . PHP_EOL);
         } else {
             if (!extension_loaded('xdebug')) {
                 $output = htmlspecialchars($output, ENT_SUBSTITUTE);

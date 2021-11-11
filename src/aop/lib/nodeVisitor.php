@@ -4,6 +4,8 @@
 namespace iflow\aop\lib;
 
 
+use PhpParser\Comment\Doc;
+use PhpParser\NodeAbstract;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
@@ -36,7 +38,7 @@ class nodeVisitor extends NodeVisitorAbstract
         return basename(str_replace('\\', '/', $this->aspectClass));
     }
 
-    public function leaveNode(Node $node): ClassMethod|Class_|null
+    public function leaveNode(Node $node): NodeAbstract|null
     {
         // 生成临时类
         if ($node instanceof Class_ || $node instanceof Node\Stmt\Trait_) {
@@ -52,7 +54,10 @@ class nodeVisitor extends NodeVisitorAbstract
             }
 
             $params['stmts'] = $node->stmts;
-            return new Class_($this->getProxyClassName(), $params);
+            $params['attrGroups'] = $node->attrGroups;
+            return $this->setDocComment(
+                new Class_($this->getProxyClassName(), $params), $node -> getDocComment()
+            );
         }
 
         // 重写方法
@@ -77,6 +82,7 @@ class nodeVisitor extends NodeVisitorAbstract
                     'static' => $node->isStatic(),
                     'uses' => $uses,
                     'stmts' => $node->stmts,
+                    'attrGroups' => $node->attrGroups
                 ]),
                 new FuncCall(new Name('func_get_args'))
             ];
@@ -95,14 +101,24 @@ class nodeVisitor extends NodeVisitorAbstract
                 $returnType = new Name('\\' . $this->className);
             }
 
-            return new ClassMethod($methodName, [
+            return $this->setDocComment(new ClassMethod($methodName, [
                 'flags' => $node->flags,
                 'byRef' => $node->byRef,
                 'params' => $node->params,
                 'returnType' => $returnType,
-                'stmts' => $stmts
-            ]);
+                'stmts' => $stmts,
+                'attrGroups' => $node->attrGroups
+            ]), $node -> getDocComment());
         }
         return null;
+    }
+
+
+    public function setDocComment(NodeAbstract $node, ?Doc $doc): NodeAbstract {
+        if ($doc === null) {
+            return $node;
+        }
+        $node -> setDocComment($doc);
+        return $node;
     }
 }

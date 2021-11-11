@@ -17,7 +17,7 @@ class Config extends Faceted
 
     protected static function getFaceClass(): string
     {
-        return 'iflow\initializer\Config';
+        return \iflow\initializer\Config::class;
     }
 
 }
