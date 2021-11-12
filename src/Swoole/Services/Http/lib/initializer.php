@@ -111,10 +111,11 @@ class initializer extends requestTools
     protected function setInstanceValue(array $params): object
     {
         $keys = array_keys($params);
-        if (empty($params[$keys[0]]['class']) || isset($params['class'])) {
-            return new $params['class'];
-        }
-        $class = $params[$keys[0]]['class'];
+
+
+        $class =
+            empty($params[$keys[0]]['class']) || isset($params['class']) ?
+                $params['class']:$params[$keys[0]]['class'];
 
         // 当类存在时
         if (class_exists($class)) {
@@ -122,7 +123,7 @@ class initializer extends requestTools
             $object = $ref -> newInstance();
 
             foreach ($params as $paramName => $paramValue) {
-                if (!$paramValue['default']) continue;
+                if (!isset($paramValue['default']) && empty($paramValue['default'])) continue;
                 if ($paramValue['type'][0] === 'class') {
                     $paramValue['default'] = $this -> setInstanceValue($paramValue['default']);
                 }
