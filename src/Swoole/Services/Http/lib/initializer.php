@@ -112,7 +112,6 @@ class initializer extends requestTools
     {
         $keys = array_keys($params);
 
-
         $class =
             empty($params[$keys[0]]['class']) || isset($params['class']) ?
                 $params['class']:$params[$keys[0]]['class'];

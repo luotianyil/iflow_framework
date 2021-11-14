@@ -15,7 +15,9 @@ class Data
         Value::class,
         NotNull::class,
         FilterArg::class,
-        ValidateRule::class
+        ValidateRule::class,
+        ConfigValue::class,
+        Inject::class
     ];
 
     public function handle(\ReflectionClass $ref, $object)

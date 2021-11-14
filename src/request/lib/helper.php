@@ -112,7 +112,7 @@ trait helper
      */
     public function postParams(string $name = '', string $default = ''): mixed
     {
-        if (!$this->isPost()) return [];
+        if ($this->isGet()) return [];
         $row = $this->request -> getContent();
         $params = is_array($row) ? $row : (json_decode($row, true)?: $this->request -> post);
         if ($name === '') return $params;
@@ -126,9 +126,9 @@ trait helper
      */
     public function params(string $name = ''): mixed
     {
-        return match ($this->isPost()) {
-            true => $this->postParams($name),
-            false => $this->getParams($name)
+        return match ($this->isGet()) {
+            false => $this->postParams($name),
+            true => $this->getParams($name)
         };
     }
 
