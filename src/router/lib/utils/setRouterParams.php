@@ -41,18 +41,18 @@ class setRouterParams
         $parameter = [];
 
         foreach ($parameters as $param) {
-            $type = $param -> getType();
+            $type = app() -> getParameterType($param);
             $name = $param -> getName();
-
-            if (!$type instanceof \ReflectionType) {
+            $typeName = $type[0] ?? '';
+            if ($typeName === 'mixed') {
                 $parameter[$name] = [
-                    'type' => ['mixed'],
+                    'type' => $type,
                     'name' => $name,
                     'default' => $this->getParamDefault($param, ['mixed'])
                 ];
                 continue;
             }
-            $typeName = $type -> getName();
+
             if (class_exists($typeName)) {
                 if (empty($this->routerParams[$typeName])) {
                     $this->getClassParams($typeName);
@@ -64,12 +64,10 @@ class setRouterParams
                 ];
                 continue;
             }
-
-            $t = app() -> getParameterType($param);
             $parameter[$name] = [
-                'type' => $t,
+                'type' => $type,
                 'name' => $name,
-                'default' => $this->getParamDefault($param, $t)
+                'default' => $this->getParamDefault($param, $type)
             ];
         }
 

@@ -90,7 +90,7 @@ https://framework.mzshe.cn
 
 - 中间件
 
-- 视图模板
+- 视图模板 ([iflow-template](https://www.github.com/luotianyil/iflow_template))
 
 - i18n 国际化
 

@@ -185,7 +185,7 @@ trait helper
     /**
      * 获取上传文件
      * @param string $name
-     * @return upLoadFile|array
+     * @return upLoadFile|upLoadFile[]
      */
     public function file(string $name = ''): upLoadFile|array
     {

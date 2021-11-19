@@ -60,7 +60,7 @@ class Swagger
             foreach ($routerValue as $pathKey => $pathValue) {
                 $pathValue['parameter'] = $this->getParameters($pathValue);
                 $pathValue['rulePath'] =
-                str_replace('>', '}', str_replace('<', '{',trim($pathValue['rule'], '/') ?: '/'));
+                    '/'.str_replace('>', '}', str_replace('<', '{',trim($pathValue['rule'], '/') ?: ''));
                 $pathValue['tags'] = [$routerKey];
                 $pathValue['description'] = $pathValue['options']['description'] ?? '暂无接口描述';
                 $this->swaggerJson['paths'][$pathValue['rulePath']] = $this->getRouterMethods($pathValue);

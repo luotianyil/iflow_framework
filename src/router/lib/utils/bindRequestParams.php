@@ -86,6 +86,8 @@ class bindRequestParams
     public function setDefaultValue($routerParam, mixed $param): mixed
     {
         if ($routerParam['type'][0] === 'mixed') return $param;
+        if (empty($param) && !is_numeric($param)) return $routerParam['default'];
+
 
         if ($routerParam['type'][0] === 'array')
             return array_merge($routerParam['default'], is_array($param) ? $param : [$param]) ?? [];
@@ -104,5 +106,4 @@ class bindRequestParams
         }
         return $param;
     }
-
 }
