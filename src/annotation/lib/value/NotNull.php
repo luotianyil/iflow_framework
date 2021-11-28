@@ -26,7 +26,9 @@ class NotNull extends annotationAbstract
         try {
             // 获取初始化值
             $value = $this->getValue($ref, $object, $args);
-            if (!is_null($value) && $value !== '') {
+
+            $type = app() -> getParameterType($ref);
+            if (!is_null($value) && $value !== '' && (in_array('array', $type) && !empty($type))) {
                 return true;
             }
             $this->throwError($ref);

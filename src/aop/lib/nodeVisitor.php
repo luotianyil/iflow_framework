@@ -81,8 +81,7 @@ class nodeVisitor extends NodeVisitorAbstract
                 new Closure([
                     'static' => $node->isStatic(),
                     'uses' => $uses,
-                    'stmts' => $node->stmts,
-                    'attrGroups' => $node->attrGroups
+                    'stmts' => $node->stmts
                 ]),
                 new FuncCall(new Name('func_get_args'))
             ];

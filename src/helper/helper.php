@@ -375,8 +375,9 @@ if (!function_exists('swoole_success')) {
     }
 }
 
+// 验证是否为HTTP服务模式
 if (!function_exists('is_http_services')) {
-    function is_http_services() {
+    function is_http_services(): bool {
         if (is_cli() && request() -> getVersion() !== '') {
             return true;
         }
@@ -451,8 +452,9 @@ if (!function_exists('dump')) {
         $output = ob_get_clean();
 
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        if (!is_http_services()) {
-            app(Console::class) -> outPut -> write(PHP_EOL . $output . PHP_EOL);
+        $outConsole = app(Console::class) -> outPut ?? null;
+        if (!is_http_services() && $outConsole !== null) {
+            $outConsole -> write(PHP_EOL . $output . PHP_EOL);
         } else {
             if (!extension_loaded('xdebug')) {
                 $output = htmlspecialchars($output, ENT_SUBSTITUTE);

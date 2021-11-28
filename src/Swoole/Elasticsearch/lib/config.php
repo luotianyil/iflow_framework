@@ -23,27 +23,27 @@ class config
 
     public function getPort(): int
     {
-        return (int)explode(':', $this->config['host'])[2] ?: 9200;
+        return (int)explode(':', $this->config['host'])[2] ?? 9200;
     }
 
     public function getIndexName(): string
     {
-        return $this->config['index_name'] ?: 'test';
+        return $this->config['index_name'] ?? 'test';
     }
 
     public function getTypeName(): string
     {
-        return $this->config['type_name'] ?: 'test';
+        return $this->config['type_name'] ?? 'test';
     }
 
     public function getUserName(): string
     {
-        return $this->config['user_name'] ?: '';
+        return $this->config['user_name'] ?? '';
     }
 
     public function getPassWord(): string
     {
-        return $this->config['pass_word'] ?: '';
+        return $this->config['pass_word'] ?? '';
     }
 
     public function setApiKey(string $id = '', string $apiKey = ''): static
