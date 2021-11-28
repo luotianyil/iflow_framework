@@ -28,9 +28,9 @@ class NotNull extends annotationAbstract
             $value = $this->getValue($ref, $object, $args);
 
             $type = app() -> getParameterType($ref);
-            if (!is_null($value) && $value !== '' && (in_array('array', $type) && !empty($type))) {
-                return true;
-            }
+
+            if (in_array('array', $type) && empty($type)) $this->throwError($ref);
+            if (!is_null($value) && $value !== '') return true;
             $this->throwError($ref);
         } catch (\Error) {
             $this->throwError($ref);
