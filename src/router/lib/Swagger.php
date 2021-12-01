@@ -140,6 +140,7 @@ class Swagger
 
             $properties = $parameter['properties'] ?? [];
             foreach ($properties as $property) {
+                if (empty($property['name'])) continue;
                 $componentsSchemas[$parameter['name']]['properties'][$property['name']] = [
                     'type' => $property['schema']['type'][0] === 'string' ? '' : 'object'
                 ];
