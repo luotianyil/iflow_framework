@@ -44,7 +44,12 @@ trait helper
      */
     public function getDomain(bool $port = false): string
     {
-        return $this->host($port);
+        $host = $this->host($port);
+        if (str_starts_with('http', $host)) return $host;
+
+        $scheme = $this -> server('request_scheme');
+        $scheme =  $scheme ? "$scheme://" : ($this -> isHTTPS() ? 'https://' : "http://");
+        return $scheme.$host;
     }
 
     /**
@@ -164,7 +169,8 @@ trait helper
     public function server(string $name = '')
     {
         if ($name === '') return $this->request -> header;
-        return $this->server[strtolower(str_replace('_', '-', $name))] ?? null;
+        $name = strtolower($name);
+        return $this->server[str_replace('_', '-', $name)] ?? ($this->server[$name] ?? null);
     }
 
     /**

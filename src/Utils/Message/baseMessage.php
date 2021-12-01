@@ -55,7 +55,7 @@ trait baseMessage
             $data['requestInfo'] = [
                 'requestUri' => request() -> request_uri,
                 'requestParam' => array_keys(request() -> getParams() ?? []),
-                'timestamp' => request() -> server['request_time_float'],
+                'timestamp' => request() -> server('request_time_float'),
                 'method' => request() -> request_method
             ];
 
