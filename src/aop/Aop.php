@@ -7,6 +7,7 @@ namespace iflow\aop;
 use iflow\aop\lib\Ast;
 use iflow\App;
 use iflow\exception\lib\HttpException;
+use iflow\exception\lib\HttpResponseException;
 use iflow\pipeline\pipeline;
 
 class Aop
@@ -104,10 +105,7 @@ class Aop
     private function CacheExists(string $class = ""): bool
     {
         $file_path = $this->config['cache_path']. DIRECTORY_SEPARATOR . $class. ".php";
-        if ($this->config['cache_enable'])
-            return file_exists($file_path);
-
-        if (file_exists($file_path)) unlink($file_path);
+        if ($this->config['cache_enable']) return file_exists($file_path);
         return false;
     }
 
@@ -141,7 +139,7 @@ class Aop
                 $callback = app() -> invokeMethod([$aspect, $action], $args);
                 if ($callback !== true) {
                     $this->response = $callback;
-                    throw new \Exception('Aop returns not true');
+                    throw new HttpResponseException($this->response);
                 }
                 $next($app);
             };
@@ -159,6 +157,7 @@ class Aop
             $this->pipeline -> process(app());
             return true;
         } catch (\Exception $exception) {
+            if ($exception instanceof HttpResponseException) return $exception -> getResponse();
             return $this->response ?: $exception -> getMessage();
         }
     }

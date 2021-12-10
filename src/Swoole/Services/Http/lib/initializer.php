@@ -130,7 +130,7 @@ class initializer extends requestTools
                     $object, $paramValue['default']
                 );
             }
-            // 执行Bean注解
+            // 执行参数注解
             app() -> runAttributes($ref, ...[$ref, $object, $this]);
         } else throw new valueException(message() -> parameter_error("dataObject: ${class} IsNull"));
         return $object;

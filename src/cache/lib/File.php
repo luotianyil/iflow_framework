@@ -102,7 +102,7 @@ class File
     public function gc($lifetime) {
         $now = time();
         $files = find_files($this->getStoreRoot(), function (\SplFileInfo $item) use ($lifetime, $now) {
-            return $now - $lifetime > $item -> getMTime();
+            return $now - $lifetime > $item -> getCTime();
         });
         foreach ($files as $file) {
             file_exists($file->getPathname()) && unlink($file->getPathname());
