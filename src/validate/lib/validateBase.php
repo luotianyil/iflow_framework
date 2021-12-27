@@ -88,7 +88,7 @@ class validateBase
 
     protected function required($value): bool
     {
-        return !is_null($value) || !$value === '';
+        return !is_null($value);
     }
 
     public function getError(): array
@@ -110,7 +110,7 @@ class validateBase
             $rule = $this->defaultRegex[$rule];
         }
 
-        if (is_string($rule) && 0 !== strpos($rule, '/') && !preg_match('/\/[imsU]{0,4}$/', $rule)) {
+        if (is_string($rule) && !str_starts_with($rule, '/') && !preg_match('/\/[imsU]{0,4}$/', $rule)) {
             $rule = '/^' . $rule . '$/';
         }
         return is_scalar($value) && 1 === preg_match($rule, (string) $value);

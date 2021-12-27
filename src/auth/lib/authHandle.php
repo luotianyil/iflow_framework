@@ -81,16 +81,11 @@ class authHandle
         foreach ($callbackList as $callback) {
             $class = explode('@', $callback);
             $method = '';
-            if (count($class) > 1) [$class, $method] = $class;
-            else $class = $class[0];
+            if (count($class) > 1) [$class, $method] = $class; else $class = $class[0];
             // 回调参数
-            if (!class_exists($class)) {
-                continue;
-            }
+            if (!class_exists($class)) continue;
             $return = call_user_func([$this->authAnnotation -> app -> make($class), $method ?: 'handle'], $this);
-            if ($return instanceof Response || $return) {
-                return $return;
-            }
+            if ($return) return $return;
         }
         return !$this->error;
     }
@@ -98,16 +93,14 @@ class authHandle
     /**
      * @return authAnnotation
      */
-    public function getAuthAnnotation(): authAnnotation
-    {
+    public function getAuthAnnotation(): authAnnotation {
         return $this->authAnnotation;
     }
 
     /**
      * @return array
      */
-    public function getRouter(): array
-    {
+    public function getRouter(): array {
         return $this->router;
     }
 }

@@ -78,8 +78,7 @@ class fileSystem extends SplFileInfo
     }
 
     // 复制文件
-    public function copy(string $savePath, array $config = [])
-    {
+    public function copy(string $savePath, array $config = []) {
         $this->fileSystem -> copy($this->getPathname(), $savePath, $config);
     }
 }

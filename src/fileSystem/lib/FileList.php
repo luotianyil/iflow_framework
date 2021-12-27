@@ -77,8 +77,7 @@ class FileList
      * @param array $ignore 忽略的目录
      * @return array
      */
-    public function removeDir(string $dir, array $ignore = []): array
-    {
+    public function removeDir(string $dir, array $ignore = []): array {
         $iterator = new \FilesystemIterator(trim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR);
         $count = 0;
         $ignoreCount = 0;

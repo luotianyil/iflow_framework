@@ -35,7 +35,7 @@ class annotationInitializer
         foreach ($annotations as $key) {
             $annotation = $key -> newInstance();
             if (method_exists($annotation, '__make')) {
-                call_user_func([$annotation, '__make'], ...[$this->app, $annotationClass]);
+                call_user_func([$annotation, '__make'], $this->app, $annotationClass);
             }
         }
     }

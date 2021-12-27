@@ -11,10 +11,10 @@ class Context
 
     /**
      * 获取协程上下文
-     * @param int $cid
+     * @param int|null $cid
      * @return mixed
      */
-    public static function get($cid = null): mixed
+    public static function get(int $cid = null): mixed
     {
         return Coroutine::getContext($cid);
     }
@@ -50,10 +50,9 @@ class Context
      * @param string $key
      * @param mixed|null $default
      * @param null $cid
-     * @return \ArrayObject|mixed|null
+     * @return mixed
      */
-    public static function getData(string $key, mixed $default = null, $cid = null)
-    {
+    public static function getData(string $key, mixed $default = null, $cid = null): mixed {
         if (self::hasData($key, $cid)) {
             return self::getDataArrayObject($cid);
         }

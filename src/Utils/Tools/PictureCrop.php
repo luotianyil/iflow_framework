@@ -12,7 +12,7 @@ class PictureCrop
     public int $height = 600;
 
     // 原图片
-    public $source;
+    public mixed $source;
     // 生成的目标图片
     public $crop = null;
 

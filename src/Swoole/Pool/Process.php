@@ -43,13 +43,11 @@ class Process extends pool
      * @param array $coroutine
      * @return array
      */
-    public function create(array $coroutine)
-    {
+    public function create(array $coroutine): array {
         $coroutineId = [];
         foreach ($coroutine as $name => $value) {
             $coroutineId[] = \Swoole\Coroutine::create($value['fn'], ...$value['params']);
         }
-
         return $coroutineId;
     }
 }

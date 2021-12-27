@@ -74,7 +74,7 @@ class requestTools
      * @param string $url
      * @return bool
      */
-    protected function isSocketIo($url = ''): bool
+    protected function isSocketIo(string $url = ''): bool
     {
         $url = explode('/', trim($url, '/'));
         if (config('swoole.service@websocket.enable')) {
@@ -145,7 +145,7 @@ class requestTools
         );
         if ($aop === false) return false;
         $res = $aop -> then();
-        return $res === true ? false : $this->send($res === false ? "" : $res);
+        return !($res === true) && $this->send($res === false ? "" : $res);
     }
 
     // 绑定参数
@@ -184,14 +184,12 @@ class requestTools
      * @param $response
      * @return bool
      */
-    protected function send($response): bool
-    {
-        if (!$response)
-            return $this->response -> data($response) -> send();
+    protected function send($response): bool {
+        if (!$response) return $this->response -> data($response) -> send();
 
         switch ($response) {
             case $response instanceof Response:
-                return $response ?-> send() ?: true;
+                return $response->send();
             case $response instanceof ResponseInterface:
                 // PSR7
                 return $this->response

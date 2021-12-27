@@ -122,7 +122,7 @@ class initializer extends requestTools
             $object = $ref -> newInstance();
 
             foreach ($params as $paramName => $paramValue) {
-                if (!isset($paramValue['default']) && empty($paramValue['default'])) continue;
+                if (!isset($paramValue['default'])) continue;
                 if ($paramValue['type'][0] === 'class') {
                     $paramValue['default'] = $this -> setInstanceValue($paramValue['default']);
                 }
@@ -131,7 +131,7 @@ class initializer extends requestTools
                 );
             }
             // 执行参数注解
-            app() -> runAttributes($ref, ...[$ref, $object, $this]);
+            app() -> runAttributes($ref, $ref, $object, $this);
         } else throw new valueException(message() -> parameter_error("dataObject: ${class} IsNull"));
         return $object;
     }

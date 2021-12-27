@@ -26,17 +26,11 @@ abstract class sessionAbstracts implements Session
      * 创建SessionId
      * @return string
      */
-    public function makeSessionID(): string
-    {
+    public function makeSessionID(): string {
         // TODO: Implement makeSessionID() method.
         $number = (new basicTools()) -> make_random_number();
-        $host = request() -> getHeader('host');
+        $host = request() -> getDomain(true);
         $ip = request() -> ip();
-        return uniqid($this->config['prefix']) . hash(
-                'sha256',
-                $ip === '127.0.0.1'
-                    ? "${number}-${host}-${ip}"
-                    : "${host}-${ip}"
-                );
+        return uniqid($this->config['prefix']) . hash('sha256', $ip === '127.0.0.1' ? "$number-$host-$ip" : "$host-$ip");
     }
 }

@@ -116,7 +116,7 @@ class Aop
      * @return bool
      */
     private function MethodsProxy(string $method = "", string $action = ""): bool {
-        if (substr($action, -1, 1) === '*') {
+        if (str_ends_with($action, '*')) {
             $prefix = substr($action, 0, strlen($action) - 1);
             return str_starts_with($method, $prefix);
         }

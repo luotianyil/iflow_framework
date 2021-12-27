@@ -11,8 +11,7 @@ class HttpResponseException extends \RuntimeException
 {
     protected Response|ResponseInterface $response;
 
-    public function __construct(Response|ResponseInterface $response)
-    {
+    public function __construct(Response|ResponseInterface $response) {
         $this->response = $response;
     }
 

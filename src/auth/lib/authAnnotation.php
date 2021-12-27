@@ -37,19 +37,15 @@ class authAnnotation
         $configCallBack = is_string($this -> config['callBack']) ? [
             $this -> config['callBack']
         ] : $this -> config['callBack'];
-        $this->callBack = is_string($this->callBack) ? [$this->callBack] : $this->callBack;
-        $this->callBack = array_merge($configCallBack, $configCallBack);
+        $this->callBack = array_merge(is_string($this->callBack) ? [$this->callBack] : $this->callBack, $configCallBack);
 
         $handle = $this->app -> make($this->config['Handle'], [$this], true);
         foreach ($this->initializers as $key) {
             call_user_func([$handle, $key], $requestTools -> request);
         }
-        $response = call_user_func([$handle, 'validateAuth'], $requestTools -> request)
-                -> callback();
-        if ($response instanceof Response || $response !== true) {
-            throw new AuthorizationException(
-                $response ?: 'Unauthorized'
-            );
+        $response = call_user_func([$handle, 'validateAuth'], $requestTools -> request) -> callback();
+        if ($response !== true) {
+            throw new AuthorizationException($response ?: 'Unauthorized' );
         }
     }
 

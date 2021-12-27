@@ -17,19 +17,17 @@ class Response
 
     /**
      * 静态创建新的Response对象
-     * @param array $data
+     * @param mixed $data
      * @param int $code
      * @param string $type
      * @return object
      */
-    public static function create($data = [], int $code = 200, string $type = 'json')
-    {
+    public static function create(mixed $data = [], int $code = 200, string $type = 'json'): object {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
         $response = Container::getInstance()->invokeClass($class, [$data, $code]);
-        $response -> response = response() -> response;
         foreach (array_merge((array) $response, (array) response()) as $key => $value) {
-            if (method_exists($response, $key)) {
-                if (!is_string($response -> {$key})) $response -> {$key}($value);
+            if (method_exists($response, $key) && !is_string($response -> {$key})) {
+                $response -> {$key}($value ?: $response -> {$key});
             }
         }
         return $response;
@@ -37,11 +35,10 @@ class Response
 
     /**
      * 普通输出
-     * @param $data
+     * @param mixed $data
      * @return mixed
      */
-    public function output(mixed $data): mixed
-    {
+    public function output(mixed $data): mixed {
         return $data;
     }
 
@@ -49,16 +46,13 @@ class Response
      * 结束请求发送数据
      * @return bool
      */
-    public function send(): bool
-    {
+    public function send(): bool {
         if ($this->response === null) return false;
         // Swoole 验证是否已经结束请求
         if ($this->response -> isWritable() === false) return true;
 
         // 结束请求
-        return $this->setResponseHeader() -> response -> end(
-            $this->output($this->data)
-        );
+        return $this->setResponseHeader() -> response -> end($this->output($this->data));
     }
 
     /**

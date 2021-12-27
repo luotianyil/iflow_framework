@@ -49,8 +49,7 @@ class Error
      * @param Throwable $e
      * @return bool
      */
-    public function appHandler(Throwable $e): bool
-    {
+    public function appHandler(Throwable $e): bool {
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
         // 检测是否开启DEBUG
         if ($this->app -> isDebug()) {
@@ -59,25 +58,20 @@ class Error
                 -> send();
         }
 
+        $res = 'Server Error';
         // 异常处理回调
         if (class_exists($this->handle)) {
-            $res = (new $this->handle($type)) -> render(
-                $this->app, $e
-            );
-
-            if ($res instanceof Response) {
-                return $res -> send();
-            }
+            $res = (new $this->handle($type)) -> render($this->app, $e);
+            if ($res instanceof Response) return $res -> send();
         }
-        return message() -> server_error(502, 'Server Error') -> send();
+        return message() -> server_error(502, $res) -> send();
     }
 
     public function appShuDown()
     {}
 
     // 验证错误类型
-    protected function isFatal(int $type): bool
-    {
+    protected function isFatal(int $type): bool {
         return in_array($type, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE]);
     }
 

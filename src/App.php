@@ -118,17 +118,15 @@ class App extends Container
         return true;
     }
 
-    public function isDebug(): bool
-    {
-        return config('app@debug') ? true : false;
+    public function isDebug(): bool {
+        return config('app@debug', false);
     }
 
     /**
      * 获取应用根目录
      * @return string
      */
-    public function getDefaultRootPath(): string
-    {
+    public function getDefaultRootPath(): string {
         return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
     }
 

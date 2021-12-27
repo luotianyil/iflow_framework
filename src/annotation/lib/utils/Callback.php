@@ -20,13 +20,13 @@ class Callback
      */
     public function handle(\Reflector $reflector, $object, array &$args = []): mixed {
         if (function_exists($this->method)) {
-            call_user_func($this->method, ...[$reflector, $object, $args]);
+            call_user_func($this->method, $reflector, $object, $args);
         }
 
         if (!class_exists($this->class)) throw new \Exception('Callback class does not exists', 502);
 
         if ($this->class === $reflector -> getName()) {
-            return call_user_func([new $this -> class, $this->method], ...[$reflector, $object, $args]);
+            return call_user_func([new $this -> class, $this->method], $reflector, $object, $args);
         }
 
         return app() -> invokeMethod([

@@ -77,7 +77,7 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
         $basePath = dirname($path['path']);
         !is_dir($basePath) && mkdir($basePath, 0755, true);
         // 当 move_uploaded_file 无法使用时(非框架自带HTTP服务时) 直接使用 rename
-        $upload = move_uploaded_file($this->getPathname(), $path['path']) ?: rename($this->getPathname(), $path['path']);
+        $upload = move_uploaded_file($this->getPathname(), $path['path']) || rename($this->getPathname(), $path['path']);
         return $upload ? $path : false;
     }
 

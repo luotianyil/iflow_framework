@@ -179,7 +179,7 @@ class request
      * @param string $cookie
      * @return array
      */
-    protected function parseCookie($cookie = ''): array
+    protected function parseCookie(string $cookie = ''): array
     {
         $cookies = [];
         if ($cookie !== "") {
@@ -198,11 +198,11 @@ class request
      */
     protected function parseMultipartFormData(string $contentType)
     {
+        ini_set('upload_tmp_dir', $this->options['tempDir']);
         $contentType = explode(';', $contentType);
         $data = explode(explode("=", $contentType[1])[1], $this->body);
         // 取出 头部信息 只保留包体
-        array_shift($data);
-        array_shift($data);
+        $data = array_slice($data, 0, 2);
 
         // 格式化包体数据
         foreach ($data as $key => $value) {

@@ -20,8 +20,7 @@ class Response
         return $this->finish();
     }
 
-    public function end($data): bool
-    {
+    public function end($data): bool {
         echo $data;
         return $this->finish();
     }

@@ -11,7 +11,7 @@ class HttpServer extends initializer
 {
     /**
      * 初始化HTTP服务
-     * @param $services
+     * @param Services $services
      */
     public function initializer(Services $services)
     {

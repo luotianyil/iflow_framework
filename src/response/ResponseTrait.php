@@ -15,7 +15,7 @@ trait ResponseTrait
     public string $contentType = 'text/html';
     public string $charSet = 'utf-8';
     public int $code = 200;
-    public mixed $data;
+    public mixed $data = '';
     public array $options = [];
     public mixed $response = null;
 
