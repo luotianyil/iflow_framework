@@ -8,8 +8,7 @@ class Config
 
     public function __construct(
         protected array $config = []
-    )
-    {}
+    ) {}
 
     public function getHost(): string
     {

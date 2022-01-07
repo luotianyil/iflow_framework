@@ -17,8 +17,7 @@ class Error
     protected array $config = [];
     protected string $handle = Handle::class;
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app) {
         $this->app = $app;
         $this->config = config('app');
 
@@ -33,12 +32,17 @@ class Error
         register_shutdown_function([$this, 'appShuDown']);
     }
 
-    public function appError(int $errno, string $message, string $file = '', int $line = 0)
-    {
-        // 致命错误处理
-        $exception = new errorException(
-            $errno, $message, $file, $line
-        );
+    /**
+     * 致命错误处理
+     * @param int $errno
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     * @return void
+     * @throws errorException
+     */
+    public function appError(int $errno, string $message, string $file = '', int $line = 0) {
+        $exception = new errorException($errno, $message, $file, $line);
         if (error_reporting() & $errno) {
             throw $exception;
         }
@@ -53,9 +57,7 @@ class Error
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
         // 检测是否开启DEBUG
         if ($this->app -> isDebug()) {
-            return (new renderDebugView($e, $this->config))
-                -> render()
-                -> send();
+            return (new renderDebugView($e, $this->config)) -> render() -> send();
         }
 
         $res = 'Server Error';
@@ -67,12 +69,11 @@ class Error
         return message() -> server_error(502, $res) -> send();
     }
 
-    public function appShuDown()
-    {}
+    public function appShuDown() {}
 
     // 验证错误类型
     protected function isFatal(int $type): bool {
-        return in_array($type, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE]);
+        return in_array($type, [ E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE ]);
     }
 
 }

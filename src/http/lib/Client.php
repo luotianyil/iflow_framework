@@ -15,15 +15,13 @@ class Client
     public string $responseHeaders = '';
     public string $body = '';
 
-    public function __construct(public string $host = '', public int $port = 0, public bool $isSSL = false)
-    {
+    public function __construct(public string $host = '', public int $port = 0, public bool $isSSL = false) {
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, false);
     }
 
-    public function set($option = [])
-    {
+    public function set($option = []) {
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $option['timeout']??30);
     }
 
@@ -31,8 +29,7 @@ class Client
      * @param string $method
      * @return static
      */
-    public function setMethod(string $method): static
-    {
+    public function setMethod(string $method): static {
         $this->method = strtoupper($method);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $this->method);
         return $this;
@@ -56,8 +53,7 @@ class Client
      * @param array|string $data
      * @return static
      */
-    public function setData(array|string $data): static
-    {
+    public function setData(array|string $data): static {
         if (is_string($data)) {
             $data = json_decode($data, true);
         }
@@ -65,8 +61,7 @@ class Client
         return $this;
     }
 
-    public function setCookies(string $cookies): static
-    {
+    public function setCookies(string $cookies): static {
         curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
         return $this;
     }
@@ -77,7 +72,7 @@ class Client
      * @param string $certFile
      * @return $this
      */
-    public function setSSL($keyFile = "", $certFile = ""): static
+    public function setSSL(string $keyFile = "", string $certFile = ""): static
     {
         if (file_exists($keyFile) && file_exists($certFile)) {
             curl_setopt($this->curl, CURLOPT_SSLKEY, $keyFile);
@@ -90,9 +85,7 @@ class Client
         return $this;
     }
 
-    public function execute($path = ''): bool
-    {
-        if ($this->curl === null) return false;
+    public function execute($path = ''): bool {
         $scheme = $this->isSSL ? 'https://' : 'http://';
         $host = $this->host;
 
@@ -113,8 +106,7 @@ class Client
         return true;
     }
 
-    public function close()
-    {
+    public function close() {
         curl_close($this->curl);
     }
 

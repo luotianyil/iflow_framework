@@ -51,6 +51,7 @@ class Annotation
             $this->useClass[$key] = $this->file -> fileList -> loadFileList($this->app -> getRootPath() . $key, '.php', true);
         }
         $this->loadPackClass($this->useClass);
+        if ($this->cacheEnable()) $this->saveCachePackClass();
         return true;
     }
 
@@ -65,10 +66,12 @@ class Annotation
             if (is_array($value)) {
                 if (sizeof($value) > 0) $this->loadPackClass($value, $nameSpace.'\\'.$key);
             } elseif (file_exists($value) && !in_array($value, $this->useClass)) {
-                $this->classes[] = $value;
                 $class = str_replace('.php', '', str_replace($this->app -> getRootPath(), '', $value));
                 $class = str_replace('/', '\\', $class);
-                if (class_exists($class)) app(annotationInitializer::class)->loadAnnotations(new \ReflectionClass($class));
+                if (class_exists($class)) {
+                    $this->classes[] = $value;
+                    app(annotationInitializer::class)->loadAnnotations(new \ReflectionClass($class));
+                }
             }
         }
     }

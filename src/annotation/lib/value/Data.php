@@ -34,7 +34,7 @@ class Data
     protected function properAttributes(\ReflectionProperty $reflectionProperty, string $name)
     {
         array_map(
-            fn($attribute) => call_user_func([$attribute -> newInstance(), 'handle'], ...[$reflectionProperty, $this->object]),
+            fn($attribute) => call_user_func([$attribute -> newInstance(), 'handle'], $reflectionProperty, $this->object),
             $reflectionProperty -> getAttributes($name)
         );
     }

@@ -4,9 +4,11 @@
 namespace iflow\initializer;
 
 
+use GuzzleHttp\DefaultHandler;
 use iflow\App;
 use iflow\i18n\I18n;
 use think\facade\Db;
+use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 
 class initializer
 {
@@ -15,34 +17,36 @@ class initializer
         'timezone' => 'date_default_timezone_set'
     ];
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app) {
         // 初始化全局依赖
        if (swoole_success()) {
-           \Co::set(['hook_flags' => SWOOLE_HOOK_ALL]);
-           \GuzzleHttp\DefaultHandler::setDefaultHandler(\Yurun\Util\Swoole\Guzzle\SwooleHandler::class);
+           \Co::set([ 'hook_flags' => SWOOLE_HOOK_ALL ]);
+           DefaultHandler::setDefaultHandler(SwooleHandler::class);
        }
-       Db::setConfig(config('database'));
        app(I18n::class) -> initializer($app);
-       $this->ini_initializer();
+       $this -> ini_initializer()
+             -> db_initializer();
+    }
+
+
+    protected function db_initializer(): static {
+        return config('database',
+            call: fn ($config) => !empty($config) ? (Db::setConfig($config) ?? $this) : $this
+        );
     }
 
     /**
      * 初始化php.ini配置
      * @return $this
      */
-    protected function ini_initializer(): static
-    {
-        $ini = config('ini');
-
-        if (empty($ini)) return $this;
-
-        foreach ($this->iniInitializerArray as $iniKey => $iniAction) {
-            if (isset($ini[$iniKey])) {
-                $iniValue = !is_array($ini[$iniKey]) ? [$ini[$iniKey]] : $ini[$iniKey];
-                call_user_func($iniAction, ...$iniValue);
+    protected function ini_initializer(): static {
+        return config('ini', call: function ($ini) {
+            if (empty($ini)) return $this;
+            foreach ($ini as $iniConfigName => $option) {
+                $iniAction = $this->iniInitializerArray[$iniConfigName] ?? $iniConfigName;
+                call_user_func($iniAction, ...is_array($option) ? $option : [$option]);
             }
-        }
-        return $this;
+            return $this;
+        });
     }
 }

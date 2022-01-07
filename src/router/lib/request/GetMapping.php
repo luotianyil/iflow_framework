@@ -4,7 +4,7 @@
 namespace iflow\router\lib\request;
 
 #[\Attribute]
-class GetMapping extends requestMapping
+class GetMapping extends RequestMapping
 {
     protected string $method = "GET";
 }

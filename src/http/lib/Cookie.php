@@ -52,9 +52,7 @@ class Cookie
     public function del($name): static
     {
         unset($this->cookie[$name]);
-        $this->saveCookie($name, '', [
-            'expires' => time() - 3600
-        ]);
+        $this->saveCookie($name, '', [ 'expires' => time() - 3600 ]);
         return $this;
     }
 

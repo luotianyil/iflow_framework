@@ -103,7 +103,7 @@ class TypeAnnotation
     {
         $attribute = $reflectionProperty->getAttributes($name)[0] ?? null;
         if ($attribute) {
-            return call_user_func([$attribute->newInstance(), 'handle'], ...[$reflectionProperty, $object]);
+            return call_user_func([$attribute->newInstance(), 'handle'], $reflectionProperty, $object);
         }
         return null;
     }

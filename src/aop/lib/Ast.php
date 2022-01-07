@@ -55,8 +55,7 @@ class Ast
      * @param string $class
      * @return string
      */
-    private function getCode(string $class): string
-    {
+    private function getCode(string $class): string {
         $root = explode("\\", $class)[0] === "iflow" ?
             app() -> getFrameWorkPath() : app() -> getDefaultRootPath();
 

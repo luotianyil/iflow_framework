@@ -66,7 +66,7 @@ class nodeVisitor extends NodeVisitorAbstract
             $methodName = $node->name->toString();
 
             // 验证方法 前两个字符是否为 下划线
-            if (substr($methodName, 0, 2) === '__') return null;
+            if (str_starts_with($methodName, '__')) return null;
 
             $uses = [];
             // 方法参数

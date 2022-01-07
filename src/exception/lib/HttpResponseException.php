@@ -15,8 +15,7 @@ class HttpResponseException extends \RuntimeException
         $this->response = $response;
     }
 
-    public function getResponse(): Response|ResponseInterface
-    {
+    public function getResponse(): Response|ResponseInterface {
         return $this->response;
     }
 }

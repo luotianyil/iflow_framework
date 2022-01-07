@@ -8,10 +8,7 @@ use iflow\annotation\lib\abstracts\annotationAbstract;
 #[\Attribute]
 class Value extends annotationAbstract
 {
-    public function __construct(
-        protected mixed $default = "",
-        protected string $desc = ""
-    ) {}
+    public function __construct(protected mixed $default = "", protected string $desc = "") {}
 
     /**
      * 初始化数值

@@ -35,11 +35,9 @@ class NotNull extends annotationAbstract
         } catch (\Error) {
             $this->throwError($ref);
         }
-        return true;
     }
 
-    protected function throwError($ref)
-    {
+    protected function throwError($ref) {
         throw new valueException(message() -> parameter_error($this->error ?: "{$ref -> getName()} required"));
     }
 }

@@ -18,18 +18,14 @@ abstract class SubjectAbstract implements SplSubject {
      */
     protected array $_observer = [];
 
-    public function attach(SplObserver $observer): static
-    {
+    public function attach(SplObserver $observer): void {
         // TODO: Implement attach() method.
-        if (in_array($observer, $this->_observer)) {
-            return $this;
+        if (!in_array($observer, $this->_observer)) {
+            $this->_observer[] = $observer;
         }
-        $this->_observer[] = $observer;
-        return $this;
     }
 
-    public function detach(SplObserver $observer)
-    {
+    public function detach(SplObserver $observer): void {
         // TODO: Implement detach() method.
         foreach ($this->_observer as $index => $_observer) {
             if ($_observer === $observer) {
@@ -40,12 +36,9 @@ abstract class SubjectAbstract implements SplSubject {
     }
 
     // 变更通知
-    public function notify()
-    {
+    public function notify(): void {
         // TODO: Implement notify() method.
-        foreach ($this->_observer as $observer) {
-            $observer -> update($this);
-        }
+        array_walk_recursive($this->_observer, fn ($observer) => $observer -> update($this));
     }
 
     /**

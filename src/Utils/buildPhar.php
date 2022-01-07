@@ -9,13 +9,11 @@ class buildPhar
 
     protected \Phar $phar;
 
-    public function __construct(protected array $config, protected \iflow\command\buildPhar $buildPhar)
-    {
+    public function __construct(protected array $config, protected \iflow\command\buildPhar $buildPhar) {
         $this->phar = new \Phar($this->config['out']);
     }
 
-    public function build()
-    {
+    public function build() {
         try {
             $this->phar -> buildFromDirectory($this->buildPhar -> app -> getDefaultRootPath());
             $this->phar -> setDefaultStub($this->config['bin'], $this->config['webindex']);

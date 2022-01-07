@@ -15,8 +15,7 @@ class basicTools
      * @param $vStr
      * @return static
      */
-    public function isCreditNo($vStr): static
-    {
+    public function isCreditNo($vStr): static {
         $vCity = [
             '11','12','13','14','15','21','22',
             '23','31','32','33','34','35','36',
@@ -45,8 +44,7 @@ class basicTools
         return $this;
     }
 
-    public function gmt_iso8601($time) : string
-    {
+    public function gmt_iso8601($time) : string {
         $dtStr = date("c", $time);
         try {
             $datetime = new \DateTime($dtStr);
@@ -92,7 +90,7 @@ class basicTools
     public function make_random_number() : string
     {
         $mtime = explode(' ',microtime());
-        $random = $mtime[1] + $mtime[0] . rand(999, 9999);
+        $random = $mtime[1] . $mtime[0] . rand(999, 9999);
         $random_sum = 0;
         for ($i = 0; $i < strlen($random); $i++) {
             $random_sum += (int)(substr($random, $i,1));
@@ -106,7 +104,7 @@ class basicTools
      * @url https://www.php.net/manual/en/function.com-create-guid.php
      * @return string
      */
-    public function create_uuid($trim = true) : string
+    public function create_uuid(bool $trim = true) : string
     {
         // Windows
         if (function_exists('com_create_guid') === true) {
@@ -139,10 +137,10 @@ class basicTools
 
     /**
      * 身份证号加密
-     * @param $card_id
+     * @param string $card_id
      * @return string
      */
-    public function card_id_replace($card_id) : string
+    public function card_id_replace(string $card_id) : string
     {
         $card_id_start = substr(substr_replace($card_id,"****",8,4), 0, 12);
         $card_id_end = substr(substr_replace($card_id,"****",14,4), 12, 6);
@@ -156,7 +154,7 @@ class basicTools
      * @param int $option
      * @return array
      */
-    public function xmlToArray(string $xml, string $className = 'SimpleXMLElement', $option = LIBXML_NOCDATA): array
+    public function xmlToArray(string $xml, string $className = 'SimpleXMLElement', int $option = LIBXML_NOCDATA): array
     {
         return json_decode(
             json_encode(simplexml_load_string($xml, 'SimpleXMLElement', $option), JSON_UNESCAPED_UNICODE),
@@ -169,8 +167,7 @@ class basicTools
      * @param $shell
      * @return string
      */
-    public function execShell($shell): string
-    {
+    public function execShell($shell): string {
         return trim(shell_exec($shell), PHP_EOL);
     }
 
@@ -179,11 +176,8 @@ class basicTools
      * @param object $object
      * @return array
      */
-    public function objectToArray(object $object): array
-    {
-        if (method_exists($object, 'toArray')) {
-            return $object -> toArray();
-        }
+    public function objectToArray(object $object): array {
+        if (method_exists($object, 'toArray')) return $object -> toArray();
         return get_object_vars($object);
     }
 }

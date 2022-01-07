@@ -117,7 +117,7 @@ class setRouterRule
                 $routers[] = $router;
             } else {
                 $checkSuccess = false;
-                foreach ($routers as $routerKey => &$routerValue) {
+                foreach ($routers as &$routerValue) {
                     if ($routerValue['rule'] !== $router['rule']) continue;
                     $routerValue['method'] = array_merge($router['method'], $routerValue['method']);
                     $checkSuccess = true;

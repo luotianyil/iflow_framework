@@ -17,7 +17,7 @@ class Container implements ContainerInterface
     // 容器 唯一标值
     public array $bind = [];
 
-    protected static $instance = null;
+    protected static ?Container $instance = null;
 
     /**
      * 创建实例
@@ -26,8 +26,7 @@ class Container implements ContainerInterface
      * @param bool $isNew 是否重新实例化
      * @return mixed
      */
-    public function make(string $class, $vars = [], bool $isNew = false) :mixed
-    {
+    public function make(string $class, array $vars = [], bool $isNew = false) :mixed {
 
         if ($isNew) $this->delete($class);
         $this->containers = $this->containers ?: new \WeakMap();
@@ -62,7 +61,7 @@ class Container implements ContainerInterface
 
             // 实例化后运行注解
             $object = $ref -> newInstanceArgs($vars);
-            $this->runAttributes($ref, ...[$ref, $object]);
+            $this->runAttributes($ref, $ref, $object);
             if (!$this->has($class)) $this->bind[$class] = new \stdClass();
 
             $this->containers[$this->bind[$class]] = $object;
@@ -204,14 +203,12 @@ class Container implements ContainerInterface
     }
 
     // 设置当前容器
-    public static function setInstance($instance) :void
-    {
+    public static function setInstance($instance) :void {
         static::$instance = $instance;
     }
 
     // 删除容器 内对象
-    public function delete($class) : void
-    {
+    public function delete($class) : void {
         if (!empty($this->bind[$class])) {
             $this->containers -> offsetUnset($this->bind[$class]);
             unset($this->bind[$class]);
@@ -269,18 +266,15 @@ class Container implements ContainerInterface
     /**
      * 获取注解并执行
      * @param Reflector $ref
-     * @param array $parameter
-     * @param string $class
+     * @param $parameter
+     * @param $class
      * @param mixed ...$args
      */
-    public function runAttributes(Reflector $ref, $parameter = [], $class = "", &$args = [])
-    {
+    public function runAttributes(Reflector $ref, $parameter = [], $class = "", mixed &$args = []) {
         array_map(function ($attr) use ($parameter, $class, &$args) {
             $attrObject = $attr -> newInstance();
-            if (method_exists($attrObject, 'handle')) {
-                return $attrObject -> handle($parameter, $class, $args);
-            }
-            return null;
+            return method_exists($attrObject, 'handle')
+                ? $attrObject -> handle($parameter, $class, $args) : null;
         }, $ref -> getAttributes());
     }
 }

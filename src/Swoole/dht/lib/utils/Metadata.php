@@ -76,8 +76,8 @@ class Metadata
 
         $data['name'] = '';
         $data['infohash'] = $infoHash;
-        $data['length'] = isset($metadata['length']) ? $metadata['length'] : 0;
-        $data['piece_length'] = isset($metadata['piece length']) ? $metadata['piece length'] : 0;
+        $data['length'] = $metadata['length'] ?? 0;
+        $data['piece_length'] = $metadata['piece length'] ?? 0;
 
         return $data;
     }
@@ -93,14 +93,10 @@ class Metadata
 
         $len = pack("I", strlen($msg));
 
-        if (!pack('L', 1) === pack('N', 1)) {
-            $len = strrev($len);
-        }
         return $this->client -> send($len . $msg);
     }
 
-    public function recvAll()
-    {
+    public function recvAll(): bool|string {
         $len = $this->client -> recv(4, true);
         if ($len === false) return false;
 
@@ -199,10 +195,10 @@ class Metadata
     protected function sendToRecv($msg)
     {
         $send = $this->client -> send($msg);
-        if ($send === false) return $send;
+        if ($send === false) return false;
 
         $data = $this->client -> recv(4096, 0);
-        if ($data === false) return $data;
+        if ($data === false) return false;
         return $data;
     }
 

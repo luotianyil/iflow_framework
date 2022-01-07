@@ -37,7 +37,7 @@ class packet
         } elseif ($pack['y'] === 'q') {
             $action = $pack['q'];
             if (isset($this-> dhtClient -> dhtEvent[$action]) && method_exists($this-> dhtClient, $action)) {
-                call_user_func([$this, $this-> dhtClient -> dhtEvent[$action]], ...[$pack, $clientInfo]);
+                call_user_func([$this, $this-> dhtClient -> dhtEvent[$action]], $pack, $clientInfo);
             }
         }
         return true;

@@ -29,21 +29,17 @@ use iflow\Swoole\email\lib\Exception\mailerException;
 
 // 应用
 if (!function_exists('app')) {
-    function app(string $name = '', array $args = [], bool $isNew = false)
-    {
+    function app(string $name = '', array $args = [], bool $isNew = false, ?callable $call = null): object {
         if ($name === '')  return Container::getInstance();
-        return Container::getInstance() -> make($name, $args, $isNew);
+        return Container::getInstance() -> make($name, $args, $isNew, $call);
     }
 }
 
 // 配置
 if (!function_exists('config')) {
-    function config($name = '', $value = []): mixed
-    {
-        if (is_array($name)) {
-            return Config::set($value, $name);
-        }
-        return Config::get($name, $value);
+    function config(mixed $name = '', mixed $value = [], ?callable $call = null): mixed {
+        $config = !is_string($name) ? Config::set($value, $name) : Config::get($name, $value);
+        return $call ? $call($config) : $config;
     }
 }
 

@@ -42,9 +42,8 @@ class Request
             $this->header = array_change_key_case($apache_header, CASE_LOWER);
         }
 
-        foreach ($this->server as $name => $value)
-        {
-            if (substr($name, 0, 5) === 'http_') {
+        foreach ($this->server as $name => $value)  {
+            if (str_starts_with($name, 'http_')) {
                 $this->header[substr($name, 5)] = $value;
             } else {
                 $this->header[str_replace('_', '-', $name)] = $value;

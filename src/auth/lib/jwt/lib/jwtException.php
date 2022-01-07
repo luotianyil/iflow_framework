@@ -4,5 +4,4 @@
 namespace iflow\auth\lib\jwt\lib;
 
 
-class jwtException extends \Exception
-{}
+class jwtException extends \Exception {}

@@ -7,7 +7,7 @@ namespace iflow\Swoole\dht\lib\utils\coding\client;
 class Encode
 {
 
-    private $data;
+    private mixed $data;
 
     private function __construct(mixed $data){
         $this->data = $data;

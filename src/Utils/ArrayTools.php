@@ -15,11 +15,10 @@ class ArrayTools extends Collection
     /**
      * 通过key 获取 value 支持多层级
      * @param string $name key
-     * @param array $default 默认值
+     * @param mixed $default 默认值
      * @return mixed
      */
-    public function get(string $name = '', $default = []): mixed
-    {
+    public function get(string $name = '', mixed $default = []): mixed {
         if ($name === '') return $this->items;
         $keys = explode('@', $name);
 
@@ -37,12 +36,10 @@ class ArrayTools extends Collection
         } else {
             $info = $this->getConfigValue($names, $this->offsetGet($keys[0]));
         }
-        $default = $info ?: $default;
-        return $default;
+        return $info ?: $default;
     }
 
-    protected function getConfigValue($names, array $array = [])
-    {
+    protected function getConfigValue($names, array $array = []) {
         // 按.拆分成数组进行判断
         if (count($names) === 1) {
             return $array[array_shift($names)] ?: [];

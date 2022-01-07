@@ -33,9 +33,7 @@ class Middleware
                     $response = call_user_func([$this->app->make($class), 'handle'], $request, $next, ...$params);
                     if ($response instanceof Response || $response instanceof ResponseInterface) {
                         // 抛出响应异常
-                        throw new HttpResponseException(
-                            $response
-                        );
+                        throw new HttpResponseException($response);
                     }
                 };
             }, $this->middleware)
@@ -44,8 +42,7 @@ class Middleware
     }
 
     // 执行中间件
-    public function thenMiddleware(): bool
-    {
+    public function thenMiddleware(): bool {
         $this->pipeline -> process($this->app);
         return true;
     }

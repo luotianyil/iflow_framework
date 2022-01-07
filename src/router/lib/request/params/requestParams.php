@@ -20,18 +20,17 @@ class requestParams extends annotationAbstract
      * @param \ReflectionParameter|\ReflectionProperty $ref
      * @param $object
      * @param array $args
-     * @throws RouterParamsException
+     * @return false|mixed|void
      */
     public function handle(\ReflectionParameter|\ReflectionProperty $ref, $object, array &$args = [])
     {
         try {
-
             $this->ref = $ref;
 
             $value = $this->getValue($ref, $object, $args);
             $requestParams = request() -> params($ref -> getName());
 
-            if ($this->required && (is_null($value) || (!isset($value) || $value === ""))) $this -> exception();
+            if ($this->required && ((!isset($value) || $value === ""))) $this -> exception();
             $paramType = app() -> getParameterType($ref);
             $default = $this->getRefDefaultValue($ref);
 
@@ -50,7 +49,7 @@ class requestParams extends annotationAbstract
                 default => fn() => true
             };
 
-            $valid();
+            return call_user_func($valid);
         } catch (\Exception $exception) {
             $this -> exception();
         }

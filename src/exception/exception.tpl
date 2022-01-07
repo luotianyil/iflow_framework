@@ -37,8 +37,6 @@
             margin-top: 10px;
             padding: 10px;
         }
-        .errCodeContent {
-        }
         .trace {
             font-size: 14px;
         }

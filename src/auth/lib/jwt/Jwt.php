@@ -35,9 +35,7 @@ class Jwt
             $this->config -> getPayload(), JSON_UNESCAPED_UNICODE
         ));
 
-        return $header . '.' . $payload . '.' . $this->getSignature(
-            $header . '.' . $payload
-            );
+        return $header . '.' . $payload . '.' . $this->getSignature($header . '.' . $payload);
     }
 
     /**
@@ -73,7 +71,6 @@ class Jwt
 
         if (isset($payload['nbf']) && $payload['nbf'] > time())
             throw new jwtException('jwt 暂未生效');
-
 
         return $payload;
     }

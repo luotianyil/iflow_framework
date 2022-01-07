@@ -86,7 +86,7 @@ trait ResponseTrait
      * @param array $options
      * @return $this
      */
-    public function options($options = []): static
+    public function options(array $options = []): static
     {
         $this->options = array_merge($this->options, $options);
         return $this;
@@ -152,7 +152,7 @@ trait ResponseTrait
      * @param string $contentType
      * @return $this
      */
-    public function contentType($contentType = 'application/json') : static {
+    public function contentType(string $contentType = 'application/json') : static {
         $this -> contentType = $contentType;
         return $this;
     }

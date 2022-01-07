@@ -15,11 +15,7 @@ class Decode
         $this->length = strlen($source);
     }
 
-    static public function decode(string $source): array|int|string
-    {
-        // 检查数据是否正确
-        if(!is_string($source)) return '';
-
+    static public function decode(string $source): array|int|string {
         // 调用类本身完成解码
         $decode = new self($source);
         $decoded = $decode->do_decode();

@@ -58,8 +58,7 @@ class App extends Container
     public \ReflectionClass $appRunClass;
 
     // 初始化
-    public function __construct()
-    {
+    public function __construct() {
         static::setInstance($this);
         $this->appClassName = static::class;
         $this->instance($this->getAppClassName(), $this);
@@ -75,14 +74,12 @@ class App extends Container
         }
     }
 
-    protected function initializer() : void
-    {
+    public function initializer() : void {
         // 加载基础服务
         $this->load() -> boot();
     }
 
-    protected function boot()
-    {
+    protected function boot() {
         array_walk($this->initializers, function ($value) {
             $this->make($value) -> initializer($this);
         });
@@ -94,8 +91,7 @@ class App extends Container
     }
 
     // 加载全局配置文件
-    protected function load() : static
-    {
+    protected function load() : static {
         // 加载助手函数
         include_once __DIR__ . DIRECTORY_SEPARATOR . 'helper/helper.php';
         if (is_file($this->appPath . DIRECTORY_SEPARATOR . 'common.php')) {

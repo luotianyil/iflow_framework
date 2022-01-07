@@ -17,8 +17,7 @@ class Aspect
     ) {}
 
 
-    public function __make(App $app, ReflectionClass $annotationClass)
-    {
+    public function __make(App $app, ReflectionClass $annotationClass) {
         app() -> make(Aop::class) -> addAspect($annotationClass->getName(), $this->aspectArray);
     }
 }

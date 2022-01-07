@@ -88,13 +88,12 @@ class Aop
      * 存储 代理缓存
      * @param string $class
      * @param string $content
-     * @return bool|int
+     * @return void
      */
-    private function saveCache(string $class, string $content): bool|int
-    {
+    private function saveCache(string $class, string $content): void {
         $path = $this->config['cache_path']. DIRECTORY_SEPARATOR . $class. ".php";
         !is_dir(dirname($path)) && mkdir(dirname($path));
-        return file_put_contents($path, $content);
+        file_put_contents($path, $content);
     }
 
     /**

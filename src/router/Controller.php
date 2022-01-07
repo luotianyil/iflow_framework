@@ -50,8 +50,7 @@ class Controller extends RequestMapping
      * @param App $app
      * @param ReflectionClass $annotationClass
      */
-    public function __make(App $app, ReflectionClass $annotationClass)
-    {
+    public function __make(App $app, ReflectionClass $annotationClass) {
         $this->app = $app;
         $this->annotationClass = $annotationClass;
 
@@ -60,18 +59,14 @@ class Controller extends RequestMapping
         // 初始化工具类
         $this->strTools = new StrTools();
         $this->setRouterRule = (
-            new setRouterRule(
-                $this->config,
-                $this->routers
-            )
+            new setRouterRule($this->config, $this->routers)
         ) -> setStrTools($this->strTools);
 
-        $this->getControllerClass()
-            -> getControllerAction();
+        $this -> getControllerClass()
+              -> getControllerAction();
     }
 
-    public function setRouterConfig()
-    {
+    public function setRouterConfig() {
         $config = config($this->routerConfigKey);
         $this->config = array_merge($this->config, $config);
 
