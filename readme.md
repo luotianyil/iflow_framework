@@ -1,4 +1,4 @@
-[![Php Version](https://img.shields.io/badge/php-%3E=8.1-brightgreen.svg)](https://secure.php.net/)
+[![Php Version](https://img.shields.io/badge/php-%3E=8.1.0-brightgreen.svg)](https://secure.php.net/)
 [![Swoole Version](https://img.shields.io/badge/swoole-%3E=4.5.0-brightgreen.svg)](https://github.com/swoole/swoole-src)
 [![iflow Framework Version](https://img.shields.io/badge/iflow_framework-%3E=0.0.1-brightgreen.svg)](https://github.com/luotianyil/iflow_framework)
 [![think-orm Version](https://img.shields.io/badge/think/orm-%3E=2.0.x-brightgreen.svg)](https://www.kancloud.cn/manual/think-orm/1257998)
