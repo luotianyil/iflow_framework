@@ -31,25 +31,21 @@ class Ping
         return true;
     }
 
-    public function clearPingTimeOut($timeout = null)
-    {
+    public function clearPingTimeOut($timeout = null) {
         Timer::clear($this->pingTimeoutTimer);
         $this->pingTimeoutTimer = Timer::after(
-            $timeout === null ? $this->pingTimer + $this->pingTimeOut : $timeout
-            , function () {
-            $this->close();
-        });
+            $timeout === null ? $this->pingTimer + $this->pingTimeOut : $timeout,
+            fn() => $this->close()
+        );
     }
 
-    public function clear(): bool
-    {
+    public function clear(): bool {
         Timer::clear($this->pingIntervalTimer);
         Timer::clear($this->pingTimeoutTimer);
         return true;
     }
 
-    public function close()
-    {
+    public function close(): void {
         // 断开服务
         $this->server -> disconnect($this->request -> fd);
         $this->server -> close($this->request -> fd);

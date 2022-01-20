@@ -4,9 +4,11 @@ declare (strict_types = 1);
 namespace iflow;
 
 use iflow\console\Console;
+use iflow\Container\Container;
+use iflow\Container\implement\annotation\traits\Execute;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\event\Event;
 use iflow\initializer\{
-    annotationInitializer,
     appSurroundings,
     Config,
     Error,
@@ -16,11 +18,10 @@ use iflow\log\Log;
 
 /**
  * Class App
+ * @mixin Container
  * @package iflow
- * @property Config $config
  */
-class App extends Container
-{
+class App {
 
     CONST VERSION = '0.0.1 beta';
 
@@ -42,55 +43,64 @@ class App extends Container
         Log::class,
         Error::class,
         Event::class,
-        annotationInitializer::class,
         initializer::class,
         Console::class
     ];
 
-    protected array $frameWorkFolder = [
-        'app',
-        'runtime',
-        'config',
-        'public'
-    ];
+    protected array $frameWorkFolder = [ 'app', 'runtime', 'config', 'public' ];
 
-    // 用户运行入口类
-    public \ReflectionClass $appRunClass;
-
-    // 初始化
-    public function __construct() {
-        static::setInstance($this);
-        $this->appClassName = static::class;
-        $this->instance($this->getAppClassName(), $this);
-        $this->instance('iflow\Container', $this);
-    }
-
+    /**
+     * 初始化基础方法
+     * @return void
+     * @throws \Exception
+     */
     public function run() {
-        // 反射获取 入口类
-        $this->appRunClass = new \ReflectionClass($this->getAppClassName());
-        if ($this->frameWorkDirInit()) {
-            // 初始化 全局依赖
-            $this->initializer();
+        $this -> register('iflow\\App', $this);
+        if ($this -> frameWorkDirInit()) {
+            $this -> load() -> initializer();
         }
     }
 
-    public function initializer() : void {
-        // 加载基础服务
-        $this->load() -> boot();
+    public function execute(string $class) {
+        $execute = new Execute();
+        $ref = new \ReflectionClass($class);
+        $execute -> getReflectorAttributes($ref) -> execute($ref);
     }
 
-    protected function boot() {
+    /**
+     * 加载基础服务
+     * @return $this
+     * @throws InvokeClassException
+     */
+    public function initializer(): App {
+        $this -> boot();
+        return $this;
+    }
+
+    /**
+     * 加载基础类
+     * @return $this
+     * @throws InvokeClassException
+     */
+    protected function boot(): App {
         array_walk($this->initializers, function ($value) {
             $this->make($value) -> initializer($this);
         });
+        return $this;
     }
 
-    public function getVerSion() : string
-    {
+    /**
+     * 获取当前版本信息
+     * @return string
+     */
+    public function getVerSion() : string {
         return self::VERSION;
     }
 
-    // 加载全局配置文件
+    /**
+     * 加载全局配置文件
+     * @return $this
+     */
     protected function load() : static {
         // 加载助手函数
         include_once __DIR__ . DIRECTORY_SEPARATOR . 'helper/helper.php';
@@ -100,15 +110,14 @@ class App extends Container
         return $this;
     }
 
-    protected function frameWorkDirInit(): bool
-    {
+    protected function frameWorkDirInit(): bool {
         $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
         $this->rootPath    = $this->getDefaultRootPath();
         $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
         foreach ($this->frameWorkFolder as $key) {
             if (!file_exists($this->getDefaultRootPath() . $key)) {
-                throw new \Exception("file ${key} not exists");
+                throw new \Exception("file $key not exists");
             }
         }
         return true;
@@ -130,8 +139,7 @@ class App extends Container
      * 获取配置路径
      * @return string
      */
-    public function getConfigPath() : string
-    {
+    public function getConfigPath() : string {
         return $this->rootPath . 'config' . DIRECTORY_SEPARATOR;
     }
 
@@ -139,8 +147,7 @@ class App extends Container
      * 获取配置文件尾缀
      * @return string
      */
-    public function getConfigExt(): string
-    {
+    public function getConfigExt(): string {
         return $this->configExt;
     }
 
@@ -148,8 +155,7 @@ class App extends Container
      * 获取框架运行路径
      * @return string
      */
-    public function getFrameWorkPath() : string
-    {
+    public function getFrameWorkPath() : string {
         return $this->frameWorkPath;
     }
 
@@ -157,23 +163,24 @@ class App extends Container
      * 获取运行路径
      * @return string
      */
-    public function getRuntimePath() : string
-    {
+    public function getRuntimePath() : string {
         return $this->runtimePath;
     }
 
-    public function getAppPath() : string
-    {
+    public function getAppPath() : string {
         return $this->appPath;
     }
 
-    public function getRootPath() : string
-    {
+    public function getRootPath() : string {
         return $this->rootPath;
     }
 
-    public function getAppClassName(): string
-    {
-        return $this->appClassName;
+    public function getAppClassName(): string {
+        return $this::class;
+    }
+
+    public function __call(string $name, array $arguments) {
+        // TODO: Implement __call() method.
+        return Container::getInstance() -> {$name}(...$arguments);
     }
 }

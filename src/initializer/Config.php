@@ -4,6 +4,7 @@
 namespace iflow\initializer;
 
 use iflow\App;
+use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\fileSystem\File;
 use iflow\Utils\ArrayTools;
 
@@ -13,9 +14,9 @@ use iflow\Utils\ArrayTools;
  * @package iflow\initializer
  * @property File $file
  */
-class Config
-{
+class Config {
     public App $app;
+    #[Inject]
     public ArrayTools $config;
     protected File $file;
 
@@ -32,7 +33,7 @@ class Config
      * @param array $configFile | 配置文件列表
      * @param string $configKey | 配置key
      */
-    public function load($configFile = [], string $configKey = '')
+    public function load(array $configFile = [], string $configKey = '')
     {
         foreach ($configFile as $key => $value) {
             if (is_array($value)) {
@@ -62,13 +63,11 @@ class Config
         );
     }
 
-    public function get(string $name = '', $default = []): mixed
-    {
+    public function get(string $name = '', $default = []): mixed {
         return $this->config -> get($name, $default);
     }
 
-    public function has(string $name) : bool
-    {
+    public function has(string $name) : bool {
         return $this->config -> offsetExists($name);
     }
 }

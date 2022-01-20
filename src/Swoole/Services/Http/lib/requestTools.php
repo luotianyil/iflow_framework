@@ -8,9 +8,10 @@ use iflow\aop\Aop;
 use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;
-use iflow\router\lib\Swagger;
+use iflow\Router\implement\Swagger\Swagger;
 use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
 use Psr\Http\Message\ResponseInterface;
+use ReflectionException;
 
 class requestTools
 {
@@ -40,8 +41,7 @@ class requestTools
      * @param string $url
      * @return Response|bool
      */
-    protected function isRequestApi(string $url = ''): Response|bool
-    {
+    protected function isRequestApi(string $url = ''): Response|bool {
         $url = trim($url, '/');
         $apiPath = config('app@api_path') ?: false;
         if ($apiPath && $url === $apiPath) {
@@ -56,8 +56,7 @@ class requestTools
      * @param string $url
      * @return bool
      */
-    protected function isStaticResources(string $url = ''): bool
-    {
+    protected function isStaticResources(string $url = ''): bool {
         $url = explode('/', trim($url, '/'));
         $rule = config('app@resources.file');
         if ($url[0] === $rule['rule']) {
@@ -74,8 +73,7 @@ class requestTools
      * @param string $url
      * @return bool
      */
-    protected function isSocketIo(string $url = ''): bool
-    {
+    protected function isSocketIo(string $url = ''): bool {
         $url = explode('/', trim($url, '/'));
         if (config('swoole.service@websocket.enable')) {
             if ($url[0] === 'socket.io') {
@@ -103,10 +101,9 @@ class requestTools
     /**
      * 执行方法注解
      * @return Response|bool
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    protected function runAnnotation(): Response | bool
-    {
+    protected function runAnnotation(): Response | bool {
         $annotation = $this->refController -> getMethod($this->requestController[1]) -> getAttributes();
         foreach ($annotation as $key) {
             $obj = $key -> newInstance();
@@ -167,8 +164,7 @@ class requestTools
      * @param $res
      * @return bool
      */
-    public function validateResponse($res): bool
-    {
+    public function validateResponse($res): bool {
         if ($res instanceof Response || $res instanceof ResponseInterface) {
             return $this->send($res);
         }

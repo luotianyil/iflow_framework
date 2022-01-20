@@ -11,8 +11,7 @@ use iflow\Faceted;
  * @mixin \iflow\session\Session
  * @package iflow\facade
  */
-class Session extends Faceted
-{
+class Session extends Faceted {
     protected static function getFaceClass(): string
     {
         return \iflow\session\Session::class;

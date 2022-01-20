@@ -3,22 +3,22 @@
 
 namespace iflow\Swoole\Services\Http\lib;
 
-
-use iflow\annotation\lib\value\Exception\valueException;
+use iflow\Container\Container;
+use iflow\Container\implement\annotation\tools\data\exceptions\ValueException;
+use iflow\Container\implement\annotation\traits\Execute;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\http\lib\Cookie;
 use iflow\Request;
 use iflow\Response;
-use iflow\router\RouterBase;
+use iflow\Router\CheckRule;
+use ReflectionException;
 
 
-class initializer extends requestTools
-{
+class initializer extends requestTools {
 
-    public function __initializer($request, $response)
-    {
-        $this->setRequest($request)
-            -> setResponse($response);
-
+    public function __initializer($request, $response) {
+        $this->setRequest($request) -> setResponse($response);
         foreach ($this->runProcess as $key) {
             if (method_exists($this, $key) && call_user_func([$this, $key])) break;
         }
@@ -29,48 +29,45 @@ class initializer extends requestTools
      * @param $request
      * @return $this
      */
-    public function setRequest($request): static
-    {
+    public function setRequest($request): static {
         // 验证当前cookie是否为对象
         if (!$request -> cookie instanceof Cookie) {
-            $request -> cookie = app() -> make(Cookie::class, [
-                $request -> cookie ?: []
-            ]);
+            $request -> cookie = app(Cookie::class, [ $request -> cookie ?: [] ]);
         }
-        $this->request = app() -> make(Request::class, [], true) -> initializer($request);
+        $this->request = app(Request::class, [], true) -> initializer($request);
         return $this;
     }
 
     // 初始化响应数据
-    public function setResponse($response): static
-    {
-        $this->response = app() ->  make(Response::class, [], true) -> initializer($response);
+    public function setResponse($response): static {
+        $this->response = app(Response::class, [], true) -> initializer($response);
         return $this;
     }
 
     // 验证路由
-    protected function validateRouter(): bool
-    {
-        $this->router = app() -> make(RouterBase::class) -> checkRule(
-            $this->request -> request_uri,
-            $this->request -> request_method,
-            $this->request -> params() ?? []
-        );
+    protected function validateRouter(): bool {
+        $this->router = app(CheckRule::class)
+            -> setRouterConfigKey('http')
+            -> checkRule(
+                $this->request -> request_uri,
+                $this->request -> request_method,
+                $this->request -> params() ?? [],
+                $this->request -> getDomain()
+            );
 
         if (!$this->router) {
-            $this->response -> notFount();
-            return true;
+            return $this->response -> notFount();
         }
+        $this->request -> setRouter($this -> router);
         return $this->newInstanceController();
     }
 
     /**
      * 实例化控制器
      * @return bool
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    protected function newInstanceController(): bool
-    {
+    protected function newInstanceController(): bool {
         $this->requestController = explode('@', $this->router['action']);
         if ($this->validateResponse(class_exists($this->requestController[0]))) return true;
         $this->refController = new \ReflectionClass($this->requestController[0]);
@@ -81,24 +78,13 @@ class initializer extends requestTools
     /**
      * 执行控制器方法
      * @return bool
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    protected function startController(): bool
-    {
-        $controller =
-            $this->refController -> getConstructor() ?
-                $this->refController -> newInstance(...[$this->request, $this->response])
-                : $this->refController -> newInstance();
-
-        // 执行控制器类注解
-        app() -> runAttributes($this->refController, $this->refController, $controller);
-
+    protected function startController(): bool {
+        $controller = app($this->refController -> getShortName(), [ $this->request, $this->response ], true);
         // 执行方法
         return $this->send(
-            app() -> invokeMethod(
-                [$controller, $this->requestController[1]],
-                $this->routerBindParams
-            )
+            app() -> invoke([$controller, $this->requestController[1]], $this->routerBindParams)
         );
     }
 
@@ -106,7 +92,7 @@ class initializer extends requestTools
      * 设置Bean 参数
      * @param array $params
      * @return object
-     * @throws \ReflectionException|valueException
+     * @throws ReflectionException|ValueException|InvokeFunctionException|InvokeClassException
      */
     protected function setInstanceValue(array $params): object
     {
@@ -118,21 +104,31 @@ class initializer extends requestTools
 
         // 当类存在时
         if (class_exists($class)) {
+
             $ref = new \ReflectionClass($class);
+            $execute = new Execute();
+            $execute -> getReflectorAttributes($ref) -> executeAnnotationLifeProcess('beforeCreate', $ref);
             $object = $ref -> newInstance();
 
+            $container = Container::getInstance();
+            if (method_exists($object, '__make')) {
+                $container -> invoke([$object, '__make'], [ $container, $object ]);
+            }
+
+            $args = [ $object ];
+
+            // 执行创建回调以及挂载结束注解
+            $execute -> executeAnnotationLifeProcess(['Created', 'beforeMounted'], $ref, $args);
             foreach ($params as $paramName => $paramValue) {
                 if (!isset($paramValue['default'])) continue;
                 if ($paramValue['type'][0] === 'class') {
                     $paramValue['default'] = $this -> setInstanceValue($paramValue['default']);
                 }
-                $ref -> getProperty($paramName) -> setValue(
-                    $object, $paramValue['default']
-                );
+                $ref -> getProperty($paramName) -> setValue($object, $paramValue['default']);
             }
-            // 执行参数注解
-            app() -> runAttributes($ref, $ref, $object, $this);
-        } else throw new valueException(message() -> parameter_error("dataObject: ${class} IsNull"));
+            $object = $container -> GenerateClassParameters($ref, $object);
+            $execute -> executeAnnotationLifeProcess('Mounted', $ref, $args);
+        } else throw new valueException("dataObject: $class IsNull");
         return $object;
     }
 }

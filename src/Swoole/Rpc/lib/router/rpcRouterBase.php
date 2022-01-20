@@ -4,9 +4,9 @@
 namespace iflow\Swoole\Rpc\lib\router;
 
 
-use iflow\router\RouterBase;
+use iflow\Router\CheckRule;
 
-class rpcRouterBase extends RouterBase
+class rpcRouterBase extends CheckRule
 {
-    protected string $routerConfigKey = 'app@rpcRouter';
+    protected string $routerConfigKey = 'rpc';
 }

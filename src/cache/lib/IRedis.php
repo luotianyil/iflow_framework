@@ -17,8 +17,7 @@ class IRedis
     protected array $config = [];
     protected object $redis;
 
-    public function initializer(array $config): static
-    {
+    public function initializer(array $config): static {
         if (!extension_loaded('redis')) {
             throw new \Exception('Redis Extension does not exist');
         }
@@ -40,9 +39,7 @@ class IRedis
 
     protected function sentinelToAddress(string $sentinel_name)
     {
-        $sentinel = $this->request(...[
-            'SENTINEL', 'get-master-addr-by-name', $sentinel_name
-        ]);
+        $sentinel = $this->request('SENTINEL', 'get-master-addr-by-name', $sentinel_name);
 
         if (!$sentinel) {
             throw new \Exception('Redis Sentinel does not exist');
@@ -115,8 +112,7 @@ class IRedis
      * 清除缓存
      * @return bool
      */
-    public function clear(): bool
-    {
+    public function clear(): bool {
         return $this->redis -> flushDB();
     }
 
@@ -125,18 +121,14 @@ class IRedis
      * @param string $name
      * @return bool
      */
-    public function has(string $name): bool
-    {
+    public function has(string $name): bool {
         return $this->redis -> exists($name);
     }
 
-    public function __call(string $name, array $arguments)
-    {
+    public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
         if (!method_exists($this -> redis, $name)) return null;
-        return call_user_func([
-            $this->redis, $name
-        ], ...$arguments);
+        return call_user_func([ $this->redis, $name ], ...$arguments);
     }
 
 }

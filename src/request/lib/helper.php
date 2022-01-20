@@ -40,16 +40,16 @@ trait helper
     /**
      * 获取当前请求域名
      * @param bool $port 是否去除当前请求端口
+     * @param bool $scheme_uri 是否显示 URI 头
      * @return string
      */
-    public function getDomain(bool $port = false): string
-    {
+    public function getDomain(bool $port = false, bool $scheme_uri = true): string {
         $host = $this->host($port);
         if (str_starts_with('http', $host)) return $host;
 
         $scheme = $this -> server('request_scheme');
-        $scheme =  $scheme ? "$scheme://" : ($this -> isHTTPS() ? 'https://' : "http://");
-        return $scheme.$host;
+        $scheme = $scheme ? "$scheme://" : ($this -> isHTTPS() ? 'https://' : "http://");
+        return !$scheme_uri ? $host : $scheme.$host;
     }
 
     /**
@@ -97,16 +97,16 @@ trait helper
 
     /**
      * 验证参数是否存在
-     * @param $param
+     * @param string $paramName
      * @param string $type
      * @return bool
      */
-    public function has($param, $type = 'get'): bool
+    public function has(string $paramName, string $type = 'get'): bool
     {
         if (!in_array($type, ['post', 'get', 'header'])) {
             return false;
         }
-        return !empty($this->request -> {$type}[$param]);
+        return !empty($this->request -> {$type}[$paramName]);
     }
 
     /**
@@ -164,10 +164,9 @@ trait helper
     /**
      * 获取Server参数
      * @param string $name
-     * @return mixed|null
+     * @return mixed
      */
-    public function server(string $name = '')
-    {
+    public function server(string $name = ''): mixed {
         if ($name === '') return $this->request -> header;
         $name = strtolower($name);
         return $this->server[str_replace('_', '-', $name)] ?? ($this->server[$name] ?? null);
@@ -180,8 +179,7 @@ trait helper
      * @param string $default
      * @return string|array|null
      */
-    protected function get(string $name, string $type, string $default = ''): string|array|null
-    {
+    protected function get(string $name, string $type, string $default = ''): string|array|null {
         if ($this->has($name, $type)) {
             return $this->request -> {$type}[$name] ?? $default;
         }
@@ -193,8 +191,7 @@ trait helper
      * @param string $name
      * @return upLoadFile|upLoadFile[]
      */
-    public function file(string $name = ''): upLoadFile|array
-    {
+    public function file(string $name = ''): upLoadFile|array {
         $upLoadFile = app() -> make(upLoadFile::class);
         $file = $name === '' ? $upLoadFile -> getFileList() : $upLoadFile -> getFile($name);
         return $file ?: [];
@@ -204,13 +201,10 @@ trait helper
      * 获取请求URL
      * @return string
      */
-    public function getRequestUri(): string
-    {
-        return sprintf("%s://%s%s?%s", ...[
-            $this->isHTTPS() ? 'https' : 'http',
-            $this->getDomain(),
-            $this->request_uri,
-            $this->query_string
-        ]);
+    public function getRequestUri(): string {
+        return sprintf("%s://%s%s?%s",
+            $this->isHTTPS() ? 'https' : 'http', $this->getDomain(),
+            $this->request_uri, $this->query_string
+        );
     }
 }

@@ -4,20 +4,20 @@
 namespace iflow\aop\lib;
 
 
+use Attribute;
 use iflow\aop\Aop;
-use iflow\App;
-use ReflectionClass;
+use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
+use Reflector;
 
-#[\Attribute]
-class Aspect
-{
+#[Attribute(Attribute::TARGET_CLASS)]
+class Aspect extends AnnotationAbstract {
 
     public function __construct(
        protected array $aspectArray = []
     ) {}
 
-
-    public function __make(App $app, ReflectionClass $annotationClass) {
-        app() -> make(Aop::class) -> addAspect($annotationClass->getName(), $this->aspectArray);
+    public function process(Reflector $reflector, &$args): mixed {
+        // TODO: Implement process() method.
+        return app(Aop::class) -> addAspect($reflector->getName(), $this->aspectArray);
     }
 }

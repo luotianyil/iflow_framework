@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 // 助手函数
 use iflow\console\Console;
-use iflow\Container;
+use iflow\Container\Container;
 use iflow\event\Event;
 use iflow\facade\Config;
 use iflow\facade\Session;
@@ -13,7 +13,6 @@ use iflow\i18n\I18n;
 use iflow\log\Log;
 use iflow\Request;
 use iflow\Response;
-use iflow\router\RouterBase;
 use iflow\Swoole\email\lib\Message\Html;
 use iflow\Swoole\email\Mailer;
 use iflow\Swoole\Rpc\lib\rpcRequest;
@@ -30,7 +29,7 @@ use iflow\Swoole\email\lib\Exception\mailerException;
 // 应用
 if (!function_exists('app')) {
     function app(string $name = '', array $args = [], bool $isNew = false, ?callable $call = null): object {
-        if ($name === '')  return Container::getInstance();
+        if ($name === '')  return Container::getInstance() -> get('iflow\\App');
         return Container::getInstance() -> make($name, $args, $isNew, $call);
     }
 }
@@ -69,8 +68,7 @@ if (!function_exists('loadConfigFile')) {
 
 // 请求
 if (!function_exists('request')) {
-    function request(): Request
-    {
+    function request(): Request {
         return app(Request::class);
     }
 }
@@ -103,17 +101,15 @@ if (!function_exists('find_files')) {
 
 // 响应
 if (!function_exists('response')) {
-    function response() : Response
-    {
+    function response() : Response {
         return app(Response::class);
     }
 }
 
 // 路由信息
 if (!function_exists('router')) {
-    function router() : array
-    {
-        return app(RouterBase::class) -> getRouter();
+    function router() : array {
+        return request() -> getRouter();
     }
 }
 
@@ -469,10 +465,8 @@ if (!function_exists('valid_closure')) {
      * @return ?Closure
      */
     function valid_closure(string|\Closure $closure, array $args = []): ?\Closure {
-        // 验证是否为闭包
-        if ($closure instanceof Closure) return fn() => call_user_func($closure, ...$args);
-        // 验证方法是否存在
-        if (function_exists($closure)) return fn() => call_user_func($closure, ...$args);
+
+        if ($closure instanceof Closure || function_exists($closure)) return fn() => app() -> invoke($closure, $args);
 
         // 验证是否为类
         $closure = explode('@', $closure);
@@ -482,8 +476,6 @@ if (!function_exists('valid_closure')) {
         if (!method_exists($object, $closure[1])) return null;
 
         // 执行方法闭包
-        return fn() => app() -> invokeMethod([
-            $object, $closure[1]
-        ], [...func_get_args(), $object]);
+        return fn() => app() -> invokeMethod([$object, $closure[1]], [...func_get_args(), $object]);
     }
 }

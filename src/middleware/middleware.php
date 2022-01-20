@@ -4,25 +4,28 @@
 namespace iflow\middleware;
 
 
-use iflow\App;
-use ReflectionClass;
+use Attribute;
+use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
+use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
+use Reflector;
 
-#[\Attribute]
-class middleware
-{
+#[Attribute(Attribute::TARGET_CLASS)]
+class middleware extends AnnotationAbstract {
+
+    public AnnotationEnum $hookEnum = AnnotationEnum::Mounted;
 
     protected array $middleware = [];
 
     public function __construct(protected array $params = []) {}
 
-    public function __make(App $app, ReflectionClass $annotationClass)
-    {
+    public function process(Reflector $reflector, &$args): mixed {
+        // TODO: Implement process() method.
         $this->middleware = config('middleware');
-        $classes = $annotationClass -> getName();
+        $classes = $reflector -> getName();
         if (!in_array($classes, $this->middleware)) {
             $this->middleware[] = [$classes, $this->params];
             config($this->middleware, 'middleware');
         }
+        return $classes;
     }
-
 }

@@ -27,14 +27,12 @@ class Cookie
         $this->config = array_replace_recursive($this->config, config('cookie')) ?: $this->config;
     }
 
-    public function get(string $name = '')
-    {
+    public function get(string $name = '') {
         if ($name === '') return $this->cookie;
         return $this->has($name) ? $this->cookie[$name] : null;
     }
 
-    public function has(string $name): bool
-    {
+    public function has(string $name): bool {
         return !empty($this->cookie[$name]);
     }
 
@@ -49,21 +47,18 @@ class Cookie
         return $this;
     }
 
-    public function del($name): static
-    {
+    public function del($name): static {
         unset($this->cookie[$name]);
         $this->saveCookie($name, '', [ 'expires' => time() - 3600 ]);
         return $this;
     }
 
 
-    public function toArray(): array
-    {
+    public function toArray(): array {
         return $this->cookie;
     }
 
-    protected function saveCookie(string $name, $value, array $options = [])
-    {
+    protected function saveCookie(string $name, $value, array $options = []) {
         if (is_array($value)) $value = serialize($value);
         response() -> response -> cookie(
             $name, $value, $options['expires'],

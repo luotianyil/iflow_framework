@@ -13,8 +13,7 @@ class appMonitoring
 
     protected array $config = [];
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app) {
         $this->app = $app;
         $this->config = config('app@appMonitoring');
         $this->appMonitoring();

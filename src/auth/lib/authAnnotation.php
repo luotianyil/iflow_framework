@@ -4,13 +4,17 @@
 namespace iflow\auth\lib;
 
 
+use Attribute;
 use iflow\App;
 use iflow\auth\lib\exception\AuthorizationException;
-use iflow\Response;
+use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
+use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
+use Reflector;
 
-#[\Attribute]
-class authAnnotation
-{
+#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_FUNCTION)]
+class authAnnotation extends AnnotationAbstract {
+
+    public AnnotationEnum $hookEnum = AnnotationEnum::NonExecute;
 
     public array $config = [];
     protected array $initializers = [
@@ -27,8 +31,12 @@ class authAnnotation
         public array|string $callBack = []
     ) {}
 
-    public function handle($requestTools)
-    {
+    public function process(Reflector $reflector, &$args): mixed {
+        // TODO: Implement process() method.
+        return null;
+    }
+
+    public function handle($requestTools) {
         $this->app = $requestTools -> services -> app;
         $this->router = $requestTools -> router;
         $this->config = config('auth');
@@ -39,7 +47,7 @@ class authAnnotation
         ] : $this -> config['callBack'];
         $this->callBack = array_merge(is_string($this->callBack) ? [$this->callBack] : $this->callBack, $configCallBack);
 
-        $handle = $this->app -> make($this->config['Handle'], [$this], true);
+        $handle = $this->app -> make($this->config['Handle'], [ $this ], true);
         foreach ($this->initializers as $key) {
             call_user_func([$handle, $key], $requestTools -> request);
         }

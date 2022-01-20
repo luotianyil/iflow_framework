@@ -7,8 +7,7 @@ namespace iflow\initializer;
 use iflow\App;
 use iflow\Utils\Tools\SystemTools;
 
-class appSurroundings
-{
+class appSurroundings {
 
     protected App $app;
 
@@ -22,8 +21,7 @@ class appSurroundings
         ]
     ];
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app) {
         $this->app = $app;
         $this->config = array_replace_recursive($this->config, config('app@appSurroundings')) ?? $this->config;
         $this->validateExt();

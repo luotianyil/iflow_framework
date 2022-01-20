@@ -16,6 +16,12 @@ trait RequestTrait
     protected ?ServerRequestInterface $serverRequestPsr7 = null;
 
     /**
+     * 当前请求资源router
+     * @var array
+     */
+    protected array $router = [];
+
+    /**
      * 获取HTTP版本
      * @return string
      */
@@ -65,8 +71,7 @@ trait RequestTrait
      * 获取BufferStream
      * @return StreamInterface
      */
-    public function getBufferStream(): StreamInterface
-    {
+    public function getBufferStream(): StreamInterface {
         $row = $this->postParams();
         $row = !is_string($row) ? json_encode($row, JSON_UNESCAPED_UNICODE) : $row;
 
@@ -79,13 +84,28 @@ trait RequestTrait
      * 初始化请求参数
      * @return $this
      */
-    public function initRequestParams(): static
-    {
+    public function initRequestParams(): static {
         $_GET = $this->getParams();
         $_POST = $this->postParams();
         $_COOKIE = $this->request -> cookie -> get();
         $_SERVER = $this->server;
         $_FILES = $this->request->files;
         return $this;
+    }
+
+    /**
+     * @param array $router
+     * @return RequestTrait
+     */
+    public function setRouter(array $router): static {
+        $this->router = $router;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRouter(): array {
+        return $this->router;
     }
 }

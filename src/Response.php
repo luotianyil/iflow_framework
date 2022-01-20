@@ -24,7 +24,7 @@ class Response
      */
     public static function create(mixed $data = [], int $code = 200, string $type = 'json'): object {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
-        $response = Container::getInstance()->invokeClass($class, [$data, $code]);
+        $response = app($class, [$data, $code]);
         foreach (array_merge((array) $response, (array) response()) as $key => $value) {
             if (method_exists($response, $key) && !is_string($response -> {$key})) {
                 $response -> {$key}($value ?: $response -> {$key});
@@ -85,14 +85,12 @@ class Response
      * @param $response
      * @return $this
      */
-    public function initializer($response): static
-    {
+    public function initializer($response): static {
         $this->response = $response;
         return $this;
     }
 
-    public function trailer(string $key, string $value, bool $ucwords = true): static
-    {
+    public function trailer(string $key, string $value, bool $ucwords = true): static {
         $this->response -> trailer(...func_get_args());
         return $this;
     }

@@ -10,8 +10,7 @@ use iflow\i18n\I18n;
 use think\facade\Db;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 
-class initializer
-{
+class initializer {
 
     protected array $iniInitializerArray = [
         'timezone' => 'date_default_timezone_set'
@@ -23,13 +22,22 @@ class initializer
            \Co::set([ 'hook_flags' => SWOOLE_HOOK_ALL ]);
            DefaultHandler::setDefaultHandler(SwooleHandler::class);
        }
-       app(I18n::class) -> initializer($app);
+       $app -> make(I18n::class) -> initializer($app);
        $this -> ini_initializer()
-             -> db_initializer();
+             -> db_initializer()
+             -> routerConfigInitializer()
+             -> initializerAnnotation($app);
     }
 
+    protected function initializerAnnotation(App $app) {
+        $app -> execute($app::class);
+    }
 
-    protected function db_initializer(): static {
+    /**
+     * 初始化数据库
+     * @return $this
+     */
+    protected function db_initializer(): initializer {
         return config('database',
             call: fn ($config) => !empty($config) ? (Db::setConfig($config) ?? $this) : $this
         );
@@ -39,7 +47,7 @@ class initializer
      * 初始化php.ini配置
      * @return $this
      */
-    protected function ini_initializer(): static {
+    protected function ini_initializer(): initializer {
         return config('ini', call: function ($ini) {
             if (empty($ini)) return $this;
             foreach ($ini as $iniConfigName => $option) {
@@ -48,5 +56,20 @@ class initializer
             }
             return $this;
         });
+    }
+
+    /**
+     * 初始化路由配置
+     * @return $this
+     */
+    protected function routerConfigInitializer(): initializer {
+        $router = config('app@router');
+        $config = app(\iflow\Router\implement\Config::class, config('app@router'));
+        $router = array_merge($router, [
+            'router' => [],
+            'routerParams' => []
+        ]);
+        $config -> setRouters($router);
+        return $this;
     }
 }

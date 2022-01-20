@@ -3,16 +3,15 @@
 
 namespace iflow\initializer;
 
-
 use iflow\App;
 use iflow\exception\Handle;
 use iflow\exception\lib\errorException;
 use iflow\exception\lib\renderDebugView;
 use iflow\Response;
 use Throwable;
+
 // 异常接管
-class Error
-{
+class Error {
     protected App $app;
     protected array $config = [];
     protected string $handle = Handle::class;
@@ -59,17 +58,19 @@ class Error
         if ($this->app -> isDebug()) {
             return (new renderDebugView($e, $this->config)) -> render() -> send();
         }
-
-        $res = 'Server Error';
         // 异常处理回调
         if (class_exists($this->handle)) {
             $res = (new $this->handle($type)) -> render($this->app, $e);
             if ($res instanceof Response) return $res -> send();
         }
-        return message() -> server_error(502, $res) -> send();
+        return (new renderDebugView($e, $this->config)) -> render() -> send();
     }
 
-    public function appShuDown() {}
+    public function appShuDown() {
+        if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+            throw new errorException(0, $error['message'], $error['file'], $error['line']);
+        }
+    }
 
     // 验证错误类型
     protected function isFatal(int $type): bool {

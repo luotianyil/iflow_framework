@@ -10,8 +10,7 @@ use iflow\exception\lib\HttpException;
 use iflow\exception\lib\HttpResponseException;
 use iflow\pipeline\pipeline;
 
-class Aop
-{
+class Aop {
     // 用户定义切面
     private array $aspects = [];
 
@@ -26,8 +25,7 @@ class Aop
     // 执行切面返回数据
     private mixed $response = "";
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->config = config('aop');
     }
 
@@ -38,8 +36,7 @@ class Aop
      * @param mixed ...$args
      * @return bool|Aop
      */
-    public function process(string $class, string $method, ...$args): bool|static
-    {
+    public function process(string $class, string $method, ...$args): bool|static {
         // 统计切面， 以批量执行
         $aspects = [];
         if (count($this->aspects) === 0) return false;
@@ -79,8 +76,7 @@ class Aop
      * @param string $class
      * @param array $aspectArray
      */
-    public function addAspect(string $class, array $aspectArray)
-    {
+    public function addAspect(string $class, array $aspectArray) {
         $this->aspects[$class] = $aspectArray;
     }
 
@@ -90,7 +86,7 @@ class Aop
      * @param string $content
      * @return void
      */
-    private function saveCache(string $class, string $content): void {
+    protected function saveCache(string $class, string $content): void {
         $path = $this->config['cache_path']. DIRECTORY_SEPARATOR . $class. ".php";
         !is_dir(dirname($path)) && mkdir(dirname($path));
         file_put_contents($path, $content);
@@ -101,8 +97,7 @@ class Aop
      * @param string $class
      * @return bool
      */
-    private function CacheExists(string $class = ""): bool
-    {
+    protected function CacheExists(string $class = ""): bool {
         $file_path = $this->config['cache_path']. DIRECTORY_SEPARATOR . $class. ".php";
         if ($this->config['cache_enable']) return file_exists($file_path);
         return false;
@@ -114,7 +109,7 @@ class Aop
      * @param string $action
      * @return bool
      */
-    private function MethodsProxy(string $method = "", string $action = ""): bool {
+    protected function MethodsProxy(string $method = "", string $action = ""): bool {
         if (str_ends_with($action, '*')) {
             $prefix = substr($action, 0, strlen($action) - 1);
             return str_starts_with($method, $prefix);
@@ -135,7 +130,7 @@ class Aop
         $this->pipeline -> through(array_map(function ($aspect) use ($args, $action) {
             return function ($app, $next) use ($aspect, $args, $action) {
                 // 通过容器反射执行
-                $callback = app() -> invokeMethod([$aspect, $action], $args);
+                $callback = app() -> invoke([$aspect, $action], $args);
                 if ($callback !== true) {
                     $this->response = $callback;
                     throw new HttpResponseException($this->response);
@@ -150,8 +145,7 @@ class Aop
      * 执行管道
      * @return mixed
      */
-    public function then(): mixed
-    {
+    public function then(): mixed {
         try {
             $this->pipeline -> process(app());
             return true;

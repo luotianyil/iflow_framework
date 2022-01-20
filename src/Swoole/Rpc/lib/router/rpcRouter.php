@@ -3,13 +3,9 @@
 
 namespace iflow\Swoole\Rpc\lib\router;
 
-
-use iflow\App;
-use iflow\router\lib\Router;
-use ReflectionClass;
+use iflow\Router\Controller;
 
 #[\Attribute]
-class rpcRouter extends Router
-{
-    protected string $routerConfigKey = 'app@rpcRouter';
+class rpcRouter extends Controller {
+    protected string $routerConfigKey = 'rpc';
 }

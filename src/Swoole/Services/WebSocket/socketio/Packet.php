@@ -62,35 +62,29 @@ class Packet
         public string|array $data = ''
     ){}
 
-    public function open($data)
-    {
+    public function open($data): string {
         return (new static(self::OPEN, $data)) -> toString();
     }
 
-    public function pong($data)
-    {
+    public function pong($data): string {
         return (new static(self::PONG, $data)) -> toString();
     }
 
-    public static function ping()
-    {
+    public static function ping(): int {
         return self::PING;
     }
 
-    public static function message($payload, int $offset = 1, string $nsp = '/')
-    {
+    public static function message($payload, int $offset = 1, string $nsp = '/'): string {
         $type = substr($payload, 0, $offset);
         $payload = substr($payload, $offset);
         return (new static(self::MESSAGE.$type . "$nsp,", $payload)) -> toString();
     }
 
-    public static function fromString(string $packet)
-    {
+    public static function fromString(string $packet) {
         return new static(substr($packet, 0, 1), substr($packet, 1) ?? '');
     }
 
-    public static function create($type, array $decoded = [])
-    {
+    public static function create($type, array $decoded = []) {
         $new     = new static($type);
         $new->id = $decoded['id'] ?? '';
         if (isset($decoded['nsp'])) {
@@ -102,8 +96,7 @@ class Packet
         return $new;
     }
 
-    public static function decode(string $str)
-    {
+    public static function decode(string $str) {
         $i = 0;
         $packet = new Packet((int) substr($str, 0, 1));
         if ('/' === substr($str, $i + 1, 1)) {
@@ -138,8 +131,7 @@ class Packet
         return $packet;
     }
 
-    public function toString(): string
-    {
+    public function toString(): string {
         if (is_array($this->data)) {
             $this->data = json_encode($this->data);
         }

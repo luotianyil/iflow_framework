@@ -55,8 +55,7 @@ trait ResponseTrait
      * @param $data
      * @return $this
      */
-    public function data($data): static
-    {
+    public function data($data): static {
         $this->data = $data;
         return $this;
     }

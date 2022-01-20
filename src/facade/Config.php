@@ -12,12 +12,8 @@ use iflow\Faceted;
  * Class Config
  * @package iflow\facade
  */
-class Config extends Faceted
-{
-
-    protected static function getFaceClass(): string
-    {
+class Config extends Faceted {
+    protected static function getFaceClass(): string {
         return \iflow\initializer\Config::class;
     }
-
 }

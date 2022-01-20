@@ -16,10 +16,8 @@ class renderDebugView
     protected string $trace = "";
 
     public function __construct(protected Throwable $throwable, protected array $config) {
-
         $this->exception_tpl =
             $this->config['exception_tpl'] ?? str_replace("\\", '/', __DIR__ . "/../exception.tpl");
-
         $this->trace = $this->throwable -> getTraceAsString();
     }
 
@@ -28,8 +26,7 @@ class renderDebugView
      * 渲染数据
      * @return ?Response
      */
-    public function render(): ?Response
-    {
+    public function render(): ?Response {
         // 此处验证是否为Response异常
         if ($this->throwable instanceof HttpResponseException) {
             $response = $this->throwable -> getResponse();

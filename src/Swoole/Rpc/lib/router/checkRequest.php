@@ -16,8 +16,7 @@ class checkRequest extends initializer
     protected int $fd = 0;
     protected mixed $data;
 
-    public function init(object $server, int $fd, mixed $data): bool
-    {
+    public function init(object $server, int $fd, mixed $data): bool {
         $this->server = $server;
         $this->fd = $fd;
         $this->data = $data;
@@ -35,8 +34,7 @@ class checkRequest extends initializer
         }
     }
 
-    protected function startValidRequest(): bool
-    {
+    protected function startValidRequest(): bool {
 
         if (empty($this->data['request_uri'])) {
             return $this->send(404);
