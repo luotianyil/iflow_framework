@@ -81,11 +81,9 @@ class initializer extends requestTools {
      * @throws ReflectionException
      */
     protected function startController(): bool {
-        $controller = app($this->refController -> getShortName(), [ $this->request, $this->response ], true);
+        $controller = app($this->refController -> getName(), [ $this->request, $this->response ], true);
         // 执行方法
-        return $this->send(
-            app() -> invoke([$controller, $this->requestController[1]], $this->routerBindParams)
-        );
+        return $this->send(app() -> invoke([$controller, $this->requestController[1]], $this->routerBindParams));
     }
 
     /**

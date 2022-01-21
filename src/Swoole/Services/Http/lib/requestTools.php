@@ -20,7 +20,6 @@ class requestTools
     public ?Request $request = null;
     public ?Response $response = null;
 
-    public bool $isTcp = false;
     public array $router;
 
     public array $requestController = [];
@@ -43,10 +42,9 @@ class requestTools
      */
     protected function isRequestApi(string $url = ''): Response|bool {
         $url = trim($url, '/');
-        $apiPath = config('app@api_path') ?: false;
+        $apiPath = config('app@api_path', false);
         if ($apiPath && $url === $apiPath) {
-            json((new Swagger()) -> buildSwaggerApiJson()) -> send();
-            return true;
+            return json((new Swagger()) -> buildSwaggerApiJson()) -> send();
         }
         return false;
     }
@@ -122,21 +120,16 @@ class requestTools
         $middleware = $this->services -> app
             -> make(Middleware::class)
             -> initializer($this->services -> app, $this->request, $this->response);
-        if ($this->validateResponse($middleware)) {
-            return true;
-        }
-        return false;
+
+        return $this->validateResponse($middleware);
     }
 
     /**
      * 运行AOP拦截
      * @return bool
      */
-    protected function runAop(): bool
-    {
-        $this->routerBindParams = $this->bindParam(
-            $this->router['parameter']
-        );
+    protected function runAop(): bool {
+        $this->routerBindParams = $this->bindParam($this->router['parameter']);
         $aop = app() -> make(Aop::class) -> process(
             $this->requestController[0], $this->requestController[1], ...$this -> routerBindParams
         );

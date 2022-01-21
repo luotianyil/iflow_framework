@@ -26,10 +26,9 @@ class CommandAnnotation extends AnnotationAbstract {
 
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.
-        $command = $this->getObject($args);
-        if (!$command instanceof Command)
-            throw new \RuntimeException($command::class . ' instanceof Command fail');
+        if ($reflector -> getParentClass() -> getName() !== Command::class)
+            throw new \RuntimeException($reflector -> getName() . ' instanceof Command fail');
 
-        return config([ $this->command => $command::class ], 'command');
+        return config([ $this->command => $reflector -> getName() ], 'command');
     }
 }

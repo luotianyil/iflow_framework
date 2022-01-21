@@ -15,18 +15,22 @@ use iflow\Utils\ArrayTools;
  * @property File $file
  */
 class Config {
+
     public App $app;
+
     #[Inject]
     public ArrayTools $config;
+
     protected File $file;
 
-    public function initializer(App $app)
-    {
+    protected array $configFileExt = [ '.php', '.json', '.ini', '.yaml', '.env' ];
+
+    public function initializer(App $app) {
         // 加载基本配置
         $this->app = $app;
         $this->config = new ArrayTools();
         $this->file = app(File::class) -> initializer();
-        $this->load($this->file -> fileList -> loadFileList($this->app->getConfigPath(), $this->app -> getConfigExt() ,true));
+        $this->load($this->file -> fileList -> loadFileList($this->app->getConfigPath(), $this -> configFileExt ,true));
     }
 
     /**

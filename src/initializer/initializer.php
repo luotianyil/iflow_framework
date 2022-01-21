@@ -65,10 +65,7 @@ class initializer {
     protected function routerConfigInitializer(): initializer {
         $router = config('app@router');
         $config = app(\iflow\Router\implement\Config::class, config('app@router'));
-        $router = array_merge($router, [
-            'router' => [],
-            'routerParams' => []
-        ]);
+        $router = array_merge($router, [ 'router' => [], 'routerParams' => [] ]);
         $config -> setRouters($router);
         return $this;
     }
