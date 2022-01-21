@@ -22,7 +22,7 @@ class EventAnnotation extends AnnotationAbstract {
 
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.
-        $event = $reflector -> newInstance();;
+        $event = app() -> GenerateClassParameters($reflector, $reflector -> newInstance());
         if (!$event instanceof SubjectAbstract) {
             throw new \RuntimeException($event::class . ' instanceof SubjectAbstract fail');
         }

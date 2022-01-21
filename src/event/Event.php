@@ -2,20 +2,20 @@
 
 namespace iflow\event;
 
-use \iflow\App;
+use Closure;
+use Exception;
+use iflow\App;
 use iflow\event\lib\Abstracts\SubjectAbstract;
-use \iflow\Utils\ArrayTools;
+use iflow\Utils\ArrayTools;
 
-class Event
-{
+class Event {
 
     protected App $app;
     protected ArrayTools $arrayTools;
 
     protected array $events = [];
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app) {
         $this->app = $app;
         foreach (config('event') ?: [] as $name => $event) {
             $event = new $event;
@@ -30,11 +30,10 @@ class Event
     /**
      * 绑定事件
      * @param string $name
-     * @param SubjectAbstract|\Closure $event
+     * @param SubjectAbstract|Closure $event
      * @return Event
      */
-    public function bind(string $name, SubjectAbstract|\Closure $event): static
-    {
+    public function bind(string $name, SubjectAbstract|Closure $event): static {
         $this->events[$name] = $event;
         return $this;
     }
@@ -43,18 +42,16 @@ class Event
      * 触发事件
      * @param string $event
      * @param array $args
+     * @throws Exception
      * @return mixed
      */
-    public function trigger(string $event, array $args = []): mixed
-    {
-        if (empty($this->events[$event])) {
-            throw new \Error("event error: ${event} not exists");
+    public function trigger(string $event, array $args = []): mixed {
+        $event = $this->events[$event] ?? null;
+        if (!$event) throw new Exception("event error: $event not exists");
+        if ($event instanceof Closure) {
+            return $this->app -> invoke($event, $args);
         }
-        $event = $this->events[$event];
-        if ($event instanceof \Closure) {
-            return $event(...$args);
-        }
-        return $event -> trigger(...$args);
+        return $this->app -> invoke([$event, 'trigger'], $args);
     }
 
 }

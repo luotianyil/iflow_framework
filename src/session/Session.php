@@ -18,7 +18,7 @@ class Session
     // 存放的session信息
     protected ArrayTools $sessionTools;
 
-    public function initializer() {
+    public function initializer(): static {
         if ($this->session !== null) {
             return $this;
         }
@@ -31,9 +31,7 @@ class Session
         $this->sessionId = $this->getSessionId();
 
         // 初始化 SessionTools
-        $this->sessionTools = new ArrayTools(
-            $this->sessionId ? $this->session -> get($this->sessionId): []
-        );
+        $this->sessionTools = new ArrayTools($this->sessionId ? $this->session -> get($this->sessionId): []);
 
         return $this;
     }
@@ -58,8 +56,7 @@ class Session
      * 删除Session
      * @return mixed
      */
-    public function delete(): mixed
-    {
+    public function delete(): mixed {
         return $this->session -> delete($this->getSessionId());
     }
 
@@ -68,8 +65,7 @@ class Session
      * @param string $key
      * @return bool
      */
-    public function unsetKey(string $key): bool
-    {
+    public function unsetKey(string $key): bool {
         $this->sessionTools -> offsetUnset($key);
         return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
     }
@@ -93,9 +89,7 @@ class Session
 
         // 如果客户端未传递SessionId 即生成新的SessionId
         if (!$this->sessionId) {
-            $this->sessionId = $this->session -> set(null, [
-                'sessionName' => $this->sessionName
-            ]);
+            $this->sessionId = $this->session -> set(null, ['sessionName' => $this->sessionName]);
             // 将sessionId 写入cookie
             cookie($this->sessionName, $this->sessionId);
         }

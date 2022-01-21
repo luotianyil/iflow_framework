@@ -29,7 +29,7 @@ class Boot extends AnnotationAbstract {
 
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.
-        $boot = $reflector -> newInstance();
+        $boot = app() -> GenerateClassParameters($reflector, $reflector -> newInstance());
         if (!$boot instanceof bootInterface)
             throw new \RuntimeException($boot::class . ' instanceof bootInterface fail');
         return app() -> register($boot::class, $boot -> boot());
