@@ -4,18 +4,23 @@
 namespace iflow\Swoole\GraphQL\Annotation\Type\lib;
 
 
-#[\Attribute]
-class resolveType
-{
+use Attribute;
+use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
+use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
+use Reflector;
 
-    public function __construct(protected string|\Closure $resolve)
-    {}
+#[Attribute(Attribute::TARGET_PROPERTY)]
+class resolveType extends AnnotationAbstract {
 
-    public function handle(\ReflectionProperty $reflectionProperty, $object): array {
+    public AnnotationEnum $hookEnum = AnnotationEnum::NonExecute;
+
+    public function __construct(protected string|\Closure $resolve) {}
+
+    public function process(Reflector $reflector, &$args): array {
+        // TODO: Implement process() method.
+        $object = $this->getObject($args);
         return [
-            valid_closure($this->resolve, $object ? [
-                $object
-            ]: [])
+            valid_closure($this->resolve, $object ? [ $object ]: [])
         ];
     }
 

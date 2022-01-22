@@ -5,9 +5,9 @@ namespace iflow\Swoole\GraphQL\Types\Enum;
 
 
 use GraphQL\Type\Definition\EnumType;
+use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
 
-class typeEnum
-{
+abstract class typeEnum extends AnnotationAbstract {
 
     protected ?EnumType $enumType = null;
 

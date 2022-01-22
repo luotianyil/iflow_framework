@@ -4,26 +4,28 @@
 namespace iflow\Swoole\GraphQL\Annotation\Type;
 
 
-use iflow\App;
+use Attribute;
+use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
+use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
 use iflow\Swoole\GraphQL\Annotation\Type\lib\ArgsType;
 use iflow\Swoole\GraphQL\Annotation\Type\lib\fieldType;
 use iflow\Swoole\GraphQL\Annotation\Type\lib\resolveType;
 use iflow\Swoole\GraphQL\Types\Query;
 use iflow\Swoole\GraphQL\Types\typeFields;
 use iflow\Swoole\GraphQL\Types\typeName;
-use ReflectionClass;
+use Reflector;
 
 /**
  * GraphQL 字段类型注解
  * Class Type
  * @package iflow\Swoole\GraphQL\Annotation\Type
  */
-#[\Attribute]
-class TypeAnnotation
-{
+#[Attribute(Attribute::TARGET_CLASS)]
+class TypeAnnotation extends AnnotationAbstract {
 
-    protected App $app;
-    protected ReflectionClass $annotationClass;
+    public AnnotationEnum $hookEnum = AnnotationEnum::Mounted;
+
+    protected Reflector $annotationClass;
 
     protected array $methodAttribute = [
         fieldType::class,
@@ -39,37 +41,26 @@ class TypeAnnotation
         protected string $typeDescription = '',
         protected string $resolveType = '',
     ) {
-        $this->types = new typeName(
-            $this->typeName, $this->typeDescription,
-            valid_closure($this->resolveType)
-        );
+        $this->types = new typeName($this->typeName, $this->typeDescription, valid_closure($this->resolveType));
         $this->typeFields = new typeFields();
     }
 
-    /**
-     * 初始化当前 GraphQL 注解
-     * @param App $app
-     * @param ReflectionClass $annotationClass
-     * @return TypeAnnotation
-     * @throws \ReflectionException
-     */
-    public function __make(App $app, ReflectionClass $annotationClass)
-    {
-        $this->app = $app;
-        $this->annotationClass = $annotationClass;
+    public function process(Reflector $reflector, &$args): mixed {
+        // TODO: Implement process() method.
+        $this->annotationClass = $reflector;
 
         if (config('graphql@'.$this->typeName)) return $this->getTypeObject();
 
         // 设置TypeName
         if ($this->typeName === '') {
-            $this->typeName = $annotationClass->getName();
+            $this->typeName = $reflector->getName();
             $this->types->setTypeName($this->typeName);
         }
 
-        $properties = $annotationClass->getProperties();
+        $properties = $reflector->getProperties();
 
-        // 实例化对象
-        $object = $annotationClass->newInstance();
+        // 获取实例化对象
+        $object = $this->getObject($args);
 
         foreach ($properties as $property) {
             $field = [];
@@ -85,10 +76,7 @@ class TypeAnnotation
 
         }
 
-        config([
-            $this->typeName => new Query($this->types, $this->typeFields)
-        ], 'graphql');
-
+        config([$this->typeName => new Query($this->types, $this->typeFields)], 'graphql');
         return $this;
     }
 
@@ -97,20 +85,18 @@ class TypeAnnotation
      * @param \ReflectionProperty $reflectionProperty
      * @param string $name
      * @param $object
-     * @return false|mixed|null
+     * @return mixed
      */
-    protected function properAttributes(\ReflectionProperty $reflectionProperty, string $name, $object)
-    {
+    protected function properAttributes(\ReflectionProperty $reflectionProperty, string $name, $object): mixed {
         $attribute = $reflectionProperty->getAttributes($name)[0] ?? null;
         if ($attribute) {
-            return call_user_func([$attribute->newInstance(), 'handle'], $reflectionProperty, $object);
+            return call_user_func([$attribute->newInstance(), 'process'], $reflectionProperty, [ $object ]);
         }
         return null;
     }
 
 
-    public function getTypeObject()
-    {
+    public function getTypeObject() {
         return config('graphql@'.$this->typeName) -> getTypeObject();
     }
 }

@@ -3,10 +3,11 @@
 
 namespace iflow\annotation\value;
 
+use Attribute;
 use iflow\Container\implement\annotation\tools\data\Inject;
 use Reflector;
 
-#[\Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY|Attribute::TARGET_PARAMETER)]
 class ConfigValue extends Inject {
     public function __construct(protected string $name, protected mixed $default = '') {
     }
