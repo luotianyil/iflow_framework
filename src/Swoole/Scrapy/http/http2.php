@@ -7,8 +7,7 @@ namespace iflow\Swoole\Scrapy\http;
 use Co\Http2\Client;
 use Swoole\Http2\Request;
 
-class http2 extends http
-{
+class http2 extends http {
 
     protected Request $request;
 

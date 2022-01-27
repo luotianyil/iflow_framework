@@ -3,6 +3,7 @@
 
 namespace iflow\Swoole\Udp;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Swoole\Udp\lib\udpService;
 
 class Services extends \iflow\Swoole\Services
@@ -11,10 +12,12 @@ class Services extends \iflow\Swoole\Services
         udpService::class
     ];
 
-    public function run()
-    {
-        $this->userEvent[2] = empty($this->userEvent[2]) ? 'service' : ($this->userEvent[2] === 'service' ? 'service' : 'client');
-        if ($this->userEvent[2] !== 'client') {
+    /**
+     * 启动UDP服务
+     * @throws InvokeClassException
+     */
+    public function run() {
+        if ($this->isStartServer()) {
             $this->initializer();
         }
     }

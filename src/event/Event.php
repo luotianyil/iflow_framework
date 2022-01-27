@@ -18,7 +18,7 @@ class Event {
     public function initializer(App $app) {
         $this->app = $app;
         foreach (config('event') ?: [] as $name => $event) {
-            $event = new $event;
+            $event = $this->app -> make($event);
             if (!$event instanceof SubjectAbstract) {
                 throw new \RuntimeException($event::class . ' instanceof SubjectAbstract fail');
             }

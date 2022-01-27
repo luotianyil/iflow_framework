@@ -5,6 +5,7 @@ namespace iflow\Swoole\Scrapy\http;
 
 
 use iflow\http\lib\Client;
+use function Co\run;
 
 /**
  * Class http
@@ -42,7 +43,7 @@ class http
         $isSsl = false,
         $options = [],
         ?callable $call = null
-    ){
+    ) {
         $this->Queue[] = [
             'host' => $host,
             'port' => $port,
@@ -55,9 +56,8 @@ class http
         ];
     }
 
-    public function start()
-    {
-        \Co\run(function () {
+    public function start() {
+        run(function () {
             foreach ($this->Queue as $key => $value) {
                 $this->process($value);
             }
@@ -96,7 +96,7 @@ class http
             'scheme' => $ex[2][0] ?? "http",
             'host' => $this->getParas($ex[4][0]),
             'path' => $this->getParas($ex[5][0], "/"),
-            'query' => $this->getParas($ex[6][0], ""),
+            'query' => $this->getParas($ex[6][0], "")
         ];
         return $this;
     }
@@ -161,8 +161,7 @@ class http
         };
     }
 
-    public function setHeader(array $header = []): static
-    {
+    public function setHeader(array $header = []): static {
         $this->header = array_replace_recursive($this->header, $header) ?? [];
         $this->client -> setHeaders($header);
         return $this;
@@ -186,7 +185,7 @@ class http
     public function __get(string $name)
     {
         // TODO: Implement __get() method.
-        if (property_exists($this->client, $name)) return $this->client -> $name;
+        if (property_exists($this->client, $name)) return $this->client -> {$name};
         return null;
     }
 

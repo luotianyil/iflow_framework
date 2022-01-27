@@ -15,14 +15,12 @@ class udpService
         'Packet' => 'onPacket'
     ];
 
-    public function initializer(Services $services)
-    {
+    public function initializer(Services $services) {
         $this->services = $services;
         $services -> eventInit($this, $this->events);
     }
 
-    public function onPacket($server, $data, $clientInfo)
-    {
+    public function onPacket($server, $data, $clientInfo) {
         if (class_exists($this->services -> Handle)) {
             call_user_func([new $this->services -> Handle, 'handle'], ...func_get_args());
         }

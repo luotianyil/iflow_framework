@@ -12,8 +12,7 @@ trait Server
 
     use Client;
 
-    public function initializers(Services $services)
-    {
+    public function initializers(Services $services) {
         $this->services = $services;
         $this->eventType = strtolower($this->services -> userEvent[1]);
         $this -> setConfig() -> setPid() -> setParam() -> setOptions();

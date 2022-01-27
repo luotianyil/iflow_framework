@@ -18,8 +18,7 @@ class Services extends \iflow\Swoole\Services
         HttpServer::class
     ];
 
-    public function run()
-    {
+    public function run() {
         $this->initializer();
     }
 

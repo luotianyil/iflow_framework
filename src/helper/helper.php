@@ -5,6 +5,9 @@ declare (strict_types = 1);
 // 助手函数
 use iflow\console\Console;
 use iflow\Container\Container;
+use iflow\EMailer\implement\Exception\MailerException;
+use iflow\EMailer\implement\Message\Html;
+use iflow\EMailer\Mailer;
 use iflow\event\Event;
 use iflow\facade\Config;
 use iflow\facade\Session;
@@ -13,8 +16,6 @@ use iflow\i18n\I18n;
 use iflow\log\Log;
 use iflow\Request;
 use iflow\Response;
-use iflow\Swoole\email\lib\Message\Html;
-use iflow\Swoole\email\Mailer;
 use iflow\Swoole\Rpc\lib\rpcRequest;
 use iflow\Swoole\Scrapy\http\http;
 use iflow\Swoole\Scrapy\http\http2;
@@ -23,8 +24,8 @@ use iflow\Utils\Message\Message;
 use iflow\Utils\Tools\SystemTools;
 use iflow\Utils\torrent\Lightbenc;
 use iflow\validate\Validate;
+use React\Promise\Promise;
 use Swoole\Coroutine\Client;
-use iflow\Swoole\email\lib\Exception\mailerException;
 
 // 应用
 if (!function_exists('app')) {
@@ -68,7 +69,10 @@ if (!function_exists('loadConfigFile')) {
 
 // 请求
 if (!function_exists('request')) {
-    function request(): Request {
+    /**
+     * @return Request
+     */
+    function request(): object {
         return app(Request::class);
     }
 }
@@ -101,7 +105,10 @@ if (!function_exists('find_files')) {
 
 // 响应
 if (!function_exists('response')) {
-    function response() : Response {
+    /**
+     * @return Response
+     */
+    function response() : object {
         return app(Response::class);
     }
 }
@@ -148,14 +155,10 @@ if (!function_exists('emails')) {
             $content = new Html();
             $content = $content -> setHtml($body) -> setSubject($subject);
             foreach ($files as $file) {
-                $content = $content -> addAttachment(
-                    $file['filename'],
-                    $file['filePath'],
-                    $file['mime']
-                );
+                $content = $content -> addAttachment($file['filename'], $file['filePath'], $file['mime'] ?? '');
             }
-            return (new Mailer()) -> setTo($to) -> send($content);
-        } catch (mailerException $exception) {
+            return (new Mailer(config('email', []), 'qqMailer')) -> setTo($to) -> send($content);
+        } catch (MailerException $exception) {
             return $exception -> getMessage();
         }
     }
@@ -170,8 +173,7 @@ if (!function_exists('systemInfo')) {
 
 // write log
 if (!function_exists('logs')) {
-    function logs(string $type = 'info', string $message = '', array $content = [])
-    {
+    function logs(string $type = 'info', string $message = '', array $content = []) {
         return app() -> make(Log::class) -> write($type, $message, $content);
     }
 }
@@ -238,13 +240,8 @@ if (!function_exists('rpcRequest')) {
         bool $isSsl = false,
         array $param = [],
         array $options = []
-    ): rpcRequest
-    {
-        $res = app() -> make(
-            rpcRequest::class,
-            func_get_args(),
-            isNew: true
-        );
+    ): rpcRequest {
+        $res = app() -> make(rpcRequest::class, func_get_args(), isNew: true);
         $res -> request();
         return $res;
     }
@@ -266,10 +263,7 @@ if (!function_exists('httpRequest')) {
     ): http | http2
     {
         $class = $type === "http" ? http::class : http2::class;
-        return app() -> make(
-            $class,
-            isNew: true
-        ) -> process([
+        return app() -> make($class, isNew: true) -> process([
             'host' => $host,
             'port' => $port,
             'method' => $method,
@@ -379,8 +373,9 @@ if (!function_exists('is_http_services')) {
 
 // 部分代码使用 go 所以为了兼容 未安装swoole 扩展 提供此方法
 if (!function_exists('go')) {
-    function go(\Closure $closure) {
-        return call_user_func($closure);
+    function go(\Closure $closure, callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null) {
+        $promise = new Promise($closure);
+        return $promise -> then($onFulfilled, $onRejected, $onProgress) -> done();
     }
 }
 
@@ -444,7 +439,8 @@ if (!function_exists('dump')) {
         $output = ob_get_clean();
 
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $outConsole = app(Console::class) -> outPut ?? null;
+        $outConsole = app(Console::class) -> outPut ?: null;
+        var_dump($outConsole);
         if (!is_http_services() && $outConsole !== null) {
             $outConsole -> write(PHP_EOL . $output . PHP_EOL);
         } else {

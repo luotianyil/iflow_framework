@@ -20,8 +20,7 @@ class Client
     public string $errMsg = "";
     public int $errCode = 0;
 
-    public function __construct(protected bool $enableSSL = true)
-    {}
+    public function __construct(protected bool $enableSSL = true) {}
 
     public function connect(string $host, int $port, float $timeout = 30): bool
     {
@@ -54,7 +53,7 @@ class Client
 
     public function recv(float $timeout): string
     {
-        stream_set_timeout($this->handle, $timeout);
+        stream_set_timeout($this->handle, intval($timeout));
         while (true) {
             $pack = @fgets($this->handle, $this->setting['package_max_length']);
             if ($pack) break;

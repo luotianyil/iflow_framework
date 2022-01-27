@@ -14,14 +14,12 @@ class tcpService
         'close' => 'onClose',
     ];
 
-    public function initializer($services)
-    {
+    public function initializer($services) {
         $this->services = $services;
         $services -> eventInit($this, $this->events);
     }
 
-    public function onConnect($server, $fd)
-    {}
+    public function onConnect($server, $fd) {}
 
     public function onReceive(Server $server, $fd, $reactor_id, $data)
     {
@@ -30,6 +28,5 @@ class tcpService
         }
     }
 
-    public function onClose($server, $fd)
-    {}
+    public function onClose($server, $fd) {}
 }

@@ -45,8 +45,7 @@ class Console
 
     protected array $userCommand = [];
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app) {
         $this->app = $app;
         $this->input = new Input();
         $this->outPut = new outPut($this->openOutputStream());
@@ -57,8 +56,7 @@ class Console
         $this->run();
     }
 
-    protected function run()
-    {
+    protected function run() {
         // 获取用户指定命令
         $this->getCommand();
 
@@ -68,19 +66,16 @@ class Console
         }
     }
 
-    protected function getCommand(): static
-    {
+    protected function getCommand(): static {
         $this->command = array_merge(config('command'), $this->command);
         return $this;
     }
 
-    public function outWrite($content = '')
-    {
+    public function outWrite($content = '') {
         $this->outPut -> write($content) -> outPutWrite();
     }
 
-    protected function isRuningOS400(): bool
-    {
+    protected function isRuningOS400(): bool {
         $checks = [
             function_exists('php_uname') ? php_uname('s') : '',
             getenv('OSTYPE'),
@@ -89,13 +84,11 @@ class Console
         return false !== stripos(implode(';', $checks), 'OS400');
     }
 
-    protected function hasConsoleWrite(): bool
-    {
+    protected function hasConsoleWrite(): bool {
         return false === $this->isRuningOS400();
     }
 
-    protected function openOutputStream()
-    {
+    protected function openOutputStream() {
         if (!$this->hasConsoleWrite()) {
             return fopen('php://output', 'w');
         }

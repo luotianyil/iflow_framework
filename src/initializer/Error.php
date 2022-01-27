@@ -50,9 +50,9 @@ class Error {
     /**
      * 错误回调处理
      * @param Throwable $e
-     * @return bool
+     * @return bool|null
      */
-    public function appHandler(Throwable $e): bool {
+    public function appHandler(Throwable $e): bool|null {
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
         // 检测是否开启DEBUG
         if ($this->app -> isDebug()) {
@@ -63,7 +63,7 @@ class Error {
             $res = (new $this->handle($type)) -> render($this->app, $e);
             if ($res instanceof Response) return $res -> send();
         }
-        return (new renderDebugView($e, $this->config)) -> render() -> send();
+        return (new renderDebugView($e, $this->config)) -> render() ?-> send();
     }
 
     public function appShuDown() {

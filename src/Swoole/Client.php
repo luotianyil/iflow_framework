@@ -8,6 +8,7 @@ use iflow\Swoole\lib\pid;
 use Swoole\Http\Server as HttpServer;
 use Swoole\WebSocket\Server as WebSocketServer;
 use \Swoole\Coroutine\Client as SwooleClient;
+use function Co\run;
 
 trait Client
 {
@@ -32,9 +33,8 @@ trait Client
         }
     }
 
-    public function monitorClient()
-    {
-        \Co\run(function () {
+    public function monitorClient() {
+        run(function () {
             if (!$this->client->connect(...$this->param)) {
                 $this->services -> Console -> outPut -> writeLine("connect failed. Error: {$this->client->errCode}");
             } else {

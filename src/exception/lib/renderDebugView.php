@@ -45,7 +45,6 @@ class renderDebugView
         if (is_http_services()) {
             return $this->httpServerThrowException();
         }
-
         dump($this->getError());
         return null;
     }

@@ -5,9 +5,11 @@ namespace iflow\Swoole;
 
 
 use iflow\console\lib\Command;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\fileSystem\Watch;
 use iflow\initializer\appMonitoring;
 use Swoole\Process;
+use function Co\run;
 
 class Services extends Command
 {
@@ -25,8 +27,7 @@ class Services extends Command
     public array $userEvent = [];
     public float $runMemoryUsage = 0.00;
 
-    public function handle(array $event = [])
-    {
+    public function handle(array $event = []): bool {
         $this->userEvent = $event;
         if ($this->userEvent[1] !== 'service') {
             $configKeys = $this->userEvent[1];
@@ -85,7 +86,7 @@ class Services extends Command
         $info .= "runMemoryUsage: " . $this->runMemoryUsage . "M";
         $this->Console -> outPut ->writeLine($info.PHP_EOL.'> Start Success');
         $process = new Process(function () {
-            \Co\run(function () {
+            run(function () {
                 (new Watch()) -> initializer($this->app);
                 (new appMonitoring) -> initializer($this->app);
             });
@@ -97,9 +98,9 @@ class Services extends Command
     /**
      * 重启服务
      * @return bool
+     * @throws InvokeClassException
      */
-    protected function reStart(): bool
-    {
+    protected function reStart(): bool {
         if (!$this->pid->isRun()) {
             $this->Console -> outPut ->writeLine('no swoole server process running.');
             return false;
@@ -135,6 +136,7 @@ class Services extends Command
     /**
      * 初始化服务
      * @return bool
+     * @throws InvokeClassException
      */
     public function initializer(): bool
     {
@@ -155,10 +157,10 @@ class Services extends Command
      * 执行回调
      * @param string $object
      * @param array $param
-     * @return array|false|mixed
+     * @return mixed
+     * @throws InvokeClassException
      */
-    public function callConfigHandle($object = '', $param = [])
-    {
+    public function callConfigHandle(string $object = '', array $param = []): mixed {
         $object = $object !== '' ? $object : $this->services -> Handle;
         if (class_exists($object)) {
             $object = $this->app -> make($object);
@@ -166,5 +168,14 @@ class Services extends Command
                 return call_user_func([new $object, 'Handle'], ...$param);
         }
         return [];
+    }
+
+    /**
+     * 启动服务类型
+     * @return bool
+     */
+    protected function isStartServer(): bool {
+        $this->userEvent[2] = empty($this->userEvent[2]) ? 'service' : ($this->userEvent[2] === 'service' ? 'service' : 'client');
+        return $this->userEvent[2] !== 'client';
     }
 }

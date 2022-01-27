@@ -17,8 +17,7 @@ class Ast
     private Parser $astParser;
     private PrettyPrinterAbstract $printer;
 
-    public function __construct()
-    {
+    public function __construct() {
         $parserFactory = new ParserFactory();
         $this->astParser = $parserFactory -> create(ParserFactory::ONLY_PHP7);
         $this->printer = new Standard();

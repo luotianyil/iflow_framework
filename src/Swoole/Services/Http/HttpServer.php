@@ -13,8 +13,7 @@ class HttpServer extends initializer
      * 初始化HTTP服务
      * @param Services $services
      */
-    public function initializer(Services $services)
-    {
+    public function initializer(Services $services) {
         $this->services = $services;
         // 初始化 HTTP 全局环境
         $services->getServer()->on('request', function ($request, $response) {

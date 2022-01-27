@@ -12,8 +12,7 @@ class Services extends \iflow\Swoole\Services\Services
 
     protected object $rpcServer;
 
-    public function run()
-    {
+    public function run() {
         if ($this->userEvent[2] === 'client') {
             $this->initializers = [
                 $this->Handle
