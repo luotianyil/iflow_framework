@@ -34,6 +34,9 @@ class checkRequest extends initializer
         }
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     protected function startValidRequest(): bool {
 
         if (empty($this->data['request_uri'])) {

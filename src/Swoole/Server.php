@@ -38,7 +38,7 @@ trait Server
             default => \Swoole\Server::class
         };
         $this->server = new $serverClass(...$this->param);
-        $this->services -> app -> instance(\Swoole\Server::class, $this->server);
+        $this->services -> app -> register(\Swoole\Server::class, $this->server);
         $this->server -> set($this->options);
     }
 

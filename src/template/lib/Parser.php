@@ -90,7 +90,7 @@ class Parser extends tag implements TemplateParser
      * @param string $filePath
      * @return Response
      */
-    public function render($filePath = ''): Response
+    public function render(string $filePath = ''): Response
     {
         ob_start();
         extract($this->data, EXTR_OVERWRITE);

@@ -4,7 +4,7 @@
 namespace iflow\fileSystem;
 
 
-use iflow\Container;
+use iflow\Container\Container;
 use iflow\fileSystem\lib\FileList;
 
 /**
@@ -35,9 +35,7 @@ class File
     {
         if (file_exists($path)) {
             $fp = fopen($path, "r");
-            while (!feof($fp)) {
-                yield fgets($fp);
-            }
+            while (!feof($fp)) yield fgets($fp);
             fclose($fp);
         }
         return "";

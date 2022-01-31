@@ -8,11 +8,8 @@ use iflow\Swoole\Kafka\lib\consumer;
 
 class Services extends Command
 {
-    public function handle(array $event = [])
-    {
+    public function handle(array $event = []) {
         // TODO: Implement handle() method.
-        $this->app -> make(consumer::class, [
-            $this
-        ]) -> handle();
+        $this->app -> make(consumer::class, [ $this ]) -> handle();
     }
 }

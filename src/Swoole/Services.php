@@ -55,8 +55,7 @@ class Services extends Command
         return true;
     }
 
-    public function run()
-    {}
+    public function run() {}
 
     public function eventInit($class = '', array $event = [], $server = null) {
         $class = is_object($class) ? $class : $this;
@@ -84,7 +83,8 @@ class Services extends Command
         $this->runMemoryUsage = round(memory_get_usage() / 1024 / 1024, 2);
         $info = 'SERVER_ADDRESS: '.$this->server -> host.':'.$this->server -> port. PHP_EOL;
         $info .= "runMemoryUsage: " . $this->runMemoryUsage . "M";
-        $this->Console -> outPut ->writeLine($info.PHP_EOL.'> Start Success');
+        $servicesType = sprintf("%s %s", $this->userEvent[1] ?? 'http', $this->userEvent[2] ?? '');
+        $this->Console -> outPut ->writeLine($info.PHP_EOL.'> Start '. $servicesType .' Success');
         $process = new Process(function () {
             run(function () {
                 (new Watch()) -> initializer($this->app);

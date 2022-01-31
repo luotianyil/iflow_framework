@@ -11,9 +11,7 @@ class udpService
 
     protected Services $services;
 
-    protected array $events = [
-        'Packet' => 'onPacket'
-    ];
+    protected array $events = [ 'Packet' => 'onPacket' ];
 
     public function initializer(Services $services) {
         $this->services = $services;

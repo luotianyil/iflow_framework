@@ -5,8 +5,6 @@ namespace iflow\log\lib;
 
 
 use Psr\Log\LoggerInterface;
-use Swoole\Error;
-use Swoole\Exception;
 
 class Logger implements LoggerInterface
 {
@@ -88,8 +86,8 @@ class Logger implements LoggerInterface
         ) {
             // code ...
             $systemInfo = systemInfo();
-            $content = "<p>{$type}: {$content}</p><p>SystemInfo: os: {$systemInfo['os']['name']}, userName: {$systemInfo['os']['user_name']}</p>";
-            $content .= "<p>DateTime: {$timer}</p>";
+            $content = "<p>{$type}: $content</p><p>SystemInfo: os: {$systemInfo['os']['name']}, userName: {$systemInfo['os']['user_name']}</p>";
+            $content .= "<p>DateTime: $timer</p>";
             go(function () use ($systemInfo, $content) {
                 emails($this->config['toEmails'], $content, subject: "{$systemInfo['os']['name']} - {$systemInfo['os']['user_name']} 异常提醒");
             });

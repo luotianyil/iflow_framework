@@ -21,7 +21,7 @@ class ArgsType extends AnnotationAbstract {
         foreach ($this->args as $argKey => $value) {
             $this->args[$argKey]['type'] = (new Types()) -> getType($this->args[$argKey]['type'] ?? 'string');
         }
-        return [ $this->getArgs() ];
+        return [ $this -> getArgs() ];
     }
 
 

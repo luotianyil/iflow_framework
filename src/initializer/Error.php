@@ -66,6 +66,11 @@ class Error {
         return (new renderDebugView($e, $this->config)) -> render() ?-> send();
     }
 
+    /**
+     * 异常程序结束回调
+     * @return void
+     * @throws errorException
+     */
     public function appShuDown() {
         if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
             throw new errorException(0, $error['message'], $error['file'], $error['line']);

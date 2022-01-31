@@ -154,7 +154,7 @@ class tag
      * @param string $type
      * @return array
      */
-    protected function TagsType($tag, $type = ''): array
+    protected function TagsType($tag, string $type = ''): array
     {
         $tps = explode(':', $tag[1]);
         $param = "";

@@ -33,7 +33,7 @@ abstract class connection
 
 
     public function __construct(
-        private ?Services $service = null
+        protected ?Services $service = null
     ) {
         $this->config = config('swoole.kafka@'. $this->type);
         $this->connectionKafka();

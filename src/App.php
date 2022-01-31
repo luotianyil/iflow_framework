@@ -32,7 +32,6 @@ class App {
     protected string $rootPath = '';
     protected string $frameWorkPath = '';
     protected string $appPath = '';
-    protected string $appClassName = '';
     protected string $runtimePath = '';
     protected string $configExt = '.php';
 

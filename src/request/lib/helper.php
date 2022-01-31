@@ -129,11 +129,11 @@ trait helper
      * @param string $name
      * @return mixed
      */
-    public function params(string $name = ''): mixed
+    public function params(string $name = '', mixed $default = ''): mixed
     {
         return match ($this->isGet()) {
-            false => $this->postParams($name),
-            true => $this->getParams($name)
+            false => $this->postParams($name, $default),
+            true => $this->getParams($name, $default)
         };
     }
 
