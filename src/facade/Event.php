@@ -6,6 +6,9 @@ namespace iflow\facade;
 
 use iflow\Faceted;
 
+/**
+ * @mixin \iflow\event\Event
+ */
 class Event extends Faceted
 {
 

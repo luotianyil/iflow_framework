@@ -12,7 +12,7 @@ class mqttClientCommand extends mqttClient
 
     /**
      * 初始化连接
-     * @param $services
+     * @param array|Services $services
      */
     public function initializer(array|Services $services)
     {

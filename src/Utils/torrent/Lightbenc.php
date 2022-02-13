@@ -160,12 +160,13 @@ class Lightbenc
     }
 
     public static function bdecode_file($filename): array|int|string|null {
-        $f = file_get_contents($filename, FILE_BINARY);
+        $f = file_get_contents($filename);
         return Lightbenc::bdecode($f);
     }
 
-    public static function bdecode_getinfo(string $filename): int|array|string {
-        $t = Lightbenc::bdecode(file_get_contents($filename, FILE_BINARY));
+    public static function bdecode_getinfo(string $filename): array {
+        if (!file_exists($filename)) return [];
+        $t = Lightbenc::bdecode(file_get_contents($filename));
         $t['info_hash'] = sha1(Lightbenc::bencode($t['info']));
         $t['magnet_path'] = 'magnet:?xt=urn:btih:' . $t['info_hash'] . '&dn=' . $t['info']['name'];
         unset($t['info']['pieces']);

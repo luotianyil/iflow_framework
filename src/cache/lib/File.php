@@ -67,8 +67,7 @@ class File
         if (file_exists($file)) {
             $data = file_get_contents($file);
             if ($data !== '') {
-                $data = unserialize(gzuncompress($data));
-                return $data;
+                return unserialize(gzuncompress($data));
             }
         }
         return [];

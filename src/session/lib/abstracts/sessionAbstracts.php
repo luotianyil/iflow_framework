@@ -46,8 +46,10 @@ abstract class sessionAbstracts implements Session {
         $host = request() -> getDomain(true);
         $ip = request() -> ip();
 
-        $this->session_id =
-            $this->config['prefix'].($ip === '127.0.0.1' ? session_create_id() : hash('sha256', "$host-$ip"));
+        $this->session_id = sprintf("%s%s",
+            $this->config['prefix'] ?? '',
+            $ip === '127.0.0.1' ? session_create_id() : hash('sha256', "$host-$ip")
+        );
 
         cookie($this->session_name, $this->session_id);
         return $this->session_id;

@@ -18,9 +18,7 @@ class workMan extends Command
             $this->Console -> outPut -> writeLine('WorkMan Config is empty !!!');
             return true;
         }
-
-        $configName = $this->getArgument('--c');
-        $configName = $this->getArgument('config', $configName);
+        $configName = $this->getArgument('config', $this->getArgument('--c'));
         if (!$configName) {
             $configName = $config['default'];
         }

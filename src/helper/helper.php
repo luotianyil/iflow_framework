@@ -8,14 +8,18 @@ use iflow\Container\Container;
 use iflow\EMailer\implement\Exception\MailerException;
 use iflow\EMailer\implement\Message\Html;
 use iflow\EMailer\Mailer;
-use iflow\event\Event;
+use iflow\facade\Cache;
 use iflow\facade\Config;
+use iflow\facade\Event;
 use iflow\facade\Session;
 use iflow\fileSystem\File;
+use iflow\http\lib\Cookie;
 use iflow\i18n\I18n;
 use iflow\log\Log;
 use iflow\Request;
 use iflow\Response;
+use iflow\response\lib\Json;
+use iflow\response\lib\Xml;
 use iflow\Swoole\Rpc\lib\rpcRequest;
 use iflow\Swoole\Scrapy\http\http;
 use iflow\Swoole\Scrapy\http\http2;
@@ -49,8 +53,7 @@ if (!function_exists('loadConfigFile')) {
      * @param string $file
      * @return mixed
      */
-    function loadConfigFile(string $file): mixed
-    {
+    function loadConfigFile(string $file): mixed {
         $type = pathinfo($file, PATHINFO_EXTENSION);
         $config = match ($type) {
             'php' => include $file,
@@ -136,8 +139,7 @@ if (!function_exists('app_client')) {
 
 // 信息
 if (!function_exists('message')) {
-    function message($type = 'json') : Message
-    {
+    function message($type = 'json') : Message {
         return app() -> make(Message::class) -> setFilter($type);
     }
 }
@@ -181,7 +183,7 @@ if (!function_exists('logs')) {
 // event
 if (!function_exists('event')) {
     function event(string $event, ...$args) {
-        return app() -> make(Event::class) -> trigger($event, $args);
+        return Event::trigger($event, $args);
     }
 }
 
@@ -209,11 +211,12 @@ if (!function_exists('rpc')) {
         $config['server']['enable'] = $config['server']['enable'] ?? false;
         try {
             $config = $config['server']['clientList'];
-            $clientList = \iflow\facade\Cache::store($config) -> get($config['cacheName']);
+            $clientList = Cache::store($config) -> get($config['cacheName']);
             foreach ($clientList as $clientValue) {
                 $clientValue = array_values($clientValue)[0];
                 if ($clientValue['name'] === $clientName) {
-                    return app_server() -> send($clientValue['fd'],
+                    return app_server() -> send(
+                        $clientValue['fd'],
                         json_encode($param, JSON_UNESCAPED_UNICODE)
                     );
                 }
@@ -222,9 +225,7 @@ if (!function_exists('rpc')) {
             $param['client_name'] = $clientName;
             $param['isClientConnection'] = true;
             $client = app_client();
-            $client -> send(
-                json_encode($param, JSON_UNESCAPED_UNICODE)
-            );
+            $client -> send(json_encode($param, JSON_UNESCAPED_UNICODE));
             return $client -> recv(30);
         }
         return false;
@@ -256,9 +257,7 @@ if (!function_exists('httpRequest')) {
         bool $isSsl = false,
         array $header = [],
         array|string $data = [],
-        array $options = [
-            'timeout' => 30
-        ],
+        array $options = [ 'timeout' => 30 ],
         string $type = "http"
     ): http | http2
     {
@@ -291,7 +290,7 @@ if (!function_exists('session')) {
 // cookie
 if (!function_exists('cookie')) {
     function cookie(string $name = '', $value = '', array $options = []) {
-        $cookie = app() -> make(\iflow\http\lib\Cookie::class);
+        $cookie = app() -> make(Cookie::class);
         if ($value === '') {
             return $cookie -> get($name);
         }
@@ -302,7 +301,7 @@ if (!function_exists('cookie')) {
 
 // 返回json
 if (!function_exists('json')) {
-    function json($data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Json {
+    function json($data, int $code = 200, array $headers = [], array $options = []): Json {
         return Response::create($data, $code, 'json')
             -> headers($headers) -> options($options);
     }
@@ -310,7 +309,7 @@ if (!function_exists('json')) {
 
 // 返回xml
 if (!function_exists('xml')) {
-    function xml(array $data, int $code = 200, array $headers = [], array $options = []): \iflow\response\lib\Xml {
+    function xml(array $data, int $code = 200, array $headers = [], array $options = []): Xml {
         return Response::create($data, $code, 'xml')
             -> headers($headers) -> options($options);
     }
@@ -342,7 +341,7 @@ if (!function_exists('hasha')) {
 
 // 种子文件解析
 if (!function_exists('bt_to_magnet')) {
-    function bt_to_magnet($torrent) {
+    function bt_to_magnet(string $torrent): array {
         return (new Lightbenc()) -> bdecode_getinfo($torrent);
     }
 }

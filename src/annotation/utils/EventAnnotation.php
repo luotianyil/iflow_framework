@@ -16,9 +16,7 @@ class EventAnnotation extends AnnotationAbstract {
 
     public AnnotationEnum $hookEnum = AnnotationEnum::Mounted;
 
-    public function __construct(
-        protected string $eventName
-    ) {}
+    public function __construct(protected string $eventName) {}
 
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.

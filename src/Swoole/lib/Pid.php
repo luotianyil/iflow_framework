@@ -6,7 +6,7 @@ namespace iflow\Swoole\lib;
 
 use Swoole\Process;
 
-class pid
+class Pid
 {
 
     protected string $file = '';

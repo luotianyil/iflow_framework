@@ -8,9 +8,7 @@ use iflow\Swoole\Udp\lib\udpService;
 
 class Services extends \iflow\Swoole\Services
 {
-    protected array $initializers = [
-        udpService::class
-    ];
+    protected array $initializers = [ udpService::class ];
 
     /**
      * 启动UDP服务

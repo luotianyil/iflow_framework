@@ -88,8 +88,7 @@ class PictureCrop
      * @param string|null $savePath
      * @return false|string
      */
-    public function out(string $savePath = null)
-    {
+    public function out(string $savePath = null) {
         ob_start();
         imagejpeg($this->crop ?: $this->source, $savePath);
         $info = ob_get_contents();

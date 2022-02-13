@@ -14,7 +14,7 @@ use Reflector;
 #[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_FUNCTION)]
 class authAnnotation extends AnnotationAbstract {
 
-    public AnnotationEnum $hookEnum = AnnotationEnum::NonExecute;
+    public AnnotationEnum $hookEnum = AnnotationEnum::InitializerNonExecute;
 
     public array $config = [];
     protected array $initializers = [
@@ -33,13 +33,12 @@ class authAnnotation extends AnnotationAbstract {
 
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.
-        return null;
-    }
 
-    public function handle($requestTools) {
-        $this->app = $requestTools -> services -> app;
-        $this->router = $requestTools -> router;
+        $this->app = app();
+        $this->router = router();
         $this->config = config('auth');
+
+        $request = request();
 
         // 处理回调方法
         $configCallBack = is_string($this -> config['callBack']) ? [
@@ -49,12 +48,13 @@ class authAnnotation extends AnnotationAbstract {
 
         $handle = $this->app -> make($this->config['Handle'], [ $this ], true);
         foreach ($this->initializers as $key) {
-            call_user_func([$handle, $key], $requestTools -> request);
+            call_user_func([$handle, $key], $request);
         }
-        $response = call_user_func([$handle, 'validateAuth'], $requestTools -> request) -> callback();
+        $response = call_user_func([$handle, 'validateAuth'], $request) -> callback();
         if ($response !== true) {
             throw new AuthorizationException($response ?: 'Unauthorized' );
         }
-    }
 
+        return null;
+    }
 }

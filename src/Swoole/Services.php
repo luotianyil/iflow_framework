@@ -51,6 +51,7 @@ class Services extends Command
         };
 
         if ($this->userEvent[0] !== 'start') return true;
+        $this->app -> register(Services::class, $this);
         $this->run();
         return true;
     }
@@ -175,7 +176,7 @@ class Services extends Command
      * @return bool
      */
     protected function isStartServer(): bool {
-        $this->userEvent[2] = empty($this->userEvent[2]) ? 'service' : ($this->userEvent[2] === 'service' ? 'service' : 'client');
+        if (empty($this->userEvent[2])) $this->userEvent[2] = 'client';
         return $this->userEvent[2] !== 'client';
     }
 }

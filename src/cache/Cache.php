@@ -13,8 +13,7 @@ use iflow\cache\lib\Redis;
  * Class Cache
  * @package iflow\cache
  */
-class Cache
-{
+class Cache {
 
     protected array $config = [];
 
@@ -25,8 +24,7 @@ class Cache
         $this->config = is_string($default) ? config('cache@stores.'.$default) : $default;
     }
 
-    public function store(string|array $name = ''): Redis | File | IRedis
-    {
+    public function store(string|array $name = ''): Redis | File | IRedis {
         if (is_string($name)) {
             $name = $name ?: config('cache@default');
         }

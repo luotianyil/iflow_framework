@@ -17,8 +17,6 @@ abstract class ObserverAbstract implements \SplObserver {
      * 执行变更方法
      * @param SplSubject $subject
      */
-    public function update(SplSubject $subject): void {
-        // TODO: Implement update() method.
-    }
+    public function update(SplSubject $subject): void {}
 
 }

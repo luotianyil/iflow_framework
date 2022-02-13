@@ -7,8 +7,7 @@ use iflow\facade\Cache;
 use iflow\Swoole\Rpc\lib\router\checkRequest;
 use Swoole\Server;
 
-class rpcReceive
-{
+class rpcReceive {
 
     public array $router;
     public int $fd;
@@ -16,8 +15,7 @@ class rpcReceive
     protected ?array $clientList = [];
     protected mixed $config = [];
 
-    public function handle(Server $server, $fd, $reactor_id, $data): bool
-    {
+    public function handle(Server $server, $fd, $reactor_id, $data): bool {
         $this->server = $server;
         $this->fd = $fd;
         // 返回 PONG
@@ -33,8 +31,7 @@ class rpcReceive
             if (isset($info['isClientConnection']) && isset($info['client_name'])) {
                 // 验证是否请求自己
                 if ($info['client_name'] === $this->config['client_name']) {
-                    return (new checkRequest())
-                        -> init($server, $fd, $info);
+                    return (new checkRequest()) -> init($server, $fd, $info);
                 }
 
                 return $this -> send(rpc($info['client_name'], $info['request_uri'], $info));
@@ -46,8 +43,7 @@ class rpcReceive
         return $this->send(404);
     }
 
-    public function addClient($info, $fd): bool
-    {
+    public function addClient($info, $fd): bool {
         if (!empty($info['initializer']) && $info['initializer'] == 1) {
             if (isset($this->clientList[$fd])) {
                 return true;
@@ -63,8 +59,7 @@ class rpcReceive
         return false;
     }
 
-    protected function send($response): bool
-    {
+    protected function send($response): bool {
         return $this->server -> send($this->fd,
             match (!is_string($response) || !is_numeric($response)) {
                 true => json_encode($response, JSON_UNESCAPED_UNICODE),

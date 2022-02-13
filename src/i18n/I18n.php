@@ -7,15 +7,13 @@ namespace iflow\i18n;
 use iflow\App;
 use iflow\i18n\lib\utils;
 
-class I18n
-{
+class I18n {
 
     use utils;
     protected array $lang = [];
     protected App $app;
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app) {
         $this->app = $app;
         $this->setLang();
     }

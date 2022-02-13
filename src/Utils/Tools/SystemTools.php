@@ -39,8 +39,7 @@ class SystemTools
         ];
     }
 
-    protected function getInfo($configPath = ''): array
-    {
+    protected function getInfo($configPath = ''): array {
         $cpuInfo = [];
         if (file_exists($configPath)) {
             $info = explode(PHP_EOL, trim(file_get_contents($configPath)));
@@ -59,8 +58,7 @@ class SystemTools
         return $this->getInfo($path);
     }
 
-    public function getMemInfo($path = '/proc/meminfo'): array
-    {
+    public function getMemInfo($path = '/proc/meminfo'): array {
         return $this->getInfo($path);
     }
 
@@ -82,8 +80,7 @@ class SystemTools
         return $length.' '.$unit;
     }
 
-    public function get_extension_loaded(array $extensions): array
-    {
+    public function get_extension_loaded(array $extensions): array {
         $not_ext = [];
         foreach ($extensions as $ext) {
             if (!extension_loaded($ext)) {
@@ -93,8 +90,7 @@ class SystemTools
         return $not_ext;
     }
 
-    public function isCli(): bool
-    {
-        return PHP_SAPI === 'cli';
+    public function isCli(): bool {
+        return php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg';
     }
 }

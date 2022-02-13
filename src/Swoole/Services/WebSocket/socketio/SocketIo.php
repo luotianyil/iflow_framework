@@ -13,17 +13,14 @@ class SocketIo
 
     public array $config = [];
 
-    public function __initializer(Request $request, Response $response): Response|string
-    {
+    public function __initializer(Request $request, Response $response): Response|string {
         if (!in_array($request->getParams('transport'), $this->transports)) {
             return json([
                 'code' => 0,
                 'msg' => 'Transport unknown'
             ], 400);
         }
-        if ($request -> params('sid') !== null) {
-            return '1:16';
-        }
+        if ($request -> params('sid') !== null) return '1:16';
         $sid     = base64_encode(uniqid());
         $payload = json_encode(
             [

@@ -60,8 +60,7 @@ class install extends Command
         }
     }
 
-    protected function dataExecute(string $filePath = ''): bool
-    {
+    protected function dataExecute(string $filePath = ''): bool {
         $this->Console -> outPut -> writeLine('include DataBase file: ' . basename($filePath));
         if (!file_exists($filePath)) return false;
         $sql = file_get_contents($filePath);
@@ -70,9 +69,7 @@ class install extends Command
         // 写入数据库
         foreach ($sql as $key => $value) {
             $value = trim($value);
-            if (empty($value)) {
-                continue;
-            }
+            if (empty($value)) continue;
             Db::execute($value);
         }
         return true;

@@ -3,12 +3,11 @@
 
 namespace iflow\Swoole;
 
-use iflow\Swoole\lib\pid;
+use iflow\Swoole\lib\Pid;
 use Swoole\Http\Server as HttpServer;
 use Swoole\WebSocket\Server as WebSocketServer;
 
-trait Server
-{
+trait Server {
 
     use Client;
 
@@ -45,7 +44,7 @@ trait Server
 
     public function setPid(): static
     {
-        $this->pid = new pid($this -> configs['swConfig']['pid_file']);
+        $this->pid = new Pid($this -> configs['swConfig']['pid_file']);
         return $this;
     }
 
@@ -77,9 +76,7 @@ trait Server
         return $this;
     }
 
-    public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|\Swoole\Coroutine\Client
-    {
-        if (isset($this->services -> userEvent[2]) && strtolower($this->services -> userEvent[2]) === 'client') return $this->client;
-        return $this->server;
+    public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|\Swoole\Coroutine\Client {
+        return $this->services -> isStartServer() ? $this->server: $this->client;
     }
 }

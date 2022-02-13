@@ -11,7 +11,7 @@ class Parser
     public function unpack($data, $protocol_level = 5): mixed
     {
         $data = trim(trim($data, '"'), '');
-        if (is_string($data) && strlen($data) > 0 && $data !== '') {
+        if (strlen($data) > 0 && $data !== '') {
             return $this -> Protocol($protocol_level === 5 ? V5::class : V3::class , $data);
         }
         return [];

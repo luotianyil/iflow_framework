@@ -28,8 +28,7 @@ class rpcClient
     ];
 
     // client initializer
-    public function initializer($services)
-    {
+    public function initializer($services) {
         $this->services = $services;
         $this->app = $services -> app;
         $this->config = $services -> config;
@@ -85,8 +84,7 @@ class rpcClient
         $this->server->addProcess($process);
     }
 
-    protected function startRpcServer()
-    {
+    protected function startRpcServer() {
         $this->rpcServer = $this->server -> addlistener(...array_values($this->configs['host']));
         $this->rpcServer -> set(
             $this->configs['swConfig']
@@ -118,16 +116,13 @@ class rpcClient
         ) -> init($server, 0, $pack);
     }
 
-    public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|SwooleClient
-    {
+    public function getServer(): HttpServer|WebSocketServer|\Swoole\Server|SwooleClient {
         return $this->server;
     }
 
-    public function eventInit($class = '', array $event = [])
-    {
+    public function eventInit($class = '', array $event = []) {
         $this->services -> eventInit($class, $event, $this->server);
     }
 
-    public function onClose()
-    {}
+    public function onClose() {}
 }

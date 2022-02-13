@@ -4,13 +4,14 @@
 namespace iflow\Swoole\Rpc\lib\router;
 
 
+use iflow\App;
 use iflow\exception\lib\HttpException;
 use iflow\exception\lib\HttpResponseException;
+use iflow\http\Kernel\Request\RequestInitializer;
 use iflow\Response;
-use iflow\Swoole\Services\Http\lib\initializer;
+use iflow\Swoole\Services;
 
-class checkRequest extends initializer
-{
+class checkRequest extends RequestInitializer {
 
     protected object $server;
     protected int $fd = 0;
@@ -20,9 +21,10 @@ class checkRequest extends initializer
         $this->server = $server;
         $this->fd = $fd;
         $this->data = $data;
+        $this->services = app(Services::class);
 
         try {
-            foreach (['startValidRequest', 'runAop', 'startController'] as $action) {
+            foreach (['QueryRouter', 'RunAop', 'ReturnsResponseBody'] as $action) {
                 if (method_exists($this, $action) && call_user_func([$this, $action])) break;
             }
             return true;
@@ -37,7 +39,7 @@ class checkRequest extends initializer
     /**
      * @throws \ReflectionException
      */
-    protected function startValidRequest(): bool {
+    protected function QueryRouter(): bool {
 
         if (empty($this->data['request_uri'])) {
             return $this->send(404);
@@ -51,28 +53,21 @@ class checkRequest extends initializer
         if (!$this->router) {
             return $this->send(404);
         }
-        return $this->newInstanceController();
+        return $this->GenerateControllerService();
     }
 
     // 验证响应数据
-    public function validateResponse($res): bool
-    {
-        if ($res instanceof Response) {
-            return $this->send($res);
-        }
-
-        if ($res === false) {
+    public function ResponseBodyValidate($response): bool {
+        if ($response instanceof Response) return $this->send($response);
+        if ($response === false) {
             return $this->send(404);
         }
         return false;
     }
 
     // 发送信息
-    protected function send($response): bool
-    {
-        if ($this->fd !== 0) {
-            $param[] = $this->fd;
-        }
+    protected function send($response): bool {
+        if ($this->fd !== 0) $param[] = $this->fd;
         if ($response instanceof Response) $response = $response -> output($response -> data);
 
         $param[] = match (!is_string($response)) {

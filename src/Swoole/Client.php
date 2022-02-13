@@ -4,10 +4,10 @@
 namespace iflow\Swoole;
 
 
-use iflow\Swoole\lib\pid;
+use iflow\Swoole\lib\Pid;
 use Swoole\Http\Server as HttpServer;
 use Swoole\WebSocket\Server as WebSocketServer;
-use \Swoole\Coroutine\Client as SwooleClient;
+use Swoole\Coroutine\Client as SwooleClient;
 use function Co\run;
 
 trait Client
@@ -16,7 +16,7 @@ trait Client
     protected HttpServer|WebSocketServer|\Swoole\Server|SwooleClient $server;
     protected SwooleClient $client;
     protected Services $services;
-    public pid $pid;
+    public Pid $pid;
     protected string $eventType = '';
     public array $param = [];
     public array $configs = [];

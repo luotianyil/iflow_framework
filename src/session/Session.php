@@ -50,8 +50,7 @@ class Session
      * @return mixed
      */
     public function set(string|null $name = null, array|string $data = []): mixed {
-        $this->sessionTools -> offsetSet($name, $data);
-        return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
+        return $this->sessionTools -> offsetSet($name, $data);
     }
 
     /**
@@ -78,5 +77,13 @@ class Session
      */
     public function getSessionId(): string {
         return $this->session -> makeSessionID();
+    }
+
+    /**
+     * 保存Session至缓存
+     * @return void
+     */
+    public function save() {
+        $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
     }
 }

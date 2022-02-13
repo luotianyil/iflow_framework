@@ -3,6 +3,7 @@
 
 namespace iflow\Swoole\MQTT;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Swoole\MQTT\lib\mqttClientCommand;
 use iflow\Swoole\MQTT\lib\mqttServer;
 
@@ -13,6 +14,9 @@ class Services extends \iflow\Swoole\Services
         mqttServer::class
     ];
 
+    /**
+     * @throws InvokeClassException
+     */
     public function run()
     {
         $this->userEvent[2] = empty($this->userEvent[2]) ? 'client' : ($this->userEvent[2] === 'server' ? 'server' : 'client');

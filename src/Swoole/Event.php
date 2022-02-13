@@ -5,13 +5,11 @@ namespace iflow\Swoole;
 
 abstract class Event
 {
-    public function onConnect($server, $req)
-    {}
+    public function onConnect($server, $req) {}
 
     abstract public function onReceive($server, $fd, $reactor_id, $data);
 
-    public function onClose($server, $req)
-    {}
+    public function onClose($server, $req) {}
 
     abstract public function onOpen($server, $req);
 

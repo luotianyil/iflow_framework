@@ -44,7 +44,10 @@ class initializer extends requestTools {
         return $this;
     }
 
-    // 验证路由
+    /**
+     * 验证路由
+     * @throws ReflectionException
+     */
     protected function validateRouter(): bool {
         $this->router = app(CheckRule::class)
             -> setRouterConfigKey('http')
@@ -87,7 +90,7 @@ class initializer extends requestTools {
     }
 
     /**
-     * 设置Bean 参数
+     * 设置 Bean 参数
      * @param array $params
      * @return object
      * @throws ReflectionException|ValueException|InvokeFunctionException|InvokeClassException
@@ -110,7 +113,7 @@ class initializer extends requestTools {
 
             $container = Container::getInstance();
             if (method_exists($object, '__make')) {
-                $container -> invoke([$object, '__make'], [ $container, $object ]);
+                $container -> invoke([ $object, '__make' ], [ $container, $object ]);
             }
 
             $args = [ $object ];

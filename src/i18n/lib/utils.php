@@ -4,16 +4,15 @@
 namespace iflow\i18n\lib;
 
 
-trait utils
-{
+trait utils {
+
     protected string $langType = 'zh-cn';
 
     /**
      * @param string $langType
      * @return static
      */
-    public function setLangType(string $langType = ''): static
-    {
+    public function setLangType(string $langType = ''): static {
         if ($langType === '') {
             $langType = request() -> getLanguage();
         }
