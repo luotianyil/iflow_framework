@@ -51,14 +51,13 @@ class mqttClient
     }
 
     // 发送Connection请求
-    protected function connect(): bool
-    {
+    protected function connect(): bool {
         $inputConfig = $this -> callConfigHandle($this-> config['connectBefore'], [$this]);
 
         $this->inputConfig = empty($inputConfig) ? $this->inputConfig : $inputConfig;
 
         if (!$res = $this->client->connect(...array_values($this->inputConfig['connect'] ?? []))) {
-            logs('error', 'connect failed. Error', $res);
+            logs('error', 'connect failed. Error', $res) -> update();
             return false;
         }
         return true;

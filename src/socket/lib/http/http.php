@@ -5,10 +5,9 @@ namespace iflow\socket\lib\http;
 
 
 use iflow\initializer\Error;
-use iflow\socket\lib\interfaces\services;
-use iflow\Utils\Tools\Timer;
+use iflow\socket\lib\interfaces\Services;
 
-class http implements services
+class http implements Services
 {
 
     protected mixed $socketServer = null;
@@ -25,10 +24,9 @@ class http implements services
         $this->options['packSize'] = $this->options['packSize'] ?? 9024;
     }
 
-    public function start()
-    {
+    public function start() {
         // TODO: Implement start() method.
-        $this->triggerEvent('beforestart', $this); // 启动前回调
+        $this->trigger('beforestart', $this); // 启动前回调
         $this->createSocketServer() -> wait();
     }
 
@@ -46,7 +44,7 @@ class http implements services
             // 绑定端口
             socket_bind($this->socketServer, $this->host, $this->port);
         }
-        $this->triggerEvent('afterstart', $this); // 启动后回调
+        $this->trigger('afterstart', $this); // 启动后回调
         return $this;
     }
 
@@ -68,7 +66,7 @@ class http implements services
                         $this->request = new request($pack, $sock, $this->options);
                         $this->response = new response($sock);
                         // 接收到 请求后的回调
-                        $this->triggerEvent('request', $this->request, $this->response);
+                        $this->trigger('request', $this->request, $this->response);
                     } catch (\Throwable $exception) {
                         app() -> make(Error::class) -> appHandler($exception);
                     }
@@ -105,8 +103,7 @@ class http implements services
      * @param string $event
      * @param mixed ...$args
      */
-    protected function triggerEvent(string $event, ...$args)
-    {
+    protected function trigger(string $event, ...$args) {
         if (!empty($this->event[$event])) {
             // throw new \Exception("callBack event: $event not exists");
             call_user_func($this->event[$event], ...$args);

@@ -25,11 +25,9 @@ class Parser
     protected function Protocol($class, $data, $func = 'unpack'): mixed
     {
         try {
-            if (class_exists($class)) {
-                return $class::$func($data);
-            }
+            if (class_exists($class)) return $class::$func($data);
         } catch (\Exception $exception) {
-            logs('error', $exception -> getMessage());
+            logs('error', $exception -> getMessage()) -> update();
         }
         return [];
     }

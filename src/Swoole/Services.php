@@ -176,7 +176,9 @@ class Services extends Command
      * @return bool
      */
     protected function isStartServer(): bool {
-        if (empty($this->userEvent[2])) $this->userEvent[2] = 'client';
+        if (empty($this->userEvent[2])) {
+            $this->userEvent[2] = $this->userEvent[1] === 'service' ? 'server' : 'client';
+        }
         return $this->userEvent[2] !== 'client';
     }
 }

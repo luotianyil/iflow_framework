@@ -4,10 +4,10 @@
 namespace iflow\log\lib;
 
 
+use iflow\event\lib\Abstracts\ObserverAbstract;
 use Psr\Log\LoggerInterface;
 
-class Logger implements LoggerInterface
-{
+class Logger extends ObserverAbstract implements LoggerInterface {
 
     protected array $logs = [];
     protected string $file = '';
@@ -74,30 +74,11 @@ class Logger implements LoggerInterface
     {
         $content = $message. trim(var_export(count($content) <= 0 ? '' : $content, true), "'");
         $timer = \DateTime::createFromFormat('0.u00 U', microtime())->setTimezone(new \DateTimeZone(date_default_timezone_get()))->format($this->config['time_format']);
-        $this->logs[] = [
-            'time' => $timer,
-            'content' => $content,
-            'type' => strtoupper($type)
-        ];
-
-        if (
-            in_array($type, $this->config['errorLevelSendEmail'])
-            && swoole_success()
-        ) {
-            // code ...
-            $systemInfo = systemInfo();
-            $content = "<p>{$type}: $content</p><p>SystemInfo: os: {$systemInfo['os']['name']}, userName: {$systemInfo['os']['user_name']}</p>";
-            $content .= "<p>DateTime: $timer</p>";
-            go(function () use ($systemInfo, $content) {
-                emails($this->config['toEmails'], $content, subject: "{$systemInfo['os']['name']} - {$systemInfo['os']['user_name']} 异常提醒");
-            });
-        }
-
+        $this->logs[] = [ 'time' => $timer, 'content' => $content, 'type' => strtoupper($type) ];
         return $this;
     }
 
-    public function clear(): bool
-    {
+    public function clear(): bool {
         $this->logs = [];
         return true;
     }

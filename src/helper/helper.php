@@ -175,7 +175,7 @@ if (!function_exists('systemInfo')) {
 
 // write log
 if (!function_exists('logs')) {
-    function logs(string $type = 'info', string $message = '', array $content = []) {
+    function logs(string $type = 'info', string $message = '', array $content = []): Log {
         return app() -> make(Log::class) -> write($type, $message, $content);
     }
 }

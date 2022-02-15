@@ -4,7 +4,7 @@
 namespace iflow\socket\lib\interfaces;
 
 
-interface services
+interface Services
 {
 
     public function start();

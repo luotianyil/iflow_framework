@@ -39,9 +39,9 @@ class App {
     protected array $initializers = [
         Config::class,
         appSurroundings::class,
+        Event::class,
         Log::class,
         Error::class,
-        Event::class,
         initializer::class,
         Console::class
     ];

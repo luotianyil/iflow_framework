@@ -3,7 +3,6 @@
 
 namespace iflow\Swoole\Pool\lib;
 
-class pool extends \Swoole\Process\Pool
-{
+class Pool extends \Swoole\Process\Pool {
 
 }

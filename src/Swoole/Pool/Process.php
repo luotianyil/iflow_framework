@@ -4,9 +4,9 @@
 namespace iflow\Swoole\Pool;
 
 
-use iflow\Swoole\Pool\lib\pool;
+use iflow\Swoole\Pool\lib\Pool;
 
-class Process extends pool
+class Process extends Pool
 {
 
     private array $events = [

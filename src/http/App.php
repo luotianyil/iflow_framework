@@ -17,10 +17,10 @@ class App extends \iflow\App {
 
     protected array $initializers = [
         Config::class,
+        Event::class,
         Log::class,
         Error::class,
         appSurroundings::class,
-        Event::class,
         initializer::class
     ];
 

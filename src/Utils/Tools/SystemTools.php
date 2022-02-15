@@ -73,8 +73,7 @@ class SystemTools
     public function readable_size($length): string {
         $units = ['B', 'kB', 'MB', 'GB', 'TB'];
         foreach ($units as $unit) {
-            if($length > 1024)
-                $length = round($length/1024, 1);
+            if($length > 1024) $length = round($length/1024, 1);
             else break;
         }
         return $length.' '.$unit;

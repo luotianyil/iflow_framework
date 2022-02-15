@@ -25,6 +25,11 @@ abstract class SubjectAbstract implements SplSubject {
         }
     }
 
+    /**
+     * 删除订阅
+     * @param SplObserver $observer
+     * @return void
+     */
     public function detach(SplObserver $observer): void {
         // TODO: Implement detach() method.
         foreach ($this->_observer as $index => $_observer) {
@@ -35,10 +40,13 @@ abstract class SubjectAbstract implements SplSubject {
         }
     }
 
-    // 变更通知
+    /**
+     * 变更通知
+     * @return void
+     */
     public function notify(): void {
         // TODO: Implement notify() method.
-        array_walk_recursive($this->_observer, fn ($observer) => $observer -> update($this));
+        array_walk_recursive($this->_observer, fn (SplObserver $observer) => $observer -> update($this));
     }
 
     /**

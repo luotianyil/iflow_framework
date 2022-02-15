@@ -4,10 +4,10 @@
 namespace iflow\Swoole\Elasticsearch\lib;
 
 
-class docs
-{
+class docs {
 
     use connection;
+
     public function createDoc($docs, string $indexName, string $typeName)
     {
         $docs = $this->bulk($docs, $indexName, $typeName);
@@ -17,8 +17,7 @@ class docs
 
     public function deleteDocs(string $indexName, string $typeName, string $docId)
     {
-        return $this->sendRequest('DELETE',
-        sprintf("%s/%s/%s", $indexName, $typeName, $docId));
+        return $this->sendRequest('DELETE', sprintf("%s/%s/%s", $indexName, $typeName, $docId));
     }
 
     public function deleteDocsBulk(array $docs, string $indexName, string $typeName)
@@ -60,12 +59,15 @@ class docs
         return !empty($this->getDocs(...func_get_args())['found']);
     }
 
-    public function searchDoc(string $indexName, string $typeName)
+    /**
+     * 搜索文档
+     * @param string $indexName
+     * @param string $typeName
+     * @return mixed
+     */
+    public function searchDoc(string $indexName, string $typeName): mixed
     {
-        return $this->sendRequest('GET',
-            sprintf("%s/%s/_search", $indexName, $typeName),
-            $this->docQuery
-        );
+        return $this->sendRequest('GET', sprintf("%s/%s/_search", $indexName, $typeName), $this->docQuery);
     }
 
 }

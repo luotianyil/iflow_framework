@@ -32,7 +32,7 @@ class Client extends Service
                     go(function () use ($pack){
                         if (isset($pack['action']) && $pack['action'] === 'new') {
                             if ($this->connectionTunnel() === false) {
-                                logs('error', 'Tunnel Server Connection Fail');
+                                logs('error', 'Tunnel Server Connection Fail') -> update();
                             } else {
                                 $this->send($this->tunnel, $pack['fd']);
                                 $local = $this->localConnection();
