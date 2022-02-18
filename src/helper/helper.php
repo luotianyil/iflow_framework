@@ -432,6 +432,11 @@ if (!function_exists('validate')) {
 }
 
 if (!function_exists('dump')) {
+    /**
+     * 格式化输出
+     * @param ...$args
+     * @return bool
+     */
     function dump(...$args): bool {
         ob_start();
         var_dump(...$args);
@@ -439,7 +444,6 @@ if (!function_exists('dump')) {
 
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
         $outConsole = app(Console::class) -> outPut ?: null;
-        var_dump($outConsole);
         if (!is_http_services() && $outConsole !== null) {
             $outConsole -> write(PHP_EOL . $output . PHP_EOL);
         } else {

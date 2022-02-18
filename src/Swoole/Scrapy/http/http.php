@@ -108,9 +108,9 @@ class http
             $value['port'] = $value['port'] > 0 ? $value['port'] : 80;
         } else {
             $this->param[] = $this->parse_url['host'];
-            $value['port'] = $value['port'] > 0 ? $value['port'] : (
-                $this->parse_url['scheme'] === 'https' ? 443 : 80
-            );
+            $host = explode(':', $this->parse_url['host']);
+            if (count($host) < 1)
+                $value['port'] = $value['port'] > 0 ? $value['port'] : ($this->parse_url['scheme'] === 'https' ? 443 : 80);
         }
 
         $this->param[] = $value['port'];

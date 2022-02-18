@@ -35,8 +35,8 @@ class File extends Response
             $ext = pathinfo($data, PATHINFO_EXTENSION);
             if (isset($this->mimeType[$ext])) $mimetype = $this->mimeType[$ext];
             return $this->contentType($mimetype) -> end($data);
-        } else $this->notFount();
-        return false;
+        }
+        $this->notFount();
     }
 
     public function send(): bool
