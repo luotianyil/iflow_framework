@@ -43,12 +43,7 @@ class Input
             $key_command = explode('-', $key);
             $commandClass = '';
 
-            if (count($key_command) < 2) {
-                if ($key === $methods) $commandClass = $value;
-            } else {
-                if ($key_command[1] === $methods) $commandClass = $value;
-            }
-
+            if ($key_command[1] === $methods) $commandClass = $value;
             if ($commandClass !== '') {
                 if (!class_exists($commandClass)) throw new \Error("class {$commandClass} not exists");
                 else {

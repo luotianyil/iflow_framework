@@ -10,6 +10,7 @@ use iflow\http\lib\Service;
 use iflow\initializer\appSurroundings;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
+use iflow\initializer\Helpers;
 use iflow\initializer\initializer;
 use iflow\log\Log;
 
@@ -17,6 +18,7 @@ class App extends \iflow\App {
 
     protected array $initializers = [
         Config::class,
+        Helpers::class,
         Event::class,
         Log::class,
         Error::class,

@@ -30,7 +30,7 @@ class appSurroundings {
     protected function validateExt(): static {
         $extension = (new SystemTools()) -> get_extension_loaded($this->config['ext']);
         if (count($extension) > 0) {
-            throw new \Exception("extension: {$extension[0]} not installed");
+            throw new \Exception("extension: $extension[0] not installed");
         }
         return $this;
     }

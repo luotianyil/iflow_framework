@@ -6,7 +6,7 @@ namespace iflow\request\lib;
 
 use iflow\fileSystem\lib\upLoadFile;
 
-trait helper
+trait Helper
 {
 
     public mixed $request = null;

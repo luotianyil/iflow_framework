@@ -8,12 +8,7 @@ use iflow\Container\Container;
 use iflow\Container\implement\annotation\traits\Execute;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\event\Event;
-use iflow\initializer\{
-    appSurroundings,
-    Config,
-    Error,
-    initializer
-};
+use iflow\initializer\{appSurroundings, Config, Error, Helpers, initializer};
 use iflow\log\Log;
 
 /**
@@ -38,6 +33,7 @@ class App {
     // 初始化服务
     protected array $initializers = [
         Config::class,
+        Helpers::class,
         appSurroundings::class,
         Event::class,
         Log::class,
@@ -101,11 +97,7 @@ class App {
      * @return $this
      */
     protected function load() : static {
-        // 加载助手函数
         include_once __DIR__ . DIRECTORY_SEPARATOR . 'helper/helper.php';
-        if (is_file($this->appPath . DIRECTORY_SEPARATOR . 'common.php')) {
-            include_once $this->appPath . DIRECTORY_SEPARATOR . 'common.php';
-        }
         return $this;
     }
 
@@ -114,11 +106,12 @@ class App {
         $this->rootPath    = $this->getDefaultRootPath();
         $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
-        foreach ($this->frameWorkFolder as $key) {
-            if (!file_exists($this->getDefaultRootPath() . $key)) {
-                throw new \Exception("file $key not exists");
-            }
-        }
+         array_map(function (string $file): string {
+           if (!file_exists($this->getDefaultRootPath() . $file)) {
+               throw new \Exception("file $file dose not exists");
+           }
+           return $file;
+        }, $this->frameWorkFolder);
         return true;
     }
 

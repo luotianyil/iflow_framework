@@ -3,13 +3,13 @@
 
 namespace iflow\request;
 
-use GuzzleHttp\Psr7\{BufferStream, ServerRequest};
-use iflow\request\lib\{helper, validRequest};
+use GuzzleHttp\Psr7\{BufferStream, Request, ServerRequest};
+use iflow\request\lib\ValidRequest;
 use Psr\Http\Message\{RequestInterface, ServerRequestInterface, StreamInterface};
 
 trait RequestTrait
 {
-    use validRequest, helper;
+    use ValidRequest;
 
     protected string $version = "";
     protected ?RequestInterface $requestPsr7 = null;
@@ -36,8 +36,8 @@ trait RequestTrait
      */
     public function getRequestPsr7(): RequestInterface
     {
-        if ($this->requestPsr7 !== null) $this->requestPsr7;
-        $this->requestPsr7 = new \GuzzleHttp\Psr7\Request(
+        if ($this->requestPsr7 !== null) return $this->requestPsr7;
+        $this->requestPsr7 = new Request(
             $this->request_method,
             $this->getRequestUri(),
             $this->getHeader(),

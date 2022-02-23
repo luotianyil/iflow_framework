@@ -121,7 +121,7 @@ class RequestInitializer extends RequestVerification {
 
         $class =
             empty($params[$keys[0]]['class']) || isset($params['class']) ?
-                $params['class']:$params[$keys[0]]['class'];
+                $params['class'] : $params[$keys[0]]['class'];
 
         // 当类存在时
         if (class_exists($class)) {

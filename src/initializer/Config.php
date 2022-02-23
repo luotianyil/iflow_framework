@@ -29,7 +29,7 @@ class Config {
         // 加载基本配置
         $this->app = $app;
         $this->config = new ArrayTools();
-        $this->file = app(File::class) -> initializer();
+        $this->file = $this -> app -> make(File::class) -> initializer();
         $this->load($this->file -> fileList -> loadFileList($this->app->getConfigPath(), $this -> configFileExt ,true));
     }
 

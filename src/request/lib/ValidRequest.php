@@ -4,8 +4,10 @@
 namespace iflow\request\lib;
 
 
-trait validRequest
+trait ValidRequest
 {
+
+    use Helper;
 
     public string $request_method = '';
 

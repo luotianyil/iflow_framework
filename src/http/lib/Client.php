@@ -13,6 +13,7 @@ class Client
     public array $data = [];
 
     public string $responseHeaders = '';
+    public string $responseRedirectHeaders = '';
     public string $body = '';
 
     public function __construct(public string $host = '', public int $port = 0, public bool $isSSL = false) {
@@ -72,15 +73,11 @@ class Client
      * @param string $certFile
      * @return $this
      */
-    public function setSSL(string $keyFile = "", string $certFile = ""): static
-    {
+    public function setSSL(string $keyFile = "", string $certFile = ""): static {
         if (file_exists($keyFile) && file_exists($certFile)) {
             curl_setopt($this->curl, CURLOPT_SSLKEY, $keyFile);
             curl_setopt($this->curl, CURLOPT_SSLCERT, $certFile);
             curl_setopt($this->curl, CURLOPT_VERBOSE, true);
-        } else {
-            curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, false);
         }
         return $this;
     }
@@ -101,7 +98,10 @@ class Client
         curl_setopt($this->curl, CURLOPT_HEADER, true);
         $response = curl_exec($this->curl);
         if ($response){
-            [$this->responseHeaders, $this->body] = explode("\r\n\r\n", $response);
+            $info = explode("\r\n\r\n", $response);
+            if (count($info) > 2) {
+                [ $this->responseRedirectHeaders, $this->responseHeaders, $this->body ] = $info;
+            }
         }
         return true;
     }

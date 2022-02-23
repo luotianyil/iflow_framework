@@ -3,10 +3,7 @@
 
 namespace iflow\session\lib;
 
-
-use iflow\facade\Cache;
 use iflow\session\lib\abstracts\sessionAbstracts;
-use iflow\Utils\basicTools;
 
 class Redis extends sessionAbstracts
 {

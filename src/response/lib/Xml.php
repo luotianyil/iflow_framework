@@ -31,7 +31,7 @@ class Xml extends Response
     public function output($data): string
     {
         if (is_string($data)) {
-            if (0 !== strpos($data, '<?xml')) {
+            if (!str_starts_with($data, '<?xml')) {
                 $xml      = "<?xml version=\"1.0\" encoding=\"{$this->options['encoding']}\"?>";
                 $data     = $xml . $data;
             }
@@ -44,7 +44,7 @@ class Xml extends Response
     public function xmlEncode($data = []): string
     {
         $xml = "<?xml version=\"1.0\" encoding=\"{$this->options['encoding']}\"?>";
-        $root_attr = '';
+        $root_attr = [];
 
         if (is_array($this->options['root_attr'])) {
             foreach ($this->options['root_attr'] as $key => $value) {

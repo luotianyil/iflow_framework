@@ -62,9 +62,9 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
      * 保存文件至服务器
      * @param string $savePath
      * @param array $config
-     * @return mixed
+     * @return array|bool
      */
-    public function move(string $savePath, array $config = [])
+    public function move(string $savePath, array $config = []): array|bool
     {
         $validate = $this->validate($config);
         if ($validate -> error) {
@@ -104,7 +104,7 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
      * @param string $fileName
      * @return string[]
      */
-    protected function getSavePath(string $savePath, string $fileName) {
+    protected function getSavePath(string $savePath, string $fileName): array {
         $saveRoot = rtrim($this->config['rootPath'], DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR;
         $savePath = str_replace("\\", "/", $savePath . DIRECTORY_SEPARATOR . $fileName . '.' . $this->getExtension());
         $path = $saveRoot . $savePath;

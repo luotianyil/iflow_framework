@@ -5,6 +5,7 @@ namespace iflow\Swoole\Pool;
 
 
 use iflow\Swoole\Pool\lib\Pool;
+use Swoole\Coroutine;
 
 class Process extends Pool
 {
@@ -33,9 +34,7 @@ class Process extends Pool
         $this->start();
     }
 
-    public function stop()
-    {
-
+    public function stop() {
     }
 
     /**
@@ -46,7 +45,7 @@ class Process extends Pool
     public function create(array $coroutine): array {
         $coroutineId = [];
         foreach ($coroutine as $name => $value) {
-            $coroutineId[] = \Swoole\Coroutine::create($value['fn'], ...$value['params']);
+            $coroutineId[] = Coroutine::create($value['fn'], ...$value['params']);
         }
         return $coroutineId;
     }

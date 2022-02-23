@@ -9,6 +9,7 @@ use iflow\console\Console;
 use iflow\event\Event;
 use iflow\fileSystem\lib\fileSystem;
 use iflow\Utils\Tools\Timer;
+use Swoole\Server;
 
 class Watch
 {
@@ -75,7 +76,7 @@ class Watch
     }
 
     private function reload(): static {
-        $this->app -> make(\Swoole\Server::class) -> reload();
+        $this->app -> make(Server::class) -> reload();
         $this->app -> make(Console::class) -> outPut -> writeLine('reload success ...');
         return $this;
     }

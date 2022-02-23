@@ -19,7 +19,7 @@ class File
 
     public function initializer()
     {
-        $this->fileList = app(FileList::class);
+        $this->fileList = Container::getInstance() -> make(FileList::class);
         return $this;
     }
 
