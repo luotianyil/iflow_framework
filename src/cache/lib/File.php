@@ -40,8 +40,9 @@ class File
         go(function () use ($name, $data) {
             !is_dir($this->config['path']) && mkdir($this->config['path'], 0755, true);
             $file = $this->getStorePath($name);
-            $fileStream = fopen($file, "w+");
+
             $old_data = $this->get($name);
+            $fileStream = fopen($file, "w+");
             flock($fileStream, LOCK_EX);
             $data['iflow_expired'] = strtotime('+'. $this->getExpired() . ' second');
 
@@ -108,3 +109,4 @@ class File
         }
     }
 }
+

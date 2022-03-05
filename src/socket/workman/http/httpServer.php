@@ -17,8 +17,7 @@ class httpServer
         $this->type = $this->config['type'] ?? 'http';
     }
 
-    protected function event(): bool
-    {
+    protected function event(): bool {
         $classes = $this->config['handle'];
         if (!class_exists($classes)){
             $this->stop();
@@ -31,11 +30,10 @@ class httpServer
         return true;
     }
 
-    public function start(): string
-    {
+    public function start(): string {
 
         if (empty($this->config['host']) || empty($this->config['port'])) {
-            return 'WorkMan Config is empty !!!';
+            return 'WorkerMan Config is empty !!!';
         }
 
         $address = "{$this -> type}://{$this -> config['host']}:{$this -> config['port']}";
@@ -51,13 +49,11 @@ class httpServer
         return "start Server Success \r\n Server For WorkManServer \r\n serverAddress: {$address}";
     }
 
-    public function stop()
-    {
+    public function stop() {
         Worker::stopAll();
     }
 
-    public function reload()
-    {
+    public function reload() {
         Worker::reloadAllWorkers();
     }
 }

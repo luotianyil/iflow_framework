@@ -101,6 +101,8 @@ class Client
             $info = explode("\r\n\r\n", $response);
             if (count($info) > 2) {
                 [ $this->responseRedirectHeaders, $this->responseHeaders, $this->body ] = $info;
+            } else {
+                [ $this->responseHeaders, $this->body ] = $info;
             }
         }
         return true;

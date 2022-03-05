@@ -26,7 +26,8 @@
     "ext-curl": "*",
     "ext-ctype": "*",
     "ext-sockets": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "ext-openssl": "*"
   },
   "license": "MulanPSL-2.0",
   "authors": [
