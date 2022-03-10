@@ -24,15 +24,16 @@ class Pid
         return 0;
     }
 
-    public function kill($sig): bool
-    {
-        $pid = $this->getPid();
-        $pid > 0 && Process::kill($pid, $sig);
+    public function kill($sig): bool {
+        while ($this->isRun()) {
+            $pid = $this->getPid();
+            $pid > 0 && Process::kill($pid, $sig);
+            sleep(1);
+        }
         return $this->isRun();
     }
 
-    public function isRun(): bool
-    {
+    public function isRun(): bool {
         $pid = $this->getPid();
         return $pid > 0 && Process::kill($pid, 0);
     }

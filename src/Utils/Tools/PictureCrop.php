@@ -26,7 +26,7 @@ class PictureCrop
 
     public string $imageCreateFromType;
 
-    public function __construct(private string $imagePath)
+    public function __construct(protected string $imagePath, protected string $fontTtfPath)
     {
         if (!file_exists($this->imagePath)) {
             throw new \Exception('图片文件不存在');
@@ -115,17 +115,17 @@ class PictureCrop
         255, 255, 255, 50
     ], string $font = "",
       int $fontSize = 20,
-      int $dst_x = 0, int $dst_y = 0
+      int $dst_x = 0, int $dst_y = 0, array $waterBackground = [ 0xFF,0xFF,0xFF ]
     ): static
     {
         $isFile = file_exists($waterText);
         if (!$isFile) {
             // 创建图片
-            $font = str_replace('/', '\\', $font ?: __DIR__ . DIRECTORY_SEPARATOR . 'lib/SourceHanSerifCN.otf');
+            $font = str_replace('/', '\\', $font ?: $this->fontTtfPath);
             $width = strlen($waterText) * $fontSize;
             $height = $fontSize + 10;
             $water = imagecreate($width, $height);
-            $background = imagecolorallocate($water,0xFF,0xFF,0xFF);
+            $background = imagecolorallocate($water, ...$waterBackground);
             imagecolortransparent($water, $background);
             imagettftext($water, $fontSize,0,0,25, imagecolorallocatealpha($water, ...$color), $font, $waterText);
         } else {

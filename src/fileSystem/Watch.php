@@ -39,26 +39,17 @@ class Watch
     }
 
 
-    private function WatchFile(): static
-    {
+    protected function WatchFile(): static {
         $this->files = [];
-        foreach ($this->config['watchFolder'] as $key => $value) {
-            array_multi_to_one(
-                $this->file -> fileList -> loadFileList(
-                    $this->app -> getRootPath() . DIRECTORY_SEPARATOR . $value, traverse: true
-                ), $this->files, function ($file) {
-                    if (file_exists($file)) {
-                        $this->files[$file] = (new fileSystem($file)) -> getMTime();
-                    }
-                    return false;
-                }
-            );
+        foreach ($this->config['watchFolder'] as $dir) {
+            find_files($this->app -> getRootPath() . DIRECTORY_SEPARATOR . $dir, function (\SplFileInfo $splFileInfo) {
+                $this->files[$splFileInfo -> getPathname()] = $splFileInfo -> getMTime();
+            });
         }
         return $this;
     }
 
-    public function startWatch()
-    {
+    public function startWatch(): void {
         Timer::tick(1000, function () {
             foreach ($this->files as $key => $value) {
                 if ($value < (new fileSystem($key)) -> getMTime()) {

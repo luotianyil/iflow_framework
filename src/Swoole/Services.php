@@ -88,8 +88,8 @@ class Services extends Command
         $this->Console -> outPut ->writeLine($info.PHP_EOL.'> Start '. $servicesType .' Success');
         $process = new Process(function () {
             run(function () {
-                (new Watch()) -> initializer($this->app);
-                (new appMonitoring) -> initializer($this->app);
+                $this -> app -> make(Watch::class) -> initializer($this->app);
+                $this -> app -> make(appMonitoring::class) -> initializer($this->app);
             });
         });
         $this->getServer() -> addProcess($process);
