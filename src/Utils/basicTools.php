@@ -44,6 +44,11 @@ class basicTools
         return $this;
     }
 
+    /**
+     * 生成 GMT-IOS8601 规范时间
+     * @param $time
+     * @return string
+     */
     public function gmt_iso8601($time) : string {
         $dtStr = date("c", $time);
         try {
@@ -87,8 +92,7 @@ class basicTools
      * 创建随机数
      * @return string
      */
-    public function make_random_number() : string
-    {
+    public function make_random_number() : string {
         $mtime = explode(' ',microtime());
         $random = $mtime[1] . $mtime[0] . rand(999, 9999);
         $random_sum = 0;
@@ -136,15 +140,23 @@ class basicTools
     }
 
     /**
-     * 身份证号加密
+     * 身份证脱敏
      * @param string $card_id
+     * @param int $offset
+     * @param int $length
+     * @param string $replace
      * @return string
      */
-    public function card_id_replace(string $card_id) : string
-    {
-        $card_id_start = substr(substr_replace($card_id,"****",8,4), 0, 12);
-        $card_id_end = substr(substr_replace($card_id,"****",14,4), 12, 6);
-        return $card_id_start.$card_id_end;
+    public function card_id_replace(string $card_id, int $offset = 8, int $length = 4, string $replace = '*') : string {
+
+        $replaceLength = $offset + $length;
+        $cardIdList = str_split($card_id);
+
+        if ($replaceLength > 18) return 'offset exceeds CardId length';
+        if (count($cardIdList) > 18 || count($cardIdList) < 18) return 'unknown CardId';
+
+        for ($i = $offset; $i <= $replaceLength; $i++) $cardIdList[$offset] = $replace;
+        return implode($cardIdList);
     }
 
     /**
@@ -179,5 +191,31 @@ class basicTools
     public function objectToArray(object $object): array {
         if (method_exists($object, 'toArray')) return $object -> toArray();
         return get_object_vars($object);
+    }
+
+    /**
+     * 根据两点经纬度 获取 距离
+     * @param array $location [ 'lat', 'lng' ]
+     * @param array $nextLocation [ 'lat', 'lng' ]
+     * @return float
+     */
+    public function getDistance(array $location, array $nextLocation): float {
+
+        $locationLat = $location[0] * M_PI / 180.0;
+        $nextLocationLat = $nextLocation[0] * M_PI / 180.0;
+
+        $locationLng = $location[1] * M_PI / 180.0;
+        $nextLocationLng = $nextLocation[1] * M_PI / 180.0;
+
+        $calcLongitude = $nextLocationLng - $locationLng;
+        $calcLatitude = $nextLocationLat - $locationLat;
+
+        $sept = 2 * asin(
+            sqrt(pow(sin($calcLatitude / 2), 2))
+                + cos($locationLat)
+                * cos($nextLocationLat)
+                * pow(sin($calcLongitude / 2), 2)
+            );
+        return sprintf("%.3f", round($sept * 6367 * 10000) / 10000);
     }
 }

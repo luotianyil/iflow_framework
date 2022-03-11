@@ -43,6 +43,9 @@ class Input
             $key_command = explode('-', $key);
             $commandClass = '';
 
+            // 检测是否有子级指令
+            if (count($key_command) < 2) continue;
+
             if ($key_command[1] === $methods) $commandClass = $value;
             if ($commandClass !== '') {
                 if (!class_exists($commandClass)) throw new \Error("class {$commandClass} not exists");
