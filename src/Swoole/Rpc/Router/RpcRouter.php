@@ -1,12 +1,9 @@
 <?php
 
-
-namespace iflow\Swoole\Rpc\lib\router;
-
+namespace iflow\Swoole\Rpc\Router;
 
 use iflow\Router\CheckRule;
 
-class rpcRouterBase extends CheckRule
-{
+class RpcRouter extends CheckRule {
     protected string $routerConfigKey = 'rpc';
 }

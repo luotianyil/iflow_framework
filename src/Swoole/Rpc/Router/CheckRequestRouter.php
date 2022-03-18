@@ -1,26 +1,41 @@
 <?php
 
+namespace iflow\Swoole\Rpc\Router;
 
-namespace iflow\Swoole\Rpc\lib\router;
-
-
-use iflow\App;
 use iflow\exception\lib\HttpException;
 use iflow\exception\lib\HttpResponseException;
 use iflow\http\Kernel\Request\RequestInitializer;
 use iflow\Response;
 use iflow\Swoole\Services;
 
-class checkRequest extends RequestInitializer {
+class CheckRequestRouter extends RequestInitializer {
 
     protected object $server;
-    protected int $fd = 0;
+
+    /**
+     * 客户端 Id
+     * @var int
+     */
+    protected int $fd;
+
+    /**
+     * 请求信息
+     * @var mixed
+     */
     protected mixed $data;
 
+    /**
+     * 初始化验证请求
+     * @param object $server
+     * @param int $fd
+     * @param mixed $data
+     * @return bool
+     */
     public function init(object $server, int $fd, mixed $data): bool {
         $this->server = $server;
         $this->fd = $fd;
         $this->data = $data;
+
         $this->services = app(Services::class);
 
         try {
@@ -37,6 +52,7 @@ class checkRequest extends RequestInitializer {
     }
 
     /**
+     * 查询路由
      * @throws \ReflectionException
      */
     protected function QueryRouter(): bool {
@@ -44,7 +60,7 @@ class checkRequest extends RequestInitializer {
         if (empty($this->data['request_uri'])) {
             return $this->send(404);
         }
-        $this->router = app() -> make(rpcRouterBase::class) -> checkRule(
+        $this->router = app() -> make(RpcRouter::class) -> checkRule(
             $this->data['request_uri'],
             $this->data['method'] ?? 'get',
             $this->data
@@ -56,7 +72,11 @@ class checkRequest extends RequestInitializer {
         return $this->GenerateControllerService();
     }
 
-    // 验证响应数据
+    /**
+     * 验证响应数据
+     * @param $response
+     * @return bool
+     */
     public function ResponseBodyValidate($response): bool {
         if ($response instanceof Response) return $this->send($response);
         if ($response === false) {
@@ -65,7 +85,11 @@ class checkRequest extends RequestInitializer {
         return false;
     }
 
-    // 发送信息
+    /**
+     * 返回响应信息
+     * @param $response
+     * @return bool
+     */
     protected function send($response): bool {
         if ($this->fd !== 0) $param[] = $this->fd;
         if ($response instanceof Response) $response = $response -> output($response -> data);

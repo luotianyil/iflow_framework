@@ -14,7 +14,7 @@ trait Client
 {
 
     protected HttpServer|WebSocketServer|\Swoole\Server|SwooleClient $server;
-    protected SwooleClient $client;
+    protected ?SwooleClient $client = null;
     protected Services $services;
     public Pid $pid;
     protected string $eventType = '';
@@ -62,8 +62,7 @@ trait Client
         return true;
     }
 
-    public function send($data)
-    {
+    public function send($data) {
         return $this -> client -> send(
             match (!is_string($data) && !is_numeric($data)) {
                 true => json_encode($data, JSON_UNESCAPED_UNICODE),

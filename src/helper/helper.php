@@ -131,8 +131,7 @@ if (!function_exists('app_server')) {
 }
 
 if (!function_exists('app_client')) {
-    function app_client(): Client
-    {
+    function app_client(): Client {
         return app() -> make(Client::class);
     }
 }
@@ -215,10 +214,7 @@ if (!function_exists('rpc')) {
             foreach ($clientList as $clientValue) {
                 $clientValue = array_values($clientValue)[0];
                 if ($clientValue['name'] === $clientName) {
-                    return app_server() -> send(
-                        $clientValue['fd'],
-                        json_encode($param, JSON_UNESCAPED_UNICODE)
-                    );
+                    return app_server() -> send($clientValue['fd'], json_encode($param, JSON_UNESCAPED_UNICODE));
                 }
             }
         } catch (Throwable) {
@@ -241,10 +237,9 @@ if (!function_exists('rpcRequest')) {
         bool $isSsl = false,
         array $param = [],
         array $options = []
-    ): rpcRequest {
-        $res = app() -> make(rpcRequest::class, func_get_args(), isNew: true);
-        $res -> request();
-        return $res;
+    ): iflow\Swoole\Rpc\Request\Request {
+        return app() -> make(\iflow\Swoole\Rpc\Request\Request::class, func_get_args(), isNew: true)
+            -> request();
     }
 }
 
