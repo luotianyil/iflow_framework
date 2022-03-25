@@ -16,6 +16,7 @@ class File extends Response
     ];
 
     public string $contentType = 'text/html';
+
     public function __construct(string $data = '', int $code = 200)
     {
         $this->init($data, $code);

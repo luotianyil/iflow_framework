@@ -33,6 +33,10 @@ trait Client
         }
     }
 
+    /**
+     * 链接客户端
+     * @return void
+     */
     public function monitorClient() {
         run(function () {
             if (!$this->client->connect(...$this->param)) {
@@ -50,8 +54,12 @@ trait Client
         });
     }
 
-    public function ping($data = 1)
-    {
+    /**
+     * 发送心跳包
+     * @param mixed $data
+     * @return bool|mixed
+     */
+    public function ping(mixed $data = 1): mixed {
         if (isset($this->services -> config['keep_alive']) && $this -> timeSincePing < (time() - $this->services -> config['keep_alive'])) {
             $buffer = $this->send($data);
             if ($buffer) $this -> timeSincePing = time();
@@ -62,7 +70,12 @@ trait Client
         return true;
     }
 
-    public function send($data) {
+    /**
+     * 向服务端发送数据
+     * @param mixed $data
+     * @return mixed
+     */
+    public function send(mixed $data): mixed {
         return $this -> client -> send(
             match (!is_string($data) && !is_numeric($data)) {
                 true => json_encode($data, JSON_UNESCAPED_UNICODE),

@@ -4,10 +4,10 @@
 namespace iflow\session\lib;
 
 
-use iflow\session\lib\abstracts\sessionAbstracts;
+use iflow\session\lib\abstracts\SessionAbstracts;
 use think\Model;
 
-class Mongo extends sessionAbstracts
+class Mongo extends SessionAbstracts
 {
 
     /**

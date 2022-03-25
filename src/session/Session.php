@@ -4,14 +4,14 @@
 namespace iflow\session;
 
 
-use iflow\session\lib\abstracts\sessionAbstracts;
+use iflow\session\lib\abstracts\SessionAbstracts;
 use iflow\Utils\ArrayTools;
 
 class Session
 {
     protected string $namespace = '\\iflow\\session\\lib\\';
     protected array $config = [];
-    protected ?sessionAbstracts $session = null;
+    protected ?SessionAbstracts $session = null;
     protected mixed $sessionId = '';
 
     // 存放的session信息

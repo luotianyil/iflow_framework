@@ -3,9 +3,9 @@
 
 namespace iflow\session\lib;
 
-use iflow\session\lib\abstracts\sessionAbstracts;
+use iflow\session\lib\abstracts\SessionAbstracts;
 
-class File extends sessionAbstracts
+class File extends SessionAbstracts
 {
     /**
      * @var \iflow\cache\lib\File

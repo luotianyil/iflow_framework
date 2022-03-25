@@ -176,11 +176,12 @@ class basicTools
 
     /**
      * 执行shell
-     * @param $shell
+     * @param string $shell
      * @return string
      */
-    public function execShell($shell): string {
-        return trim(shell_exec($shell), PHP_EOL);
+    public function execShell(string $shell = ''): string {
+        $responseBody = shell_exec($shell);
+        return $responseBody ? trim($responseBody, PHP_EOL) : '';
     }
 
     /**
