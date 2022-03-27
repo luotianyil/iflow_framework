@@ -17,14 +17,17 @@ class Session
     // 存放的session信息
     protected ArrayTools $sessionTools;
 
+    /**
+     * 初始化Seesion
+     * @return $this
+     * @throws \Exception
+     */
     public function initializer(): static {
-        if ($this->session !== null) {
-            return $this;
-        }
+
         $this->config = config('session');
         if (!$this->config) throw new \Exception('session config null');
         $class = $this->namespace . ucfirst($this->config['type']);
-        $this -> session = app($class) -> initializer($this->config);
+        $this -> session = app($class, [], true) -> initializer($this->config);
 
         $this->sessionId = $this->getSessionId();
 
@@ -56,6 +59,7 @@ class Session
     /**
      * 删除Session
      * @return mixed
+     * @throws \Exception
      */
     public function delete(): mixed {
         return $this->session -> delete($this->getSessionId());
@@ -65,15 +69,17 @@ class Session
      * 取消引用Session内某个值
      * @param string $key
      * @return bool
+     * @throws \Exception
      */
     public function unsetKey(string $key): bool {
         $this->sessionTools -> offsetUnset($key);
-        return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
+        return true;
     }
 
     /**
      * 获取当前的SESSION_ID
      * @return string
+     * @throws \Exception
      */
     public function getSessionId(): string {
         return $this->session -> makeSessionID();
@@ -82,6 +88,7 @@ class Session
     /**
      * 保存Session至缓存
      * @return void
+     * @throws \Exception
      */
     public function save() {
         $this->session -> set($this->getSessionId(), $this->sessionTools -> all());

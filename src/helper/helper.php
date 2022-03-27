@@ -20,7 +20,6 @@ use iflow\Request;
 use iflow\Response;
 use iflow\response\lib\Json;
 use iflow\response\lib\Xml;
-use iflow\Swoole\Rpc\lib\rpcRequest;
 use iflow\Swoole\Scrapy\http\http;
 use iflow\Swoole\Scrapy\http\http2;
 use iflow\template\View;
@@ -138,8 +137,8 @@ if (!function_exists('app_client')) {
 
 // 信息
 if (!function_exists('message')) {
-    function message($type = 'json') : Message {
-        return app() -> make(Message::class) -> setFilter($type);
+    function message(string $type = 'json') : Message {
+        return app(Message::class) -> setFilter($type);
     }
 }
 
@@ -438,7 +437,7 @@ if (!function_exists('dump')) {
         $output = ob_get_clean();
 
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $outConsole = app(Console::class) -> outPut ?: null;
+        $outConsole = app(Console::class) -> outPut ?? null;
         if (!is_http_services() && $outConsole !== null) {
             $outConsole -> write(PHP_EOL . $output . PHP_EOL);
         } else {

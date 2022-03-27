@@ -16,7 +16,7 @@ class Response
     }
 
     /**
-     * 静态创建新的Response对象
+     * 静态创建新的 Response 对象
      * @param mixed $data
      * @param int $code
      * @param string $type
@@ -24,13 +24,7 @@ class Response
      */
     public static function create(mixed $data = [], int $code = 200, string $type = 'json'): object {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
-        $response = app($class, [$data, $code]);
-        foreach (array_merge((array) $response, (array) response()) as $key => $value) {
-            if (method_exists($response, $key) && !is_string($response -> {$key})) {
-                $response -> {$key}($value ?: $response -> {$key});
-            }
-        }
-        return $response;
+        return app() -> invokeClass($class, [ $data, $code ]);
     }
 
     /**
@@ -47,10 +41,8 @@ class Response
      * @return bool
      */
     public function send(): bool {
-        if ($this->response === null) return false;
-        // Swoole 验证是否已经结束请求
-        if ($this->response -> isWritable() === false) return true;
-
+        // 获取Response 原始响应体
+        $this->response = response() -> response;
         // 结束请求
         return $this->setResponseHeader() -> response -> end($this->output($this->data));
     }
@@ -70,10 +62,12 @@ class Response
      * 结束响应时 设置请求头
      * @return $this
      */
-    protected function setResponseHeader(): static
-    {
+    protected function setResponseHeader(): static {
         $this->response -> status($this->code);
         $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
+
+        // 处理 Headers
+        $this->headers(response() -> headers);
         foreach ($this->headers as $key => $value) {
             $this->response -> header($key, $value);
         }

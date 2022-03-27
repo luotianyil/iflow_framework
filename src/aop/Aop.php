@@ -134,12 +134,14 @@ class Aop {
                 // 通过容器反射执行
                 $callback = app() -> invoke([$aspect, $action], $args);
                 if ($callback !== true) {
-                    // 格式化响应参数
-                    if (!is_string($callback) && !is_numeric($callback)) {
-                        $callback = json($callback);
-                    } else if (!$callback instanceof Response && !$callback instanceof ResponseInterface) {
-                        $callback = response() -> data($callback);
+
+                    if ($callback instanceof Response || $callback instanceof  ResponseInterface) {
+                        throw new HttpResponseException($callback);
                     }
+
+                    // 格式化响应参数
+                    $callback = !is_string($callback) && !is_numeric($callback)
+                        ? json($callback) : response() -> data($callback);
 
                     // 拦截异常 结束执行
                     $this->response = $callback;

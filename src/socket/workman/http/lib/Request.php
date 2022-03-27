@@ -19,7 +19,7 @@ class Request
     public string $request_protocol = "";
     public string $request_method = "";
 
-    public Cookie $cookie;
+    public object $cookie;
 
 
     public function __construct(
@@ -31,15 +31,14 @@ class Request
         $this->header = $this->request -> header() ?: [];
         $this->request_uri = $this->request -> uri();
         $this->request_protocol = $this->request -> protocolVersion();
-        $this->cookie = new Cookie($this->request -> cookie());
+        $this->cookie = app(Cookie::class, [ $this->request -> cookie() ], true);
         $this->request_method = $this->request -> method();
 
         $this->initServer();
     }
 
     // 初始化ServerParams
-    public function initServer()
-    {
+    public function initServer() {
         $request_uri = explode("?", $this->request_uri);
         $this->server = $this->header;
         $this->server['request_method'] = $this->request_method;
@@ -54,8 +53,7 @@ class Request
     }
 
     // 获取原始请求包体
-    public function getContent(): string
-    {
+    public function getContent(): string {
         return $this->request -> rawBody();
     }
 

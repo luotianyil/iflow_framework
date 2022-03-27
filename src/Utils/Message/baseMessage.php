@@ -4,6 +4,8 @@
 namespace iflow\Utils\Message;
 
 
+use iflow\Response;
+
 trait baseMessage
 {
     public string $error = '';
@@ -37,14 +39,10 @@ trait baseMessage
         return $this;
     }
 
-    public function setData(array $data = [], $code = 200)
-    {
-        if ($this->filter === 'array') {
-            return $data;
-        }
+    public function setData(array $data = [], $code = 200): array|Response {
+        if ($this->filter === 'array') return $data;
 
         if ($this->isRest) {
-
             // 是否为重定向
             if ($code === 302)
                 return response()

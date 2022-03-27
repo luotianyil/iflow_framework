@@ -22,7 +22,7 @@ class request
     public string $request_uri = "/";
     public string $request_protocol = "";
     public array $rowContent = [];
-    public cookie $cookie;
+    public Cookie $cookie;
 
     public string $error = "";
 

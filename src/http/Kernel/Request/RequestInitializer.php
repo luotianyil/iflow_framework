@@ -52,7 +52,7 @@ class RequestInitializer extends RequestVerification {
     public function setRequest(object $request): static {
         // 验证当前cookie是否为对象
         if ( !$request -> cookie instanceof Cookie) {
-            $request -> cookie = app(Cookie::class, [ $request -> cookie ?? [] ]);
+            $request -> cookie = app(Cookie::class, [ $request -> cookie ?? [] ], true);
         }
         $this->request = app(Request::class, [], true) -> initializer($request);
         return $this;

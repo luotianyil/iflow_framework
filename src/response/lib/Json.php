@@ -21,7 +21,7 @@ class Json extends Response
      * 返回json
      * @param $data
      * @return string
-     * @throws \Exception
+     * @throws \Exception|\Throwable
      */
     public function output($data) : string
     {

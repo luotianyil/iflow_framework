@@ -60,7 +60,7 @@ class Request
         $this->request = $_REQUEST;
         $this->cookie  = app() -> make(Cookie::class, [
             $_COOKIE
-        ]);
+        ], true);
         $this->files   = $_FILES ?? [];
         return $this;
     }
