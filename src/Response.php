@@ -12,6 +12,7 @@ class Response
 
     protected function init($data, $code) {
         $this->code = $code;
+        $this->response = $this->response ?? response() -> response;
         $this->data($data);
     }
 

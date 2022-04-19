@@ -44,7 +44,7 @@ class Request
     protected function initFile(): static
     {
         $files = $this->request -> files ?? [];
-        $upLoadFile = app() -> invokeClass(upLoadFile::class);
+        $upLoadFile = app() -> make(upLoadFile::class) -> clear();
         foreach ($files as $key => $value) {
             $upLoadFile -> setFile($key, $value);
         }

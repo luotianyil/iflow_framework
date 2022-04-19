@@ -45,7 +45,12 @@ class renderDebugView
         if (is_http_services()) {
             return $this->httpServerThrowException();
         }
-        dump($this->getError());
+        dump([
+            'error' => $this->throwable -> getMessage(),
+            'file' => $this->throwable -> getFile(),
+            'line' => $this->throwable -> getLine(),
+            'trac' => $this->throwable -> getTraceAsString()
+        ]);
         return null;
     }
 

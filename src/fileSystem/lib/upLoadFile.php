@@ -167,4 +167,14 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
         // TODO: Implement getClientMediaType() method.
         return $this->getFileMine();
     }
+
+
+    /**
+     * 清除文件列表
+     * @return $this
+     */
+    public function clear(): upLoadFile {
+        $this->fileList = [];
+        return $this;
+    }
 }

@@ -124,7 +124,7 @@ class basicTools
         }
 
         // Fallback (PHP 4.2+)
-        mt_srand((double) microtime() * 10000);
+        mt_srand((int) microtime() * 10000);
         $charid = strtolower(md5(uniqid(rand(), true)));
         $hyphen = chr(45);                  // "-"
         $lbrace = $trim ? "" : chr(123);    // "{"

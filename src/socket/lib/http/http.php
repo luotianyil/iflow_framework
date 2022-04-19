@@ -105,7 +105,6 @@ class http implements Services
      */
     protected function trigger(string $event, ...$args) {
         if (!empty($this->event[$event])) {
-            // throw new \Exception("callBack event: $event not exists");
             call_user_func($this->event[$event], ...$args);
         }
     }
