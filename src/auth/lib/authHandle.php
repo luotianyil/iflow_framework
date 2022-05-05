@@ -29,10 +29,14 @@ class authHandle
     /**
      * 设置请求用户信息
      * @return $this
+     * @throws \Exception
      */
     public function setUserInfo(): static
     {
-        $this->userInfo = session('userInfo');
+        $this->userInfo = session('userInfo', callable: function ($info) {
+            if (!is_string($info)) return $info;
+            return json_decode($info, JSON_UNESCAPED_UNICODE) ?: [];
+        });
         return $this;
     }
 

@@ -39,11 +39,12 @@ class Session
     /**
      * 获取Session
      * @param string $name
-     * @return array|string
+     * @param callable|null $callable
+     * @return mixed
      */
-    public function get(string $name = ''): array|string {
-        if ($name === '') return $this->sessionTools -> all();
-        return $this->sessionTools -> get($name);
+    public function get(string $name = '', ?callable $callable = null): mixed {
+        $data = $name === '' ? $this->sessionTools -> all() : $this->sessionTools -> get($name);
+        return $callable ? $callable($data) : $data;
     }
 
     /**
@@ -52,8 +53,9 @@ class Session
      * @param array|string $data
      * @return mixed
      */
-    public function set(string|null $name = null, array|string $data = []): mixed {
-        return $this->sessionTools -> offsetSet($name, $data);
+    public function set(string|null $name = null, array|string $data = [], ?callable $callable = null): mixed {
+        $save = $this->sessionTools -> offsetSet($name, $data);
+        return $callable ? $callable($save, $this->sessionTools -> all()) : $save;
     }
 
     /**

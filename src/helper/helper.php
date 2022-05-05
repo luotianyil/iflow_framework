@@ -270,14 +270,22 @@ if (!function_exists('httpRequest')) {
 
 // session
 if (!function_exists('session')) {
-    function session(string|null $name = null, array|string|null $default = []) {
+    /**
+     * session 助手函数
+     * @param string|null $name
+     * @param array|string|null $default
+     * @param callable|null $callable
+     * @return array|bool|mixed|string
+     * @throws Exception
+     */
+    function session(string|null $name = null, array|string|null $default = [], ?callable $callable = null) {
         if ($default === null) {
             return Session::unsetKey($name);
         }
         if (is_string($default) || count($default) > 0) {
-            return Session::set($name, $default);
+            return Session::set($name, $default, $callable);
         }
-        return Session::get($name ?: '');
+        return Session::get($name ?: '', $callable);
     }
 }
 

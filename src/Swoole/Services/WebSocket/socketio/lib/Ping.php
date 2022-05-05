@@ -22,7 +22,7 @@ class Ping
         protected float $pingTimeOut
     ){}
 
-    public function ping() {
+    public function ping(): bool {
         Timer::clear($this->pingIntervalTimer);
         $this->pingIntervalTimer = Timer::after($this->pingTimer, function () {
             $this->server->push($this->request -> fd, packet::ping());
