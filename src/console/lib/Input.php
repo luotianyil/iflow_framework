@@ -46,7 +46,9 @@ class Input
             // 检测是否有子级指令
             if (count($key_command) < 2) continue;
 
-            if ($key_command[1] === $methods) $commandClass = $value;
+            $key_command_start = explode('|', str_replace(['<', '>'], '', $key_command[0]));
+
+            if ($methods === $key_command[1] && in_array($userCommand[0], $key_command_start)) $commandClass = $value;
             if ($commandClass !== '') {
                 if (!class_exists($commandClass)) throw new \Error("class {$commandClass} not exists");
                 else {
@@ -62,8 +64,8 @@ class Input
     {
         $commandClass = $console -> app -> invokeClass($commandClass, $this->argv);
         $commandClass -> setApp($console -> app)
-                      -> setConsole($console)
-                      -> setArgument();
+            -> setConsole($console)
+            -> setArgument();
         return $console -> app -> invoke([$commandClass, 'handle'], [$userCommand]);
     }
 
