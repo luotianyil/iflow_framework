@@ -62,16 +62,25 @@ class File
      * @param string $name
      * @return mixed
      */
-    public function get(string $name): mixed
-    {
-        $file = $this->getStorePath($name);
-        if (file_exists($file)) {
-            $data = file_get_contents($file);
-            if ($data !== '') {
-                return unserialize(gzuncompress($data));
+    public function get(string $name): mixed {
+
+        $path = $this->getStorePath($name);
+        $file = fopen($this->getStorePath($name), 'rb');
+        $content = '';
+
+        if ($file) {
+            try {
+                if (flock($file, LOCK_SH)) {
+                    clearstatcache(true, $path);
+                    $content = fread($file, filesize($path) ?: 1);
+                    flock($file, LOCK_UN);
+                }
+            } finally {
+                fclose($file);
             }
         }
-        return [];
+
+        return $content ? unserialize(gzuncompress($content)) : [];
     }
 
     /**

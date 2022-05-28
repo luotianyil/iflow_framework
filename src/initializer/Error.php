@@ -79,7 +79,7 @@ class Error {
 
     // 验证错误类型
     protected function isFatal(int $type): bool {
-        return in_array($type, [ E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE ]);
+        return in_array($type, [ E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_STRICT, E_NOTICE, E_DEPRECATED ]);
     }
 
 }
