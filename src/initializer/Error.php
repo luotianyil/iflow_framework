@@ -53,8 +53,6 @@ class Error {
      * @return bool|null
      */
     public function appHandler(Throwable $e): bool|null {
-        var_dump($e -> getMessage(), $e -> getFile(), $e -> getLine());
-        exit();
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
         // 检测是否开启DEBUG
         if ($this->app -> isDebug()) {
