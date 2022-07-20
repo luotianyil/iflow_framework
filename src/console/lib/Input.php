@@ -6,6 +6,8 @@ namespace iflow\console\lib;
 
 use iflow\App;
 use iflow\console\Console;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 
 class Input
 {
@@ -20,7 +22,13 @@ class Input
         return $this->argv;
     }
 
-    // 解析 用户 输入指令并执行
+    /**
+     * 解析 用户 输入指令并执行
+     * @param array $command
+     * @param Console $console
+     * @throws \Throwable
+     * @return mixed
+     */
     public function parsingInputCommand(array $command, Console $console)
     {
         if (count($this->argv) < 2) {
@@ -60,8 +68,15 @@ class Input
         return $this->invokeClass($console, Help::class, $userCommand);
     }
 
-    public function invokeClass(Console $console, $commandClass, $userCommand)
-    {
+    /**
+     * @param Console $console
+     * @param $commandClass
+     * @param $userCommand
+     * @return mixed
+     * @throws InvokeClassException
+     * @throws InvokeFunctionException
+     */
+    public function invokeClass(Console $console, $commandClass, $userCommand): mixed {
         $commandClass = $console -> app -> invokeClass($commandClass, $this->argv);
         $commandClass -> setApp($console -> app)
             -> setConsole($console)

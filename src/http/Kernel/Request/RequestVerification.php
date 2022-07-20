@@ -9,17 +9,11 @@ use iflow\Request;
 use iflow\Response;
 use iflow\Router\CheckRule;
 use iflow\Router\implement\Swagger\Swagger;
-use iflow\Swoole\Services\WebSocket\socketio\SocketIo;
+use iflow\swoole\implement\Server\WebSocket\WebSocket;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 
 abstract class RequestVerification extends SubjectAbstract {
-
-    /**
-     * APP Services
-     * @var object
-     */
-    public object $services;
 
     public ?Request $request = null;
     public ?Response $response = null;
@@ -85,8 +79,7 @@ abstract class RequestVerification extends SubjectAbstract {
         if ($url[0] === $rule['rule']) {
             array_splice($url, 0, 1);
             $url = str_replace('/', DIRECTORY_SEPARATOR, implode('/', $url));
-            sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url, isConfigRootPath: false) -> send();
-            return true;
+            return sendFile($rule['rootPath'] . DIRECTORY_SEPARATOR . $url, isConfigRootPath: false) -> send();
         }
         return false;
     }
@@ -97,12 +90,13 @@ abstract class RequestVerification extends SubjectAbstract {
      * @return bool
      */
     protected function isSocketIo(string $url = ''): bool {
-        $url = explode('/', trim($url, '/'));
+        $url = explode('/', trim($url, '/'))[0] ?? '/';
         if (config('swoole.service@websocket.enable')) {
-            if ($url[0] === 'socket.io') {
-                $SocketIo = app(SocketIo::class);
-                $SocketIo -> config = $this->services -> configs['websocket'];
-                return $this->send($SocketIo-> __initializer($this->request, $this->response));
+            if ($url === 'socket.io') {
+                // TODO SOCKET.IO Connection
+                return $this->send(
+                    app(WebSocket::class) -> connection($this->request, $this->response)
+                );
             }
         }
         return false;
@@ -126,10 +120,10 @@ abstract class RequestVerification extends SubjectAbstract {
      * @return bool
      */
     protected function RunMiddleware(): bool {
+        $app = app();
         return $this->ResponseBodyValidate(
-            $this->services -> app
-                -> make(Middleware::class)
-                -> initializer($this->services -> app, $this->request, $this->response)
+            $app -> make(Middleware::class)
+                 -> initializer($app, $this->request, $this->response)
         );
     }
 
@@ -138,7 +132,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * @return bool
      */
     protected function QueryRouter(): bool {
-        $this->router = $this->services -> app -> make(CheckRule::class)
+        $this->router = app() -> make(CheckRule::class)
         -> setRouterConfigKey('http')
         -> checkRule(
             $this->request -> request_uri,
@@ -157,7 +151,7 @@ abstract class RequestVerification extends SubjectAbstract {
      */
     protected function RunAop(): bool {
         $this->RequestQueryParams = $this->GenerateRequestQueryParams($this -> router['parameter']);
-        $aop = $this->services -> app -> make(Aop::class) -> process(
+        $aop = app() -> make(Aop::class) -> process(
             $this->RequestController[0], $this->RequestController[1], ...$this -> RequestQueryParams
         );
 

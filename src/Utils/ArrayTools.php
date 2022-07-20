@@ -36,7 +36,8 @@ class ArrayTools extends Collection
         } else {
             $info = $this->getConfigValue($names, $this->offsetGet($keys[0]));
         }
-        return $info ?: $default;
+
+        return !empty($info) ? $info : $default;
     }
 
     protected function getConfigValue($names, array $array = []) {

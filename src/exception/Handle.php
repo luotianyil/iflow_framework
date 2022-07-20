@@ -13,7 +13,7 @@ class Handle
 {
     public function __construct(
         protected string $type = "error"
-    ){}
+    ) {}
 
     public function render(App $app, \Throwable $exception): Response {
         if ($exception instanceof HttpResponseException) {

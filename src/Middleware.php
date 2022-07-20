@@ -7,24 +7,21 @@ use iflow\exception\lib\HttpResponseException;
 use iflow\pipeline\pipeline;
 use Psr\Http\Message\ResponseInterface;
 
-class Middleware
-{
+class Middleware {
+
     protected App $app;
     protected pipeline $pipeline;
 
     protected array $middleware = [];
 
-    public function initializer(App $app): bool
-    {
+    public function initializer(App $app): bool {
         $this->app = $app;
         $this->pipeline = new pipeline();
-        return $this->throughMiddleware()
-            -> thenMiddleware();
+        return $this->throughMiddleware() -> thenMiddleware();
     }
 
     // 中间件预处理
-    public function throughMiddleware(): static
-    {
+    public function throughMiddleware(): static {
         $this->middleware = config('middleware');
         $this->pipeline -> through(
             array_map(function ($middleware) {

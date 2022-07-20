@@ -65,7 +65,10 @@ class File
     public function get(string $name): mixed {
 
         $path = $this->getStorePath($name);
-        $file = fopen($this->getStorePath($name), 'rb');
+
+        if (!file_exists($path)) return [];
+
+        $file = fopen($path, 'rb');
         $content = '';
 
         if ($file) {

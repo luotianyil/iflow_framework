@@ -201,43 +201,17 @@ if (!function_exists('app_class_name')) {
     }
 }
 
-// rpc
-if (!function_exists('rpc')) {
-    function rpc($clientName, $url, array $param = []) {
-        $config = config('swoole.rpc');
-        $param['request_uri'] = $url;
-        $config['server']['enable'] = $config['server']['enable'] ?? false;
-        try {
-            $config = $config['server']['clientList'];
-            $clientList = Cache::store($config) -> get($config['cacheName']);
-            foreach ($clientList as $clientValue) {
-                $clientValue = array_values($clientValue)[0];
-                if ($clientValue['name'] === $clientName) {
-                    return app_server() -> send($clientValue['fd'], json_encode($param, JSON_UNESCAPED_UNICODE));
-                }
-            }
-        } catch (Throwable) {
-            $param['client_name'] = $clientName;
-            $param['isClientConnection'] = true;
-            $client = app_client();
-            $client -> send(json_encode($param, JSON_UNESCAPED_UNICODE));
-            return $client -> recv(30);
-        }
-        return false;
-    }
-}
-
 // request_rpc
-if (!function_exists('rpcRequest')) {
-    function rpcRequest(
+if (!function_exists('rpc')) {
+    function rpc(
         string $host,
         int $port,
         string $url,
         bool $isSsl = false,
         array $param = [],
         array $options = []
-    ): iflow\Swoole\Rpc\Request\Request {
-        return app() -> make(\iflow\Swoole\Rpc\Request\Request::class, func_get_args(), isNew: true)
+    ): \iflow\swoole\implement\Commounity\Rpc\Request\Request {
+        return app() -> make(\iflow\swoole\implement\Commounity\Rpc\Request\Request::class, func_get_args(), isNew: true)
             -> request();
     }
 }
@@ -245,26 +219,24 @@ if (!function_exists('rpcRequest')) {
 // 发送 http请求
 if (!function_exists('httpRequest')) {
     function httpRequest(
-        string $host,
-        int $port = 0,
+        string $url,
         string $method = 'GET',
-        bool $isSsl = false,
-        array $header = [],
-        array|string $data = [],
-        array $options = [ 'timeout' => 30 ],
-        string $type = "http"
-    ): http | http2
-    {
-        $class = $type === "http" ? http::class : http2::class;
-        return app() -> make($class, isNew: true) -> process([
-            'host' => $host,
-            'port' => $port,
-            'method' => $method,
-            'data' => $data,
-            'isSsl' => $isSsl,
-            'header' => $header,
-            'options' => $options
-       ]);
+        array $headers = [],
+        array $body = [],
+        array $options = [ 'timeout' => 30 ]
+    ): ?\iflow\Scrapy\implement\Response\Response {
+        $response = null;
+        $client = new \iflow\swoole\implement\Client\Http\Client($options);
+
+        $request = new \iflow\Scrapy\implement\Request\Request(
+            $url, $method, $body, $headers
+        );
+
+        $client -> addRequest($request, function (\iflow\Scrapy\implement\Response\Response $responseBody) use (&$response) {
+            $response = $responseBody;
+        }) -> send();
+
+        return $response;
     }
 }
 

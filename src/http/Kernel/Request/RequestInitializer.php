@@ -17,13 +17,11 @@ class RequestInitializer extends RequestVerification {
      * 请求回调事件
      * @param object|null $request
      * @param object|null $response
-     * @param object|null $services
      * @param float $startTime
      * @return RequestVerification
      */
-    public function trigger(object $request = null, object $response = null, object $services = null, float $startTime = 0.00): RequestVerification {
+    public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification {
         $this->setRequest($request) -> setResponse($response);
-        $this->services = $services;
 
         foreach ($this->RunProcessMethods as $key) {
             if (method_exists($this, $key) && call_user_func([$this, $key])) break;

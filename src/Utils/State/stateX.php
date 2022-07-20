@@ -14,7 +14,7 @@ class stateX extends dataProxy
      * @param \Closure $getAction Get 闭包函数
      * @return stateX
      */
-    public function setGetAction(string $getActionName, \Closure $getAction): static
+    public function changeGetterMethod(string $getActionName, \Closure $getAction): static
     {
         $this->getAction[$getActionName] = $getAction;
         return $this;
@@ -25,7 +25,7 @@ class stateX extends dataProxy
      * @param \Closure $setAction
      * @return stateX
      */
-    public function setSetAction(string $setActionName, \Closure $setAction): static
+    public function changeSetterMethod(string $setActionName, \Closure $setAction): static
     {
         $this->setAction[$setActionName] = $setAction;
         return $this;
@@ -48,8 +48,7 @@ class stateX extends dataProxy
      * @param string $getterName
      * @return mixed
      */
-    public function callGetterAction(string $getterName): mixed
-    {
+    public function getter(string $getterName): mixed {
         return $this->callAction($getterName);
     }
 
@@ -58,8 +57,7 @@ class stateX extends dataProxy
      * @param string $setterName 方法名称
      * @return mixed
      */
-    public function callSetterAction(string $setterName): mixed
-    {
+    public function setter(string $setterName): mixed {
         return $this->callAction($setterName, 'setAction');
     }
 
@@ -68,8 +66,7 @@ class stateX extends dataProxy
      * @param string $callBackName
      * @return mixed
      */
-    public function callCallBackAction(string $callBackName): mixed
-    {
+    public function callable(string $callBackName): mixed {
         return $this->callAction($callBackName, 'callBackAction');
     }
 

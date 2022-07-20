@@ -17,6 +17,7 @@ use iflow\console\lib\Input;
 use iflow\console\lib\outPut;
 use iflow\http\HttpServer;
 use iflow\Swoole\Services\Services;
+use iflow\swoole\ServicesCommand;
 
 class Console
 {
@@ -26,15 +27,16 @@ class Console
     public outPut $outPut;
 
     public array $command = [
-        '<start|stop|reload>-service' => Services::class,
-        'start-serviceWorkman' => workMan::class,
-        '<start|stop|reload>-tcp-<client|server>' => \iflow\Swoole\Tcp\Services::class,
-        '<start|stop|reload>-udp-<client|server>' => \iflow\Swoole\Udp\Services::class,
-        '<start|stop|reload>-mqtt-<client|server>' => \iflow\Swoole\MQTT\Services::class,
-        '<start|stop|reload>-rpc-<client|server>' => \iflow\Swoole\Rpc\Services::class,
-        'start-kafka-consumer' => \iflow\Swoole\Kafka\Services::class,
-        'start-dht' => dht::class,
-        'start-proxy-<client|server>' => netPenetrate::class,
+        '<start|stop|reload>-service' => ServicesCommand::class,
+        '<start|stop|reload>-WebSocket' => ServicesCommand::class,
+        'start-workerMan' => workMan::class,
+        '<start|stop|reload>-tcp-<client|server>' => ServicesCommand::class,
+        '<start|stop|reload>-udp-<client|server>' => ServicesCommand::class,
+        '<start|stop|reload>-mqtt-<client|server>' => ServicesCommand::class,
+        '<start|stop|reload>-rpc-<client|server>' => ServicesCommand::class,
+        'start-kafka-consumer' => \iflow\swoole\implement\Services\Kafka\Services::class,
+//        'start-dht' => dht::class,
+//        'start-proxy-<client|server>' => netPenetrate::class,
         'start' => http::class,
         'start-dev' => HttpServer::class,
         'help' => Help::class,
