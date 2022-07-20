@@ -124,13 +124,14 @@ abstract class ServicesAbstract implements ServicesInterface {
     }
 
     protected function setServerParams(): ServicesAbstract {
+
         $this->_params = $this->config -> get('port') ? [
             $this->config -> get('host'),
             $this->config -> get('port')
         ] : [];
 
-
-        $this->_params = $this->config -> get('host') ?: $this->config -> get('listener');
+        if (empty($this->_params))
+            $this->_params = $this->config -> get('host') ?: $this->config -> get('listener');
         $this->_params = array_values($this->_params);
         return $this;
     }
@@ -206,7 +207,7 @@ abstract class ServicesAbstract implements ServicesInterface {
     protected function onFinish() {}
 
     protected function getEventClass(): string {
-        return $this->servicesCommand -> config -> get('event', $this->defaultEventClass);
+        return $this->servicesCommand -> config -> get('event') ?: $this->defaultEventClass;
     }
 
     /**

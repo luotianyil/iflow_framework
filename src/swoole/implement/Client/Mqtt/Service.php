@@ -3,7 +3,6 @@
 namespace iflow\swoole\implement\Client\Mqtt;
 
 use iflow\swoole\abstracts\ServicesAbstract;
-use iflow\Utils\Tools\Timer;
 use Simps\MQTT\Client;
 use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Hex\ReasonCode;
@@ -46,18 +45,17 @@ class Service extends ServicesAbstract {
             $this->servicesCommand -> setServices();
             $this->printStartContextToConsole('mqtt');
 
-
-            Timer::tick(100, function (int $timer_id) {
+            while (true) {
                 if ($this->connection()) {
                     if ($this->subscribe($this->inputConfig['topics'])) {
                         $this->wait();
                     } else {
                         $this->close();
                         $this->servicesCommand -> Console -> outPut -> writeLine('Subscribe Topics Failed');
-                        Timer::clear($timer_id);
+                        break;
                     }
                 }
-            });
+            }
         });
     }
 
@@ -82,7 +80,7 @@ class Service extends ServicesAbstract {
             $packet = $this->SwService->recv();
             if ($packet && $packet !== true) {
                 $this -> timeSincePing = time();
-                $this -> servicesCommand->callConfHandle($this->config['Handle'], [ $this, $packet ]);
+                $this -> servicesCommand->callConfHandle($this->getEventClass(), [ $this, $packet ]);
             }
             $this -> ping();
         }

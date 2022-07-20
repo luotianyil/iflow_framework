@@ -23,7 +23,7 @@ class ArrayTools extends Collection
         $keys = explode('@', $name);
 
         if (!$this->offsetExists($keys[0])) return [];
-        if (empty($keys[1])) return $this->offsetGet($keys[0]);
+        if (empty($keys[1])) return $this->offsetGet($keys[0]) ?? $default;
         $names = explode('.', $keys[1]);
 
         $info = [];

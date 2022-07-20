@@ -124,7 +124,8 @@ class App {
      * @return string
      */
     public function getDefaultRootPath(): string {
-        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
+        return $this->frameWorkPath;
+//        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
     }
 
     /**
