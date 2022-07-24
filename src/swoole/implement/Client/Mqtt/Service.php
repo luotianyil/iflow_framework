@@ -149,7 +149,7 @@ class Service extends ServicesAbstract {
      * 取消订阅
      * @param array $topics
      * @param array $properties
-     * @return bool
+     * @return bool|array
      */
     public function unsubscribe(array $topics, array $properties = []): bool|array
     {

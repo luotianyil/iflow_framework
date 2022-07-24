@@ -445,10 +445,10 @@ if (!function_exists('valid_closure')) {
         $closure = explode('@', $closure);
         if (count($closure) < 2 || !class_exists($closure[0])) return null;
 
-        $object = app() -> make($closure[0]) ;
+        $object = new $closure[0];
         if (!method_exists($object, $closure[1])) return null;
 
         // 执行方法闭包
-        return fn() => app() -> invokeMethod([$object, $closure[1]], [...func_get_args(), $object]);
+        return fn() => call_user_func([$object, $closure[1]], ...[ ...func_get_args(), $object ]);
     }
 }

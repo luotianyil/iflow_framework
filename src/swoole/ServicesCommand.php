@@ -61,7 +61,7 @@ class ServicesCommand extends Command {
      */
     public function isStartServer(): bool {
         $event = $this->config -> getCommandEvent();
-        if (count($event) < 2) return true;
+        if (count($event) <= 2) return true;
 
         return $event[2] !== 'client';
     }
