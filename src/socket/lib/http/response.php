@@ -211,7 +211,7 @@ class response
      * @param string $path
      * @return bool
      */
-    public function sendFile(string $path): bool
+    public function sendfile(string $path): bool
     {
         $content = app() -> make(File::class) -> readFile($path);
         $this->body = $this->setResponseBody();

@@ -80,9 +80,8 @@ class Parser extends tag implements TemplateParser
             // 重新编译视图
             $this->content = file_get_contents($this->file);
             return $this->render($this->templateParser());
-        } else {
-            throw new HttpException(404, 'template file not exists');
         }
+        throw new HttpException(404, 'template file not exists');
     }
 
     /**

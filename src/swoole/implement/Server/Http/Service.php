@@ -33,18 +33,13 @@ class Service extends ServicesAbstract {
         $this->SwService -> start();
     }
 
-    public function onRequest(object $request, object $response): bool {
+    public function onRequest(object $request, object $response): mixed {
         try {
-            if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
-                $file = config('app@favicon') ?: '';
-                return file_exists($file) ? $response->sendfile($file) : $response -> end();
-            }
-            event('RequestVerification', $request, $response, microtime(true));
+            return event('RequestVerification', $request, $response, microtime(true));
         } catch (\Throwable $exception) {
             // 全局异常函数处理
-            $this->servicesCommand -> app -> make(Error::class) -> appHandler($exception);
+            return $this->servicesCommand -> app -> make(Error::class) -> appHandler($exception);
         }
-        return true;
     }
 
     protected function getSwooleServiceClass(): string {

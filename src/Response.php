@@ -42,8 +42,14 @@ class Response
      * @return bool
      */
     public function send(): bool {
+
         // 获取Response 原始响应体
         $this->response = response() -> response;
+
+        if (method_exists($this->response, 'isWritable') && $this->response -> isWritable() === false) {
+            return true;
+        }
+
         // 结束请求
         return $this->setResponseHeader() -> response -> end($this->output($this->data));
     }

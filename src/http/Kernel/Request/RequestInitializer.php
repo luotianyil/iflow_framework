@@ -21,6 +21,13 @@ class RequestInitializer extends RequestVerification {
      * @return RequestVerification
      */
     public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification {
+
+        $request->server['path_info'] = $request->server['path_info'] ?? $request -> server['request_uri'];
+        if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
+            $file = config('app@favicon') ?: '';
+            return $response->sendfile($file);
+        }
+
         $this->setRequest($request) -> setResponse($response);
 
         foreach ($this->RunProcessMethods as $key) {

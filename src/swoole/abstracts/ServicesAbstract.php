@@ -40,7 +40,6 @@ abstract class ServicesAbstract implements ServicesInterface {
     #[Inject]
     public Finish $finish;
 
-
     protected string $defaultEventClass = '';
 
     public function __construct(protected ServicesCommand $servicesCommand) {

@@ -3,7 +3,7 @@
 
 namespace iflow\socket\workman\websocket;
 
-use iflow\Swoole\Services\WebSocket\socketio\Packet;
+use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
 use Workerman\Connection\TcpConnection;
 use Workerman\Worker;
 

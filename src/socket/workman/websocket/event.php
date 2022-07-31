@@ -4,7 +4,7 @@
 namespace iflow\socket\workman\websocket;
 
 
-use iflow\Swoole\Services\WebSocket\socketio\Packet;
+use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
 
 class event
 {
@@ -48,7 +48,7 @@ class event
      */
     public function to(array|string $fds): static
     {
-        $fds = is_numeric($fds) || is_integer($fds) ? func_get_args() : $fds;
+        $fds = is_numeric($fds) ? func_get_args() : $fds;
         foreach ($fds as $fd) {
             $this->to[] = $fd;
         }

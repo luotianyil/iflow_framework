@@ -12,8 +12,7 @@ class httpServer
 
     protected string $type = 'http';
 
-    public function __construct(protected array $config = [])
-    {
+    public function __construct(protected array $config = []) {
         $this->type = $this->config['type'] ?? 'http';
     }
 

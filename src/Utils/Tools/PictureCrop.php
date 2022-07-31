@@ -26,6 +26,11 @@ class PictureCrop
 
     public string $imageCreateFromType;
 
+    /**
+     * @param string $imagePath 图片地址
+     * @param string $fontTtfPath 字体地址
+     * @throws \Exception
+     */
     public function __construct(protected string $imagePath, protected string $fontTtfPath)
     {
         if (!file_exists($this->imagePath)) {

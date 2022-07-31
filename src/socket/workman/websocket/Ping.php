@@ -3,8 +3,7 @@
 
 namespace iflow\socket\workman\websocket;
 
-
-use iflow\Swoole\Services\WebSocket\socketio\Packet;
+use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
 use iflow\Utils\Tools\Timer;
 use Workerman\Connection\TcpConnection;
 
@@ -23,7 +22,7 @@ class Ping
     {
         Timer::clear($this->pingIntervalTimer);
         $this->pingIntervalTimer = Timer::after($this->pingTimer, function () {
-            $this->connection->send(packet::ping());
+            $this->connection->send(Packet::ping());
             $this->clearPingTimeOut($this->pingTimeOut);
         });
         return true;
