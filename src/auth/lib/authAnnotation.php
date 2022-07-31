@@ -22,7 +22,10 @@ class authAnnotation extends AnnotationAbstract {
         'setAuthRoles'
     ];
 
-    public App $app;
+    /**
+     * @var App
+     */
+    public object $app;
     public array $router;
 
     public function __construct(

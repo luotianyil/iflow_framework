@@ -12,6 +12,22 @@ class Packet
     public function __construct(protected Server $server, protected int $fd, protected array $data) {
     }
 
+    /**
+     * 注册
+     * @param Service $service
+     * @param array $data
+     * @return int
+     */
+    public function register(Service $service, array $data): int {
+        return $service -> consumer -> register($data) ? Event::ping -> value : 0;
+    }
+
+
+    public function close(Server $server, Service $service, int $fd): bool {
+        if ($server -> exist($fd)) $server -> close($fd);
+        return $service -> consumer -> remove($fd);
+    }
+
     public function send(Service $service) {
 
         $clientMasterName = $service -> getServicesCommand() -> config -> get('client_name');
@@ -31,7 +47,6 @@ class Packet
             'event' => $this->data['event']
         ]) -> getData());
     }
-
 
     protected function execute(): bool {
         return (new CheckRequestRouter()) -> init($this->server, $this->fd, $this->data);

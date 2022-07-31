@@ -29,7 +29,9 @@ class Event {
     }
 
     public function onClose(Server $server, int $fd, int $reactorId) {
-        $this->servicesAbstract -> consumer -> remove($fd);
+        return \iflow\swoole\implement\Server\Rpc\Parsers\Event::from(4) -> onPacket(
+            [ 'event' => 4 ], $server, $fd, $this -> servicesAbstract
+        );
     }
 
     public function onPacket(Server $server, string $data, array $clientInfo) {
