@@ -3,15 +3,16 @@
 
 namespace iflow\log\lib\channels;
 
+use iflow\swoole\implement\Services\Elasticsearch\Elasticsearch as ES;
 
 class elasticsearch {
 
     protected array $config = [];
 
-    protected \iflow\Swoole\Elasticsearch\elasticsearch $elClient;
+    protected ES $elClient;
 
     public function __construct(array $config = []) {
-        $this->elClient = new \iflow\Swoole\Elasticsearch\elasticsearch($config['elasticsearchConfigName']);
+        $this->elClient = new ES($config['elasticsearchConfigName']);
         $this->config = config('elasticsearch@connections.'.$config['elasticsearchConfigName']);
     }
 

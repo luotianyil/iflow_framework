@@ -18,7 +18,7 @@ class Session
     protected ArrayTools $sessionTools;
 
     /**
-     * 初始化Seesion
+     * 初始化 Session
      * @return $this
      * @throws \Exception
      */
@@ -51,6 +51,7 @@ class Session
      * 设置Session
      * @param string|null $name
      * @param array|string $data
+     * @param callable|null $callable
      * @return mixed
      */
     public function set(string|null $name = null, array|string $data = [], ?callable $callable = null): mixed {

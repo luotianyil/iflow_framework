@@ -10,7 +10,7 @@ use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
 use Reflector;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class middleware extends AnnotationAbstract {
+class Middleware extends AnnotationAbstract {
 
     public AnnotationEnum $hookEnum = AnnotationEnum::Mounted;
 

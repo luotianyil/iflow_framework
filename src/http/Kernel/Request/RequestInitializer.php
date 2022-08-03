@@ -5,6 +5,8 @@ namespace iflow\http\Kernel\Request;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\tools\data\exceptions\ValueException;
 use iflow\Container\implement\annotation\traits\Execute;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\http\Kernel\Exception\RequestValidateException;
 use iflow\http\lib\Cookie;
 use iflow\Request;
@@ -99,7 +101,10 @@ class RequestInitializer extends RequestVerification {
      * 格式化请求参数
      * @param array $params
      * @return array
+     * @throws InvokeClassException
+     * @throws InvokeFunctionException
      * @throws ValueException
+     * @throws \ReflectionException
      */
     protected function GenerateRequestQueryParams(array $params = []): array {
         // TODO: Implement GenerateRequestQueryParams() method.
@@ -118,6 +123,10 @@ class RequestInitializer extends RequestVerification {
      * 初始化对象类型参数
      * @param array $params
      * @return object
+     * @throws ValueException
+     * @throws \ReflectionException
+     * @throws InvokeClassException
+     * @throws InvokeFunctionException
      */
     protected function setInstanceValue(array $params): object {
         // TODO: Implement setInstanceValue() method.

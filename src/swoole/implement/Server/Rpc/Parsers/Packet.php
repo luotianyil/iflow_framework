@@ -22,7 +22,6 @@ class Packet
         return $service -> consumer -> register($data) ? Event::ping -> value : 0;
     }
 
-
     public function close(Server $server, Service $service, int $fd): bool {
         if ($server -> exist($fd)) $server -> close($fd);
         return $service -> consumer -> remove($fd);

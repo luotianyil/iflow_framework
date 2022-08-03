@@ -66,11 +66,10 @@ class File
 
         $path = $this->getStorePath($name);
 
-        if (!file_exists($path)) return [];
+        if (!file_exists($path) && $this->deleteExpiredFile($path)) return [];
 
         $file = fopen($path, 'rb');
         $content = '';
-
         if ($file) {
             try {
                 if (flock($file, LOCK_SH)) {
@@ -87,12 +86,24 @@ class File
     }
 
     /**
+     * 删除过期文件
+     * @param string $file
+     * @return bool
+     */
+    protected function deleteExpiredFile(string $file): bool {
+        // 当文件过期
+        $expired = filectime($file) > time() + $this->getExpired();
+        if ($expired) @unlink($file);
+
+        return $expired;
+    }
+
+    /**
      * 验证指定缓存是否存在
      * @param string $name
      * @return bool
      */
-    public function has(string $name): bool
-    {
+    public function has(string $name): bool {
         return file_exists($this->getStorePath($name));
     }
 
