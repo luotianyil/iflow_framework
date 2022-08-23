@@ -3,6 +3,7 @@
 namespace iflow\pipeline;
 
 class pipeline {
+
     protected array $pipes = [];
 
     public function through($pipes): static {

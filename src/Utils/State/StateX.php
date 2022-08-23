@@ -4,9 +4,9 @@
 namespace iflow\Utils\State;
 
 
-use iflow\Utils\State\lib\dataProxy;
+use iflow\Utils\State\lib\DataProxy;
 
-class stateX extends dataProxy
+class StateX extends DataProxy
 {
 
     /**

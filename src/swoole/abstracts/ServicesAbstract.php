@@ -51,6 +51,7 @@ abstract class ServicesAbstract implements ServicesInterface {
 
         $this->events['task'] = [ $this->delivery, 'onTask' ];
         $this->events['finish'] = [ $this->finish, 'onFinish' ];
+        $this->events['WorkerStart'] = [ $this, 'onWorkerStart' ];
 
         $this -> setPid($this->config -> get('swConfig@pid_file'))
               -> setServerParams();
@@ -199,9 +200,11 @@ abstract class ServicesAbstract implements ServicesInterface {
         return $this;
     }
 
-    protected function onTask() {}
+    public function onTask() {}
 
-    protected function onFinish() {}
+    public function onFinish() {}
+
+    public function onWorkerStart() {}
 
     protected function getEventClass(): string {
         return $this->servicesCommand -> config -> get('event') ?: $this->defaultEventClass;

@@ -15,6 +15,7 @@ class IRedis
 {
 
     protected array $config = [];
+
     protected object $redis;
 
     public function initializer(array $config): static {
@@ -26,19 +27,19 @@ class IRedis
         return $this->connection();
     }
 
-    protected function connection(): static
-    {
-        $this->redis -> connect(
-            $this->config['host'], $this->config['port']
-        );
+    protected function connection(): static {
+        $this->redis -> connect($this->config['host'], $this->config['port']);
         if (isset($this->config['sentinel_name']) && is_string($this->config['sentinel_name']) && $this->config['sentinel_name'] !== '') {
             $this->sentinelToAddress($this->config['sentinel_name']);
         }
         return $this;
     }
 
-    protected function sentinelToAddress(string $sentinel_name)
-    {
+    /**
+     * 通过哨兵获取 Redis 地址
+     * @throws \Exception
+     */
+    protected function sentinelToAddress(string $sentinel_name) {
         $sentinel = $this->request('SENTINEL', 'get-master-addr-by-name', $sentinel_name);
 
         if (!$sentinel) {
@@ -47,6 +48,10 @@ class IRedis
 
         $this->redis -> close();
         $this->redis -> connect($sentinel[0], $sentinel[1]);
+
+        if (isset($this->config['password'])) {
+            $this->authLogin($this->config['password']) ?: throw new \RuntimeException('Redis Auth Verification Failed');
+        }
     }
 
     /**
@@ -56,7 +61,7 @@ class IRedis
     public function request(): mixed {
         $args = func_get_args();
         if (method_exists($this->redis, 'request')) {
-            return $this->redis -> request($args[0]);
+            return $this->redis -> request($args);
         }
         return $this->redis -> rawCommand(...$args);
     }
@@ -123,6 +128,11 @@ class IRedis
      */
     public function has(string $name): bool {
         return $this->redis -> exists($name);
+    }
+
+    public function authLogin(string $passWord): bool {
+        $success = $this -> request([ 'auth', $passWord ]);
+        return strtoupper($success) === 'OK';
     }
 
     public function __call(string $name, array $arguments) {

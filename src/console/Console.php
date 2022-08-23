@@ -7,16 +7,13 @@ namespace iflow\console;
 use iflow\App;
 use iflow\command\buildPhar;
 use iflow\command\cmdInstruction;
-use iflow\command\dht;
 use iflow\command\http;
 use iflow\command\install;
-use iflow\command\netPenetrate;
 use iflow\command\workMan;
 use iflow\console\lib\Help;
 use iflow\console\lib\Input;
-use iflow\console\lib\outPut;
+use iflow\console\lib\OutPut;
 use iflow\http\HttpServer;
-use iflow\Swoole\Services\Services;
 use iflow\swoole\ServicesCommand;
 
 class Console
@@ -24,18 +21,15 @@ class Console
     public App $app;
 
     public Input $input;
-    public outPut $outPut;
+    public OutPut $outPut;
 
     public array $command = [
         '<start|stop|reload>-service' => ServicesCommand::class,
         '<start|stop|reload>-WebSocket' => ServicesCommand::class,
         'start-workerMan' => workMan::class,
-        '<start|stop|reload>-tcp-<client|server>' => ServicesCommand::class,
-        '<start|stop|reload>-udp-<client|server>' => ServicesCommand::class,
-        '<start|stop|reload>-mqtt-<client|server>' => ServicesCommand::class,
-        '<start|stop|reload>-rpc-<client|server>' => ServicesCommand::class,
+        '<start|stop|reload>-<tcp|udp|mqtt|rpc>-<client|server>' => ServicesCommand::class,
+        'start-dht-services' => ServicesCommand::class,
         'start-kafka-consumer' => \iflow\swoole\implement\Services\Kafka\Services::class,
-//        'start-dht' => dht::class,
 //        'start-proxy-<client|server>' => netPenetrate::class,
         'start' => http::class,
         'start-dev' => HttpServer::class,
@@ -50,7 +44,7 @@ class Console
     public function initializer(App $app) {
         $this->app = $app;
         $this->input = new Input();
-        $this->outPut = new outPut($this->openOutputStream());
+        $this->outPut = new OutPut($this->openOutputStream());
         // 获取用户输入
         $this->userCommand = $this->input -> getUserCommand();
 

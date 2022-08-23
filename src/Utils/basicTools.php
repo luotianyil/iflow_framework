@@ -4,6 +4,7 @@
 namespace iflow\Utils;
 
 
+use DateTimeInterface;
 use iflow\Utils\Message\baseMessage;
 
 class basicTools
@@ -53,7 +54,7 @@ class basicTools
         $dtStr = date("c", $time);
         try {
             $datetime = new \DateTime($dtStr);
-            $expiration = $datetime->format(\DateTime::ISO8601);
+            $expiration = $datetime->format(DateTimeInterface::ISO8601);
             $pos = strpos($expiration, '+');
             $expiration = substr($expiration, 0, $pos);
             return $expiration."Z";

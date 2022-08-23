@@ -3,12 +3,18 @@
 namespace iflow\swoole\implement\Tools\Task;
 
 use iflow\Container\Container;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use Swoole\Server;
 
 class Delivery {
 
     protected array $data = [];
 
+    /**
+     * @throws InvokeFunctionException
+     * @throws InvokeClassException
+     */
     public function onTask(Server $server, int $task_id, int $reactor_id, mixed $data): mixed {
         $data = is_array($data) ? $data : (json_decode($data, true) ?: unserialize($data));
 

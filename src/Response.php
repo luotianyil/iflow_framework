@@ -6,8 +6,15 @@ use iflow\response\lib\File;
 use iflow\response\ResponseTrait;
 use Psr\Http\Message\ResponseInterface;
 
-class Response
-{
+
+/**
+ * Response 响应类
+ * @mixin \Swoole\Http2\Response
+ * @mixin \Swoole\Http\Response
+ * @mixin http\lib\Response
+ */
+class Response {
+
     use ResponseTrait;
 
     protected function init($data, $code) {
@@ -60,8 +67,7 @@ class Response
      * @param bool $isConfigRootPath
      * @return File
      */
-    protected function sendFile(string $path = '', bool $isConfigRootPath = true): File
-    {
+    protected function sendFile(string $path = '', bool $isConfigRootPath = true): File {
         return sendFile($path, isConfigRootPath: $isConfigRootPath);
     }
 
@@ -88,11 +94,6 @@ class Response
      */
     public function initializer($response): static {
         $this->response = $response;
-        return $this;
-    }
-
-    public function trailer(string $key, string $value, bool $ucwords = true): static {
-        $this->response -> trailer(...func_get_args());
         return $this;
     }
 

@@ -6,7 +6,7 @@ namespace iflow\Utils\State\lib;
 
 use iflow\Utils\ArrayTools;
 
-class dataProxy extends ArrayTools
+class DataProxy extends ArrayTools
 {
 
     /**

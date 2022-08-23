@@ -29,9 +29,8 @@ class ArrayTools extends Collection
         $info = [];
         if (count($names) <= 1) {
             foreach ($names as $val) {
-                if (isset($this->items[$keys[0]][$val])) {
-                    $info = $this->items[$keys[0]][$val];
-                }
+                $info = $this->items[$keys[0]][$val] ?? [];
+                if ($info) return $info;
             }
         } else {
             $info = $this->getConfigValue($names, $this->offsetGet($keys[0]));

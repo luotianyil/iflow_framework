@@ -5,6 +5,7 @@ namespace iflow\swoole;
 use iflow\console\lib\Command;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\tools\data\Inject;
+use Swoole\Server;
 
 class ServicesCommand extends Command {
 
@@ -34,7 +35,7 @@ class ServicesCommand extends Command {
 
     public function setServices() {
        Container::getInstance() -> register(
-           \Swoole\Server::class,
+           Server::class,
            $this->config -> getServicesAbstract() -> getSwService()
        );
     }
@@ -62,22 +63,33 @@ class ServicesCommand extends Command {
     public function isStartServer(): bool {
         $event = $this->config -> getCommandEvent();
         if (count($event) <= 2) return true;
-
         return $event[2] !== 'client';
     }
 
     protected function getServiceClass(): string {
-        $isClient = $this->isStartServer() ? 'Server' : 'Client';
         $event = $this->config -> getCommandEvent();
 
-        $service = $event[1] ?? 'service';
+        $ServiceType = $this->getServiceType();
 
+        $service = $event[1] ?? 'service';
         $service = $service === 'service' ? 'http' : $service;
 
-        $class = sprintf("{$this -> baseClass}$isClient\%s\Service", ucwords($service));
-
+        $class = sprintf("{$this -> baseClass}$ServiceType\%s\Service", ucwords($service));
         if (class_exists($class)) return $class;
 
         return "";
+    }
+
+
+    /**
+     * 获取服务类型
+     * @return string
+     */
+    protected function getServiceType(): string {
+        $isClient = $this->isStartServer();
+        $event = $this->config -> getCommandEvent();
+        if (count($event) <= 2) return $isClient ? 'Server' : 'Client';
+
+        return $event[2] !== 'Server' ? ucwords($event[2]) : 'Server';
     }
 }
