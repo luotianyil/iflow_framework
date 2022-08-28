@@ -20,9 +20,9 @@ class RequestInitializer extends RequestVerification {
      * @param object|null $request
      * @param object|null $response
      * @param float $startTime
-     * @return RequestVerification
+     * @return RequestVerification|bool
      */
-    public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification {
+    public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification|bool {
 
         $request->server['path_info'] = $request->server['path_info'] ?? $request -> server['request_uri'];
         if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
