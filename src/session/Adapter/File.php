@@ -1,14 +1,14 @@
 <?php
 
 
-namespace iflow\session\lib;
+namespace iflow\session\Adapter;
 
-use iflow\session\lib\abstracts\SessionAbstracts;
+use iflow\session\Adapter\abstracts\SessionAbstracts;
 
 class File extends SessionAbstracts
 {
     /**
-     * @var \iflow\cache\lib\File
+     * @var \iflow\cache\Adapter\File\File
      */
     protected object $cache;
 

@@ -1,16 +1,15 @@
 <?php
 
 
-namespace iflow\cache\lib;
+namespace iflow\cache\Adapter\File;
 
+use iflow\cache\Adapter\AdapterInterface;
 
-class File
-{
+class File implements AdapterInterface {
 
     protected array $config = [];
 
-    public function initializer(array $config): self
-    {
+    public function initializer(array $config): static {
         $this->config = $config;
         return $this;
     }
@@ -66,7 +65,7 @@ class File
 
         $path = $this->getStorePath($name);
 
-        if (!file_exists($path) && $this->deleteExpiredFile($path)) return [];
+        if (!file_exists($path) || $this->deleteExpiredFile($path)) return [];
 
         $file = fopen($path, 'rb');
         $content = '';

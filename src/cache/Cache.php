@@ -3,9 +3,9 @@
 
 namespace iflow\cache;
 
-use iflow\cache\lib\File;
-use iflow\cache\lib\IRedis;
-use iflow\cache\lib\Redis;
+use iflow\cache\Adapter\File\File;
+use iflow\cache\Adapter\Redis\Redis;
+use iflow\Container\Container;
 
 /**
  * @mixin Redis
@@ -17,20 +17,22 @@ class Cache {
 
     protected array $config = [];
 
-    protected string $namespace = '\\iflow\\cache\\lib\\';
+    protected string $namespace = '\\iflow\\cache\\Adapter\\';
 
     protected function getConfig(string|array $default = '')
     {
         $this->config = is_string($default) ? config('cache@stores.'.$default) : $default;
     }
 
-    public function store(string|array $name = ''): Redis | File | IRedis {
+    public function store(string|array $name = ''): Redis | File {
         if (is_string($name)) {
             $name = $name ?: config('cache@default');
         }
         $this->getConfig($name);
         if (!$this->config) throw new \Exception('cache config null');
-        $class = $this->namespace . ucfirst($this->config['type']);
-        return (new $class) -> initializer($this->config);
+
+        $type = ucfirst($this->config['type']);
+        $class = sprintf("%s%s\\%s", $this->namespace, $type, $type);
+        return Container::getInstance() -> make($class) -> initializer($this->config);
     }
 }

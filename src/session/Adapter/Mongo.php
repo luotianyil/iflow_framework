@@ -1,10 +1,10 @@
 <?php
 
 
-namespace iflow\session\lib;
+namespace iflow\session\Adapter;
 
 
-use iflow\session\lib\abstracts\SessionAbstracts;
+use iflow\session\Adapter\abstracts\SessionAbstracts;
 use think\Model;
 
 class Mongo extends SessionAbstracts

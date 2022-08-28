@@ -6,7 +6,7 @@ namespace iflow\socket\lib\http;
 
 use iflow\http\lib\Cookie;
 
-class request
+class Request
 {
 
     public array $server = [];

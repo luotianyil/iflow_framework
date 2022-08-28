@@ -6,8 +6,7 @@ namespace iflow\socket\lib\http;
 
 use iflow\fileSystem\File;
 
-class response
-{
+class Response {
 
     protected array $header = [];
     protected string $body = "";

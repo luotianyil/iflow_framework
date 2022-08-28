@@ -1,11 +1,11 @@
 <?php
 
 
-namespace iflow\session\lib\abstracts;
+namespace iflow\session\Adapter\abstracts;
 
 
 use iflow\facade\Cache;
-use iflow\session\lib\Session;
+use iflow\session\Adapter\Session;
 
 abstract class SessionAbstracts implements Session {
 

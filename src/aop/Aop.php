@@ -8,7 +8,7 @@ use iflow\aop\lib\Ast;
 use iflow\App;
 use iflow\exception\lib\HttpException;
 use iflow\exception\lib\HttpResponseException;
-use iflow\pipeline\pipeline;
+use iflow\Pipeline\Pipeline;
 use iflow\Response;
 use Psr\Http\Message\ResponseInterface;
 
@@ -20,7 +20,7 @@ class Aop {
     private array $config;
 
     // 管道
-    protected pipeline $pipeline;
+    protected Pipeline $pipeline;
 
     protected App $app;
 
@@ -128,7 +128,7 @@ class Aop {
      */
     private function throughAop(array $aspects, string $action, array $args): static {
         // 追加管道
-        $this->pipeline = new pipeline();
+        $this->pipeline = new Pipeline();
         $this->pipeline -> through(array_map(function ($aspect) use ($args, $action) {
             return function ($app, $next) use ($aspect, $args, $action) {
                 // 通过容器反射执行

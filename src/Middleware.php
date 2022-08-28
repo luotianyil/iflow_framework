@@ -4,19 +4,19 @@
 namespace iflow;
 
 use iflow\exception\lib\HttpResponseException;
-use iflow\pipeline\pipeline;
+use iflow\Pipeline\Pipeline;
 use Psr\Http\Message\ResponseInterface;
 
 class Middleware {
 
     protected App $app;
-    protected pipeline $pipeline;
+    protected Pipeline $pipeline;
 
     protected array $middleware = [];
 
     public function initializer(App $app): bool {
         $this->app = $app;
-        $this->pipeline = new pipeline();
+        $this->pipeline = new Pipeline();
         return $this->throughMiddleware() -> thenMiddleware();
     }
 

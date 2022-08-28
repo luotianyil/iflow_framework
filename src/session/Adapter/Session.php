@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\session\lib;
+namespace iflow\session\Adapter;
 
 
 interface Session

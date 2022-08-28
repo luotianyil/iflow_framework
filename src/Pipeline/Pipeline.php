@@ -1,8 +1,8 @@
 <?php
 
-namespace iflow\pipeline;
+namespace iflow\Pipeline;
 
-class pipeline {
+class Pipeline {
 
     protected array $pipes = [];
 

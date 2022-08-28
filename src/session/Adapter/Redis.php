@@ -1,14 +1,14 @@
 <?php
 
 
-namespace iflow\session\lib;
+namespace iflow\session\Adapter;
 
-use iflow\session\lib\abstracts\SessionAbstracts;
+use iflow\session\Adapter\abstracts\SessionAbstracts;
 
 class Redis extends SessionAbstracts
 {
     /**
-     * @var \iflow\cache\lib\IRedis
+     * @var \iflow\cache\Adapter\Redis\Driver\IRedis
      */
     protected object $cache;
 

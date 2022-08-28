@@ -7,7 +7,7 @@ namespace iflow\socket\lib\http;
 use iflow\initializer\Error;
 use iflow\socket\lib\interfaces\Services;
 
-class http implements Services
+class Http implements Services
 {
 
     protected mixed $socketServer = null;

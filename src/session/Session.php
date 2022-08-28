@@ -4,12 +4,12 @@
 namespace iflow\session;
 
 
-use iflow\session\lib\abstracts\SessionAbstracts;
+use iflow\session\Adapter\abstracts\SessionAbstracts;
 use iflow\Utils\ArrayTools;
 
 class Session
 {
-    protected string $namespace = '\\iflow\\session\\lib\\';
+    protected string $namespace = '\\iflow\\session\\Adapter\\';
     protected array $config = [];
     protected ?SessionAbstracts $session = null;
     protected mixed $sessionId = '';
