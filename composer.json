@@ -19,6 +19,7 @@
     "iflow/router": "^0.0.1",
     "iflow/emailer": "^0.0.1",
     "iflow/scrapy": "^0.0.1",
+    "iflow/helper": "^0.0.1",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-bcmath": "*",
