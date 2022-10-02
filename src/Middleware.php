@@ -3,7 +3,7 @@
 
 namespace iflow;
 
-use iflow\exception\lib\HttpResponseException;
+use iflow\exception\Adapter\HttpResponseException;
 use iflow\Pipeline\Pipeline;
 use Psr\Http\Message\ResponseInterface;
 

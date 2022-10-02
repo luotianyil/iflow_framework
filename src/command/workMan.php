@@ -4,7 +4,7 @@
 namespace iflow\command;
 
 
-use iflow\console\lib\Command;
+use iflow\console\Adapter\Command;
 use iflow\socket\workman\http\httpServer;
 
 class workMan extends Command
@@ -15,7 +15,7 @@ class workMan extends Command
         // TODO: Implement handle() method.
         $config = config('socket@workman');
         if (empty($config)) {
-            $this->Console -> outPut -> writeLine('WorkMan Config is empty !!!');
+            $this->Console -> writeConsole -> writeLine('WorkMan Config is empty !!!');
             return true;
         }
         $configName = $this->getArgument('config', $this->getArgument('--c'));
@@ -23,7 +23,7 @@ class workMan extends Command
             $configName = $config['default'];
         }
 
-        $this->Console -> outPut -> writeLine((new httpServer($config[$configName])) -> start());
+        $this->Console -> writeConsole -> writeLine((new httpServer($config[$configName])) -> start());
         return true;
     }
 }

@@ -14,7 +14,7 @@ class Service extends \iflow\swoole\implement\Server\Http\Service {
 
     public function __construct(protected ServicesCommand $servicesCommand) {
         parent::__construct($this -> servicesCommand);
-        $this->webSocket = Container::getInstance() -> make(WebSocket::class, [
+        $this->webSocket = app(WebSocket::class, [
             $this->servicesCommand -> config -> all(), $this
         ]);
 

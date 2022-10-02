@@ -4,16 +4,14 @@
 namespace iflow\session\Adapter;
 
 
+use iflow\cache\Adapter\AdapterInterface;
 use iflow\session\Adapter\abstracts\SessionAbstracts;
 use think\Model;
 
 class Mongo extends SessionAbstracts
 {
 
-    /**
-     * @var Model
-     */
-    protected object $cache;
+    protected AdapterInterface|Model $cache;
 
     public function initializer(array $config = []): static
     {

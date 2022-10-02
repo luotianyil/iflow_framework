@@ -3,8 +3,7 @@
 
 namespace iflow\command;
 
-
-use iflow\console\lib\Command;
+use iflow\console\Adapter\Command;
 use iflow\Response;
 
 class cmdInstruction extends Command
@@ -30,7 +29,7 @@ class cmdInstruction extends Command
             }
 
             if ($input === 'exit') {
-                $this->Console -> outPut -> writeLine('exit success...');
+                $this->Console -> writeConsole -> writeLine('exit success...');
                 break;
             }
 
@@ -76,7 +75,7 @@ class cmdInstruction extends Command
             $data = $data -> data;
         }
 
-        $this->Console -> outPut -> writeLine(
+        $this->Console -> writeConsole -> writeLine(
             is_string($data) ? $data : var_export($data, "\r\n")
         );
     }
@@ -102,10 +101,10 @@ class cmdInstruction extends Command
 
     protected function outInputHelp(): static
     {
-        $this->Console -> outPut -> writeLine('iflow Shell, your out input: exit');
-        $this->Console -> outPut -> writeLine('iflow Shell help:');
-        $this->Console -> outPut -> writeLine('run -c:ClassName -f:Function -p:Params&...');
-        $this->Console -> outPut -> writeLine('help');
+        $this->Console -> writeConsole -> writeLine('iflow Shell, your out input: exit');
+        $this->Console -> writeConsole -> writeLine('iflow Shell help:');
+        $this->Console -> writeConsole -> writeLine('run -c:ClassName -f:Function -p:Params&...');
+        $this->Console -> writeConsole -> writeLine('help');
         return $this;
     }
 }

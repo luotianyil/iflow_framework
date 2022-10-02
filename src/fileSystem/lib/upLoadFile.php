@@ -3,7 +3,7 @@
 
 namespace iflow\fileSystem\lib;
 
-use iflow\exception\lib\HttpException;
+use iflow\exception\Adapter\HttpException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 

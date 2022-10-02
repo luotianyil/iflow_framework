@@ -4,7 +4,7 @@
 namespace iflow\command;
 
 
-use iflow\console\lib\Command;
+use iflow\console\Adapter\Command;
 
 /**
  * 生成Phar包
@@ -23,7 +23,7 @@ class buildPhar extends Command
             'webindex' => $this->getArgument('webindex', '/public/index.php'),
             'privatekey' => $this->getArgument('privatekey')
         ];
-        $this -> Console -> outPut -> writeLine('build start ....');
+        $this -> Console -> writeConsole -> writeLine('build start ....');
         (new \iflow\Utils\buildPhar($info, $this)) -> build();
     }
 }

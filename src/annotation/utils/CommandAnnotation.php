@@ -5,7 +5,7 @@ namespace iflow\annotation\utils;
 
 
 use Attribute;
-use iflow\console\lib\Command;
+use iflow\console\Adapter\Command;
 use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
 use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
 use Reflector;

@@ -6,7 +6,7 @@ namespace iflow\initializer;
 use iflow\App;
 use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\fileSystem\File;
-use iflow\Utils\ArrayTools;
+use iflow\Helper\Arr\Arr;
 
 /**
  * 加载应用配置
@@ -19,7 +19,7 @@ class Config {
     public App $app;
 
     #[Inject]
-    public ArrayTools $config;
+    public Arr $config;
 
     protected File $file;
 
@@ -28,7 +28,7 @@ class Config {
     public function initializer(App $app) {
         // 加载基本配置
         $this->app = $app;
-        $this->config = new ArrayTools();
+        $this->config = new Arr();
         $this->file = $this -> app -> make(File::class) -> initializer();
         $this->load($this->file -> fileList -> loadFileList($this->app->getConfigPath(), $this -> configFileExt ,true));
     }
@@ -41,18 +41,17 @@ class Config {
     {
         foreach ($configFile as $key => $value) {
             if (is_array($value)) {
-                $this->load($value, $configKey . '.' . $key);
+                $this->load($value, $configKey . '-' . $key);
             } elseif (is_string($value)) {
                 if (file_exists($value)) {
-                    $this->parse($value, trim($configKey . '.' .$key, '.'));
+                    $this->parse($value, trim($configKey . '-' .$key, '-'));
                 }
             }
         }
     }
 
-    public function parse(string $file, string $name)
-    {
-        if (str_contains($name, 'swoole.') && !swoole_success()) return [];
+    public function parse(string $file, string $name) {
+        if (str_contains($name, 'swoole-') && !swoole_success()) return [];
         return $this->set($name, loadConfigFile($file));
     }
 

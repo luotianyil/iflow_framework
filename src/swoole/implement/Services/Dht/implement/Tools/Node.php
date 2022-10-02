@@ -3,10 +3,9 @@
 namespace iflow\swoole\implement\Services\Dht\implement\Tools;
 
 use iflow\Container\Container;
-use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Helper\Str\Str;
 use iflow\swoole\implement\Tools\Tables;
-use iflow\Utils\basicTools;
 use Swoole\Table;
 
 class Node {
@@ -15,18 +14,18 @@ class Node {
 
     protected array $nodeKeys = [];
 
-    #[Inject]
-    public basicTools $basicTools;
-
     protected string $nodeId = '';
 
 
+    /**
+     * @throws InvokeClassException
+     */
     public function __construct(protected array $config) {
         $this->createNodeTable();
     }
 
     public function getNodeId(): string {
-        return $this->nodeId = $this->nodeId ?: sha1($this->basicTools -> gen_random_string());
+        return $this->nodeId = $this->nodeId ?: sha1(Str::RandomStr());
     }
 
     public function getNeighbor($target, $nid): string {

@@ -4,8 +4,10 @@
 namespace iflow\session\Adapter\abstracts;
 
 
+use iflow\cache\Adapter\AdapterInterface;
 use iflow\facade\Cache;
 use iflow\session\Adapter\Session;
+use think\Model;
 
 abstract class SessionAbstracts implements Session {
 
@@ -13,7 +15,7 @@ abstract class SessionAbstracts implements Session {
     protected string $session_name;
 
     protected array $config;
-    protected object $cache;
+    protected AdapterInterface|Model $cache;
 
     protected array $getSessionIdMethod = [];
 

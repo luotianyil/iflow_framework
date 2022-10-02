@@ -3,14 +3,14 @@
 
 namespace iflow\session\Adapter;
 
+use iflow\cache\Adapter\AdapterInterface;
 use iflow\session\Adapter\abstracts\SessionAbstracts;
+use think\Model;
 
 class File extends SessionAbstracts
 {
-    /**
-     * @var \iflow\cache\Adapter\File\File
-     */
-    protected object $cache;
+
+    protected AdapterInterface|Model $cache;
 
     public function initializer(array $config = []): static
     {

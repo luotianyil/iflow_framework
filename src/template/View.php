@@ -4,23 +4,22 @@
 namespace iflow\template;
 
 use iflow\Response;
-use iflow\template\lib\Parser;
+use iflow\template\Adapter\Regx\RenderView;
 
-class View
-{
+class View {
 
     // 渲染方法
     protected string $rendering;
     protected array $config = [];
     protected string $renderClass = "iflow\\template\\";
 
-    protected template|Parser $renderObject;
+    protected template|RenderView $renderObject;
 
     public function __construct() {
         $this->config = config('template');
         $this->rendering = $this->config['rendering'];
 
-        $this->renderClass .= $this->rendering !== 'regx' ? 'template' : 'lib\\Parser';
+        $this->renderClass .= $this->rendering !== 'regx' ? 'template' : 'Adapter\\Regx\\RenderView';
         $this->renderObject = new $this -> renderClass($this->config);
     }
 

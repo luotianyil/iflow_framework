@@ -5,15 +5,17 @@ namespace iflow\event;
 use Closure;
 use Exception;
 use iflow\App;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\event\lib\Abstracts\SubjectAbstract;
 use iflow\event\lib\AppDefaultEvent\RequestEndEvent;
+use iflow\Helper\Arr\Arr;
 use iflow\http\Kernel\Request\RequestInitializer;
-use iflow\Utils\ArrayTools;
+use RuntimeException;
 
 class Event {
 
     protected App $app;
-    protected ArrayTools $arrayTools;
+    protected Arr $arrayTools;
 
     /**
      * 时间列表
@@ -24,6 +26,9 @@ class Event {
         'RequestVerification' => RequestInitializer::class
     ];
 
+    /**
+     * @throws InvokeClassException
+     */
     public function initializer(App $app) {
         $this -> app = $app;
         $this->events = array_merge($this->events, config('event') ?: []);
@@ -31,11 +36,11 @@ class Event {
         foreach ($this->events as $name => $event) {
             $event = $this->app -> make($event);
             if (!$event instanceof SubjectAbstract) {
-                throw new \RuntimeException($event::class . ' instanceof SubjectAbstract fail');
+                throw new RuntimeException($event::class . ' instanceof SubjectAbstract fail');
             }
             $this->bind($name, $event);
         }
-        $this->arrayTools = new ArrayTools($this->events);
+        $this->arrayTools = new Arr($this->events);
     }
 
     /**

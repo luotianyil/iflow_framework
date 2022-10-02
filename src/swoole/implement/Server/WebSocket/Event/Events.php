@@ -53,7 +53,7 @@ class Events {
         $this->fd = $this->request -> fd;
         $this->EIO = $this->request -> get['EIO'] ?? '';
 
-        $this->openEvent = Container::getInstance() -> make(OpenEvent::class, [
+        $this->openEvent = app(OpenEvent::class, [
             $server, $request
         ], true);
         $this->sid = $this->openEvent -> sid;

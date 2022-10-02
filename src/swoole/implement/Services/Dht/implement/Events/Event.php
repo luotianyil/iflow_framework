@@ -18,10 +18,10 @@ class Event extends \iflow\swoole\implement\Server\Tcp\Events\Event {
         if(strlen($data) == 0) return false;
         $data = Decode::decode($data);
 
-        try{
+        try {
             if(!isset($data['y']) && empty($this->requestType[$data['y']])) return false;
             return call_user_func([ $this, $this->requestType[$data['y']] ], $data ,$server, $clientInfo);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
         }
     }
 

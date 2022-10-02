@@ -2,7 +2,7 @@
 
 namespace iflow\swoole;
 
-use iflow\console\lib\Command;
+use iflow\console\Adapter\Command;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\tools\data\Inject;
 use Swoole\Server;

@@ -5,7 +5,7 @@ namespace iflow\log;
 
 
 use iflow\facade\Event;
-use iflow\log\lib\Logger;
+use iflow\log\implement\Logger;
 use SplSubject;
 
 class Log extends Logger {

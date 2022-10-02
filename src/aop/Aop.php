@@ -4,15 +4,16 @@
 namespace iflow\aop;
 
 
-use iflow\aop\lib\Ast;
+use iflow\aop\Ast\Ast;
 use iflow\App;
-use iflow\exception\lib\HttpException;
-use iflow\exception\lib\HttpResponseException;
+use iflow\exception\Adapter\HttpException;
+use iflow\exception\Adapter\HttpResponseException;
 use iflow\Pipeline\Pipeline;
 use iflow\Response;
 use Psr\Http\Message\ResponseInterface;
 
 class Aop {
+
     // 用户定义切面
     private array $aspects = [];
 

@@ -4,8 +4,8 @@
 namespace iflow\session;
 
 
+use iflow\Helper\Arr\Arr;
 use iflow\session\Adapter\abstracts\SessionAbstracts;
-use iflow\Utils\ArrayTools;
 
 class Session
 {
@@ -15,7 +15,7 @@ class Session
     protected mixed $sessionId = '';
 
     // 存放的session信息
-    protected ArrayTools $sessionTools;
+    protected Arr $sessionTools;
 
     /**
      * 初始化 Session
@@ -32,7 +32,7 @@ class Session
         $this->sessionId = $this->getSessionId();
 
         // 初始化 SessionTools
-        $this->sessionTools = new ArrayTools($this->session -> get($this->sessionId));
+        $this->sessionTools = new Arr($this->session -> get($this->sessionId));
         return $this;
     }
 

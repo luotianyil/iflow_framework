@@ -100,7 +100,7 @@ class Decode {
 
         $this->offset = $end + 1;
 
-        return $value + 0;
+        return sprintf("%s0", $value);
     }
 
     protected function listType(): array|string {

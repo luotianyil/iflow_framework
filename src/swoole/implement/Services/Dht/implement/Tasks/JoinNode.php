@@ -3,6 +3,7 @@
 namespace iflow\swoole\implement\Services\Dht\implement\Tasks;
 
 use iflow\Container\Container;
+use iflow\Helper\Str\Str;
 use iflow\swoole\implement\Services\Dht\implement\Parser\Encode;
 use iflow\swoole\implement\Services\Dht\implement\Tools\Node;
 use iflow\Utils\Tools\Timer;
@@ -43,7 +44,7 @@ class JoinNode {
     protected function findNode(array $node, int|string $nodeId = '') {
         $mid = $nodeId === '' ? $this->node -> getNeighbor($nodeId, $this->id) : $nodeId;
         $this->send([
-            't' => $this->node -> basicTools -> gen_random_string(2),
+            't' => Str::RandomStr(2),
             'y' => 'q',
             'q' => 'find_node',
             'a' => [

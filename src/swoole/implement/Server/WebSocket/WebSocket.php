@@ -34,7 +34,7 @@ class WebSocket {
     public Room $room;
 
     public function __construct(protected array $config, protected ServicesAbstract $servicesAbstract) {
-        $this->events = Container::getInstance() -> make(Events::class, [
+        $this->events = app(Events::class, [
             $this->config, $this
         ]);
     }
@@ -42,7 +42,7 @@ class WebSocket {
 
     public function createRoom() {
         // 初始化房间信息
-        $this->room = Container::getInstance() -> make(Room::class, [
+        $this->room = app(Room::class, [
             $this->config['roomType'] ?? 'websocket', $this->servicesAbstract -> getSwService()
         ]);
         $this->RegisterRoomFields();

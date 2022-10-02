@@ -3,9 +3,9 @@
 
 namespace iflow\validate;
 
-use iflow\validate\lib\validateBase;
+use iflow\validate\Adapter\ValidateBase;
 
-class Validate extends validateBase
+class Validate extends ValidateBase
 {
 
     protected array $rule = [];

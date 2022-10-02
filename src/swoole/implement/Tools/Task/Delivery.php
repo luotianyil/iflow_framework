@@ -38,18 +38,17 @@ class Delivery {
     }
 
     protected function getTaskCallableParams(): array {
-        $params = $this->data['callable_params'];
 
+        $params = $this->data['callable_params'];
         $param = [];
 
         foreach ($params as $value) {
-            if (!is_array($value)) {
+            if (!is_array($value) || empty($value)) {
                 $param[] = $value;
                 continue;
             }
             $param[] = $value['type'] === 'object' ? Container::getInstance() -> make($value['value']) : $value;
         }
-
         return $param;
     }
 

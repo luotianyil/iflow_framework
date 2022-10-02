@@ -9,7 +9,7 @@ use SplSubject;
 /**
  * 订阅类
  * Class SubjectAbstract
- * @package iflow\event\lib\Abstracts
+ * @package iflow\event\implement\Abstracts
  */
 abstract class SubjectAbstract implements SplSubject {
 
@@ -32,12 +32,8 @@ abstract class SubjectAbstract implements SplSubject {
      */
     public function detach(SplObserver $observer): void {
         // TODO: Implement detach() method.
-        foreach ($this->_observer as $index => $_observer) {
-            if ($_observer === $observer) {
-                unset($this->_observer[$index]);
-                break;
-            }
-        }
+        $key = array_search($observer, $this->_observer);
+        if ($key) unset($this->_observer[$key]);
     }
 
     /**

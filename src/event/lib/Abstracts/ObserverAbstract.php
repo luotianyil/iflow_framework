@@ -4,14 +4,15 @@
 namespace iflow\event\lib\Abstracts;
 
 
+use SplObserver;
 use SplSubject;
 
 /**
  * 观察类
  * Class ObserverAbstract
- * @package iflow\event\lib\Abstracts
+ * @package iflow\event\implement\Abstracts
  */
-abstract class ObserverAbstract implements \SplObserver {
+abstract class ObserverAbstract implements SplObserver {
 
     /**
      * 执行变更方法

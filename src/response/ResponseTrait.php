@@ -3,9 +3,7 @@
 
 namespace iflow\response;
 
-
-use iflow\exception\lib\HttpResponseException;
-use iflow\Response;
+use iflow\exception\Adapter\HttpResponseException;
 use Psr\Http\Message\ResponseInterface;
 
 trait ResponseTrait

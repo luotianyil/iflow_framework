@@ -4,7 +4,7 @@
 namespace iflow\request;
 
 use GuzzleHttp\Psr7\{BufferStream, Request, ServerRequest};
-use iflow\request\lib\ValidRequest;
+use iflow\request\Adapter\ValidRequest;
 use Psr\Http\Message\{RequestInterface, ServerRequestInterface, StreamInterface};
 
 trait RequestTrait

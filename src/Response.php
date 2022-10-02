@@ -2,7 +2,7 @@
 
 namespace iflow;
 
-use iflow\response\lib\File;
+use iflow\response\Adapter\File;
 use iflow\response\ResponseTrait;
 use Psr\Http\Message\ResponseInterface;
 
@@ -31,7 +31,7 @@ class Response {
      * @return object
      */
     public static function create(mixed $data = [], int $code = 200, string $type = 'json'): object {
-        $class = str_contains($type, '//') ? $type : '\\iflow\\response\\lib\\'.ucfirst($type);
+        $class = str_contains($type, '//') ? $type : '\\iflow\\response\\Adapter\\'.ucfirst($type);
         return app() -> invokeClass($class, [ $data, $code ]);
     }
 
@@ -52,7 +52,6 @@ class Response {
 
         // 获取Response 原始响应体
         $this->response = response() -> response;
-
         if (method_exists($this->response, 'isWritable') && $this->response -> isWritable() === false) {
             return true;
         }

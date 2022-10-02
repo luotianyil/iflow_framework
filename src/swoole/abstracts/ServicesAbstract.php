@@ -87,28 +87,36 @@ abstract class ServicesAbstract implements ServicesInterface {
         return $this;
     }
 
+    /**
+     * 结束服务
+     * @return bool
+     */
     public function stop(): bool {
         // TODO: Implement stop() method.
         if ($this->pid -> isRun()) {
             $this->pid -> kill(SIGTERM);
-            $this->servicesCommand->Console -> outPut ->writeLine('> swoole server stop success');
+            $this->servicesCommand->Console -> writeConsole ->writeLine('> swoole server stop success');
         } else {
-            $this->servicesCommand->Console -> outPut ->writeLine('no swoole server process running. ');
+            $this->servicesCommand->Console -> writeConsole ->writeLine('no swoole server process running. ');
         }
         return true;
     }
 
+    /**
+     * 重启服务
+     * @return bool
+     */
     public function reload(): bool {
         if ($this->pid -> isRun()) {
-            $this->servicesCommand -> Console -> outPut ->writeLine('no swoole server process running.');
+            $this->servicesCommand -> Console -> writeConsole ->writeLine('no swoole server process running.');
             return false;
         }
 
-        $this->servicesCommand->Console -> outPut ->writeLine('Stopping swoole server...');
+        $this->servicesCommand->Console -> writeConsole ->writeLine('Stopping swoole server...');
         $isRunning = $this->pid->kill(SIGTERM);
 
         if ($isRunning) {
-            $this->servicesCommand->Console -> outPut ->writeLine('Unable to stop the swoole_server process.');
+            $this->servicesCommand->Console -> writeConsole ->writeLine('Unable to stop the swoole_server process.');
             return false;
         }
         $this->start();
@@ -175,7 +183,7 @@ abstract class ServicesAbstract implements ServicesInterface {
 
         $info .= "runMemoryUsage: " . $runMemoryUsage . "M";
         $servicesType = sprintf("%s %s", implode('/', $protocol_name), $this->servicesCommand -> isStartServer() ? 'Server' : 'Client');
-        $this->servicesCommand -> Console -> outPut ->writeLine($info.PHP_EOL.'> Start '. $servicesType .' Success');
+        $this->servicesCommand -> Console -> writeConsole ->writeLine($info.PHP_EOL.'> Start '. $servicesType .' Success');
     }
 
     /**

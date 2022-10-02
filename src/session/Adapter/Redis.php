@@ -3,14 +3,13 @@
 
 namespace iflow\session\Adapter;
 
+use iflow\cache\Adapter\AdapterInterface;
 use iflow\session\Adapter\abstracts\SessionAbstracts;
+use think\Model;
 
-class Redis extends SessionAbstracts
-{
-    /**
-     * @var \iflow\cache\Adapter\Redis\Driver\IRedis
-     */
-    protected object $cache;
+class Redis extends SessionAbstracts {
+
+    protected AdapterInterface|Model $cache;
 
     public function initializer(array $config): static
     {

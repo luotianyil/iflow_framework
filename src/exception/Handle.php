@@ -5,8 +5,8 @@ namespace iflow\exception;
 
 
 use iflow\App;
-use iflow\exception\lib\HttpException;
-use iflow\exception\lib\HttpResponseException;
+use iflow\exception\Adapter\HttpException;
+use iflow\exception\Adapter\HttpResponseException;
 use iflow\Response;
 
 class Handle

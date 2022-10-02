@@ -49,7 +49,7 @@ class Event {
         }
 
         $handleClass = $this -> servicesCommand -> config -> get('messageType', '');
-        $method = $this->MQEvent[$packet['type']] ?? '';
+        $method = $this->MQEvent[$packet['type'] ?? 1] ?? '';
 
         $server -> task([
             'callable' => [ $handleClass, $method ],

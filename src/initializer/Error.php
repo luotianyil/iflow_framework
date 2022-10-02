@@ -5,13 +5,14 @@ namespace iflow\initializer;
 
 use iflow\App;
 use iflow\exception\Handle;
-use iflow\exception\lib\errorException;
-use iflow\exception\lib\renderDebugView;
+use iflow\exception\Adapter\ErrorException;
+use iflow\exception\Adapter\RenderDebugView;
 use iflow\Response;
 use Throwable;
 
 // 异常接管
 class Error {
+
     protected App $app;
     protected array $config = [];
     protected string $handle = Handle::class;
@@ -53,11 +54,22 @@ class Error {
      * @return bool|null
      */
     public function appHandler(Throwable $e): bool|null {
+
         $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
+
+        if (!is_http_services()) {
+            return dump([
+                'error' => $e -> getMessage(),
+                'file' => $e -> getFile(),
+                'line' => $e -> getLine()
+            ]);
+        }
+
         // 检测是否开启DEBUG
         if ($this->app -> isDebug()) {
             return (new renderDebugView($e, $this->config)) -> render() -> send();
         }
+
         // 异常处理回调
         if (class_exists($this->handle)) {
             $res = (new $this->handle($type)) -> render($this->app, $e);

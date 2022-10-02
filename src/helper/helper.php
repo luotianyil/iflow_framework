@@ -3,7 +3,6 @@
 declare (strict_types = 1);
 
 // 助手函数
-use iflow\console\Console;
 use iflow\Container\Container;
 use iflow\EMailer\implement\Exception\MailerException;
 use iflow\EMailer\implement\Message\Html;
@@ -12,17 +11,17 @@ use iflow\facade\Config;
 use iflow\facade\Event;
 use iflow\facade\Session;
 use iflow\fileSystem\File;
+use iflow\Helper\Tools\System;
+use iflow\Helper\Torrent\Lightbenc;
 use iflow\http\lib\Cookie;
-use iflow\i18n\I18n;
+use iflow\i18n\i18N;
 use iflow\log\Log;
 use iflow\Request;
 use iflow\Response;
-use iflow\response\lib\Json;
-use iflow\response\lib\Xml;
+use iflow\response\Adapter\Json;
+use iflow\response\Adapter\Xml;
 use iflow\template\View;
-use iflow\Utils\Message\Message;
-use iflow\Utils\Tools\SystemTools;
-use iflow\Utils\torrent\Lightbenc;
+use iflow\Utils\BuildResponseBody\Message;
 use iflow\validate\Validate;
 use React\Promise\Promise;
 use Swoole\Coroutine\Client;
@@ -161,13 +160,6 @@ if (!function_exists('emails')) {
     }
 }
 
-// 获取系统信息 仅支持 linux
-if (!function_exists('systemInfo')) {
-    function systemInfo(): array {
-        return (new SystemTools()) -> getSystemInfo();
-    }
-}
-
 // write log
 if (!function_exists('logs')) {
     function logs(string $type = 'info', string $message = '', array $content = []): Log {
@@ -288,7 +280,7 @@ if (!function_exists('xml')) {
 
 // 发送文件
 if (!function_exists('sendFile')) {
-    function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\lib\File
+    function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\Adapter\File
     {
         $path = ($isConfigRootPath ? config('app@resources.file.rootPath') . DIRECTORY_SEPARATOR : '') . $path;
         return Response::create($path, $code, 'file')
@@ -320,7 +312,7 @@ if (!function_exists('bt_to_magnet')) {
 // 验证是否为cli模式
 if (!function_exists('is_cli')) {
     function is_cli(): bool {
-        return (new SystemTools()) -> isCli();
+        return System::isCli();
     }
 }
 
@@ -382,18 +374,18 @@ if (!function_exists('array_multi_to_one')) {
 // i18n国际化
 if (!function_exists('i18n')) {
     function i18n(string $key, string|array $default = '', string $lan = ''): string {
-        return app(I18n::class) -> i18n($key, $default, $lan);
+        return app(i18N::class) -> i18n($key, $default, $lan);
     }
 }
 
 // 验证器
 if (!function_exists('validate')) {
-    function validate(array $rule = [], array $data = [], array $message = []) {
+    function validator(array $rule = [], array $data = [], array $message = []) {
         $validate = new Validate();
         $error = $validate
                     -> rule($rule, $message)
                     -> check($data)
-                    -> findError();
+                    -> first();
 
         if ($error !== null) {
             throw new Exception($error);
@@ -414,9 +406,9 @@ if (!function_exists('dump')) {
         $output = ob_get_clean();
 
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $outConsole = app(Console::class) -> outPut ?? null;
-        if (!is_http_services() && $outConsole !== null) {
-            $outConsole -> write(PHP_EOL . $output . PHP_EOL);
+
+        if (!is_http_services()) {
+            print PHP_EOL . $output . PHP_EOL;
         } else {
             if (!extension_loaded('xdebug')) {
                 $output = htmlspecialchars($output, ENT_SUBSTITUTE);

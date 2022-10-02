@@ -10,10 +10,10 @@ use iflow\command\cmdInstruction;
 use iflow\command\http;
 use iflow\command\install;
 use iflow\command\workMan;
-use iflow\console\lib\Help;
-use iflow\console\lib\Input;
-use iflow\console\lib\OutPut;
+use iflow\console\Adapter\Input;
+use iflow\console\Adapter\WriteConsole;
 use iflow\http\HttpServer;
+use iflow\swoole\implement\Services\Kafka\Services;
 use iflow\swoole\ServicesCommand;
 
 class Console
@@ -21,7 +21,7 @@ class Console
     public App $app;
 
     public Input $input;
-    public OutPut $outPut;
+    public WriteConsole $writeConsole;
 
     public array $command = [
         '<start|stop|reload>-service' => ServicesCommand::class,
@@ -29,11 +29,10 @@ class Console
         'start-workerMan' => workMan::class,
         '<start|stop|reload>-<tcp|udp|mqtt|rpc>-<client|server>' => ServicesCommand::class,
         'start-dht-services' => ServicesCommand::class,
-        'start-kafka-consumer' => \iflow\swoole\implement\Services\Kafka\Services::class,
+        'start-kafka-consumer' => Services::class,
 //        'start-proxy-<client|server>' => netPenetrate::class,
         'start' => http::class,
         'start-dev' => HttpServer::class,
-        'help' => Help::class,
         'install' => install::class,
         'build' => buildPhar::class,
         'shell' => cmdInstruction::class
@@ -44,21 +43,19 @@ class Console
     public function initializer(App $app) {
         $this->app = $app;
         $this->input = new Input();
-        $this->outPut = new OutPut($this->openOutputStream());
+        $this->writeConsole = new WriteConsole($this->openOutputStream());
         // 获取用户输入
         $this->userCommand = $this->input -> getUserCommand();
-
-        // 运行程序
-        $this->run();
+        $this -> exec();
     }
 
-    protected function run() {
-        // 获取用户指定命令
-        $this->getCommand();
-
-        // 解析用户 指令
-        if ($this->input -> parsingInputCommand($this->command, $this) === false) {
-            $this->outPut -> writeLine('Unknown instruction');
+    protected function exec() {
+        try {
+            $this->getCommand()
+                -> input
+                -> parsingInputCommand($this->command, $this);
+        } catch (\Exception $exception) {
+            $this->writeConsole -> writeLine($exception -> getMessage());
         }
     }
 
@@ -68,7 +65,7 @@ class Console
     }
 
     public function outWrite($content = '') {
-        $this->outPut -> write($content) -> outPutWrite();
+        $this->writeConsole -> write($content) -> outPutWrite();
     }
 
     protected function isRuningOS400(): bool {
@@ -80,10 +77,16 @@ class Console
         return false !== stripos(implode(';', $checks), 'OS400');
     }
 
+    /**
+     * @return bool
+     */
     protected function hasConsoleWrite(): bool {
         return false === $this->isRuningOS400();
     }
 
+    /**
+     * @return false|resource
+     */
     protected function openOutputStream() {
         if (!$this->hasConsoleWrite()) {
             return fopen('php://output', 'w');

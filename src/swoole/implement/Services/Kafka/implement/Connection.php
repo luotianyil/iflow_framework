@@ -3,8 +3,7 @@
 
 namespace iflow\swoole\implement\Services\Kafka\implement;
 
-
-use iflow\Swoole\Kafka\Services;
+use iflow\swoole\implement\Services\Kafka\Services;
 use RdKafka\Conf;
 use RdKafka\Message;
 
@@ -33,7 +32,7 @@ abstract class Connection
 
 
     public function __construct(
-        protected ?Services $service = null
+        protected Services $service
     ) {
         $this->config = config('swoole.kafka@'. $this->type);
         $this->connectionKafka();

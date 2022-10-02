@@ -4,10 +4,10 @@
 namespace iflow\command;
 
 
-use iflow\console\lib\Command;
-use iflow\socket\lib\http\Request;
-use iflow\socket\lib\http\Response;
-use iflow\socket\lib\http\Http as HttpServer;
+use iflow\console\Adapter\Command;
+use iflow\socket\implement\http\Request;
+use iflow\socket\implement\http\Response;
+use iflow\socket\implement\http\Http as HttpServer;
 
 class http extends Command
 {
@@ -25,9 +25,9 @@ class http extends Command
         // 运行后回调
         $server -> on('afterstart', function ($http) {
             $this -> runMemoryUsage = round(memory_get_usage() / 1024 / 1024, 2);
-            $this->Console -> outPut -> writeLine("start iflow FrameWork HTTP SERVER success ...");
-            $this->Console -> outPut -> writeLine("start runMemoryUsage {$this -> runMemoryUsage} M");
-            $this->Console -> outPut -> writeLine("HTTP SERVER Address: {$http -> host}:{$http -> port}");
+            $this->Console -> writeConsole -> writeLine("start iflow FrameWork HTTP SERVER success ...");
+            $this->Console -> writeConsole -> writeLine("start runMemoryUsage {$this -> runMemoryUsage} M");
+            $this->Console -> writeConsole -> writeLine("HTTP SERVER Address: {$http -> host}:{$http -> port}");
         });
 
         // 请求回调

@@ -27,7 +27,7 @@ class File
     {
         $this->config = config('fileSystem');
         $this->config = $this->config['disks'][$this->config['default']];
-        $class = 'iflow\\fileSystem\\lib\\'.$this->config['type'].'\\'.$this->config['type'];
+        $class = 'iflow\\fileSystem\\implement\\'.$this->config['type'].'\\'.$this->config['type'];
         return Container::getInstance()->invokeClass($class, [$file, $this->config]);
     }
 

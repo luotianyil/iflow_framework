@@ -1,0 +1,23 @@
+<?php
+
+
+namespace iflow\i18n\Tools;
+
+
+trait Utils {
+
+    protected string $langType = 'zh-cn';
+
+    /**
+     * @param string $langType
+     * @return static
+     */
+    public function setLangType(string $langType = ''): static {
+        if ($langType === '') {
+            $langType = request() -> getLanguage();
+        }
+        $this->langType = strtolower($langType);
+        return $this;
+    }
+
+}

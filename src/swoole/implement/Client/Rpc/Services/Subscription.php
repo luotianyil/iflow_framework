@@ -19,11 +19,13 @@ class Subscription extends Client {
 
         $this->sendRegisterBody();
 
-        while (true) {
-            if (!$this->client -> isConnected()) break;
-
-            $pack = $this->client -> recv() ?: '';
-            $this->onPacket($pack);
+        while ($this->client -> isConnected()) {
+            $write = $error = [];
+            $read = [ $this->client ];
+            $n = swoole_client_select($read, $write, $error);
+            if ($n > 0) {
+                $this->onPacket($this->client -> recv());
+            }
         }
 
         return false;

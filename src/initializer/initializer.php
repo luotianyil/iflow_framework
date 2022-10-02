@@ -6,7 +6,7 @@ namespace iflow\initializer;
 
 use GuzzleHttp\DefaultHandler;
 use iflow\App;
-use iflow\i18n\I18n;
+use iflow\i18n\i18N;
 use think\facade\Db;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 
@@ -22,7 +22,7 @@ class initializer {
            \Co::set([ 'hook_flags' => SWOOLE_HOOK_ALL ]);
            DefaultHandler::setDefaultHandler(SwooleHandler::class);
        }
-       $app -> make(I18n::class) -> initializer($app);
+       $app -> make(i18N::class) -> initializer($app);
        $this -> ini_initializer()
              -> db_initializer()
              -> routerConfigInitializer()

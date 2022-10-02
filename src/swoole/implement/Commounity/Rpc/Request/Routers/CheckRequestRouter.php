@@ -2,10 +2,12 @@
 
 namespace iflow\swoole\implement\Commounity\Rpc\Request\Routers;
 
-use iflow\exception\lib\HttpException;
-use iflow\exception\lib\HttpResponseException;
+use iflow\exception\Adapter\HttpException;
+use iflow\exception\Adapter\HttpResponseException;
+use iflow\http\Kernel\Exception\RequestValidateException;
 use iflow\http\Kernel\Request\RequestInitializer;
 use iflow\Response;
+use ReflectionException;
 
 class CheckRequestRouter extends RequestInitializer {
 
@@ -50,7 +52,7 @@ class CheckRequestRouter extends RequestInitializer {
 
     /**
      * 查询路由
-     * @throws \ReflectionException
+     * @throws ReflectionException|RequestValidateException
      */
     protected function QueryRouter(): bool {
 

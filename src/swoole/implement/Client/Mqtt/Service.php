@@ -2,7 +2,10 @@
 
 namespace iflow\swoole\implement\Client\Mqtt;
 
+use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\swoole\abstracts\ServicesAbstract;
+use iflow\swoole\implement\Client\implement\Events\Loop;
+use iflow\swoole\implement\Tools\Pool\Process;
 use Simps\MQTT\Client;
 use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Hex\ReasonCode;
@@ -14,7 +17,11 @@ class Service extends ServicesAbstract {
 
     protected ClientConfig $clientConfig;
 
-    protected int $connectionTimers = 0;
+    #[Inject]
+    public Loop $loop;
+
+    #[Inject]
+    public Process $process;
 
     protected array $inputConfig = [
         'connect' => [
@@ -31,32 +38,39 @@ class Service extends ServicesAbstract {
 
         $this->inputConfig['connect'] = $this->servicesCommand -> config -> get('connect');
         $this->inputConfig['topics'] = $this->servicesCommand -> config -> get('topics');
+        $clientType = $this->servicesCommand -> config -> get('clientType');
 
-        run(function () {
-            $this->clientConfig = new ClientConfig($this->servicesCommand -> config -> all());
+        $this->clientConfig = new ClientConfig($this->servicesCommand -> config -> all());
+        $this->clientConfig -> setKeepAlive($this->config['keep_alive'] ?? 0);
 
+        $this->createClient($clientType) -> servicesCommand -> setServices();
+        $this->printStartContextToConsole('mqtt');
+
+        $this->wait();
+        $this->loop -> wait();
+    }
+
+
+    protected function createClient(int $clientType): static {
+        try {
             $this->SwService = new Client(
                 $this->servicesCommand -> config -> get('host'),
                 $this->servicesCommand -> config -> get('port'),
                 $this->clientConfig,
-                $this->servicesCommand -> config -> get('sockType')
+                $clientType
             );
+        } catch (\Exception $exception) {
+            run(function () use ($clientType) {
+                $this->SwService = new Client(
+                    $this->servicesCommand -> config -> get('host'),
+                    $this->servicesCommand -> config -> get('port'),
+                    $this->clientConfig,
+                    $clientType
+                );
+            });
+        }
 
-            $this->servicesCommand -> setServices();
-            $this->printStartContextToConsole('mqtt');
-
-            while (true) {
-                if ($this->connection()) {
-                    if ($this->subscribe($this->inputConfig['topics'])) {
-                        $this->wait();
-                    } else {
-                        $this->close();
-                        $this->servicesCommand -> Console -> outPut -> writeLine('Subscribe Topics Failed');
-                        break;
-                    }
-                }
-            }
-        });
+        return $this;
     }
 
     protected function connection(): bool {
@@ -76,8 +90,19 @@ class Service extends ServicesAbstract {
     }
 
     protected function wait(): void {
-        while (true) {
-            $packet = $this->SwService->recv();
+        if ($this->connection()) {
+            if ($this->subscribe($this->inputConfig['topics'])) {
+                $this->createELoop();
+            } else {
+                $this->close();
+                $this->servicesCommand -> Console -> writeConsole -> writeLine('Subscribe Topics Failed');
+            }
+        }
+    }
+
+    protected function createELoop() {
+        while ($this->SwService -> getClient() -> isConnected()) {
+            $packet = $this->SwService -> recv();
             if ($packet && $packet !== true) {
                 $this -> timeSincePing = time();
                 $this -> servicesCommand->callConfHandle($this->getEventClass(), [ $this, $packet ]);
@@ -127,8 +152,7 @@ class Service extends ServicesAbstract {
      * @param array $properties
      * @return bool
      */
-    public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = []): bool
-    {
+    public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = []): bool {
         return $this->SwService -> close($code, $properties);
     }
 
@@ -140,7 +164,7 @@ class Service extends ServicesAbstract {
      */
     public function subscribe(array $topics = [], array $properties = []): bool|array
     {
-        $sub =  $this->SwService -> subscribe($topics, $properties);
+        $sub = $this->SwService -> subscribe($topics, $properties);
         if ($sub) return $sub;
         return false;
     }
@@ -186,13 +210,11 @@ class Service extends ServicesAbstract {
         int $dup = 0,
         int $retain = 0,
         array $properties = []
-    ): bool|array
-    {
+    ): bool|array {
         return $this->SwService -> publish(
             $topic, $message, $qos, $dup, $retain, $properties
         );
     }
-
 
     protected function getSwooleServiceClass(): string {
         return Client::class;

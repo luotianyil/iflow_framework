@@ -5,7 +5,7 @@ namespace iflow\initializer;
 
 
 use iflow\App;
-use iflow\Utils\Tools\SystemTools;
+use iflow\Helper\Tools\System;
 
 class appSurroundings {
 
@@ -28,7 +28,8 @@ class appSurroundings {
     }
 
     protected function validateExt(): static {
-        $extension = (new SystemTools()) -> get_extension_loaded($this->config['ext']);
+
+        $extension = System::extensionLoaded($this->config['ext']);
         if (count($extension) > 0) {
             throw new \Exception("extension: $extension[0] not installed");
         }

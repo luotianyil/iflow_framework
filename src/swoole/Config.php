@@ -3,11 +3,11 @@
 namespace iflow\swoole;
 
 use iflow\Container\Container;
+use iflow\Helper\Arr\Arr;
 use iflow\swoole\abstracts\ServicesAbstract;
 use iflow\swoole\Exceptions\ConfigException;
-use iflow\Utils\ArrayTools;
 
-class Config extends ArrayTools {
+class Config extends Arr {
 
     protected array $commandEvent = [];
 
@@ -24,7 +24,7 @@ class Config extends ArrayTools {
     public function initConfigs(array $event): Config {
         $this->commandEvent = $event;
 
-        if (count($this->commandEvent) === 1) $this->swooleConfigKey = 'swoole.service';
+        if (count($this->commandEvent) === 1) $this->swooleConfigKey = 'swoole-service';
 
         $this->getSwooleConfigKey();
 
@@ -38,8 +38,8 @@ class Config extends ArrayTools {
 
     protected function getSwooleConfigKey(): void {
         $event = array_slice($this->commandEvent, 1, count($this->commandEvent));
-        if (count($event) === 1) $this->swooleConfigKey = 'swoole.service';
-        else $this->swooleConfigKey = 'swoole.'. implode('@', $event);
+        if (count($event) === 1) $this->swooleConfigKey = 'swoole-service';
+        else $this->swooleConfigKey = 'swoole-'. implode('@', $event);
     }
 
 

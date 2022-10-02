@@ -7,7 +7,7 @@ namespace iflow\Utils\Tools;
 class EnDecryption
 {
 
-    public $config = [];
+    public array $config = [];
 
     public function __construct()
     {
@@ -37,22 +37,19 @@ class EnDecryption
     }
 
     // openssl 解密
-    public function Decryption($data = '', $method = 'DES-ECB', $key = '', $option = 0, $iv = '') : string
-    {
+    public function Decryption($data = '', $method = 'DES-ECB', $key = '', $option = 0, $iv = '') : string {
         $key = $key !== '' ? $key : $this->config['encryption_key'];
         $iv = $iv !== '' ? $iv : $this->config['iv'];
         return openssl_decrypt($data, $method, $key, $option, $iv);
     }
 
     // 密码加密
-    public function passwordHash($passWord = '', $algo = null)
-    {
+    public function passwordHash($passWord = '', $algo = null): string {
         return password_hash($passWord, $algo === null ? PASSWORD_DEFAULT : $algo);
     }
 
     // 密码验证
-    public function passwordVerify(string $hashPassword, string $password)
-    {
+    public function passwordVerify(string $hashPassword, string $password): bool {
         return password_verify($password, $hashPassword);
     }
 
