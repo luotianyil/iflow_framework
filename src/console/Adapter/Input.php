@@ -50,12 +50,11 @@ class Input {
                     }
                 }
             }
-
-            $userCommand = explode('-', $this->argv[1]);
         } else {
             $commandClass = $command[$userCommand];
         }
 
+        $userCommand = explode('-', $this->argv[1]);
         if (!class_exists($commandClass)) throw new \Error("class $commandClass not exists");
         else {
             return $this->invokeClass($console, $commandClass, $userCommand);
@@ -75,7 +74,7 @@ class Input {
         $commandClass -> setApp($console -> app)
             -> setConsole($console)
             -> setArgument();
-        return $console -> app -> invoke([$commandClass, 'handle'], [$userCommand]);
+        return $console -> app -> invoke([$commandClass, 'handle'], [ $userCommand ]);
     }
 
 }

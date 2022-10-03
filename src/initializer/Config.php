@@ -62,7 +62,7 @@ class Config {
         }
 
         return $this->config -> offsetSet(
-            $name, isset($this->config[$name]) ? array_merge($this->config[$name], $config) : $config
+            $name, isset($this->config[$name]) ? array_replace_recursive($config, $this->config[$name]) : $config
         );
     }
 

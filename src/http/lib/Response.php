@@ -55,6 +55,14 @@ class Response
         ]);
     }
 
+    /**
+     * 检测HTTP 是否已经发送
+     * @return bool
+     */
+    public function isWritable(): bool {
+        return !headers_sent();
+    }
+
     public function __call(string $name, array $arguments)
     {
         // TODO: Implement __call() method.

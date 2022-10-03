@@ -22,7 +22,7 @@ class Middleware extends AnnotationAbstract {
         // TODO: Implement process() method.
         $this->middleware = config('middleware');
         $classes = $reflector -> getName();
-        if (!in_array($classes, $this->middleware)) {
+        if (!in_array([ $classes, $this->params ], $this->middleware)) {
             $this->middleware[] = [$classes, $this->params];
             config($this->middleware, 'middleware');
         }

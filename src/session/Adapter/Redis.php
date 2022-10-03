@@ -24,14 +24,14 @@ class Redis extends SessionAbstracts {
             if (count($default) <= 0) return false;
             $name = $this->makeSessionID();
             $this -> cache -> set(
-                $name, $default, strtotime('+'. $this->config['expire'] . 'second')
+                $name, $default, strtotime('+'. $this->config['expired'] . 'second')
             );
             return $name;
         }
         return  $this -> cache -> set(
             $name,
             is_string($default) ? $default : array_replace_recursive($this->get($name), $default),
-            strtotime('+'. $this->config['expire'] . 'second')
+            strtotime('+'. $this->config['expired'] . 'second')
         ) ? $name : null;
     }
 

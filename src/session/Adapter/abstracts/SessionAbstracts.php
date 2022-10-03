@@ -65,7 +65,9 @@ abstract class SessionAbstracts implements Session {
             $ip === '127.0.0.1' ? session_create_id() : hash('sha256', "$host-$ip")
         );
 
-        cookie($this->session_name, $this->session_id);
+        if ($this->config['get_sessionId_method'] === 'cookie') {
+            cookie($this->session_name, $this->session_id);
+        }
         return $this->session_id;
     }
 }

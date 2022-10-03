@@ -32,7 +32,7 @@ class IRedis {
 
         $this->handle = $config['driver'] === 'Redis' ? new Redis() : new SwRedis();
         $this->config = $config;
-        $this -> setOptions($this->config['options']) -> Connection();
+        $this -> setOptions($this->config['options'] ?? []) -> Connection();
         return $this;
     }
 
