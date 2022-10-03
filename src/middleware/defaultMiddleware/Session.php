@@ -22,7 +22,6 @@ class Session extends ObserverAbstract {
     public function handle(App $app, $next) {
         SessionObject::initializer();
         Event::getEvent('RequestEndEvent') ?-> attach($this);
-        var_dump(123);
         return $next($app);
     }
 

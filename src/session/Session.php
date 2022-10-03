@@ -32,7 +32,7 @@ class Session
         $this->sessionId = $this->getSessionId();
 
         // 初始化 SessionTools
-        $this->sessionTools = new Arr($this->session -> get($this->sessionId));
+        $this->sessionTools = new Arr($this->session -> get($this->sessionId) ?: []);
         return $this;
     }
 
