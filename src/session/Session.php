@@ -1,8 +1,6 @@
 <?php
 
-
 namespace iflow\session;
-
 
 use iflow\Helper\Arr\Arr;
 use iflow\session\Adapter\abstracts\SessionAbstracts;
@@ -90,10 +88,15 @@ class Session
 
     /**
      * 保存Session至缓存
-     * @return void
+     * @return mixed
      * @throws \Exception
      */
-    public function save() {
-        $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
+    public function save(): mixed {
+
+        if (!$this->session -> get($this->getSessionId()) && $this->sessionTools -> count() === 0) {
+            return false;
+        }
+
+        return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
     }
 }

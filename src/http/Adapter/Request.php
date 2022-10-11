@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\http\lib;
+namespace iflow\http\Adapter;
 
 
 class Request

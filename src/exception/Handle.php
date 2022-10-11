@@ -9,8 +9,8 @@ use iflow\exception\Adapter\HttpException;
 use iflow\exception\Adapter\HttpResponseException;
 use iflow\Response;
 
-class Handle
-{
+class Handle {
+
     public function __construct(
         protected string $type = "error"
     ) {}

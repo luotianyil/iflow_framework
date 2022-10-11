@@ -2,7 +2,7 @@
 
 namespace iflow\swoole\implement\Commounity\Rpc\Request;
 
-use iflow\socket\lib\client\Client;
+use iflow\socket\implement\client\Client;
 
 class Request {
 
@@ -11,7 +11,6 @@ class Request {
     protected string $error = '';
 
     protected mixed $data = '';
-
 
     public function __construct(
         protected string $host = '',

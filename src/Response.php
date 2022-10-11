@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
  * Response 响应类
  * @mixin \Swoole\Http2\Response
  * @mixin \Swoole\Http\Response
- * @mixin http\lib\Response
+ * @mixin http\Adapter\Response
  */
 class Response {
 

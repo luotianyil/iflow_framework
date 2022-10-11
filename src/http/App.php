@@ -4,17 +4,12 @@
 namespace iflow\http;
 
 use iflow\event\Event;
-use iflow\http\lib\Request;
-use iflow\http\lib\Response;
-use iflow\http\lib\Service;
-use iflow\initializer\appSurroundings;
-use iflow\initializer\Config;
-use iflow\initializer\Error;
-use iflow\initializer\Helpers;
-use iflow\initializer\initializer;
+use iflow\http\Adapter\Request;
+use iflow\http\Adapter\Response;
+use iflow\initializer\{ appSurroundings, Config, Error, Helpers, initializer };
 use iflow\log\Log;
 
-class App extends \iflow\App {
+abstract class App extends \iflow\App {
 
     protected array $initializers = [
         Config::class,

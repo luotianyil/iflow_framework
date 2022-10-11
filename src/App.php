@@ -16,7 +16,7 @@ use iflow\log\Log;
  * @mixin Container
  * @package iflow
  */
-class App {
+abstract class App {
 
     CONST VERSION = '0.0.1 beta';
 
@@ -43,6 +43,8 @@ class App {
     ];
 
     protected array $frameWorkFolder = [ 'app', 'runtime', 'config', 'public' ];
+
+    abstract public function runApp();
 
     /**
      * 初始化基础方法
@@ -173,6 +175,6 @@ class App {
 
     public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
-        return Container::getInstance() -> {$name}(...$arguments);
+        return call_user_func([ Container::getInstance(), $name ], ...$arguments);
     }
 }

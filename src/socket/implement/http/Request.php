@@ -4,7 +4,7 @@
 namespace iflow\socket\implement\http;
 
 
-use iflow\http\lib\Cookie;
+use iflow\http\Adapter\Cookie;
 
 class Request
 {

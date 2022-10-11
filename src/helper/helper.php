@@ -13,7 +13,7 @@ use iflow\facade\Session;
 use iflow\fileSystem\File;
 use iflow\Helper\Tools\System;
 use iflow\Helper\Torrent\Lightbenc;
-use iflow\http\lib\Cookie;
+use iflow\http\Adapter\Cookie;
 use iflow\i18n\i18N;
 use iflow\log\Log;
 use iflow\Request;

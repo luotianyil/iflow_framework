@@ -23,13 +23,16 @@ class RenderDebugView {
 
     /**
      * 渲染数据
-     * @return ?Response
+     * @param Response|ResponseInterface|Throwable|null $response
+     * @return Response|array|null
      */
-    public function render(): ?Response {
+    public function render(Response|ResponseInterface|Throwable|null $response = null): Response|array|null {
+
+        $throwable = $response ? new HttpResponseException($response) : $this->throwable;
 
         // 此处验证是否为Response异常
-        if ($this->throwable instanceof HttpResponseException) {
-            $response = $this->throwable -> getResponse();
+        if ($throwable instanceof HttpResponseException) {
+            $response = $throwable -> getResponse();
             return match ($response) {
                 $response instanceof ResponseInterface => response()
                     ->headers($response->getHeaders())
@@ -46,8 +49,7 @@ class RenderDebugView {
      * 获取异常数据
      * @return array
      */
-    public function getError(): array
-    {
+    public function getError(): array {
         return [
             'code' => $this->throwable -> getCode(),
             'msg' => $this->throwable -> getMessage(),
@@ -88,13 +90,19 @@ class RenderDebugView {
      * 验证是否为HTTP服务
      * @return array|Response
      */
-    protected function httpServerThrowException(): Response|array
-    {
+    protected function httpServerThrowException(): Response|array {
+
+        $error = app() -> isDebug() ? $this->getError() : [];
+
+        // 非HTTP服务
+        if (!is_http_services()) {
+            dump($this->getError());
+            return [];
+        }
+
         // 如果为Ajax请求
         if (request() -> isAjax()) {
-            return message() -> server_error(
-                $this->throwable -> getCode(), $this->throwable->getMessage(), $this->getError()
-            );
+            return message() -> server_error($this->throwable -> getCode(), $this->throwable->getMessage(), $error);
         }
 
         if (!file_exists($this->exception_tpl)) {
@@ -103,11 +111,9 @@ class RenderDebugView {
 
         if (!file_exists($this->exception_tpl)) {
             return message() -> server_error(
-                502, $this->exception_tpl.' template file does not exists', $this->getError());
+                502, $this->exception_tpl.' template file does not exists', $error);
         }
 
-        return (new View()) -> render(
-            $this->exception_tpl, $this->getError()
-        );
+        return (new View()) -> render($this->exception_tpl, $error);
     }
 }

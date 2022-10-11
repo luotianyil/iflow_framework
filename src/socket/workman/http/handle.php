@@ -3,8 +3,8 @@
 
 namespace iflow\socket\workman\http;
 
-use iflow\socket\workman\http\lib\Request;
-use iflow\socket\workman\http\lib\Response;
+use iflow\socket\workman\http\implement\Request;
+use iflow\socket\workman\http\implement\Response;
 use Workerman\Connection\TcpConnection;
 
 class handle

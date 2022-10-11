@@ -8,10 +8,11 @@ use iflow\Container\implement\annotation\traits\Execute;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\http\Kernel\Exception\RequestValidateException;
-use iflow\http\lib\Cookie;
+use iflow\http\Adapter\Cookie;
 use iflow\Request;
 use iflow\Response;
 use ReflectionClass;
+use ReflectionException;
 
 class RequestInitializer extends RequestVerification {
 
@@ -104,7 +105,7 @@ class RequestInitializer extends RequestVerification {
      * @throws InvokeClassException
      * @throws InvokeFunctionException
      * @throws ValueException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function GenerateRequestQueryParams(array $params = []): array {
         // TODO: Implement GenerateRequestQueryParams() method.
@@ -124,7 +125,7 @@ class RequestInitializer extends RequestVerification {
      * @param array $params
      * @return object
      * @throws ValueException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws InvokeClassException
      * @throws InvokeFunctionException
      */

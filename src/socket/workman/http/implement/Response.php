@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\socket\workman\http\lib;
+namespace iflow\socket\workman\http\implement;
 
 class Response
 {

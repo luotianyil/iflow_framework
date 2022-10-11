@@ -2,7 +2,7 @@
 
 namespace iflow\http\Kernel\Exception;
 
-use iflow\exception\lib\HttpResponseException;
+use iflow\exception\Adapter\HttpResponseException;
 
 class RequestValidateException extends HttpResponseException {
 }

@@ -4,6 +4,8 @@
 namespace iflow\initializer;
 
 use iflow\App;
+use iflow\Container\implement\annotation\tools\data\Inject;
+use iflow\exception\Configure;
 use iflow\exception\Handle;
 use iflow\exception\Adapter\ErrorException;
 use iflow\exception\Adapter\RenderDebugView;
@@ -17,6 +19,14 @@ class Error {
     protected array $config = [];
     protected string $handle = Handle::class;
 
+    #[Inject]
+    protected Configure $configure;
+
+    /**
+     * 初始化异常处理
+     * @param App $app
+     * @return void
+     */
     public function initializer(App $app) {
         $this->app = $app;
         $this->config = config('app');
@@ -55,27 +65,22 @@ class Error {
      */
     public function appHandler(Throwable $e): bool|null {
 
-        $type = $this->isFatal($e -> getCode()) ? 'warning' : 'error';
+        $renderDebugView = new RenderDebugView($e, $this->config);
 
-        if (!is_http_services()) {
-            return dump([
-                'error' => $e -> getMessage(),
-                'file' => $e -> getFile(),
-                'line' => $e -> getLine()
-            ]);
-        }
-
-        // 检测是否开启DEBUG
-        if ($this->app -> isDebug()) {
-            return (new renderDebugView($e, $this->config)) -> render() -> send();
+        // 是否配置 异常接管
+        if ($this -> configure -> configure($e::class, $e, $renderDebugView)) {
+            return true;
         }
 
         // 异常处理回调
-        if (class_exists($this->handle)) {
-            $res = (new $this->handle($type)) -> render($this->app, $e);
-            if ($res instanceof Response) return $res -> send();
-        }
-        return (new renderDebugView($e, $this->config)) -> render() ?-> send();
+        $res = class_exists($this->handle) ?
+            (new $this->handle(
+                $this->configure -> getFatalType()
+            )) -> render($this->app, $e)
+            : $renderDebugView -> render($e);
+
+        if ($res instanceof Response) return $res -> send();
+        return $res;
     }
 
     /**
@@ -84,14 +89,19 @@ class Error {
      * @throws errorException
      */
     public function appShuDown() {
-        if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+        if (!is_null($error = error_get_last()) && $this-> configure -> isFatal($error['type'])) {
             throw new errorException(0, $error['message'], $error['file'], $error['line']);
         }
     }
 
-    // 验证错误类型
-    protected function isFatal(int $type): bool {
-        return in_array($type, [ E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_STRICT, E_NOTICE, E_DEPRECATED ]);
+    /**
+     * 新增自定义异常接管类
+     * @param string $exceptionClazz 接管的异常
+     * @param string $class
+     * @param array $args
+     * @return void
+     */
+    public function setTakeoverConfigure(string $exceptionClazz, string $class, array $args = []): void {
+        $this->configure -> setConfigure(...func_get_args());
     }
-
 }

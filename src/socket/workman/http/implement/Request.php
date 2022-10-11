@@ -1,10 +1,10 @@
 <?php
 
 
-namespace iflow\socket\workman\http\lib;
+namespace iflow\socket\workman\http\implement;
 
 
-use iflow\http\lib\Cookie;
+use iflow\http\Adapter\Cookie;
 
 class Request
 {
