@@ -18,7 +18,7 @@ use iflow\log\Log;
  */
 abstract class App {
 
-    CONST VERSION = '0.0.1 beta';
+    final protected const version = '0.0.1 beta';
 
     // 用户路由
     public array $routers = [];
@@ -91,7 +91,7 @@ abstract class App {
      * @return string
      */
     public function getVerSion() : string {
-        return self::VERSION;
+        return self::version;
     }
 
     /**
@@ -105,6 +105,7 @@ abstract class App {
 
     protected function frameWorkDirInit(): bool {
         $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+
         $this->rootPath    = $this->getDefaultRootPath();
         $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;

@@ -2,10 +2,17 @@
 
 namespace iflow\swoole\implement\Services\Elasticsearch;
 
+use Exception;
+use iflow\swoole\implement\Services\Elasticsearch\Documents\Docs;
+use iflow\swoole\implement\Services\Elasticsearch\Documents\Endpoints\Sql;
+use iflow\swoole\implement\Services\Elasticsearch\Documents\Index;
+use iflow\swoole\implement\Services\Elasticsearch\Documents\Mappings;
+
 class Config {
 
-
     private array $config;
+
+    protected readonly array $documentsMappings;
 
     public function __construct(string $name)
     {
@@ -25,18 +32,15 @@ class Config {
         return (int)explode(':', $this->config['host'])[2] ?? 9200;
     }
 
-    public function getIndexName(): string
-    {
+    public function getIndexName(): string {
         return $this->config['index_name'] ?? 'test';
     }
 
-    public function getTypeName(): string
-    {
+    public function getTypeName(): string {
         return $this->config['type_name'] ?? 'test';
     }
 
-    public function getUserName(): string
-    {
+    public function getUserName(): string {
         return $this->config['user_name'] ?? '';
     }
 
@@ -63,7 +67,7 @@ class Config {
 
         return array_merge($this->config['headers'] ?? [], [
             'Content-Type' => 'application/json',
-            'Accept' => 'text/html,application/xhtml+xml,application/xml,application/json;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Accept' => 'application/json, text/javascript, */*; q=0.01',
 //            'Accept-Encoding' => 'gzip',
             'User-Agent' => sprintf(
                 "iflow-elasticsearch-php/%s (%s %s; PHP %s)",
@@ -94,9 +98,29 @@ class Config {
         );
     }
 
-
     public function getRequestUrl(string $uri): string {
-        return sprintf("%s:%s/%s", $this->config -> getHost(), $this->config -> getPort(), $uri);
+        return sprintf("%s:%s/%s", $this -> getHost(), $this -> getPort(), $uri);
     }
 
+    /**
+     * 自定义实现类
+     * @param string $name
+     * @return array|string
+     * @throws Exception
+     */
+    public function getDocumentsMappings(string $name = ''): array|string {
+
+        if (empty($this->documentsMappings)) {
+            $this->documentsMappings = array_merge([
+                'indices' => Index::class,
+                'mappings' => Mappings::class,
+                'docs' => Docs::class,
+                'sql' => Sql::class
+            ], array_change_key_case($this->config['documentsMappings'] ?? [], CASE_LOWER));
+        }
+
+        if ($name === '') return $this->documentsMappings;
+
+        return $this->documentsMappings[$name] ?: throw new Exception('Elasticsearch driver does not exist');
+    }
 }

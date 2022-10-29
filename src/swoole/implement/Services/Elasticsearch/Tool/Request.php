@@ -4,20 +4,11 @@ namespace iflow\swoole\implement\Services\Elasticsearch\Tool;
 
 use iflow\swoole\implement\Services\Elasticsearch\Config;
 use iflow\swoole\implement\Services\Elasticsearch\Documents\Mappings;
+use iflow\swoole\implement\Services\Elasticsearch\Documents\Serialization\JsonSerialization;
 
 trait Request {
 
-    public array $mappingsOptions = [
-        'properties' => [
-            'id' => [
-                'type' => 'integer'
-            ],
-            'name' => [
-                'type' => 'text',
-                'fielddata' => true
-            ]
-        ]
-    ];
+    public array $mappingsOptions = [];
 
     protected array $indicesOptions = [
         'settings' => [
@@ -67,40 +58,23 @@ trait Request {
      * @param array $mappingsOptions
      * @return Mappings
      */
-    public function setMappingsOptions(array $mappingsOptions): static
-    {
-        $this->mappingsOptions = array_replace_recursive($this->mappingsOptions, $mappingsOptions)?: [];
+    public function setMappingsOptions(array $mappingsOptions): static {
+        $this->mappingsOptions = $mappingsOptions;
         return $this;
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function bulk(array $docs, string $indexName, string $typeName, string $type = 'create'): string|null
     {
-        if ($docs) {
-            $params['body'] = [];
-            foreach ($docs as $key => $value) {
-                $params['body'][] = [
-                    $type => [
-                        '_index' => $indexName,
-                        '_type' => $typeName,
-                        '_id' => $value['_id'] ?? uniqid('_id')
-                    ]
-                ];
+        return (new JsonSerialization()) -> bulkJsonSerialization(
+            $docs, $indexName, $typeName, $type
+        );
+    }
 
-                if ($type !== 'delete') {
-                    unset($value['_id']);
-                    $params['body'][] = $type === 'update' ? [
-                        'doc' => $value
-                    ] : $value;
-                }
-            }
-
-            $body = "";
-            foreach ($params['body'] as $val) {
-                $body .= json_encode($val) . "\r\n";
-            }
-            return $body;
-        }
-        return null;
+    public function getTypeName(string $typeName): string {
+        return $typeName === '' ? '' : '/'.$typeName;
     }
 
     private function sendRequest($methods, $uri, array|string $params = [], array $header = [])
@@ -108,11 +82,12 @@ trait Request {
         if (is_array($params) && count($params) === 0) {
             $params = "";
         }
+
         return httpRequest(
             $this->config -> getRequestUrl($uri),
             $methods,
-            array_merge($header, $this->config -> getHeader()),
-            [ 'type' => 'json', 'data' => $params ],
+            array_merge($this->config -> getHeader(), $header),
+            [ 'type' => 'body', 'parameters' => $params ],
             options: $this->config -> getOptions()
         ) -> getResponseBodyType() -> getParserContent();
     }

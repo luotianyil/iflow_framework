@@ -8,14 +8,39 @@ class Mappings {
 
     use Request;
 
-    public function setMappings($indexName, $typeName) {
-        return $this->sendRequest('PUT',
-            sprintf('%s/%s/_mapping?include_type_name=true', $indexName, $typeName), $this->mappingsOptions);
+    /**
+     * 设置字段
+     * @param string $indexName
+     * @param string $typeName
+     * @return mixed
+     */
+    public function setMappings(string $indexName, string $typeName = ''): array {
+        $url = sprintf('%s%s/_mapping', $indexName, $this->getTypeName($typeName));
+        return $this->sendRequest('PUT', $url, $this->mappingsOptions);
     }
 
-    public function getMappings($indexName, $typeName) {
+    /**
+     * 获取Mapping
+     * @param string $indexName
+     * @param string $typeName
+     * @return mixed
+     */
+    public function getMappings(string $indexName, string $typeName = ''): array {
         return $this->sendRequest('GET',
-            sprintf("%s/%s/_mapping?include_type_name=true", $indexName, $typeName)
+            sprintf("%s%s/_mapping?include_type_name=true", $indexName, $this->getTypeName($typeName))
+        );
+    }
+
+    /**
+     * 查看指定字段类型
+     * @param string $indexName
+     * @param string $fields
+     * @param string $typeName
+     * @return mixed
+     */
+    public function getFieldMapping(string $indexName, string $fields, string $typeName = ''): array {
+        return $this->sendRequest('GET',
+            sprintf("%s%s/_mapping/%s?include_type_name=true", $indexName, $this->getTypeName($typeName), $fields)
         );
     }
 

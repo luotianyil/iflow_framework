@@ -31,6 +31,11 @@ class appMonitoring
     public function Monitoring() {
         $this->config = config('app@appMonitoring');
         $units = ['B', 'kB', 'MB'];
+
+        if (!function_exists('systemInfo')) {
+            return false;
+        }
+
         $systemInfo = systemInfo();
         $MemFree = explode(' ', $systemInfo['mem']['MemFree'])[0] / 1024 / 1024;
         $diskFree = explode(' ', $systemInfo['disk']['free']);
@@ -54,5 +59,7 @@ class appMonitoring
                 emails($this->config['toEmails'], $content, subject: config('app@appName') . ' - 应用预警');
             });
         }
+
+        return true;
     }
 }

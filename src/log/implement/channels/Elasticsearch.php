@@ -5,7 +5,7 @@ namespace iflow\log\implement\channels;
 
 use iflow\swoole\implement\Services\Elasticsearch\Elasticsearch as ES;
 
-class elasticsearch {
+class Elasticsearch {
 
     protected array $config = [];
 
@@ -35,15 +35,12 @@ class elasticsearch {
                             'fielddata' => true
                         ],
                         'type' => [
-                            'type' => 'text',
+                            'type' => 'string',
                             'fielddata' => true
                         ]
                     ]
                 ])
-                -> setMappings(
-                    $this->config['index_name'],
-                    $this->config['type_name']
-                );
+                -> setMappings($this->config['index_name']);
         }
         return $this;
     }

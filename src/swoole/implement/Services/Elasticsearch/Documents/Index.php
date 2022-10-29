@@ -22,7 +22,14 @@ class Index {
 
     public function indicesExists(string $indexName): bool {
         $indices = $this->sendRequest('GET', $indexName);
-        return empty($indices['status']);
+        return empty($indices['error']);
+    }
+
+    public function indicesSetting(string $indexName, array $_settings) {
+        return $this->sendRequest('PUT',
+            sprintf("%s/_settings", $indexName),
+            $_settings
+        );
     }
 
 }

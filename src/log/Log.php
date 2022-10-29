@@ -14,7 +14,7 @@ class Log extends Logger {
 
     public function initializer() {
         $this->config = config('log');
-        $channels = $this->nameSpaces . $this->config['default'];
+        $channels = $this->nameSpaces . ucwords($this->config['default']);
         $this->channel = app() -> make($channels, [$this->config[$this->config['default']]]);
 
         // 订阅事件

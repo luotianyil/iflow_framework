@@ -3,8 +3,7 @@
 
 namespace iflow\log\implement\channels;
 
-class file
-{
+class File {
 
     protected array $config = [];
 
