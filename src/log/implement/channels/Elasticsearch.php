@@ -17,11 +17,11 @@ class Elasticsearch {
     }
 
     public function save(array $logs): bool {
-        return !$this->indicesExits() -> write($logs)['errors'] ?? true;
+        return !$this->indicesExits() -> write($logs) === false;
     }
 
     protected function indicesExits(): static {
-        if ($this->elClient -> indices() -> indicesExists($this->config['index_name'])) {
+        if (!$this->elClient -> indices() -> indicesExists($this->config['index_name'])) {
             $this->elClient -> indices() -> createIndices($this->config['index_name']);
             $this->elClient -> mappings()
                 -> setMappingsOptions([
@@ -35,12 +35,12 @@ class Elasticsearch {
                             'fielddata' => true
                         ],
                         'type' => [
-                            'type' => 'string',
+                            'type' => 'text',
                             'fielddata' => true
                         ]
                     ]
                 ])
-                -> setMappings($this->config['index_name']);
+                -> setMappings($this->config['index_name'], $this->config['type_name']);
         }
         return $this;
     }

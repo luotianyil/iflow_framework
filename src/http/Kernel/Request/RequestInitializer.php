@@ -25,6 +25,8 @@ class RequestInitializer extends RequestVerification {
      */
     public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification|bool {
 
+        app() -> setStartTimes($startTime);
+
         $request->server['path_info'] = $request->server['path_info'] ?? $request -> server['request_uri'];
         if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
             $file = config('app@favicon') ?: '';
@@ -36,8 +38,6 @@ class RequestInitializer extends RequestVerification {
         foreach ($this->RunProcessMethods as $key) {
             if (method_exists($this, $key) && call_user_func([$this, $key])) break;
         }
-
-        event('RequestEndEvent', $startTime);
         return $this;
     }
 

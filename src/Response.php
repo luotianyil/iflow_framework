@@ -57,6 +57,7 @@ class Response {
         }
 
         // 结束请求
+        event('RequestEndEvent');
         return $this->setResponseHeader() -> response -> end($this->output($this->data));
     }
 

@@ -30,6 +30,9 @@ abstract class App {
     protected string $runtimePath = '';
     protected string $configExt = '.php';
 
+    // 执行时间
+    protected float $startTimes = 0.00;
+
     // 初始化服务
     protected array $initializers = [
         Config::class,
@@ -172,6 +175,22 @@ abstract class App {
 
     public function getAppClassName(): string {
         return $this::class;
+    }
+
+    /**
+     * @param float $startTimes
+     * @return App
+     */
+    public function setStartTimes(float $startTimes): App {
+        $this->startTimes = $startTimes;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getStartTimes(): float {
+        return $this->startTimes;
     }
 
     public function __call(string $name, array $arguments) {

@@ -21,7 +21,8 @@ class RequestEndEvent extends SubjectAbstract {
      * @param float $startTime
      * @return $this
      */
-    protected function saveRequestLogger(float $startTime): RequestEndEvent {
+    protected function saveRequestLogger(float $startTime = 0): RequestEndEvent {
+        $startTime = $startTime > 0 ? $startTime : app() -> getStartTimes();
         if (config('app@saveRuntimeLog')) {
             $requestLogs = [
                 'requestTime' => date('Y-m-d H:i:s', intval(request() -> server['request_time_float'])),

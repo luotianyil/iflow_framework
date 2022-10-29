@@ -48,14 +48,10 @@ class JsonSerialization {
         $types = [ '_index' => $index ];
 
 
-        if ($typeName !== '') $types['_type'] = $typeName;
+        if ($typeName !== '' && $typeName !== '_doc') $types['_type'] = $typeName;
         if ($id !== '') $types['_id'] = $id;
 
         return $types;
-    }
-
-    protected function isCreated() {
-
     }
 
 }
