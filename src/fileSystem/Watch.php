@@ -7,7 +7,7 @@ namespace iflow\fileSystem;
 use iflow\App;
 use iflow\console\Console;
 use iflow\event\Event;
-use iflow\fileSystem\lib\fileSystem;
+use iflow\fileSystem\implement\fileSystem;
 use iflow\Utils\Tools\Timer;
 use Swoole\Server;
 
@@ -26,8 +26,7 @@ class Watch
 
     private array $files = [];
 
-    public function initializer(App $app)
-    {
+    public function initializer(App $app): bool {
         if (!config('app@hot_update')) return false;
         go(function () use ($app) {
             $this->app = $app;
@@ -53,7 +52,7 @@ class Watch
         Timer::tick(1000, function () {
             foreach ($this->files as $key => $value) {
                 if ($value < (new fileSystem($key)) -> getMTime()) {
-                    $this -> reload() -> WatchFile() -> excludeEvent();
+                    $this -> reload();
                     break;
                 }
             }
@@ -67,7 +66,10 @@ class Watch
     }
 
     private function reload(): static {
-        $this->app -> make(Server::class) -> reload();
+        $this->app -> make(Server::class) -> stop();
+
+        // 重新运行应用
+        $this->app -> runApp();
         $this->app -> make(Console::class) -> outPut -> writeLine('reload success ...');
         return $this;
     }

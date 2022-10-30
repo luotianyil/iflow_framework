@@ -127,7 +127,7 @@ class File implements AdapterInterface {
             return $now - $lifetime > $item -> getCTime();
         });
         foreach ($files as $file) {
-            file_exists($file->getPathname()) && unlink($file->getPathname());
+            file_exists($file->getPathname()) && @unlink($file->getPathname());
         }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\GraphQL\exception;
+namespace iflow\GraphQL\Exceptions;
 
 
 class TableException extends \Exception

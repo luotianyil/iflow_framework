@@ -45,10 +45,8 @@ class File extends Response
         return $this->output($this->data);
     }
 
-    public function end($content = null): bool
-    {
-        // Swoole 验证是否已经结束请求
-
+    public function end($content = null): bool {
+        // 验证是否已经结束请求
         if (method_exists($this->response, 'isWritable') && $this->response -> isWritable() === false) {
             return true;
         }

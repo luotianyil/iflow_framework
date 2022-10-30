@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\fileSystem\lib;
+namespace iflow\fileSystem\implement;
 
 use SplFileInfo;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;

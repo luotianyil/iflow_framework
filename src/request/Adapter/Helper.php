@@ -4,7 +4,7 @@
 namespace iflow\request\Adapter;
 
 
-use iflow\fileSystem\lib\upLoadFile;
+use iflow\fileSystem\implement\UpLoadFile;
 
 trait Helper
 {
@@ -127,6 +127,7 @@ trait Helper
     /**
      * 根据请求获取参数
      * @param string $name
+     * @param mixed $default
      * @return mixed
      */
     public function params(string $name = '', mixed $default = ''): mixed
@@ -189,10 +190,10 @@ trait Helper
     /**
      * 获取上传文件
      * @param string $name
-     * @return upLoadFile|upLoadFile[]
+     * @return UpLoadFile|UpLoadFile[]
      */
-    public function file(string $name = ''): upLoadFile|array {
-        $upLoadFile = app() -> make(upLoadFile::class);
+    public function file(string $name = ''): UpLoadFile|array {
+        $upLoadFile = app() -> make(UpLoadFile::class);
         $file = $name === '' ? $upLoadFile -> getFileList() : $upLoadFile -> getFile($name);
         return $file ?: [];
     }

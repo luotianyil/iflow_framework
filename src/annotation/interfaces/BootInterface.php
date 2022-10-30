@@ -4,11 +4,11 @@
 namespace iflow\annotation\interfaces;
 
 
-interface bootInterface
+interface BootInterface
 {
     /**
      * 启动引导方法入口
-     * @return bootInterface
+     * @return BootInterface
      */
-    public function boot(): bootInterface;
+    public function boot(): BootInterface;
 }

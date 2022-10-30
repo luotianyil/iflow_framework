@@ -1,13 +1,13 @@
 <?php
 
 
-namespace iflow\fileSystem\lib;
+namespace iflow\fileSystem\implement;
 
 use iflow\exception\Adapter\HttpException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
-class upLoadFile extends fileSystem implements UploadedFileInterface
+class UpLoadFile extends FileSystem implements UploadedFileInterface
 {
 
     protected array $fileList = [];
@@ -37,8 +37,7 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
      * 获取上传文件列表
      * @return array
      */
-    public function getFileList(): array
-    {
+    public function getFileList(): array {
         return $this->fileList;
     }
 
@@ -47,8 +46,7 @@ class upLoadFile extends fileSystem implements UploadedFileInterface
      * @param string $index
      * @return mixed|null
      */
-    public function getFile(string $index)
-    {
+    public function getFile(string $index): mixed {
         return $this->fileList[$index] ?? null;
     }
 

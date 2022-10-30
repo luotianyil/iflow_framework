@@ -3,7 +3,7 @@
 
 namespace iflow;
 
-use iflow\fileSystem\lib\upLoadFile;
+use iflow\fileSystem\implement\upLoadFile;
 use iflow\request\RequestTrait;
 
 class Request

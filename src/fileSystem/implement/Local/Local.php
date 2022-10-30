@@ -1,19 +1,17 @@
 <?php
 
 
-namespace iflow\fileSystem\lib\local;
+namespace iflow\fileSystem\implement\Local;
 
 
-use iflow\fileSystem\lib\fileSystem;
+use iflow\fileSystem\implement\FileSystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 
-class local extends fileSystem
-{
+class Local extends FileSystem {
 
-    public function __construct(string $filename = '', array $config = [])
-    {
+    public function __construct(string $filename = '', array $config = []) {
         $this->config = $config;
         $adapter = new LocalFilesystemAdapter(
              $this->config['rootPath'],

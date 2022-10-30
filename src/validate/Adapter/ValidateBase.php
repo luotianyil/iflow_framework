@@ -4,7 +4,7 @@
 namespace iflow\validate\Adapter;
 
 
-use iflow\fileSystem\lib\fileSystem;
+use iflow\fileSystem\implement\fileSystem;
 
 class ValidateBase {
 

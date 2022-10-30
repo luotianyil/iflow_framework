@@ -5,7 +5,7 @@ namespace iflow\fileSystem;
 
 
 use iflow\Container\Container;
-use iflow\fileSystem\lib\FileList;
+use iflow\fileSystem\implement\FileList;
 
 /**
  * Class File
@@ -23,11 +23,10 @@ class File
         return $this;
     }
 
-    public function create($file)
-    {
+    public function create($file) {
         $this->config = config('fileSystem');
         $this->config = $this->config['disks'][$this->config['default']];
-        $class = 'iflow\\fileSystem\\implement\\'.$this->config['type'].'\\'.$this->config['type'];
+        $class = 'iflow\\fileSystem\\implement\\'.ucwords($this->config['type']).'\\'.ucwords($this->config['type']);
         return Container::getInstance()->invokeClass($class, [$file, $this->config]);
     }
 
