@@ -239,7 +239,7 @@ if (!function_exists('session')) {
      * @return array|bool|mixed|string
      * @throws Exception
      */
-    function session(string|null $name = null, array|string|null $default = [], ?callable $callable = null) {
+    function session(string|null $name = null, array|string|null $default = [], ?callable $callable = null): mixed {
         if ($default === null) {
             return Session::unsetKey($name);
         }

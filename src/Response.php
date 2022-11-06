@@ -2,6 +2,7 @@
 
 namespace iflow;
 
+use iflow\console\Console;
 use iflow\response\Adapter\File;
 use iflow\response\ResponseTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -52,6 +53,13 @@ class Response {
 
         // 获取Response 原始响应体
         $this->response = response() -> response;
+
+        // 无原始响应体时 输出控制台
+        if (empty($this->response)) {
+            app(Console::class) -> writeConsole -> writeLine($this->output($this->data));
+            return true;
+        }
+
         if (method_exists($this->response, 'isWritable') && $this->response -> isWritable() === false) {
             return true;
         }
@@ -121,8 +129,7 @@ class Response {
      * @param array $arguments
      * @return mixed
      */
-    public function __call(string $name, array $arguments): mixed
-    {
+    public function __call(string $name, array $arguments): mixed {
         // TODO: Implement __call() method.
         if (method_exists($this->response, $name)) return call_user_func($name, ...$arguments);
         return null;

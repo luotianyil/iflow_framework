@@ -23,7 +23,7 @@ class Input {
      * @throws \Throwable
      * @return mixed
      */
-    public function parsingInputCommand(array $command, Console $console) {
+    public function parsingInputCommand(array $command, Console $console): mixed {
         if (count($this->argv) < 2) {
             return $this->invokeClass($console, HasCommand::class, $command);
         }

@@ -76,8 +76,7 @@ class Error {
         $res = class_exists($this->handle) ?
             (new $this->handle(
                 $this->configure -> getFatalType()
-            )) -> render($this->app, $e)
-            : $renderDebugView -> render($e);
+            )) -> render($this->app, $e) : $renderDebugView -> render($e);
 
         if ($res instanceof Response) return $res -> send();
         return $res;

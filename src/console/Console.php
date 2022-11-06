@@ -49,14 +49,14 @@ class Console
         $this -> exec();
     }
 
+    /**
+     * @return void
+     * @throws \Throwable
+     */
     protected function exec() {
-        try {
-            $this->getCommand()
-                -> input
-                -> parsingInputCommand($this->command, $this);
-        } catch (\Exception $exception) {
-            $this->writeConsole -> writeLine($exception -> getMessage());
-        }
+        $this->getCommand()
+            -> input
+            -> parsingInputCommand($this->command, $this);
     }
 
     protected function getCommand(): static {
