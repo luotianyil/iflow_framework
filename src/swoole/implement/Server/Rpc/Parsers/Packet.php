@@ -22,12 +22,24 @@ class Packet
         return $service -> consumer -> register($data) ? Event::ping -> value : 0;
     }
 
+    /**
+     * 客户端关闭连接
+     * @param Server $server
+     * @param Service $service
+     * @param int $fd
+     * @return bool
+     */
     public function close(Server $server, Service $service, int $fd): bool {
         if ($server -> exist($fd)) $server -> close($fd);
         return $service -> consumer -> remove($fd);
     }
 
-    public function send(Service $service) {
+    /**
+     * 返回响应
+     * @param Service $service
+     * @return bool|mixed
+     */
+    public function send(Service $service): mixed {
 
         $clientMasterName = $service -> getServicesCommand() -> config -> get('client_name');
         $this->data['client_name'] = $this->data['client_name'] ?? $clientMasterName;
@@ -38,15 +50,22 @@ class Packet
 
         $clientInfo = $service -> consumer -> getByName($this->data['client_name']);
 
-        if (empty($clientInfo) || empty($clientInfo['fd'])) return $this->server -> send($this->fd, 404);
+        if (empty($clientInfo) || empty($clientInfo['fd']))
+            return $this->server -> send($this->fd, 404);
 
         $ClientHost = json_decode($clientInfo['host'], true)['tpc'];
-        return $this->server->send($this->fd, rpc($ClientHost['host'], $ClientHost['port'], $this->data['request_uri'], $this->data['isSSL'] ?? false, [
+        return $this->server->send($this->fd, rpc(
+            $ClientHost['host'], $ClientHost['port'],
+            $this->data['request_uri'], $this->data['isSSL'] ?? false, [
             'client_name' => $this->data['client_name'],
             'event' => $this->data['event']
         ]) -> getData());
     }
 
+    /**
+     * 执行 RPC 路由定义
+     * @return bool
+     */
     protected function execute(): bool {
         return (new CheckRequestRouter()) -> init($this->server, $this->fd, $this->data);
     }

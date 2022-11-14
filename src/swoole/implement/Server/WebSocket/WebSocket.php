@@ -3,10 +3,11 @@
 namespace iflow\swoole\implement\Server\WebSocket;
 
 use iflow\Container\Container;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Request;
 use iflow\Response;
 use iflow\swoole\abstracts\ServicesAbstract;
-use iflow\swoole\implement\Server\implement\Room;
+use iflow\swoole\implement\Server\implement\Room\Room;
 use iflow\swoole\implement\Server\WebSocket\Event\Events;
 use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Emit;
 use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
@@ -43,11 +44,18 @@ class WebSocket {
     public function createRoom() {
         // 初始化房间信息
         $this->room = app(Room::class, [
-            $this->config['roomType'] ?? 'websocket', $this->servicesAbstract -> getSwService()
+            $this->config['room']['roomType'] ?? 'websocket',
+            $this,
+            $this->config['room']
         ]);
-        $this->RegisterRoomFields();
     }
 
+    /**
+     * 创建链接
+     * @param Request $request
+     * @param Response $response
+     * @return string|Response
+     */
     public function connection(Request $request, Response $response): string|Response {
         if (!in_array($request->getParams('transport'), $this->transports)) {
             return json([
@@ -68,8 +76,15 @@ class WebSocket {
         return '97:0' . $payload . '2:40';
     }
 
+    /**
+     * 发送信息
+     * @param array $data
+     * @param string $emitClass
+     * @return bool|void
+     * @throws InvokeClassException
+     */
     public function emit(array $data, string $emitClass) {
-        // TODO: 返回信息
+
         if (class_exists($emitClass)) {
             $emit = Container::getInstance() -> make($emitClass, [
                 $this, $data
@@ -82,6 +97,12 @@ class WebSocket {
         return $this->sender('E', [ 'Non-Data' ]);
     }
 
+    /**
+     * @param string $event
+     * @param mixed $data
+     * @param int $fd
+     * @return bool
+     */
     public function sender(string $event, mixed $data, int $fd = 0): bool {
         $data = Packet::create('4'.Packet::EVENT . $this->nsp. ',', [
             'data' => [ $event, $data ]
@@ -122,17 +143,5 @@ class WebSocket {
             $events[$eventName] = [ $this->events, $action ];
         }
         return $events;
-    }
-
-    /**
-     * 添加字段
-     * @return void
-     */
-    protected function RegisterRoomFields() {
-        foreach ($this->config['websocket']['fields'] as $field) {
-            $this->room -> addField($field);
-        }
-
-        $this->room -> getTable() -> create();
     }
 }

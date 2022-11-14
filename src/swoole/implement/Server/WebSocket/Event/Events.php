@@ -2,7 +2,6 @@
 
 namespace iflow\swoole\implement\Server\WebSocket\Event;
 
-use iflow\Container\Container;
 use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
 use iflow\swoole\implement\Server\WebSocket\WebSocket;

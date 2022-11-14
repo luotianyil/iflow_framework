@@ -65,16 +65,16 @@ class BasicTools
 
     /**
      * 创建订单编号
+     * @param string $prefix
      * @return string
      */
-    public function make_order() : string
-    {
-        $order_id_main = date('YmdHis') . rand(1000, 9999);
+    public function makeOrder(string $prefix = '') : string {
+        $order_id_main = (microtime(true) * 10000) . rand(1000, 9999);
         $order_id_sum = 0;
         for ($i = 0; $i < strlen($order_id_main); $i++) {
             $order_id_sum += (int)(substr($order_id_main, $i,1));
         }
-        return $order_id_main . str_pad((100 - $order_id_sum % 100) % 100,2,'0',STR_PAD_LEFT);
+        return $prefix . $order_id_main . str_pad((100 - $order_id_sum % 100) % 100,2,'0',STR_PAD_LEFT);
     }
 
 

@@ -2,7 +2,7 @@
 
 namespace iflow\swoole\implement\Server\Rpc\Cluster;
 
-use iflow\cache\lib\Redis;
+use iflow\cache\Adapter\Redis\Redis;
 use iflow\Container\Container;
 use iflow\swoole\implement\Tools\Tables;
 use Swoole\Table;
@@ -28,7 +28,6 @@ class Cache {
             foreach ($this->config['cluster']['fields'] as $field) {
                 self::$consumers -> column($field['name'], $field['type'], $field['size'] ?? 0);
             }
-
             self::$consumers -> create();
         }
 
