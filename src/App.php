@@ -7,9 +7,11 @@ use iflow\console\Console;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\traits\Execute;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\event\Event;
 use iflow\initializer\{appSurroundings, Config, Error, Helpers, initializer};
 use iflow\log\Log;
+use ReflectionException;
 
 /**
  * Class App
@@ -61,6 +63,13 @@ abstract class App {
         }
     }
 
+    /**
+     * 初始化项目注解
+     * @param string $class
+     * @return void
+     * @throws InvokeClassException
+     * @throws ReflectionException|InvokeFunctionException
+     */
     public function execute(string $class) {
         $execute = new Execute();
         $ref = new \ReflectionClass($class);
@@ -93,7 +102,7 @@ abstract class App {
      * 获取当前版本信息
      * @return string
      */
-    public function getVerSion() : string {
+    public function getVersion() : string {
         return self::version;
     }
 
@@ -106,6 +115,11 @@ abstract class App {
         return $this;
     }
 
+    /**
+     * 校验项目依赖目录
+     * @return bool
+     * @throws \Exception
+     */
     protected function frameWorkDirInit(): bool {
         $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
 

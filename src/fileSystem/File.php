@@ -1,6 +1,5 @@
 <?php
 
-
 namespace iflow\fileSystem;
 
 
@@ -12,13 +11,13 @@ use iflow\fileSystem\implement\FileList;
  * @package iflow\fileSystem
  * @property FileList $fileList
  */
-class File
-{
+class File {
+
+    public FileList $fileList;
 
     protected array $config = [];
 
-    public function initializer()
-    {
+    public function initializer() {
         $this->fileList = Container::getInstance() -> make(FileList::class);
         return $this;
     }

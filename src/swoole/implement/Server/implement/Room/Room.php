@@ -5,9 +5,13 @@ namespace iflow\swoole\implement\Server\implement\Room;
 use Exception;
 use iflow\Container\Container;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\swoole\implement\Server\implement\Room\Adapter\Interfaces\RoomAdapterInterface;
 use iflow\swoole\implement\Server\implement\Room\Adapter\Redis;
 use iflow\swoole\implement\Server\implement\Room\Adapter\Table;
 
+/**
+ * @mixin RoomAdapterInterface
+ */
 class Room {
 
     /**
@@ -19,8 +23,11 @@ class Room {
         'redis' => Redis::class
     ];
 
-    protected Table|Redis $table;
+    protected RoomAdapterInterface $roomCache;
 
+    /**
+     * @throws InvokeClassException
+     */
     public function __construct(protected string $roomType, protected object $server, protected array $options) {
         $this->createRoomCache($this->options['cache']);
     }
@@ -39,8 +46,27 @@ class Room {
         if (!class_exists($clazz))
             throw new Exception('ROOM CACHE TYPE UNDEFINED');
 
-        return $this->table = Container::getInstance() -> make(
+        return $this->roomCache = Container::getInstance() -> make(
             $clazz, [ $this->roomType, $this->server, $this->options ]
         ) -> get($this->roomType, true);
+    }
+
+
+    /**
+     * @return RoomAdapterInterface
+     */
+    public function getRoomCache(): RoomAdapterInterface {
+        return $this->roomCache;
+    }
+
+    /**
+     * 执行缓存方法
+     * @param string $name
+     * @param array $arguments
+     * @return false|mixed
+     */
+    public function __call(string $name, array $arguments) {
+        // TODO: Implement __call() method.
+        return call_user_func([ $this->roomCache, $name ], ...$arguments);
     }
 }

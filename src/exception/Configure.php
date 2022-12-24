@@ -7,10 +7,12 @@ use iflow\exception\Annotation\ExceptionHandler;
 use iflow\Pipeline\Pipeline;
 use iflow\Response;
 use Psr\Http\Message\ResponseInterface;
+use ReflectionException;
+use Throwable;
 
 class Configure {
 
-    protected \Throwable $throwable;
+    protected Throwable $throwable;
 
     public Pipeline $pipeline;
 
@@ -24,15 +26,16 @@ class Configure {
     /**
      * 异常处理
      * @param string $exceptionClazz
-     * @param \Throwable $throwable
+     * @param Throwable $throwable
      * @param RenderDebugView $renderDebugView
      * @return bool
+     * @throws ReflectionException
      */
-    public function configure(string $exceptionClazz, \Throwable $throwable, RenderDebugView $renderDebugView): bool {
+    public function configure(string $exceptionClazz, Throwable $throwable, RenderDebugView $renderDebugView): bool {
         $thrace = $this->checkExceptionHandler($exceptionClazz, $throwable) ?: ($this->configure[$exceptionClazz] ?? []);
 
         if (count($thrace) === 0) {
-            $thrace = $this->configure[\Throwable::class] ?? [];
+            $thrace = $this->configure[Throwable::class] ?? [];
         }
 
         $this->throwable = $throwable;
@@ -46,11 +49,11 @@ class Configure {
     /**
      * 检查是否使用自定义异常处理
      * @param string $exceptionClazz
-     * @param \Throwable $throwable
+     * @param Throwable $throwable
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    protected function checkExceptionHandler(string $exceptionClazz, \Throwable $throwable): array {
+    protected function checkExceptionHandler(string $exceptionClazz, Throwable $throwable): array {
         $trace = $throwable -> getTrace()[0];
         [ $class, $method ] = [ $trace['class'], $trace['function'] ];
         $ref = new \ReflectionClass($class);

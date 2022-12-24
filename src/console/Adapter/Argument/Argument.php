@@ -18,7 +18,7 @@ trait Argument {
      */
     public function getArgument(string $name, string $default = ''): mixed {
         if (!str_starts_with($name, '-')) {
-            $name = "-${name}";
+            $name = "-{$name}";
         }
         $instructionKey = array_search($name, $this->instruction);
         if (!$instructionKey) {
