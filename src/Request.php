@@ -3,7 +3,7 @@
 
 namespace iflow;
 
-use iflow\fileSystem\implement\upLoadFile;
+use iflow\fileSystem\implement\UpLoadFile;
 use iflow\request\RequestTrait;
 
 class Request
@@ -44,7 +44,7 @@ class Request
     protected function initFile(): static
     {
         $files = $this->request -> files ?? [];
-        $upLoadFile = app() -> make(upLoadFile::class) -> clear();
+        $upLoadFile = app() -> make(UpLoadFile::class) -> clear();
         foreach ($files as $key => $value) {
             $upLoadFile -> setFile($key, $value);
         }

@@ -20,7 +20,7 @@ trait Helper
     protected array $proxyIpHeader = [
         'X_REAL_IP', 'X_FORWARDED_FOR',
         'CLIENT_IP', 'X_CLIENT_IP',
-        'X_CLUSTER_CLIENT_IP'
+        'X_CLUSTER_CLIENT_IP', 'REMOTE_ADDR',
     ];
 
     /**

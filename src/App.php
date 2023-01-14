@@ -128,7 +128,7 @@ abstract class App {
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
          array_map(function (string $file): string {
            if (!file_exists($this->getDefaultRootPath() . $file)) {
-               throw new \Exception("file $file dose not exists");
+               throw new \Exception("file {$file} dose not exists");
            }
            return $file;
         }, $this->frameWorkFolder);

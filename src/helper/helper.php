@@ -3,6 +3,7 @@
 declare (strict_types = 1);
 
 // 助手函数
+use iflow\App;
 use iflow\Container\Container;
 use iflow\EMailer\implement\Exception\MailerException;
 use iflow\EMailer\implement\Message\Html;
@@ -29,7 +30,7 @@ use Swoole\Coroutine\Client;
 // 应用
 if (!function_exists('app')) {
     function app(string $name = '', array $args = [], bool $isNew = false, ?callable $call = null): object {
-        if ($name === '')  return Container::getInstance() -> get('iflow\\App');
+        if ($name === '')  return Container::getInstance() -> get(App::class);
         return Container::getInstance() -> make($name, $args, $isNew, $call);
     }
 }

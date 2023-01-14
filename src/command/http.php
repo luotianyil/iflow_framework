@@ -3,7 +3,6 @@
 
 namespace iflow\command;
 
-
 use iflow\console\Adapter\Command;
 use iflow\socket\implement\http\Request;
 use iflow\socket\implement\http\Response;
