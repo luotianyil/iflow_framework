@@ -5,6 +5,7 @@ declare (strict_types = 1);
 // 助手函数
 use iflow\App;
 use iflow\Container\Container;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\EMailer\implement\Exception\MailerException;
 use iflow\EMailer\implement\Message\Html;
 use iflow\EMailer\Mailer;
@@ -29,6 +30,15 @@ use Swoole\Coroutine\Client;
 
 // 应用
 if (!function_exists('app')) {
+    /**
+     * @param string|class-string $name
+     * @param array $args
+     * @param bool $isNew
+     * @param callable|null $call
+     * @return T
+     * @throws InvokeClassException
+     * @template T
+     */
     function app(string $name = '', array $args = [], bool $isNew = false, ?callable $call = null): object {
         if ($name === '')  return Container::getInstance() -> get(App::class);
         return Container::getInstance() -> make($name, $args, $isNew, $call);
@@ -70,6 +80,7 @@ if (!function_exists('loadConfigFile')) {
 if (!function_exists('request')) {
     /**
      * @return Request
+     * @throws InvokeClassException
      */
     function request(): object {
         return app(Request::class);

@@ -43,21 +43,21 @@
     </style>
 </head>
 <body>
-    <div class="main">
-        <div class="error">
-            <div class="error-title">
-                <div style="border-bottom: 1px solid #ccc; padding-bottom: 5px; font-size: 22px;">
-                    [<?=$code?>] Exception in <span style="cursor: pointer; border-bottom: 1px dashed #ccc; color: #14560c;" title="<?=$file?>"><?=basename($file)?></span> line <?=$line?>
-                </div>
-                <div style="font-size: 24px; margin-top: 10px;"><?=$msg?></div>
+<div class="main">
+    <div class="error">
+        <div class="error-title">
+            <div style="border-bottom: 1px solid #ccc; padding-bottom: 5px; font-size: 22px;">
+                [<?=$code?>] Exception in <span style="cursor: pointer; border-bottom: 1px dashed #ccc; color: #14560c;" title="<?=$file?>"><?=basename($file)?></span> line <?=$line?>
             </div>
-            <div class="errorCode">
-                <?=parse_suorce($source, $line)?>
-            </div>
+            <div style="font-size: 24px; margin-top: 10px;"><?=$msg?></div>
         </div>
-        <div class="trace">
-            <?=str_replace("\n", "<br />", $trace)?>
+        <div class="errorCode">
+            <?=parse_suorce($source, $line)?>
         </div>
     </div>
+    <div class="trace">
+        <?=str_replace("\n", "<br />", $trace)?>
+    </div>
+</div>
 </body>
 </html>

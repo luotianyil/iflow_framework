@@ -4,6 +4,7 @@
 namespace iflow\aop\Ast;
 
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Parser;
@@ -53,6 +54,7 @@ class Ast
      * 获取指定类 code
      * @param string $class
      * @return string
+     * @throws InvokeClassException
      */
     private function getCode(string $class): string {
         $root = explode("\\", $class)[0] === "iflow" ?

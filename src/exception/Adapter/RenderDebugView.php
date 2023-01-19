@@ -4,6 +4,7 @@
 namespace iflow\exception\Adapter;
 
 use iflow\console\Console;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Response;
 use iflow\template\View;
 use Psr\Http\Message\ResponseInterface;
@@ -25,10 +26,15 @@ class RenderDebugView {
      * 渲染数据
      * @param Response|ResponseInterface|Throwable|null $response
      * @return Response|array|null
+     * @throws InvokeClassException
      */
     public function render(Response|ResponseInterface|Throwable|null $response = null): Response|array|null {
 
-        $throwable = $response ? new HttpResponseException($response) : $this->throwable;
+        $throwable =  $response ? (
+            !$response instanceof Throwable
+                ? new HttpResponseException($response)
+                : $response
+        ): $this->throwable;
 
         // 此处验证是否为Response异常
         if ($throwable instanceof HttpResponseException) {
@@ -89,6 +95,7 @@ class RenderDebugView {
     /**
      * 验证是否为HTTP服务
      * @return array|Response
+     * @throws InvokeClassException
      */
     protected function httpServerThrowException(): Response|array {
 

@@ -62,6 +62,7 @@ class Error {
      * 错误回调处理
      * @param Throwable $e
      * @return bool|null
+     * @throws \ReflectionException
      */
     public function appHandler(Throwable $e): bool|null {
 
