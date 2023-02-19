@@ -12,7 +12,7 @@ class Pipeline {
     }
 
 
-    public function process($app, ?callable $destination = null) {
+    public function process($app, ?callable $destination = null): void {
         $pipeline = array_reduce(
             array_reverse($this->pipes),
             $this->carry(),

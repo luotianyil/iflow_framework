@@ -161,9 +161,10 @@ abstract class ServicesAbstract implements ServicesInterface {
 
     /**
      * 输出初始化基础信息
+     * @param string|array $protocol_name
      * @return void
      */
-    protected function printStartContextToConsole(string|array $protocol_name = 'http') {
+    protected function printStartContextToConsole(string|array $protocol_name = 'http'): void {
         $runMemoryUsage = round(memory_get_usage() / 1024 / 1024, 2);
 
         $protocol_name = is_string($protocol_name) ? [ $protocol_name ] : $protocol_name;

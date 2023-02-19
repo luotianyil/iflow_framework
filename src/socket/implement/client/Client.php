@@ -4,8 +4,7 @@
 namespace iflow\socket\implement\client;
 
 
-class Client
-{
+class Client {
 
     private mixed $handle = null;
 

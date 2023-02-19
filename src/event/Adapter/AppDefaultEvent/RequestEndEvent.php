@@ -1,14 +1,16 @@
 <?php
 
-namespace iflow\event\lib\AppDefaultEvent;
+namespace iflow\event\Adapter\AppDefaultEvent;
 
-use iflow\event\lib\Abstracts\SubjectAbstract;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\event\Adapter\Abstracts\SubjectAbstract;
 
 class RequestEndEvent extends SubjectAbstract {
 
     /**
      * 触发事件回调
      * @return $this
+     * @throws InvokeClassException
      */
     public function trigger(float $startTime = 0.00): RequestEndEvent {
         // TODO: Implement trigger() method.
@@ -20,6 +22,7 @@ class RequestEndEvent extends SubjectAbstract {
      * 保存请求日志
      * @param float $startTime
      * @return $this
+     * @throws InvokeClassException
      */
     protected function saveRequestLogger(float $startTime = 0): RequestEndEvent {
         $startTime = $startTime > 0 ? $startTime : app() -> getStartTimes();

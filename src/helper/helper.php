@@ -35,7 +35,7 @@ if (!function_exists('app')) {
      * @param array $args
      * @param bool $isNew
      * @param callable|null $call
-     * @return T
+     * @return T|Container|App
      * @throws InvokeClassException
      * @template T
      */
@@ -265,7 +265,7 @@ if (!function_exists('session')) {
 // cookie
 if (!function_exists('cookie')) {
     function cookie(string $name = '', $value = '', array $options = []) {
-        $cookie = app() -> make(Cookie::class);
+        $cookie = app(Cookie::class);
         if ($value === '') {
             return $cookie -> get($name);
         }
@@ -357,8 +357,8 @@ if (!function_exists('go')) {
 if (!function_exists('php_run_path')) {
     function php_run_path(): string {
         if(str_contains(PHP_OS, 'WIN')){
-            $ini= ini_get_all();
-            $path = $ini['extension_dir']['local_value'];
+            $ini  = ini_get_all();
+            $path = $ini['local_value'];
             $b= substr($path,0,-3);
             $php_path = str_replace('\\','/',$b);
             return $php_path.'php.exe';

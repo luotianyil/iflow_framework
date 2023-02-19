@@ -3,6 +3,7 @@
 namespace iflow;
 
 use iflow\console\Console;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\response\Adapter\File;
 use iflow\response\ResponseTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -18,7 +19,7 @@ class Response {
 
     use ResponseTrait;
 
-    protected function init($data, $code) {
+    protected function init($data, $code): void {
         $this->code = $code;
         $this->response = $this->response ?? response() -> response;
         $this->data($data);
@@ -30,6 +31,7 @@ class Response {
      * @param int $code
      * @param string $type
      * @return object
+     * @throws InvokeClassException|Container\implement\generate\exceptions\InvokeFunctionException
      */
     public static function create(mixed $data = [], int $code = 200, string $type = 'json'): object {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\Adapter\\'.ucfirst($type);
@@ -48,6 +50,7 @@ class Response {
     /**
      * 结束请求发送数据
      * @return bool
+     * @throws InvokeClassException
      */
     public function send(): bool {
 

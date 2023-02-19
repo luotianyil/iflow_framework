@@ -17,7 +17,6 @@ abstract class TypeEnum extends AnnotationAbstract {
         protected array $values = [],
     ) {}
 
-
     public function getTypeObject(): EnumType
     {
         if ($this->enumType !== null) return $this->enumType;

@@ -94,7 +94,7 @@ class Subscribe {
         return $this->topic[$this->getTopicKey($topicKey)] ?? [];
     }
 
-    protected function getTopicKey(string|array $topicKey) {
+    protected function getTopicKey(string|array $topicKey): string {
         return is_array($topicKey) ? implode('|', $topicKey) : $topicKey;
     }
 

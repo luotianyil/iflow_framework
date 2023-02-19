@@ -18,7 +18,7 @@ class Event {
     protected Arr $arrayTools;
 
     /**
-     * 时间列表
+     * 事件列表
      * @var array|string[]
      */
     protected array $events = [

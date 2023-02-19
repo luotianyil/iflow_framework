@@ -5,7 +5,7 @@ namespace iflow\middleware\defaultMiddleware;
 
 
 use iflow\App;
-use iflow\event\lib\Abstracts\ObserverAbstract;
+use iflow\event\Adapter\Abstracts\ObserverAbstract;
 use iflow\facade\Event;
 use iflow\facade\Session as SessionObject;
 use SplSubject;

@@ -4,6 +4,7 @@
 namespace iflow\request\Adapter;
 
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\fileSystem\implement\UpLoadFile;
 
 trait Helper
@@ -191,6 +192,7 @@ trait Helper
      * 获取上传文件
      * @param string $name
      * @return UpLoadFile|UpLoadFile[]
+     * @throws InvokeClassException
      */
     public function file(string $name = ''): UpLoadFile|array {
         $upLoadFile = app() -> make(UpLoadFile::class);

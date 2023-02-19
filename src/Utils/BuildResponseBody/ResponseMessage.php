@@ -14,7 +14,7 @@ trait ResponseMessage {
     public string $filter = 'json';
     public bool $isRest = false;
 
-    public function msgBaseInitialize() {
+    public function msgBaseInitialize(): void {
         $this->error = '';
         $this->msg = '';
         $this->items = [];

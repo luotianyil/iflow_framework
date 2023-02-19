@@ -21,7 +21,7 @@ class IfTag extends TagAbstract {
     }
 
 
-    public function toPhpScript($html, array $tree, int $index) {
+    public function toPhpScript($html, array $tree, int $index): string {
 
         if ($this->tag === 'else')
             return "<?php {$this -> tag}: ?>{$html}<?php endif; ?>";

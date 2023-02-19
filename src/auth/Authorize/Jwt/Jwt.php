@@ -44,7 +44,7 @@ class Jwt
      * @return mixed
      * @throws JwtException
      */
-    public function verifyToken(string $token)
+    public function verifyToken(string $token): mixed
     {
         $tokens = explode('.', $token);
         if (count($tokens) !== 3) {

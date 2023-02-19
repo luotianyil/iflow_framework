@@ -90,6 +90,7 @@ class IRedis {
     /**
      * Redis rawCommand
      * @return mixed
+     * @throws \RedisException
      */
     public function request(): mixed {
         $args = func_get_args();
@@ -105,6 +106,7 @@ class IRedis {
      * @param mixed $value value
      * @param float $expire 过期时间
      * @return bool
+     * @throws \RedisException
      */
     public function set(string $name, mixed $value, float $expire = 0): bool
     {
@@ -133,6 +135,7 @@ class IRedis {
      * @param string $name
      * @param mixed $default
      * @return mixed
+     * @throws \RedisException
      */
     public function get(string $name, mixed $default = ''): mixed {
         $result = $this->handle -> get($name);
@@ -148,6 +151,7 @@ class IRedis {
     /**
      * 清除缓存
      * @return bool
+     * @throws \RedisException
      */
     public function clear(): bool {
         return $this->handle -> flushDB();
@@ -157,6 +161,7 @@ class IRedis {
      * 验证数据是否存在
      * @param string $name
      * @return bool
+     * @throws \RedisException
      */
     public function has(string $name): bool {
         return $this->handle -> exists($name);

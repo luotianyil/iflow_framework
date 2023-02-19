@@ -30,7 +30,7 @@ class Helpers {
      */
     protected string $applicationCommunityHelper = '';
 
-    public function initializer(App $app) {
+    public function initializer(App $app): void {
         $this -> applicationHelperFolder = config('app@application_helper_folder', $app->getAppPath() . 'helpers');
         $this -> frameworkHelperFolder = $app->getFrameWorkPath() . 'helpers';
         $this->applicationCommunityHelper = $app->getAppPath() . 'common.php';
@@ -68,7 +68,7 @@ class Helpers {
         return $this;
     }
 
-    protected function includeHelperFile() {
+    protected function includeHelperFile(): void {
         array_map(function ($generators) {
             foreach ($generators as $file) {
                 if ($file -> getExtension() === 'php') include_once $file -> getPathname();

@@ -88,13 +88,13 @@ class Session
 
     /**
      * 保存Session至缓存
-     * @return mixed
+     * @return bool
      * @throws \Exception
      */
-    public function save(): mixed {
+    public function save(): bool {
 
-        if (!$this->session -> get($this->getSessionId()) && $this->sessionTools -> count() === 0) {
-            return false;
+        if ($this->sessionTools -> count() === 0) {
+            return true;
         }
 
         return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());

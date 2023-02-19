@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\event\lib\Abstracts;
+namespace iflow\event\Adapter\Abstracts;
 
 use SplObserver;
 use SplSubject;

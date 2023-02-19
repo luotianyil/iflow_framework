@@ -13,7 +13,7 @@ class i18N {
     protected array $lang = [];
     protected App $app;
 
-    public function initializer(App $app) {
+    public function initializer(App $app): void {
         $this->app = $app;
         $this->setLang();
     }

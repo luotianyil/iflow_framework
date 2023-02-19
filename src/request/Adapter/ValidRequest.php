@@ -70,18 +70,12 @@ trait ValidRequest
      * 检测是否为HTTPS
      * @return bool
      */
-    public function isHTTPS(): bool
-    {
-        if (isset($this -> server['https']) && ('1' == $this -> server['https'] || 'on' == strtolower($this -> server['https']))) {
-            return true;
-        } elseif (isset($this -> server['request_scheme']) && 'https' === $this -> server['request_scheme']) {
-            return true;
-        } elseif (443 === intval($this -> server['server_port'])) {
-            return true;
-        } elseif ('https' == $this -> getHeader('X_FORWARDED_PROTO')) {
-            return true;
-        }
-        return false;
+    public function isHTTPS(): bool {
+        return
+            isset($this -> server['https']) && ('1' == $this -> server['https'] || 'on' == strtolower($this -> server['https']))
+            || isset($this -> server['request_scheme']) && 'https' === $this -> server['request_scheme']
+            || 443 === intval($this -> server['server_port'])
+            || 'https' == $this -> getHeader('X_FORWARDED_PROTO');
     }
 
 }

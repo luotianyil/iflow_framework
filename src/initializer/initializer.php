@@ -6,6 +6,7 @@ namespace iflow\initializer;
 
 use GuzzleHttp\DefaultHandler;
 use iflow\App;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\i18n\i18N;
 use think\facade\Db;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
@@ -16,6 +17,9 @@ class initializer {
         'timezone' => 'date_default_timezone_set'
     ];
 
+    /**
+     * @throws InvokeClassException
+     */
     public function initializer(App $app) {
         // 初始化全局依赖
        if (swoole_success()) {
@@ -61,6 +65,7 @@ class initializer {
     /**
      * 初始化路由配置
      * @return $this
+     * @throws InvokeClassException
      */
     protected function routerConfigInitializer(): initializer {
         $router = config('app@router');

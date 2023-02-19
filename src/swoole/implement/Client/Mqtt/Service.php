@@ -112,10 +112,10 @@ class Service extends ServicesAbstract {
     }
 
     /**
-     * 发送PING
+     * 发送 PING
      * @return void
      */
-    protected function ping() {
+    protected function ping(): void {
         if (isset($this -> config['keep_alive']) && $this -> timeSincePing < (time() - $this -> config['keep_alive'])) {
             $buffer = $this -> SwService -> ping();
             if ($buffer) $this -> timeSincePing = time();

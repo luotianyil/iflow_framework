@@ -5,6 +5,7 @@ namespace iflow\middleware\defaultMiddleware;
 
 
 use iflow\App;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 
 /**
  * 跨域请求支持
@@ -20,6 +21,9 @@ class AllowCrossDomain
 
     protected array $AllowOrigin = [ '*' ];
 
+    /**
+     * @throws InvokeClassException
+     */
     public function handle(App $app, $next, array $header = [], array $AllowOrigin = [ '*' ]) {
         $this->header = !empty($header) ? array_merge($this->header, $header) : $this->header;
         $this->AllowOrigin = $AllowOrigin;

@@ -95,11 +95,16 @@ class ValidateBase {
         return $this->error;
     }
 
-    public function first()
-    {
-        foreach ($this->error as $key => $value) {
-            foreach ($value as $k => $v) return $v;
+    /**
+     * 获取单条异常数据
+     * @return mixed
+     */
+    public function first(): mixed {
+
+        foreach ($this->error as $err) {
+            foreach ($err as $errItem) return $errItem;
         }
+
         return null;
     }
 

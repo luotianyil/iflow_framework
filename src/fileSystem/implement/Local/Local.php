@@ -17,8 +17,9 @@ class Local extends FileSystem {
              $this->config['rootPath'],
             PortableVisibilityConverter::fromArray($this->config)
         );
-        $this->finfoMimeTypeDetector = app() -> make(FinfoMimeTypeDetector::class);
-        $this->fileSystem = app() -> make(\League\Flysystem\Filesystem::class, [$adapter]);
+
+        $this->finfoMimeTypeDetector = app(FinfoMimeTypeDetector::class);
+        $this->fileSystem = app(\League\Flysystem\Filesystem::class, [ $adapter ]);
         parent::__construct($this->config['rootPath'] .$filename);
     }
 

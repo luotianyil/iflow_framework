@@ -59,7 +59,7 @@ class Watch
         });
     }
 
-    private function excludeEvent() {
+    private function excludeEvent(): void {
         foreach ($this->config['watchChangeEvent'] as $key => $value) {
             event($key, $this);
         }

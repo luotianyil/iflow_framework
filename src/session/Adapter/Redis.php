@@ -28,7 +28,7 @@ class Redis extends SessionAbstracts {
             );
             return $name;
         }
-        return  $this -> cache -> set(
+        return $this -> cache -> set(
             $name,
             is_string($default) ? $default : array_replace_recursive($this->get($name), $default),
             strtotime('+'. $this->config['expired'] . 'second')

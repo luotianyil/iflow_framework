@@ -3,6 +3,7 @@
 
 namespace iflow\response;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\exception\Adapter\HttpResponseException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -35,6 +36,7 @@ trait ResponseTrait
      * 设置 404 返回
      * @param string $msg
      * @return bool
+     * @throws InvokeClassException
      */
     public function notFount(string $msg = '404 Not-Found'): bool
     {
@@ -62,8 +64,7 @@ trait ResponseTrait
      * 设置返回内容格式
      * @param string $charSet
      */
-    public function charSet(string $charSet = 'utf-8')
-    {
+    public function charSet(string $charSet = 'utf-8'): void {
         $this->charSet = $charSet;
     }
 
@@ -72,8 +73,7 @@ trait ResponseTrait
      * @param int $status
      * @return $this
      */
-    public function withStatus(int $status): static
-    {
+    public function withStatus(int $status): static {
         $this->code = $status;
         return $this;
     }

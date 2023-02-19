@@ -26,7 +26,7 @@ class AuthAnnotation extends AnnotationAbstract {
     /**
      * @var App
      */
-    public object $app;
+    public App $app;
     public array $router;
 
     public function __construct(

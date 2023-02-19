@@ -18,7 +18,7 @@ class File {
     protected array $config = [];
 
     public function initializer() {
-        $this->fileList = Container::getInstance() -> make(FileList::class);
+        $this->fileList = app(FileList::class);
         return $this;
     }
 

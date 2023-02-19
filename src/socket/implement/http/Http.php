@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace iflow\socket\implement\http;
 
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\initializer\Error;
 use iflow\socket\implement\interfaces\Services;
 
@@ -51,6 +52,7 @@ class Http implements Services
     /**
      * 监听 socket 数据
      * @return $this
+     * @throws InvokeClassException
      */
     public function wait(): static
     {
