@@ -8,6 +8,7 @@
 /iflow
 /runtime
 /tests
+/install
 *.log
 *.pid
 composer.lock

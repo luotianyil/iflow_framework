@@ -59,7 +59,9 @@ class Configure {
         $ref = new \ReflectionClass($class);
 
         $thraceClassArr = [];
-        if ($attributes = $ref -> getMethod($method) -> getAttributes(ExceptionHandler::class)) {
+        if ($attributes = (
+            $ref -> hasMethod($method) ? $ref -> getMethod($method) -> getAttributes(ExceptionHandler::class) : null
+        )) {
             foreach ($attributes as $attribute) {
                 $attrObject = $attribute -> newInstance();
                 array_push($thraceClassArr, ...$attrObject -> process($ref, $exceptionClazz, $throwable));

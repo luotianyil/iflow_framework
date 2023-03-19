@@ -5,6 +5,7 @@ namespace iflow\command;
 
 use iflow\console\Adapter\Command;
 use iflow\Utils\basicTools;
+use think\db\ConnectionInterface;
 use think\db\exception\PDOException;
 use think\facade\Db;
 
@@ -13,6 +14,8 @@ class install extends Command
 
     protected array $config = [];
 
+    protected ConnectionInterface $db;
+
     protected array $composerShell = [
         'update --ignore-platform-reqs',
         'dump-autoload'
@@ -20,12 +23,11 @@ class install extends Command
 
     public function handle(array $event = []) {
         $this->config = config('install');
-        $this -> includeDataBase() ?->  installLib();
+        $this -> includeDataBase() ?->  installLibrary();
         $this->Console -> writeConsole -> writeLine('installed');
     }
 
-    protected function includeDataBase(): ?static
-    {
+    protected function includeDataBase(): ?static {
         if (!extension_loaded('pdo_mysql')) {
             $this->Console -> writeConsole -> writeLine('pdo_mysql does not extension! initializer database fail');
             return null;
@@ -34,8 +36,14 @@ class install extends Command
         try {
             // 初始化数据库
             $databaseConfig = config('database');
-            $databaseConfig['connections'][$databaseConfig['default']]['database'] = '';
+
+            $databases = $databaseConfig['connections'][$databaseConfig['default']];
+            $databaseConfig['connections'][$databaseConfig['default']]['database'] = 'sys';
+
             Db::setConfig($databaseConfig);
+            $this->db = Db::connect($databaseConfig['default']);
+
+            $this->checkDatabase($databases);
 
             // 写入数据库
             $files = find_files($this->config['database']['rootPath'], function (\SplFileInfo $item) {
@@ -53,11 +61,23 @@ class install extends Command
                 }
             }
             return $this;
-        } catch (PDOException $exception) {
+        } catch (PDOException|\Throwable $exception) {
             $this->Console -> writeConsole -> writeLine($exception -> getMessage());
             return null;
         }
     }
+
+    protected function checkDatabase(array $defaultConfig) {
+        $database = $this->db -> query("show databases like '{$defaultConfig['database']}'");
+
+        // Create Database
+        if (!$database) {
+            $this -> db -> execute("create database `{$defaultConfig['database']}`");
+        }
+
+        $this -> db -> execute("use `{$defaultConfig['database']}`");
+    }
+
 
     protected function dataExecute(string $filePath = ''): bool {
         $this->Console -> writeConsole -> writeLine('include DataBase file: ' . basename($filePath));
@@ -69,12 +89,12 @@ class install extends Command
         foreach ($sql as $key => $value) {
             $value = trim($value);
             if (empty($value)) continue;
-            Db::execute($value);
+            $this -> db -> execute($value);
         }
         return true;
     }
 
-    protected function installLib() {
+    protected function installLibrary() {
         $this->Console -> writeConsole -> writeLine('start install library');
         $composer = $this->config['composer']['rootPath'];
         if (file_exists($composer)) {
