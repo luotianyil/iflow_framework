@@ -4,7 +4,7 @@
 namespace iflow\log\implement;
 
 
-use iflow\event\lib\Abstracts\ObserverAbstract;
+use iflow\event\Adapter\Abstracts\ObserverAbstract;
 use Psr\Log\LoggerInterface;
 
 class Logger extends ObserverAbstract implements LoggerInterface {

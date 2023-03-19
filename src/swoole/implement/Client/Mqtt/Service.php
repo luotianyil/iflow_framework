@@ -32,7 +32,19 @@ class Service extends ServicesAbstract {
     ];
 
     public function start() {
+        $clientType = $this->servicesCommand -> config -> get('clientType');
+        if ($clientType === Client::COROUTINE_CLIENT_TYPE) {
+            run(function () use ($clientType) {
+                $this -> startClientService();
+            });
+            return $this;
+        }
 
+        $this -> startClientService();
+        return $this;
+    }
+
+    protected function startClientService() {
         $this -> setPid($this->config -> get('swConfig@pid_file'))
             -> setServerParams();
 
@@ -52,24 +64,12 @@ class Service extends ServicesAbstract {
 
 
     protected function createClient(int $clientType): static {
-        try {
-            $this->SwService = new Client(
-                $this->servicesCommand -> config -> get('host'),
-                $this->servicesCommand -> config -> get('port'),
-                $this->clientConfig,
-                $clientType
-            );
-        } catch (\Exception $exception) {
-            run(function () use ($clientType) {
-                $this->SwService = new Client(
-                    $this->servicesCommand -> config -> get('host'),
-                    $this->servicesCommand -> config -> get('port'),
-                    $this->clientConfig,
-                    $clientType
-                );
-            });
-        }
-
+        $this->SwService = new Client(
+            $this->servicesCommand -> config -> get('host'),
+            $this->servicesCommand -> config -> get('port'),
+            $this->clientConfig,
+            $clientType
+        );
         return $this;
     }
 
@@ -129,8 +129,7 @@ class Service extends ServicesAbstract {
      * @param array $topic
      * @return Service
      */
-    public function setTopic(string $topicName, array $topic): static
-    {
+    public function setTopic(string $topicName, array $topic): static {
         $this -> inputConfig['topics'][$topicName] = $topic;
         return $this;
     }
@@ -140,8 +139,7 @@ class Service extends ServicesAbstract {
      * @param array $connect
      * @return $this
      */
-    public function setConnection(array $connect): static
-    {
+    public function setConnection(array $connect): static {
         $this->inputConfig['connect'] = $connect;
         return $this;
     }

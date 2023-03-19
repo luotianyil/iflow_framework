@@ -5,6 +5,7 @@ namespace iflow\initializer;
 
 use iflow\App;
 use iflow\Container\implement\annotation\tools\data\Inject;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\exception\Configure;
 use iflow\exception\Handle;
 use iflow\exception\Adapter\ErrorException;
@@ -16,7 +17,9 @@ use Throwable;
 class Error {
 
     protected App $app;
+
     protected array $config = [];
+
     protected string $handle = Handle::class;
 
     #[Inject]
@@ -35,11 +38,11 @@ class Error {
 
         // 全部接管
         error_reporting(E_ALL);
-        set_exception_handler([$this, 'appHandler']);
-        set_error_handler([$this, 'appError']);
+        set_exception_handler([ $this, 'appHandler' ]);
+        set_error_handler([ $this, 'appError' ]);
 
         // 错误终止
-        register_shutdown_function([$this, 'appShuDown']);
+        register_shutdown_function([ $this, 'appShuDown' ]);
     }
 
     /**
@@ -51,7 +54,7 @@ class Error {
      * @return void
      * @throws errorException
      */
-    public function appError(int $errno, string $message, string $file = '', int $line = 0) {
+    public function appError(int $errno, string $message, string $file = '', int $line = 0): void {
         $exception = new errorException($errno, $message, $file, $line);
         if (error_reporting() & $errno) {
             throw $exception;
@@ -61,10 +64,10 @@ class Error {
     /**
      * 错误回调处理
      * @param Throwable $e
-     * @return bool|null
-     * @throws \ReflectionException
+     * @return mixed
+     * @throws \ReflectionException|InvokeClassException
      */
-    public function appHandler(Throwable $e): bool|null {
+    public function appHandler(Throwable $e): mixed {
 
         $renderDebugView = new RenderDebugView($e, $this->config);
 
@@ -88,7 +91,7 @@ class Error {
      * @return void
      * @throws errorException
      */
-    public function appShuDown() {
+    public function appShuDown(): void {
         if (!is_null($error = error_get_last()) && $this-> configure -> isFatal($error['type'])) {
             throw new errorException(0, $error['message'], $error['file'], $error['line']);
         }

@@ -1,12 +1,11 @@
 <?php
 
-
 namespace iflow\initializer;
-
 
 use GuzzleHttp\DefaultHandler;
 use iflow\App;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\i18n\i18N;
 use think\facade\Db;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
@@ -18,9 +17,13 @@ class initializer {
     ];
 
     /**
+     * @param App $app
+     * @return void
      * @throws InvokeClassException
+     * @throws InvokeFunctionException
+     * @throws \ReflectionException
      */
-    public function initializer(App $app) {
+    public function initializer(App $app): void {
         // 初始化全局依赖
        if (swoole_success()) {
            \Co::set([ 'hook_flags' => SWOOLE_HOOK_ALL ]);
@@ -33,7 +36,15 @@ class initializer {
              -> initializerAnnotation($app);
     }
 
-    protected function initializerAnnotation(App $app) {
+    /**
+     * 初始化项目注解
+     * @param App $app
+     * @return void
+     * @throws InvokeClassException
+     * @throws \ReflectionException
+     * @throws InvokeFunctionException
+     */
+    protected function initializerAnnotation(App $app): void {
         $app -> execute($app::class);
     }
 

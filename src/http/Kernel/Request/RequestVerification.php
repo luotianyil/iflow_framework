@@ -3,7 +3,7 @@
 namespace iflow\http\Kernel\Request;
 
 use iflow\aop\Aop;
-use iflow\event\lib\Abstracts\SubjectAbstract;
+use iflow\event\Adapter\Abstracts\SubjectAbstract;
 use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;

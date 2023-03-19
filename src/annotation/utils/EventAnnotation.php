@@ -8,7 +8,7 @@ use Attribute;
 use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
 use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
 use iflow\event\Event;
-use iflow\event\lib\Abstracts\SubjectAbstract;
+use iflow\event\Adapter\Abstracts\SubjectAbstract;
 use Reflector;
 
 #[Attribute(Attribute::TARGET_CLASS)]

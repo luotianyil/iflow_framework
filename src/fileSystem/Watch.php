@@ -11,8 +11,7 @@ use iflow\fileSystem\implement\fileSystem;
 use iflow\Utils\Tools\Timer;
 use Swoole\Server;
 
-class Watch
-{
+class Watch {
 
     private App $app;
     protected File $file;

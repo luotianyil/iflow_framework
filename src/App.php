@@ -56,7 +56,7 @@ abstract class App {
      * @return void
      * @throws \Exception
      */
-    public function run() {
+    public function run(): void {
         $this -> register('iflow\\App', $this);
         if ($this -> frameWorkDirInit()) {
             $this -> load() -> initializer();
@@ -70,7 +70,7 @@ abstract class App {
      * @throws InvokeClassException
      * @throws ReflectionException|InvokeFunctionException
      */
-    public function execute(string $class) {
+    public function execute(string $class): void {
         $execute = new Execute();
         $ref = new \ReflectionClass($class);
         $execute -> getReflectorAttributes($ref) -> execute($ref);
