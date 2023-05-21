@@ -5,6 +5,7 @@ namespace iflow\exception\Annotation;
 use Attribute;
 use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
 use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\initializer\Error;
 use Reflector;
 
@@ -22,6 +23,7 @@ class ConfigureException extends AnnotationAbstract {
      * @param Reflector $reflector
      * @param $args
      * @return mixed
+     * @throws InvokeClassException
      */
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.

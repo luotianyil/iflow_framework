@@ -3,6 +3,7 @@
 
 namespace iflow;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\fileSystem\implement\UpLoadFile;
 use iflow\request\RequestTrait;
 
@@ -15,6 +16,7 @@ class Request
      * 初始化Request类
      * @param $request
      * @return $this
+     * @throws InvokeClassException
      */
     public function initializer($request): static
     {
@@ -40,11 +42,12 @@ class Request
     /**
      * 初始化上传文件
      * @return $this
+     * @throws InvokeClassException
      */
     protected function initFile(): static
     {
         $files = $this->request -> files ?? [];
-        $upLoadFile = app() -> make(UpLoadFile::class) -> clear();
+        $upLoadFile = app(UpLoadFile::class) -> clear();
         foreach ($files as $key => $value) {
             $upLoadFile -> setFile($key, $value);
         }

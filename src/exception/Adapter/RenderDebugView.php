@@ -5,6 +5,7 @@ namespace iflow\exception\Adapter;
 
 use iflow\console\Console;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\http\ResponseStatus;
 use iflow\Response;
 use iflow\template\View;
 use Psr\Http\Message\ResponseInterface;
@@ -53,10 +54,11 @@ class RenderDebugView {
 
     /**
      * 获取异常数据
+     * @param array $keys
      * @return array
      */
-    public function getError(): array {
-        return [
+    public function getError(array $keys = []): array {
+        $errors =  [
             'code' => $this->throwable -> getCode(),
             'msg' => $this->throwable -> getMessage(),
             'file' => $this->throwable -> getFile(),
@@ -65,14 +67,17 @@ class RenderDebugView {
             'trace' => $this->trace,
             'traceArr' => $this->throwable -> getTrace()
         ];
+
+        if (empty($keys)) return $errors;
+
+        return array_map(fn ($key) => $key . '：' . ($errors[$key] ?? ''), $keys);
     }
 
     /**
      * 获取异常文件内容
      * @return array
      */
-    protected function getThrowExceptionFileContent(): array
-    {
+    protected function getThrowExceptionFileContent(): array {
         // 获取抛出异常文件内容 附近几行
         $file = $this->throwable -> getFile();
         $line = $this->throwable -> getLine() - 3;
@@ -103,13 +108,15 @@ class RenderDebugView {
 
         // 非HTTP服务
         if (!is_http_services()) {
-            dump($this->getError());
+            dump($this->getError([ 'code', 'msg', 'file', 'line', 'trace' ]));
             return [];
         }
 
+        $response = message() -> setIsRest();
+
         // 如果为Ajax请求
         if (request() -> isAjax()) {
-            return message() -> server_error($this->throwable -> getCode(), $this->throwable->getMessage(), $error);
+            return $response -> server_error($this->throwable -> getCode(), $this->throwable->getMessage(), $error);
         }
 
         if (!file_exists($this->exception_tpl)) {
@@ -117,10 +124,22 @@ class RenderDebugView {
         }
 
         if (!file_exists($this->exception_tpl)) {
-            return message() -> server_error(
-                502, $this->exception_tpl.' template file does not exists', $error);
+            return $response -> server_error(502, $this->exception_tpl.' template file does not exists', $error);
         }
 
-        return (new View()) -> render($this->exception_tpl, $error);
+        return (new View()) -> render($this->exception_tpl, $error) -> withStatus(
+            $this->getResponseStatus($this->throwable -> getCode())
+        );
+    }
+
+
+    /**
+     * 获取Response 响应CODE
+     * @param int $code
+     * @return int
+     */
+    public function getResponseStatus(int $code): int {
+        $responseCodes = array_keys(ResponseStatus::RESPONSE_STATUS);
+        return in_array($code, $responseCodes) ? $code : 502;
     }
 }

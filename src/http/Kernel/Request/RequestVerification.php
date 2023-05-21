@@ -3,11 +3,14 @@
 namespace iflow\http\Kernel\Request;
 
 use iflow\aop\Aop;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\event\Adapter\Abstracts\SubjectAbstract;
 use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;
 use iflow\Router\CheckRule;
+use iflow\Router\implement\exception\GenerateQueryParametersException;
+use iflow\Router\implement\exception\RouterNotFoundException;
 use iflow\Router\implement\Swagger\Swagger;
 use iflow\swoole\implement\Server\WebSocket\WebSocket;
 use Psr\Http\Message\ResponseInterface;
@@ -58,6 +61,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * 是否查询为 api 信息
      * @param string $url
      * @return Response|bool
+     * @throws InvokeClassException
      */
     protected function isRequestApi(string $url = ''): Response|bool {
         $url = trim($url, '/');
@@ -72,6 +76,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * 是否请求静态资源
      * @param string $url
      * @return bool
+     * @throws InvokeClassException
      */
     protected function isStaticResources(string $url = ''): bool {
         $url = explode('/', trim($url, '/'));
@@ -88,6 +93,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * 是否为socket.io
      * @param string $url
      * @return bool
+     * @throws InvokeClassException
      */
     protected function isSocketIo(string $url = ''): bool {
         $url = explode('/', trim($url, '/'))[0] ?? '/';
@@ -105,6 +111,7 @@ abstract class RequestVerification extends SubjectAbstract {
     /**
      * 前置路由验证
      * @return bool
+     * @throws InvokeClassException
      */
     protected function RouterBeforeValidate(): bool {
         if ($this->isStaticResources($this->request -> request_uri)) return true;
@@ -118,6 +125,7 @@ abstract class RequestVerification extends SubjectAbstract {
     /**
      * 运行中间件
      * @return bool
+     * @throws InvokeClassException
      */
     protected function RunMiddleware(): bool {
         $app = app();
@@ -130,9 +138,12 @@ abstract class RequestVerification extends SubjectAbstract {
     /**
      * 查询当前路由是否存在
      * @return bool
+     * @throws InvokeClassException
+     * @throws GenerateQueryParametersException
+     * @throws RouterNotFoundException
      */
     protected function QueryRouter(): bool {
-        $this->router = app() -> make(CheckRule::class)
+        $this->router = app(CheckRule::class)
         -> setRouterConfigKey('http')
         -> checkRule(
             $this->request -> request_uri,
@@ -148,6 +159,7 @@ abstract class RequestVerification extends SubjectAbstract {
     /**
      * 运行AOP拦截
      * @return bool
+     * @throws InvokeClassException
      */
     protected function RunAop(): bool {
         $this->RequestQueryParams = $this->GenerateRequestQueryParams($this -> router['parameter']);
@@ -165,6 +177,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * 验证响应数据
      * @param mixed $response
      * @return bool
+     * @throws InvokeClassException
      */
     public function ResponseBodyValidate(mixed $response): bool {
         if ($response instanceof Response || $response instanceof ResponseInterface) {
@@ -178,6 +191,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * 返回响应信息
      * @param mixed $response
      * @return bool
+     * @throws InvokeClassException
      */
     protected function send(mixed $response): bool {
         if (!$response) return $this->response -> data($response) -> send();

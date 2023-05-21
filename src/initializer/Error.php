@@ -52,10 +52,10 @@ class Error {
      * @param string $file
      * @param int $line
      * @return void
-     * @throws errorException
+     * @throws ErrorException
      */
     public function appError(int $errno, string $message, string $file = '', int $line = 0): void {
-        $exception = new errorException($errno, $message, $file, $line);
+        $exception = new ErrorException($errno, $message, $file, $line);
         if (error_reporting() & $errno) {
             throw $exception;
         }
@@ -89,11 +89,11 @@ class Error {
     /**
      * 异常程序结束回调
      * @return void
-     * @throws errorException
+     * @throws ErrorException
      */
     public function appShuDown(): void {
         if (!is_null($error = error_get_last()) && $this-> configure -> isFatal($error['type'])) {
-            throw new errorException(0, $error['message'], $error['file'], $error['line']);
+            throw new ErrorException(0, $error['message'], $error['file'], $error['line']);
         }
     }
 

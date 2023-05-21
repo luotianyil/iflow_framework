@@ -2,6 +2,7 @@
 
 namespace iflow\Utils\BuildResponseBody;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Response;
 
 trait ResponseMessage {
@@ -36,7 +37,13 @@ trait ResponseMessage {
         return $this;
     }
 
-    public function builderResponseBody(array $data = [], $code = 200): array|Response {
+    /**
+     * @param array $data
+     * @param int $code
+     * @return array|Response
+     * @throws InvokeClassException
+     */
+    public function builderResponseBody(array $data = [], int $code = 200): array|Response {
         if ($this->filter === 'array') return $data;
 
         if ($this->isRest) {

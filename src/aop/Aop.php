@@ -6,6 +6,8 @@ namespace iflow\aop;
 
 use iflow\aop\Ast\Ast;
 use iflow\App;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\exception\Adapter\ErrorException;
 use iflow\exception\Adapter\HttpException;
 use iflow\exception\Adapter\HttpResponseException;
 use iflow\Pipeline\Pipeline;
@@ -38,6 +40,7 @@ class Aop {
      * @param string $method 执行方法
      * @param mixed ...$args
      * @return bool|Aop
+     * @throws InvokeClassException
      */
     public function process(string $class, string $method, ...$args): bool|static {
         // 统计切面， 以批量执行
@@ -79,7 +82,7 @@ class Aop {
      * @param string $class
      * @param array $aspectArray
      */
-    public function addAspect(string $class, array $aspectArray) {
+    public function addAspect(string $class, array $aspectArray): void {
         $this->aspects[$class] = $aspectArray;
     }
 
@@ -157,6 +160,7 @@ class Aop {
     /**
      * 执行管道
      * @return mixed
+     * @throws ErrorException
      */
     public function then(): mixed {
         try {
@@ -164,7 +168,11 @@ class Aop {
             return true;
         } catch (\Exception $exception) {
             if ($exception instanceof HttpResponseException) return $exception -> getResponse();
-            return $this->response ?: $exception -> getMessage();
+
+            return $this->response ?: throw new ErrorException(
+                $exception -> getCode(), $exception -> getMessage(),
+                $exception -> getFile(), $exception -> getLine()
+            );
         }
     }
 }

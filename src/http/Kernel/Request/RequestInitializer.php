@@ -22,6 +22,7 @@ class RequestInitializer extends RequestVerification {
      * @param object|null $response
      * @param float $startTime
      * @return RequestVerification|bool
+     * @throws InvokeClassException
      */
     public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification|bool {
 
@@ -45,6 +46,8 @@ class RequestInitializer extends RequestVerification {
     /**
      * 返回响应内容
      * @return bool
+     * @throws InvokeClassException
+     * @throws InvokeFunctionException
      */
     protected function ReturnsResponseBody(): bool {
         $controller = app($this->ReflectionClass -> getName(), [ $this->request, $this->response ], true);
@@ -56,6 +59,7 @@ class RequestInitializer extends RequestVerification {
      * 初始化请求数据
      * @param object $request
      * @return $this
+     * @throws InvokeClassException
      */
     public function setRequest(object $request): static {
         // 验证当前cookie是否为对象
@@ -70,6 +74,7 @@ class RequestInitializer extends RequestVerification {
      * 初始化响应数据
      * @param object $response
      * @return $this
+     * @throws InvokeClassException
      */
     public function setResponse(object $response): static {
         $this->response = app(Response::class, [], true) -> initializer($response);
@@ -79,6 +84,7 @@ class RequestInitializer extends RequestVerification {
     /**
      * 初始化控制器对象
      * @return bool
+     * @throws InvokeClassException
      */
     protected function GenerateControllerService(): bool {
         // TODO: Implement GenerateControllerService() method.
@@ -86,14 +92,19 @@ class RequestInitializer extends RequestVerification {
 
         // 验证控制器类是否存在
         if (!class_exists($this->RequestController[0])) {
-            throw new RequestValidateException(message() -> server_error(502, 'Request Object dose not exists'));
+            throw new RequestValidateException(message()
+                -> setIsRest()
+                -> server_error(502, 'Request Object dose not exists')
+            );
         }
 
         $this->ReflectionClass = new ReflectionClass($this->RequestController[0]);
 
         // 验证控制器方法是否存在
         if (!$this->ReflectionClass -> hasMethod($this->RequestController[1])) {
-            return $this->response -> notFount('Request Method dose not exists');
+            return $this->response
+                -> withStatus(502)
+                -> notFount('Request Method dose not exists');
         }
         return false;
     }
@@ -164,7 +175,7 @@ class RequestInitializer extends RequestVerification {
             }
             $object = $container -> GenerateClassParameters($ref, $object);
             $execute -> executeAnnotationLifeProcess('Mounted', $ref, $args);
-        } else throw new valueException("dataObject: $class IsNull");
+        } else throw new valueException("dataObject: $class Empty");
         return $object;
     }
 }

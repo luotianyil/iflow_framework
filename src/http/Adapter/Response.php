@@ -6,8 +6,7 @@ namespace iflow\http\Adapter;
 
 use iflow\fileSystem\File;
 
-class Response
-{
+class Response {
 
     public function sendFile(string $path): bool
     {

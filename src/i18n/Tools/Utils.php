@@ -16,9 +16,11 @@ trait Utils {
      * @throws InvokeClassException
      */
     public function setLangType(string $langType = ''): static {
+
         if ($langType === '') {
             $langType = request() -> getLanguage();
         }
+
         $this->langType = strtolower($langType);
         return $this;
     }

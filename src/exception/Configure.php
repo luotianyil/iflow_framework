@@ -2,6 +2,7 @@
 
 namespace iflow\exception;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\exception\Adapter\RenderDebugView;
 use iflow\exception\Annotation\ExceptionHandler;
 use iflow\Pipeline\Pipeline;
@@ -75,6 +76,7 @@ class Configure {
      * 执行异常
      * @param array $thrace
      * @return bool
+     * @throws InvokeClassException
      */
     protected function AppExceptionDownHandler(array $thrace): bool {
 
@@ -111,7 +113,7 @@ class Configure {
      * @param array $args
      * @return void
      */
-    public function setConfigure(string $exceptionClazz, string $class, array $args = []) {
+    public function setConfigure(string $exceptionClazz, string $class, array $args = []): void {
         if (empty($this->configure[$exceptionClazz])) {
             $this->configure[$exceptionClazz] = [];
         }

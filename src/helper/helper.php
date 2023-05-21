@@ -24,7 +24,7 @@ use iflow\response\Adapter\Json;
 use iflow\response\Adapter\Xml;
 use iflow\template\View;
 use iflow\Utils\BuildResponseBody\Message;
-use iflow\validate\Validate;
+use iflow\validate\Validator;
 use React\Promise\Promise;
 use Swoole\Coroutine\Client;
 
@@ -117,6 +117,7 @@ if (!function_exists('find_files')) {
 if (!function_exists('response')) {
     /**
      * @return Response
+     * @throws InvokeClassException
      */
     function response() : object {
         return app(Response::class);
@@ -358,7 +359,8 @@ if (!function_exists('php_run_path')) {
     function php_run_path(): string {
         if(str_contains(PHP_OS, 'WIN')){
             $ini  = ini_get_all();
-            $path = $ini['local_value'];
+
+            $path = $ini['local_value'] ?? $ini['extension_dir']['local_value'];
             $b= substr($path,0,-3);
             $php_path = str_replace('\\','/',$b);
             return $php_path.'php.exe';
@@ -393,11 +395,9 @@ if (!function_exists('i18n')) {
 // 验证器
 if (!function_exists('validate')) {
     function validator(array $rule = [], array $data = [], array $message = []) {
-        $validate = new Validate();
-        $error = $validate
-                    -> rule($rule, $message)
-                    -> check($data)
-                    -> first();
+
+        $validate = new Validator();
+        $error = $validate -> rule($rule, $message) -> check($data) -> first();
 
         if ($error !== null) {
             throw new Exception($error);
@@ -411,6 +411,7 @@ if (!function_exists('dump')) {
      * 格式化输出
      * @param ...$args
      * @return bool
+     * @throws InvokeClassException
      */
     function dump(...$args): bool {
         ob_start();

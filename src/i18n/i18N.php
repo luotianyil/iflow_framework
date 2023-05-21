@@ -5,6 +5,7 @@ namespace iflow\i18n;
 
 
 use iflow\App;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\i18n\Tools\Utils;
 
 class i18N {
@@ -27,7 +28,14 @@ class i18N {
         return $this;
     }
 
-    public function i18n(string $key, string|array $default = '', $lan = '')
+    /**
+     * @param string $key
+     * @param string|array $default
+     * @param string $lan
+     * @return array|mixed|string
+     * @throws InvokeClassException
+     */
+    public function i18n(string $key, string|array $default = '', string $lan = ''): mixed
     {
         $this->setLangType($lan);
         $lan = config('i18n@' . $this->langType . '.' .$key);
