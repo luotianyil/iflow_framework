@@ -48,7 +48,7 @@ class Client {
      * 发送请求
      * @return void
      */
-    public function send() {
+    public function send(): void {
         (new Scrapy($this->queue, $this->proxy, options: $this->options)) -> request();
     }
 

@@ -4,7 +4,7 @@
 namespace iflow\auth\Authorize\Jwt\Tools;
 
 
-class hmac
+class Hmac
 {
     protected array $enum = [
         'HS256' => 'SHA256',

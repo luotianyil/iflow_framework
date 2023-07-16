@@ -3,6 +3,7 @@
 namespace iflow\http\Kernel\Request;
 
 use iflow\Container\Container;
+use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
 use iflow\Container\implement\annotation\tools\data\exceptions\ValueException;
 use iflow\Container\implement\annotation\traits\Execute;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
@@ -116,7 +117,7 @@ class RequestInitializer extends RequestVerification {
      * @throws InvokeClassException
      * @throws InvokeFunctionException
      * @throws ValueException
-     * @throws ReflectionException
+     * @throws ReflectionException|AttributeTypeException
      */
     protected function GenerateRequestQueryParams(array $params = []): array {
         // TODO: Implement GenerateRequestQueryParams() method.
@@ -139,43 +140,45 @@ class RequestInitializer extends RequestVerification {
      * @throws ReflectionException
      * @throws InvokeClassException
      * @throws InvokeFunctionException
+     * @throws AttributeTypeException
      */
     protected function setInstanceValue(array $params): object {
         // TODO: Implement setInstanceValue() method.
 
         $keys = array_keys($params);
 
-        $class =
-            empty($params[$keys[0]]['class']) || isset($params['class']) ?
-                $params['class'] : $params[$keys[0]]['class'];
+        $class = empty($params[$keys[0]]['class']) || isset($params['class'])
+                ? $params['class'] : $params[$keys[0]]['class'];
 
-        // 当类存在时
-        if (class_exists($class)) {
+        $container = Container::getInstance();
+        $ref = new \ReflectionClass($class);
 
-            $ref = new \ReflectionClass($class);
-            $execute = new Execute();
-            $execute -> getReflectorAttributes($ref) -> executeAnnotationLifeProcess('beforeCreate', $ref);
-            $object = $ref -> newInstance();
+        // 如果是接口类型则从容器中实例化对象
+        if ($ref -> isInterface()) {
+            return $container -> make($class);
+        }
 
-            $container = Container::getInstance();
-            if (method_exists($object, '__make')) {
-                $container -> invoke([ $object, '__make' ], [ $container, $object ]);
+        $execute = new Execute();
+        $execute -> getReflectorAttributes($ref) -> executeAnnotationLifeProcess('beforeCreate', $ref);
+        $object = $ref -> newInstance();
+
+        if (method_exists($object, '__make')) {
+            $container -> invoke([ $object, '__make' ], [ $container, $object ]);
+        }
+
+        $args = [ $object ];
+
+        // 执行创建回调以及挂载结束注解
+        $execute -> executeAnnotationLifeProcess(['Created', 'beforeMounted'], $ref, $args);
+        foreach ($params as $paramName => $paramValue) {
+            if (!isset($paramValue['default'])) continue;
+            if ($paramValue['type'][0] === 'class') {
+                $paramValue['default'] = $this -> setInstanceValue($paramValue['default']);
             }
-
-            $args = [ $object ];
-
-            // 执行创建回调以及挂载结束注解
-            $execute -> executeAnnotationLifeProcess(['Created', 'beforeMounted'], $ref, $args);
-            foreach ($params as $paramName => $paramValue) {
-                if (!isset($paramValue['default'])) continue;
-                if ($paramValue['type'][0] === 'class') {
-                    $paramValue['default'] = $this -> setInstanceValue($paramValue['default']);
-                }
-                $ref -> getProperty($paramName) -> setValue($object, $paramValue['default']);
-            }
-            $object = $container -> GenerateClassParameters($ref, $object);
-            $execute -> executeAnnotationLifeProcess('Mounted', $ref, $args);
-        } else throw new valueException("dataObject: $class Empty");
+            $ref -> getProperty($paramName) -> setValue($object, $paramValue['default']);
+        }
+        $object = $container -> GenerateClassParameters($ref, $object);
+        $execute -> executeAnnotationLifeProcess('Mounted', $ref, $args);
         return $object;
     }
 }

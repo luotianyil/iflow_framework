@@ -21,6 +21,7 @@ class Console
     public App $app;
 
     public Input $input;
+
     public WriteConsole $writeConsole;
 
     public array $command = [
@@ -40,12 +41,18 @@ class Console
 
     protected array $userCommand = [];
 
-    public function initializer(App $app) {
+    /**
+     * @param App $app
+     * @return void
+     * @throws \Throwable
+     */
+    public function initializer(App $app): void {
         $this->app = $app;
         $this->input = new Input();
         $this->writeConsole = new WriteConsole($this->openOutputStream());
         // 获取用户输入
         $this->userCommand = $this->input -> getUserCommand();
+
         $this -> exec();
     }
 

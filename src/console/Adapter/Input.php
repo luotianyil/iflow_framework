@@ -28,36 +28,32 @@ class Input {
             return $this->invokeClass($console, HasCommand::class, $command);
         }
 
-        $userCommand = $this->argv[1];
-        $commandClass = HasCommand::class;
+        $commandClass = $command[$this->argv[1]] ?? HasCommand::class;
 
-        if (!array_key_exists($userCommand, $command)) {
-            $userCommand = explode('-', $this->argv[1]);
+        if (!array_key_exists($this->argv[1], $command) || $this->argv[1]) {
 
             // 验证 指令是否存在
             foreach ($command as $commandKey => $value) {
 
+                $userCommand = explode('-', $this->argv[1]);
                 $commandKey = explode('-', $commandKey) ?: [];
 
+                if (count($userCommand) !== count($commandKey)) continue;
+
                 foreach ($commandKey as $index => $commandChildren) {
-                    $key_command_start = explode('|', str_replace(['<', '>'], '', $commandChildren[0]));
+                    $key_command_start = explode('|', str_replace(['<', '>'], '', $commandChildren));
                     $userCommandIndex = array_shift($userCommand);
 
                     if (!in_array($userCommandIndex, $key_command_start)) break;
 
-                    if (count($userCommand) === 0 && count($commandKey) - 1 === $index) {
-                        $commandClass = $value;
-                    }
+                    if (count($userCommand) === 0) $commandClass = $value;
                 }
             }
-        } else {
-            $commandClass = $command[$userCommand];
         }
 
-        $userCommand = explode('-', $this->argv[1]);
         if (!class_exists($commandClass)) throw new \Error("class $commandClass not exists");
         else {
-            return $this->invokeClass($console, $commandClass, $userCommand);
+            return $this->invokeClass($console, $commandClass, explode('-', $this->argv[1]));
         }
     }
 

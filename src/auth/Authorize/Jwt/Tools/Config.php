@@ -4,7 +4,7 @@
 namespace iflow\auth\Authorize\Jwt\Tools;
 
 
-class config
+class Config
 {
 
     // jwt 头部信息

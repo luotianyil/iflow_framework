@@ -120,6 +120,7 @@ class IRedis {
      * 读取后并删除
      * @param string $name
      * @return mixed
+     * @throws \RedisException
      */
     public function pull(string $name): mixed
     {
@@ -171,6 +172,7 @@ class IRedis {
      * Redis 登录
      * @param array $auth
      * @return bool
+     * @throws \RedisException
      */
     public function authLogin(array $auth): bool {
         if (empty($auth['user'])) unset($auth['user']);

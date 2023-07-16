@@ -4,8 +4,7 @@
 namespace iflow\auth\Authorize\Jwt\Tools;
 
 
-class base64
-{
+class Base64 {
 
     public function base64UrlEncode(string $code): string {
         return rtrim(strtr(base64_encode($code), '+/', '-_'), '=');

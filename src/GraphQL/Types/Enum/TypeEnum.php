@@ -27,7 +27,7 @@ abstract class TypeEnum extends AnnotationAbstract {
         ]);
     }
 
-    public function addValue(string $name, array $value): typeEnum
+    public function addValue(string $name, array $value): TypeEnum
     {
         $this->values[$name] = $value;
         return $this;
@@ -53,7 +53,7 @@ abstract class TypeEnum extends AnnotationAbstract {
      * @param string $description
      * @return typeEnum
      */
-    public function setDescription(string $description): typeEnum
+    public function setDescription(string $description): TypeEnum
     {
         $this->description = $description;
         return $this;
@@ -63,7 +63,7 @@ abstract class TypeEnum extends AnnotationAbstract {
      * @param string $name
      * @return typeEnum
      */
-    public function setName(string $name): typeEnum
+    public function setName(string $name): TypeEnum
     {
         $this->name = $name;
         return $this;

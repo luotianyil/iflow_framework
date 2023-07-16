@@ -41,8 +41,12 @@ class WebSocket {
     }
 
 
-    public function createRoom() {
-        // 初始化房间信息
+    /**
+     * 初始化房间信息
+     * @return void
+     * @throws InvokeClassException
+     */
+    public function createRoom(): void {
         $this->room = app(Room::class, [
             $this->config['room']['roomType'] ?? 'websocket',
             $this,

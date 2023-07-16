@@ -73,8 +73,7 @@ class Context {
      * @param mixed $value
      * @param null $cid
      */
-    public static function setData(string $key, mixed $value, $cid = null)
-    {
+    public static function setData(string $key, mixed $value, $cid = null): voids {
         self::getDataArrayObject($cid) -> offsetSet($key, $value);
     }
 
@@ -83,8 +82,7 @@ class Context {
      * @param string $key
      * @param null $cid
      */
-    public static function removeData(string $key, $cid = null)
-    {
+    public static function removeData(string $key, $cid = null): void {
         if (self::hasData($key, $cid)) {
             self::getDataArrayObject($cid) -> offsetUnset($key);
         }

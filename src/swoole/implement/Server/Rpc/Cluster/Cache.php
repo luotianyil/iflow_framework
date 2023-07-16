@@ -51,6 +51,7 @@ class Cache {
      * 通过客户端名称获取 客户端信息
      * @param string $name
      * @return array
+     * @throws \RedisException
      */
     public static function getConsumerByName(string $name): array {
         $client = self::$consumers -> get($name) ?: [];
@@ -58,6 +59,11 @@ class Cache {
         return self::get($client['name']);
     }
 
+    /**
+     * @param int $fd
+     * @return bool|int
+     * @throws \RedisException
+     */
     public static function del(int $fd): bool|int {
         $client = self::get($fd);
         return self::$consumers -> delete($fd) && self::$consumers -> delete($client['name']);

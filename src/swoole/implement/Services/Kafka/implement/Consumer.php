@@ -5,62 +5,53 @@ namespace iflow\swoole\implement\Services\Kafka\implement;
 
 
 use iflow\Utils\Tools\Timer;
+use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
+use function Co\run;
 
-class Consumer extends Connection
-{
+class Consumer extends Connection {
 
     protected string $type  = 'consumer';
+
     public KafkaConsumer $consumer;
 
-    public function handle()
-    {
-        Timer::tick($this->config['sleepTime'], function () {
-            $this->message = $this->consumer -> consume($this->config['timeout']);
-            if (class_exists($this->config['Handle'])) {
-                app($this->config['Handle']) -> handle($this->message);
-            }
+    public function handle() {
+        run(function () {
+            Timer::tick($this->config['sleepTime'], function () {
+                $this->message = $this->consumer -> consume($this->config['timeout']);
+                if (class_exists($this->config['Handle'])) {
+                    app($this->config['Handle']) -> handle($this->message);
+                }
+            });
         });
     }
 
-    protected function KafkaInit(): static
-    {
+    protected function KafkaInit(): static {
         // TODO: Implement KafkaInit() method.
         $this -> setGroupId($this->config['group_id']);
-        $this -> consumer = new \RdKafka\KafkaConsumer($this->conf);
+        $this -> consumer = new KafkaConsumer($this->conf);
         return $this->setTopic($this->config['topic'])
                 -> setAcks($this->config['acks'])
-                -> setAutoCommit($this->config['auto_commit']['enable'], $this->config['auto_commit']['ms'])
-                -> offsetStoreMethod($this->config['offsetStoreMethod']);
+                -> offsetStoreMethod($this->config['offsetStoreMethod'] ?? 'file');
     }
 
     /**
      * @param $topic
      * @return static
-     * @throws \RdKafka\Exception
+     * @throws Exception
      */
-    public function setTopic($topic): static
-    {
-        $this -> consumer->subscribe($topic);
+    public function setTopic($topic): static {
+        $this -> consumer -> subscribe($topic);
         return $this;
     }
 
-    public function setAcks(int $acks = 0): static
-    {
+    public function setAcks(int $acks = 0): static {
         // TODO: Implement setAcks() method.
         $this->conf -> set('request.required.acks', $acks);
         return $this;
     }
 
-    public function setAutoCommit(int $enable = 0, int $ms = 1000): static
-    {
-        $this->conf -> set('auto.commit.enable', $enable);
-        $this->conf -> set('auto.commit.ms', $ms);
-        return $this;
-    }
-
-    public function offsetStoreMethod(string $method = 'file'): static
-    {
+    public function offsetStoreMethod(string $method = 'file'): static {
         $this->conf -> set('offset.store.method', $method);
         return $this;
     }

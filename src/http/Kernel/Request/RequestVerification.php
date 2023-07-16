@@ -5,6 +5,7 @@ namespace iflow\http\Kernel\Request;
 use iflow\aop\Aop;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\event\Adapter\Abstracts\SubjectAbstract;
+use iflow\exception\Adapter\ErrorException;
 use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;
@@ -159,11 +160,11 @@ abstract class RequestVerification extends SubjectAbstract {
     /**
      * 运行AOP拦截
      * @return bool
-     * @throws InvokeClassException
+     * @throws InvokeClassException|ErrorException
      */
     protected function RunAop(): bool {
         $this->RequestQueryParams = $this->GenerateRequestQueryParams($this -> router['parameter']);
-        $aop = app() -> make(Aop::class) -> process(
+        $aop = app(Aop::class) -> process(
             $this->RequestController[0], $this->RequestController[1], ...$this -> RequestQueryParams
         );
 

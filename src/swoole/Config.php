@@ -28,10 +28,12 @@ class Config extends Arr {
 
         $this->getSwooleConfigKey();
 
-        $this->items = config($this->swooleConfigKey, []);
+        $this->items = config($this->swooleConfigKey);
 
         if (empty($this->items['swConfig'])) {
-            throw new ConfigException('Swoole Config is Empty !!!');
+            throw new ConfigException(
+                "ServiceType: {$this -> swooleConfigKey} Swoole Config is Empty !!!"
+            );
         }
         return $this;
     }

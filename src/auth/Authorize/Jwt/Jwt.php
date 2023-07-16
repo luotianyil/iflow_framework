@@ -1,25 +1,23 @@
 <?php
 
-
 namespace iflow\auth\Authorize\Jwt;
 
-
-use iflow\auth\Authorize\Jwt\Tools\base64;
-use iflow\auth\Authorize\Jwt\Tools\config;
-use iflow\auth\Authorize\Jwt\Tools\hmac;
+use iflow\auth\Authorize\Jwt\Tools\Base64;
+use iflow\auth\Authorize\Jwt\Tools\Config;
+use iflow\auth\Authorize\Jwt\Tools\Hmac;
 use iflow\auth\Authorize\Jwt\Tools\JwtException;
 
 class Jwt
 {
 
-    protected hmac $hmac;
-    protected base64 $base64;
+    protected Hmac $hmac;
+    protected Base64 $base64;
 
     public function __construct(
-        protected config $config
+        protected Config $config
     ) {
-        $this->hmac = new hmac();
-        $this->base64 = new base64();
+        $this->hmac = new Hmac();
+        $this->base64 = new Base64();
     }
 
     /**
@@ -75,22 +73,19 @@ class Jwt
         return $payload;
     }
 
-    protected function getPayload(): string
-    {
+    protected function getPayload(): string {
         return $this -> base64 -> base64UrlEncode(
             json_encode($this->config -> getPayload(), JSON_UNESCAPED_UNICODE)
         );
     }
 
-    protected function getHeader(): string
-    {
+    protected function getHeader(): string {
         return $this -> base64 -> base64UrlEncode(
             json_encode($this->config -> getHeader(), JSON_UNESCAPED_UNICODE)
         );
     }
 
-    protected function getSignature($data): string
-    {
+    protected function getSignature($data): string {
         return $this -> base64 -> base64UrlEncode(
             $this->hmac -> sign($this->config -> getHeader()['alg'], $data, $this->config -> getKey())
         );

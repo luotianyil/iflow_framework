@@ -3,6 +3,7 @@ declare (strict_types = 1);
 
 namespace iflow;
 
+use Exception;
 use iflow\console\Console;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\traits\Execute;
@@ -11,7 +12,7 @@ use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\event\Event;
 use iflow\initializer\{appSurroundings, Config, Error, Helpers, initializer};
 use iflow\log\Log;
-use ReflectionException;
+use ReflectionClass;
 
 /**
  * Class App
@@ -54,7 +55,7 @@ abstract class App {
     /**
      * 初始化基础方法
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function run(): void {
         $this -> register('iflow\\App', $this);
@@ -68,18 +69,20 @@ abstract class App {
      * @param string $class
      * @return void
      * @throws InvokeClassException
-     * @throws ReflectionException|InvokeFunctionException
+     * @throws InvokeFunctionException
+     * @throws Exception
      */
     public function execute(string $class): void {
         $execute = new Execute();
-        $ref = new \ReflectionClass($class);
+        $ref = new ReflectionClass($class);
         $execute -> getReflectorAttributes($ref) -> execute($ref);
     }
 
     /**
      * 加载基础服务
-     * @return $this
+     * @return App
      * @throws InvokeClassException
+     * @throws InvokeFunctionException
      */
     public function initializer(): App {
         $this -> boot();
@@ -88,8 +91,9 @@ abstract class App {
 
     /**
      * 加载基础类
-     * @return $this
+     * @return App
      * @throws InvokeClassException
+     * @throws InvokeFunctionException
      */
     protected function boot(): App {
         array_walk($this->initializers, function ($value) {
@@ -118,7 +122,7 @@ abstract class App {
     /**
      * 校验项目依赖目录
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function frameWorkDirInit(): bool {
         $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
@@ -128,7 +132,7 @@ abstract class App {
         $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
          array_map(function (string $file): string {
            if (!file_exists($this->getDefaultRootPath() . $file)) {
-               throw new \Exception("file {$file} dose not exists");
+               throw new Exception("file $file dose not exists");
            }
            return $file;
         }, $this->frameWorkFolder);

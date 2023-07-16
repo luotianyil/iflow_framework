@@ -9,7 +9,8 @@ class Emit {
     public function __construct(protected WebSocket $webSocket, mixed $data) {
     }
 
-    public function handle() {
+    public function handle(): mixed {
+        return true;
     }
 
     public function to(int|array $fds): Emit {
@@ -29,7 +30,13 @@ class Emit {
         return $this->webSocket -> fd;
     }
 
-    public function emit(string $event, mixed $data) {
-        $this->webSocket -> sender($event, $data);
+    /**
+     * 向指定客户端发送消息
+     * @param string $event
+     * @param mixed $data
+     * @return bool
+     */
+    public function emit(string $event, mixed $data): bool {
+        return $this->webSocket -> sender($event, $data);
     }
 }

@@ -19,7 +19,7 @@ class Packet {
      * @param array $data
      * @return void
      */
-    public function ping(array $data) {
+    public function ping(array $data): void {
         $id = $data['a']['id'];
 
         $responseData = [

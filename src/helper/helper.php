@@ -19,6 +19,7 @@ use iflow\http\Adapter\Cookie;
 use iflow\i18n\i18N;
 use iflow\log\Log;
 use iflow\Request;
+use iflow\swoole\implement\Commounity\Rpc\Request\Request as RpcRequest;
 use iflow\Response;
 use iflow\response\Adapter\Json;
 use iflow\response\Adapter\Xml;
@@ -212,8 +213,8 @@ if (!function_exists('rpc')) {
         bool $isSsl = false,
         array $param = [],
         array $options = []
-    ): \iflow\swoole\implement\Commounity\Rpc\Request\Request {
-        return app() -> make(\iflow\swoole\implement\Commounity\Rpc\Request\Request::class, func_get_args(), isNew: true)
+    ): RpcRequest {
+        return app() -> make(RpcRequest::class, func_get_args(), isNew: true)
             -> request();
     }
 }

@@ -13,7 +13,7 @@ class buildPhar {
         $this->phar = new Phar($this->config['out']);
     }
 
-    public function build() {
+    public function build(): void {
         try {
             $this->phar -> buildFromDirectory($this->buildPhar -> app -> getDefaultRootPath());
             $this->phar -> setDefaultStub($this->config['bin'], $this->config['webindex']);

@@ -48,7 +48,15 @@ class Subscribe {
         return $this;
     }
 
-    protected function subscribe(Pool $pool, int $workerId, array $topic) {
+    /**
+     * 订阅主题
+     * @param Pool $pool
+     * @param int $workerId
+     * @param array $topic
+     * @return void
+     * @throws \iflow\Container\implement\generate\exceptions\InvokeClassException
+     */
+    protected function subscribe(Pool $pool, int $workerId, array $topic): void {
         $subscribeType = $topic['subscribeType'] ?? 'subscribe';
         $this->topic[$this->getTopicKey($topic['name'])] = [
             'topic' => $topic['name'],
@@ -102,7 +110,7 @@ class Subscribe {
      * 启动服务
      * @return void
      */
-    public function start() {
+    public function start(): void {
         $this->manager -> start();
     }
 }

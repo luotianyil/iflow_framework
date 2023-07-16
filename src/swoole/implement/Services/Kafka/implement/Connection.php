@@ -25,16 +25,21 @@ abstract class Connection
         ],
         'timeout' => 1000
     ];
+
     protected string $type  = 'consumer';
+
     public Conf $conf;
+
     public Message $message;
+
     protected int $error;
 
 
     public function __construct(
-        protected Services $service
+        protected ?Services $service = null
     ) {
-        $this->config = config('swoole.kafka@'. $this->type);
+        $this->config = config('swoole-kafka@'. $this->type);
+
         $this->connectionKafka();
     }
 
@@ -48,16 +53,16 @@ abstract class Connection
         $this->conf = new Conf();
         return $this
             -> metadataBrokerList($this->config['broker'])
-            -> securityProtocol($this->config['security_protocol'])
+            -> securityProtocol($this->config['security_protocol'] ?? '')
             -> sslCertificateLocation($this->config['client_pem'])
             -> sslKeyLocation($this->config['client_key'])
             -> sslCaLocation($this->config['ca_pem']);
     }
 
 
-    public function metadataBrokerList($broker = []): static
+    public function metadataBrokerList(array $broker = []): static
     {
-        $this->conf->set('metadata.broker.list', $broker);
+        $this->conf->set('metadata.broker.list', implode(',', $broker));
         return $this;
     }
 
@@ -67,9 +72,12 @@ abstract class Connection
         return $this;
     }
 
-    public function securityProtocol($security_protocol): static
-    {
-        $this->conf->set('security.protocol', $security_protocol);
+    public function securityProtocol($security_protocol): static {
+
+        if ($security_protocol) {
+            $this->conf->set('security.protocol', $security_protocol);
+        }
+
         return $this;
     }
 
@@ -92,5 +100,6 @@ abstract class Connection
     }
 
     abstract public function setTopic($topic): static;
+
     abstract public function setAcks(int $acks = 0): static;
 }

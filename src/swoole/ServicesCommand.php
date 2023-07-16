@@ -74,7 +74,7 @@ class ServicesCommand extends Command {
         $service = $event[1] ?? 'service';
         $service = $service === 'service' ? 'http' : $service;
 
-        $class = sprintf("{$this -> baseClass}$ServiceType\%s\Service", ucwords($service));
+        $class = sprintf("{$this -> baseClass}{$ServiceType}\%s\Service", ucwords($service));
         if (class_exists($class)) return $class;
 
         return "";

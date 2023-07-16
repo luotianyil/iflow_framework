@@ -19,7 +19,7 @@ abstract class Client {
                 Timer::clear($timer_id);
                 return $this->wait();
             }
-            return $this->services ?-> getServicesCommand() -> Console -> outWrite('Connection FAIL errCode: ' . $this->client -> errCode);
+            $this->services ?-> getServicesCommand() -> Console -> outWrite('Connection FAIL errCode: ' . $this->client -> errCode);
         });
     }
 

@@ -5,6 +5,7 @@ namespace iflow\socket\implement\http;
 
 
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\initializer\Error;
 use iflow\socket\implement\interfaces\Services;
 
@@ -52,7 +53,7 @@ class Http implements Services
     /**
      * 监听 socket 数据
      * @return $this
-     * @throws InvokeClassException
+     * @throws InvokeClassException|InvokeFunctionException
      */
     public function wait(): static
     {
@@ -70,7 +71,7 @@ class Http implements Services
                         // 接收到 请求后的回调
                         $this->trigger('request', $this->request, $this->response);
                     } catch (\Throwable $exception) {
-                        app() -> make(Error::class) -> appHandler($exception);
+                        app(Error::class) -> appHandler($exception);
                     }
                 }
                 $this->close($sock);

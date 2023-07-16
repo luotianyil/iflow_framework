@@ -65,7 +65,7 @@ class Table extends RoomAdapterAbstracts {
      * 注册房间字段
      * @return void
      */
-    public function registerRoomFields() {
+    public function registerRoomFields(): void {
         $this->options['fields'] = $this->options['fields'] ?? [];
 
         foreach ($this->options['fields'] as $field) {

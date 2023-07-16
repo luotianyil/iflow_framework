@@ -1,6 +1,5 @@
 <?php
 
-
 namespace iflow\GraphQL\Exceptions;
 
 

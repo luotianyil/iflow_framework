@@ -4,6 +4,8 @@
 namespace iflow\http\Adapter;
 
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+
 class Cookie
 {
     protected array $config = [
@@ -58,7 +60,10 @@ class Cookie
         return $this->cookie;
     }
 
-    protected function saveCookie(string $name, $value, array $options = []) {
+    /**
+     * @throws InvokeClassException
+     */
+    protected function saveCookie(string $name, $value, array $options = []): void {
         if (is_array($value)) $value = serialize($value);
         response() -> response -> cookie(
             $name, $value, $options['expires'],

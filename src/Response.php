@@ -31,7 +31,7 @@ class Response {
      * @param int $code
      * @param string $type
      * @return object
-     * @throws InvokeClassException|Container\implement\generate\exceptions\InvokeFunctionException
+     * @throws InvokeClassException|Container\implement\generate\exceptions\InvokeFunctionException|Container\implement\annotation\exceptions\AttributeTypeException
      */
     public static function create(mixed $data = [], int $code = 200, string $type = 'json'): object {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\Adapter\\'.ucfirst($type);
@@ -67,9 +67,12 @@ class Response {
             return true;
         }
 
+        $end = $this->setResponseHeader() -> response -> end($this->output($this->data));
+
         // 结束请求
         event('RequestEndEvent');
-        return $this->setResponseHeader() -> response -> end($this->output($this->data));
+
+        return $end;
     }
 
     /**
@@ -85,6 +88,7 @@ class Response {
     /**
      * 结束响应时 设置请求头
      * @return $this
+     * @throws InvokeClassException
      */
     protected function setResponseHeader(): static {
         $this->response -> status($this->code);
