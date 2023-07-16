@@ -73,7 +73,7 @@ class Context {
      * @param mixed $value
      * @param null $cid
      */
-    public static function setData(string $key, mixed $value, $cid = null): voids {
+    public static function setData(string $key, mixed $value, $cid = null): void {
         self::getDataArrayObject($cid) -> offsetSet($key, $value);
     }
 
