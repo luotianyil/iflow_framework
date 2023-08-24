@@ -1,8 +1,9 @@
 <?php
 
-namespace iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO;
+namespace iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO;
 
-class Packet {
+class PacketFormatter {
+
     const OPEN = 0;
 
     const CLOSE = 1;
@@ -93,9 +94,9 @@ class Packet {
         return $new;
     }
 
-    public static function decode(string $str): Packet {
+    public static function decode(string $str): PacketFormatter {
         $i = 0;
-        $packet = new Packet((int) substr($str, 0, 1));
+        $packet = new PacketFormatter((int) substr($str, 0, 1));
         if ('/' === substr($str, $i + 1, 1)) {
             $packet->nsp = explode(',', substr($str, 1))[0];
         } else {

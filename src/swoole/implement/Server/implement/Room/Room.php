@@ -46,9 +46,7 @@ class Room {
         if (!class_exists($clazz))
             throw new Exception('ROOM CACHE TYPE UNDEFINED');
 
-        return $this->roomCache = Container::getInstance() -> make(
-            $clazz, [ $this->roomType, $this->server, $this->options ]
-        ) -> get($this->roomType, true);
+        return $this->roomCache = app($clazz, [ $this->roomType, $this->server, $this->options ]);
     }
 
 

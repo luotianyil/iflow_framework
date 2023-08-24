@@ -2,7 +2,6 @@
 
 namespace iflow\swoole\implement\Server\WebSocket;
 
-use iflow\Container\Container;
 use iflow\swoole\ServicesCommand;
 use Swoole\WebSocket\Server;
 

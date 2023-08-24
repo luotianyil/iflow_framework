@@ -9,8 +9,8 @@ use iflow\Response;
 use iflow\swoole\abstracts\ServicesAbstract;
 use iflow\swoole\implement\Server\implement\Room\Room;
 use iflow\swoole\implement\Server\WebSocket\Event\Events;
-use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Emit;
-use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
+use iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO\Emit;
+use iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO\PacketFormatter;
 use Swoole\Server;
 
 class WebSocket {
@@ -48,9 +48,9 @@ class WebSocket {
      */
     public function createRoom(): void {
         $this->room = app(Room::class, [
-            $this->config['room']['roomType'] ?? 'websocket',
+            $this->config['websocket']['room']['roomType'] ?? 'websocket',
             $this,
-            $this->config['room']
+            $this->config['websocket']['room']
         ]);
     }
 
@@ -108,7 +108,7 @@ class WebSocket {
      * @return bool
      */
     public function sender(string $event, mixed $data, int $fd = 0): bool {
-        $data = Packet::create('4'.Packet::EVENT . $this->nsp. ',', [
+        $data = PacketFormatter::create('4'.PacketFormatter::EVENT . $this->nsp. ',', [
             'data' => [ $event, $data ]
         ]) -> toString();
         try {
@@ -132,7 +132,7 @@ class WebSocket {
      * @return bool
      */
     public function send (int $fd, mixed $data): bool {
-        $data = Packet::create('4'.Packet::EVENT . $this->nsp. ',', [
+        $data = PacketFormatter::create('4'.PacketFormatter::EVENT . $this->nsp. ',', [
             'data' => [ $data['event'], $data['body'] ]
         ]) -> toString();
         return $this -> server -> send($fd, $data);

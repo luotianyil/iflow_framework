@@ -10,6 +10,7 @@ use Workerman\Connection\TcpConnection;
 class Ping
 {
     protected mixed $pingTimeoutTimer = null;
+
     protected mixed $pingIntervalTimer = null;
 
     public function __construct(

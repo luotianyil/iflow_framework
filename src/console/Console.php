@@ -26,7 +26,7 @@ class Console
 
     public array $command = [
         '<start|stop|reload>-service' => ServicesCommand::class,
-        '<start|stop|reload>-WebSocket' => ServicesCommand::class,
+        '<start|stop|reload>-websocket' => ServicesCommand::class,
         'start-workerMan' => workMan::class,
         '<start|stop|reload>-<tcp|udp|mqtt|rpc>-<client|server>' => ServicesCommand::class,
         'start-dht-services' => ServicesCommand::class,

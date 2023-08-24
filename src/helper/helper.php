@@ -358,15 +358,7 @@ if (!function_exists('go')) {
 // 获取php可执行文件目录
 if (!function_exists('php_run_path')) {
     function php_run_path(): string {
-        if(str_contains(PHP_OS, 'WIN')){
-            $ini  = ini_get_all();
-
-            $path = $ini['local_value'] ?? $ini['extension_dir']['local_value'];
-            $b= substr($path,0,-3);
-            $php_path = str_replace('\\','/',$b);
-            return $php_path.'php.exe';
-        }
-        return PHP_BINDIR . DIRECTORY_SEPARATOR . 'php';
+        return PHP_BINARY;
     }
 }
 

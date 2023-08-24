@@ -4,7 +4,7 @@
 namespace iflow\socket\workman\websocket;
 
 
-use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
+use iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO\PacketFormatter;
 
 class event
 {
@@ -13,17 +13,15 @@ class event
     protected handle $server;
     protected string $nsp;
 
-    public function handle(
-        handle $server, array $data, string $nsp
-    ) {
+    public function handle(handle $server, array $data, string $nsp): void {
         $this->server = $server;
         $this->nsp = $nsp;
     }
 
     public function emit($event, $data): bool
     {
-        $data = Packet::create(
-            '4'.Packet::EVENT . $this->nsp . ',', [
+        $data = PacketFormatter::create(
+            '4'.PacketFormatter::EVENT . $this->nsp . ',', [
                 'data' => [
                     $event, $data
                 ]

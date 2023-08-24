@@ -2,7 +2,7 @@
 
 namespace iflow\swoole\implement\Server\WebSocket\Event;
 
-use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
+use iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO\PacketFormatter;
 use iflow\swoole\implement\Tools\Ping;
 use Swoole\Http\Request;
 use Swoole\Server;
@@ -45,7 +45,7 @@ class OpenEvent {
                 'pingTimeout'  => $config['websocket']['ping_timeout'],
             ]
         );
-        $this->server->push($this->request -> fd, Packet::OPEN . $payload);
+        $this->server->push($this->request -> fd, PacketFormatter::OPEN . $payload);
 
         $this->EIO = $this->request -> get['EIO'] ?? '';
 
@@ -59,15 +59,15 @@ class OpenEvent {
     }
 
 
-    public function onConnect(Packet $data = null) {
-        $packet = Packet::create(Packet::CONNECT);
+    public function onConnect(PacketFormatter $data = null) {
+        $packet = PacketFormatter::create(PacketFormatter::CONNECT);
         if ($this->EIO >= 4) {
             $packet->data = ['sid' => $this->sid];
         }
         return $this->server -> push(
             $this->fd, $packet::message(
-            $packet -> toString(), nsp: $data ? $data -> nsp : '/'
-        )
+                $packet -> toString(), nsp: $data ? $data -> nsp : '/'
+            )
         );
     }
 

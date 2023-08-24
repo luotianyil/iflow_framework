@@ -1,6 +1,6 @@
 <?php
 
-namespace iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO;
+namespace iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO;
 
 use iflow\swoole\implement\Server\WebSocket\WebSocket;
 
