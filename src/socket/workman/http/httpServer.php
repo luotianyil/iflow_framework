@@ -53,6 +53,6 @@ class httpServer
     }
 
     public function reload() {
-        Worker::reloadAllWorkers();
+        Worker::signalHandler(SIGUSR1);
     }
 }

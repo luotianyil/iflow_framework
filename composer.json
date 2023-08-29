@@ -13,7 +13,7 @@
     "simps/mqtt": "^1.1.4",
     "nikic/php-parser": "^4.10",
     "phpunit/phpunit": "^9.5",
-    "workerman/workerman": "^4.0",
+    "workerman/workerman": "v5.0.0-beta.7",
     "webonyx/graphql-php": "^14.9",
     "iflow/template": "^0.0.1",
     "iflow/router": "^0.0.1",

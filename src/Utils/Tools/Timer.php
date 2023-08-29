@@ -20,7 +20,7 @@ class Timer
         if (class_exists(\Swoole\Timer::class)) {
             static::$timer = \Swoole\Timer::tick($ms, $closure);
         } else {
-            static::$timer = \Workerman\Lib\Timer::add($ms / 1000, $closure);
+            static::$timer = \Workerman\Timer::add($ms / 1000, $closure);
         }
         return static::$timer;
     }
@@ -31,23 +31,25 @@ class Timer
         if (class_exists(\Swoole\Timer::class)) {
             static::$timer = \Swoole\Timer::after($ms, $closure);
         } else {
-            static::$timer = \Workerman\Lib\Timer::add($ms / 1000, $closure);
+            static::$timer = \Workerman\Timer::add($ms / 1000, $closure);
         }
         return static::$timer;
     }
 
 
     /**
-     * 重置定时任务
+     * 清除定时任务
      * @param $timer
      * @return mixed
      */
-    public static function clear($timer): mixed
-    {
+    public static function clear($timer): mixed {
+
+        if (!$timer) return true;
+
         if (class_exists(\Swoole\Timer::class)) {
             static::$timer = \Swoole\Timer::clear($timer);
         } else {
-            static::$timer = \Workerman\Lib\Timer::del($timer);
+            static::$timer = \Workerman\Timer::del($timer);
         }
         return static::$timer;
     }

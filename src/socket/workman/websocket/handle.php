@@ -40,14 +40,14 @@ class handle
         $this->EIO = $request -> get('EIO', '');
         $this->nsp = rtrim($request -> path(), '/');
 
-        $this->ping = new Ping($connection, 25, 60);
+        $this->ping = new Ping($connection, $this->config['ping_interval'] / 1000, $this->config['ping_timeout'] / 1000);
 
         $payload = json_encode(
             [
                 'sid'          => $this->sid,
                 'upgrades'     => [],
-                'pingInterval' => 25000,
-                'pingTimeout'  => 60000
+                'pingInterval' => $this->config['ping_interval'],
+                'pingTimeout'  => $this->config['ping_timeout']
             ]
         );
 

@@ -5,6 +5,7 @@ namespace iflow\socket\workman\http\implement;
 
 
 use iflow\http\Adapter\Cookie;
+use Workerman\Protocols\Http\Request as workermanRequest;
 
 class Request
 {
@@ -23,7 +24,7 @@ class Request
 
 
     public function __construct(
-        protected \Workerman\Protocols\Http\Request $request
+        protected workermanRequest $request
     ) {
         // 初始化参数
         $this->get = $this->request -> get() ?: [];
