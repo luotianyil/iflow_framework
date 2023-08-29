@@ -40,7 +40,7 @@ class handle
         $this->EIO = $request -> get('EIO', '');
         $this->nsp = rtrim($request -> path(), '/');
 
-        $this->ping = new Ping($connection, $this->config['ping_interval'] / 1000, $this->config['ping_timeout'] / 1000);
+        $this->ping = new Ping($connection, $this->config['ping_interval'], $this->config['ping_timeout']);
 
         $payload = json_encode(
             [
