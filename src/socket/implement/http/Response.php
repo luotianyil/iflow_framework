@@ -153,7 +153,7 @@ class Response {
      */
     public function sendfile(string $path): bool
     {
-        $content = app() -> make(File::class) -> readFile($path);
+        $content = app(File::class) -> readFile($path);
         $this->body = $this->setResponseBody();
         socket_write($this->socket, $this->body, strlen($this->body));
         if ($content instanceof \Generator) {

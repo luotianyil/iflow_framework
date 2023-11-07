@@ -53,7 +53,7 @@ class Http implements Services
     /**
      * 监听 socket 数据
      * @return $this
-     * @throws InvokeClassException|InvokeFunctionException
+     * @throws InvokeClassException|\ReflectionException
      */
     public function wait(): static
     {

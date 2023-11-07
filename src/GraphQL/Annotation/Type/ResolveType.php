@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\GraphQL\Annotation\Type\lib;
+namespace iflow\GraphQL\Annotation\Type;
 
 
 use Attribute;

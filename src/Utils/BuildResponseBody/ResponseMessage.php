@@ -9,6 +9,7 @@ trait ResponseMessage {
 
     public string $error = '';
     public string $msg = '';
+
     public int $code = 200;
     public array $items = [];
     public array $page_info = [];

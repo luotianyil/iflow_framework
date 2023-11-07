@@ -20,6 +20,7 @@ use ReflectionClass;
 abstract class RequestVerification extends SubjectAbstract {
 
     public ?Request $request = null;
+
     public ?Response $response = null;
 
     /**

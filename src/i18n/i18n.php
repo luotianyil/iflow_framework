@@ -8,7 +8,7 @@ use iflow\App;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\i18n\Tools\Utils;
 
-class i18N {
+class i18n {
 
     use Utils;
     protected array $lang = [];

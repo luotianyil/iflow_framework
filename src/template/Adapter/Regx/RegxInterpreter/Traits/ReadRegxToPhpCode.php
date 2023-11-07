@@ -64,7 +64,7 @@ trait ReadRegxToPhpCode {
      */
     public function getToPhpCodeDatum(array &$tNode, int $tIndex, array $tree, string $templateCode): array {
 
-        $toPhpCodeMap = $this->traverseChildrenNode($tNode['children'], $this->templateCode);
+        $toPhpCodeMap = $this->traverseChildrenNode($tNode['children'], $templateCode ?: $this->templateCode);
         $tNode['selfTag']['body'] = $this->getTemplateCodeByTag($tNode['startLine'], $tNode['endLine'] - $tNode['startLine']);
 
         $tNode['selfTag']['_raw'] = $this->getRawTemplateCodeByTag($tNode['selfTag'], $tNode['endTag']);

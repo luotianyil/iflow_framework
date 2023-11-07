@@ -16,9 +16,7 @@ class Response {
     public function sendFile(string $path): bool {
         $content = app(File::class) -> readFile($path);
         if ($content instanceof \Generator) {
-            foreach ($content as $info) {
-                echo $info;
-            }
+            foreach ($content as $info) echo $info;
         }
         return $this->finish();
     }
@@ -70,13 +68,13 @@ class Response {
      * @param int $expires
      * @param string $path
      * @param string $domain
-     * @param $secure
-     * @param $httponly
-     * @param $samesite
-     * @param $priority
+     * @param string $secure
+     * @param bool $httponly
+     * @param string $samesite
+     * @param string $priority
      * @return bool
      */
-    public function cookie(string $name, string $value, int $expires, string $path = '/', string $domain = '', $secure = '', $httponly = false, $samesite = '', $priority = ''): bool {
+    public function cookie(string $name, string $value, int $expires, string $path = '/', string $domain = '', string $secure = '', bool $httponly = false, string $samesite = '', string $priority = ''): bool {
         return setcookie($name, $value, [
             'expires' => $expires,
             'path' => $path,

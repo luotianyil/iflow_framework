@@ -1,12 +1,12 @@
 <?php
 
 
-namespace iflow\GraphQL\Annotation\Type\lib;
+namespace iflow\GraphQL\Annotation\Type;
 
 use Attribute;
 use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
 use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
-use iflow\GraphQL\Annotation\Type\lib\utils\Types;
+use iflow\GraphQL\Annotation\Type\utils\Types;
 use Reflector;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]

@@ -1,13 +1,11 @@
 <?php
 
 
-namespace iflow\GraphQL\Annotation\Type\lib\utils;
+namespace iflow\GraphQL\Annotation\Type\utils;
 
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
-class Types
-{
+class Types {
 
     /**
      * 获取Type类型
@@ -22,9 +20,7 @@ class Types
         }
 
         $types = null;
-        $type = array_reverse(
-            explode('->', $type)
-        );
+        $type = array_reverse(explode('->', $type));
 
         array_map(
             function ($val) use (&$types) {

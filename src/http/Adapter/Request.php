@@ -58,7 +58,7 @@ class Request
         $this->get     = $_GET;
         $this->post    = $_POST;
         $this->request = $_REQUEST;
-        $this->cookie  = app() -> make(Cookie::class, [
+        $this->cookie  = app(Cookie::class, [
             $_COOKIE
         ], true);
         $this->files   = $_FILES ?? [];

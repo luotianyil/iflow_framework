@@ -46,7 +46,7 @@ trait ReadRegxTagMap {
         $startTag['index'] = $selfIndex;
         $startTag['tagSource'] = $tagMap[$selfIndex][0];
 
-        $endTag   = $this -> getEndTag($tagMap, $startTag, $selfIndex);
+        $endTag = $this -> getEndTag($tagMap, $startTag, $selfIndex);
 
         return [
             'selfTag' => $startTag,

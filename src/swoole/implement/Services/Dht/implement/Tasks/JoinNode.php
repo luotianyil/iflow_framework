@@ -2,7 +2,6 @@
 
 namespace iflow\swoole\implement\Services\Dht\implement\Tasks;
 
-use iflow\Container\Container;
 use iflow\Helper\Str\Str;
 use iflow\swoole\implement\Services\Dht\implement\Parser\Encode;
 use iflow\swoole\implement\Services\Dht\implement\Tools\Node;

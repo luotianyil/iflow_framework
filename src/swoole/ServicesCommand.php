@@ -5,6 +5,7 @@ namespace iflow\swoole;
 use iflow\console\Adapter\Command;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\tools\data\Inject;
+use iflow\swoole\abstracts\ServicesAbstract;
 use Swoole\Server;
 
 class ServicesCommand extends Command {
@@ -66,6 +67,9 @@ class ServicesCommand extends Command {
         return $event[2] !== 'client';
     }
 
+    /**
+     * @return ServicesAbstract::class
+     */
     protected function getServiceClass(): string {
         $event = $this->config -> getCommandEvent();
 

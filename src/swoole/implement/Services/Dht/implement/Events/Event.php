@@ -37,6 +37,4 @@ class Event extends \iflow\swoole\implement\Server\Tcp\Events\Event {
             $this->servicesAbstract -> getNode() -> decode($data['r']['nodes'])
         );
     }
-
-
 }

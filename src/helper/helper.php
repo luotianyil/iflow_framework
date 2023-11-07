@@ -16,7 +16,7 @@ use iflow\fileSystem\File;
 use iflow\Helper\Tools\System;
 use iflow\Helper\Torrent\Lightbenc;
 use iflow\http\Adapter\Cookie;
-use iflow\i18n\i18N;
+use iflow\i18n\i18n;
 use iflow\log\Log;
 use iflow\Request;
 use iflow\swoole\implement\Commounity\Rpc\Request\Request as RpcRequest;
@@ -381,7 +381,7 @@ if (!function_exists('array_multi_to_one')) {
 // i18n国际化
 if (!function_exists('i18n')) {
     function i18n(string $key, string|array $default = '', string $lan = ''): string {
-        return app(i18N::class) -> i18n($key, $default, $lan);
+        return app(i18n::class) -> i18n($key, $default, $lan);
     }
 }
 

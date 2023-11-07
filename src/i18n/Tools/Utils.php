@@ -17,9 +17,7 @@ trait Utils {
      */
     public function setLangType(string $langType = ''): static {
 
-        if ($langType === '') {
-            $langType = request() -> getLanguage();
-        }
+        if ($langType === '') $langType = request() -> getLanguage();
 
         $this->langType = strtolower($langType);
         return $this;

@@ -6,7 +6,7 @@ use GuzzleHttp\DefaultHandler;
 use iflow\App;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
-use iflow\i18n\i18N;
+use iflow\i18n\i18n;
 use think\facade\Db;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 
@@ -29,7 +29,7 @@ class initializer {
            \Co::set([ 'hook_flags' => SWOOLE_HOOK_ALL ]);
            DefaultHandler::setDefaultHandler(SwooleHandler::class);
        }
-       $app -> make(i18N::class) -> initializer($app);
+       $app -> make(i18n::class) -> initializer($app);
        $this -> ini_initializer()
              -> db_initializer()
              -> routerConfigInitializer()

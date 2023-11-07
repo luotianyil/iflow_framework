@@ -6,7 +6,6 @@ use iflow\fileSystem\implement\fileSystem;
 
 trait FilterValidator {
 
-
     protected array $filter = [
         'email'   => FILTER_VALIDATE_EMAIL,
         'ip'      => [ FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6 ],
@@ -15,9 +14,6 @@ trait FilterValidator {
         'macAddr' => FILTER_VALIDATE_MAC,
         'float'   => FILTER_VALIDATE_FLOAT,
     ];
-
-
-
 
     public function min(mixed $value, $rule = 0): bool
     {
@@ -75,7 +71,7 @@ trait FilterValidator {
     {
         $param = null;
         if (is_string($rule)) {
-            [$rule, $param] = explode(',', $rule);
+            [ $rule, $param ] = explode(',', $rule);
         } elseif (is_array($rule)){
             $param = $rule[1] ?? null;
             $rule = $rule[0];

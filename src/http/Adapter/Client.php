@@ -3,8 +3,7 @@
 
 namespace iflow\http\Adapter;
 
-class Client
-{
+class Client {
 
     protected object $curl;
 

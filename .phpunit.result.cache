@@ -1,1 +1,1 @@
-{"version":1,"defects":{"iflowTest\\Unit\\ElasticsearchTest::test":4,"iflowTest\\Unit\\Dom::test":4,"iflowTest\\Unit\\RegxTemplateTest::test":4},"times":{"iflowTest\\Unit\\ElasticsearchTest::test":0.477,"iflowTest\\Unit\\Dom::test":0,"iflowTest\\Unit\\RegxTemplateTest::test":0.274}}
+{"version":1,"defects":{"iflowTest\\Unit\\ElasticsearchTest::test":4,"iflowTest\\Unit\\Dom::test":4,"iflowTest\\Unit\\RegxTemplateTest::test":4},"times":{"iflowTest\\Unit\\ElasticsearchTest::test":0.477,"iflowTest\\Unit\\Dom::test":0,"iflowTest\\Unit\\RegxTemplateTest::test":0.05}}
