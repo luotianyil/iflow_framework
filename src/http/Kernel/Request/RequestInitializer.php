@@ -26,7 +26,6 @@ class RequestInitializer extends RequestVerification {
      * @throws InvokeClassException
      */
     public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification|bool {
-
         app() -> setStartTimes($startTime);
 
         $request->server['path_info'] = $request->server['path_info'] ?? $request -> server['request_uri'];

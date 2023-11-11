@@ -28,10 +28,10 @@ interface ProxyRpcInterface {
 
     /**
      * 设置RPC 调用是否SSL加密
-     * @param string $rpcServerName
+     * @param bool $isSsl
      * @return ProxyRpcInterface
      */
-    public function setIsSsl(string $rpcServerName): ProxyRpcInterface;
+    public function setIsSsl(bool $isSsl): ProxyRpcInterface;
 
     /**
      * 请求服务器获取数据

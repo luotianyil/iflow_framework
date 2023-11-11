@@ -4,6 +4,8 @@ namespace iflow\swoole\implement\Client\Rpc\implement;
 
 use iflow\swoole\implement\Client\Rpc\implement\interfaces\ProxyRpcInterface;
 use iflow\swoole\implement\Commounity\Rpc\Request\Request;
+use iflow\swoole\ServicesCommand;
+use Swoole\Server;
 
 class RpcClient implements ProxyRpcInterface {
 
@@ -56,12 +58,12 @@ class RpcClient implements ProxyRpcInterface {
     }
 
     /**
-     * @param string $rpcServerName
+     * @param bool $isSsl
      * @return ProxyRpcInterface
      */
-    public function setIsSsl(string $rpcServerName): ProxyRpcInterface {
+    public function setIsSsl(bool $isSsl): ProxyRpcInterface {
         // TODO: Implement setIsSsl() method.
-        $this->isSsl = true;
+        $this->isSsl = $isSsl;
         return $this;
     }
 
@@ -75,11 +77,14 @@ class RpcClient implements ProxyRpcInterface {
         // TODO: Implement request() method.
 
         $params['client_name'] = $this->rpcServerName;
+        $params['event'] = $params['event'] ?? 3;
 
         $this->rpcRequest = rpc(
-            $this->rpcServerIp, $this->rpcServerPort,
+            $this->rpcServerIp ?: app(ServicesCommand::class) -> config -> get('listeners@rpc_server.host'),
+            $this->rpcServerPort ?: app(ServicesCommand::class) -> config -> get('listeners@rpc_server.port'),
             "{$this -> requestBaseUrl}/{$name}",
-            $this->isSsl, $params
+            $this->isSsl,
+            $params
         );
 
         return $this->rpcRequest -> getData();

@@ -47,11 +47,13 @@ class WebSocket {
      * @throws InvokeClassException
      */
     public function createRoom(): void {
-        $this->room = app(Room::class, [
-            $this->config['websocket']['room']['roomType'] ?? 'websocket',
-            $this,
-            $this->config['websocket']['room']
-        ]);
+        if (isset($this->config['websocket']['room'])) {
+            $this->room = app(Room::class, [
+                $this->config['websocket']['room']['roomType'] ?? 'websocket',
+                $this,
+                $this->config['websocket']['room']
+            ]);
+        }
     }
 
     /**

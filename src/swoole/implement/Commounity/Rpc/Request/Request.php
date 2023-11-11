@@ -79,9 +79,7 @@ class Request {
         $this->param['request_uri'] = $this->url;
         if ($this->client === null) {
             if (class_exists(\Swoole\Coroutine\Client::class)) {
-                $this->client = new \Swoole\Coroutine\Client(
-                    $this->isSsl ? SWOOLE_TCP | SWOOLE_SSL : SWOOLE_TCP
-                );
+                $this->client = new \Swoole\Coroutine\Client($this->isSsl ? SWOOLE_TCP | SWOOLE_SSL : SWOOLE_TCP);
             } else {
                 $this->client = new Client($this->isSsl);
             }

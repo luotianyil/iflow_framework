@@ -33,9 +33,7 @@ class Service extends \iflow\swoole\implement\Server\Rpc\Service {
      * @throws InvokeClassException
      */
     protected function getSubscription(): Subscription {
-        return Container::getInstance() -> make(Subscription::class, [
-            $this->config -> get('server'), $this
-        ]);
+        return app(Subscription::class, [ $this->config -> get('server'), $this ]);
     }
 
     public function getClientNames() {

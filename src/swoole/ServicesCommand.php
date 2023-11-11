@@ -39,6 +39,8 @@ class ServicesCommand extends Command {
            Server::class,
            $this->config -> getServicesAbstract() -> getSwService()
        );
+
+       Container::getInstance() -> register(ServicesCommand::class, $this);
     }
 
 

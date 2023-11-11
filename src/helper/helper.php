@@ -214,8 +214,7 @@ if (!function_exists('rpc')) {
         array $param = [],
         array $options = []
     ): RpcRequest {
-        return app() -> make(RpcRequest::class, func_get_args(), isNew: true)
-            -> request();
+        return app(RpcRequest::class, func_get_args(), isNew: true) -> request();
     }
 }
 

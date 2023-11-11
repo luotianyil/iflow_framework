@@ -9,6 +9,7 @@
 /runtime
 /tests
 /install
+./rpc_service
 *.log
 *.pid
 composer.lock
