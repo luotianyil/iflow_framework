@@ -9,6 +9,7 @@
 /runtime
 /tests
 /install
+/rpc_service
 ./rpc_service
 *.log
 *.pid

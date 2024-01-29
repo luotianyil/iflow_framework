@@ -88,10 +88,7 @@ class TypeAnnotation extends AnnotationAbstract {
         $attribute = $reflectionProperty->getAttributes($name)[0] ?? null;
 
         $args = [ $object ];
-        if ($attribute) {
-            return $attribute->newInstance() ?-> process($reflectionProperty, $args);
-        }
-        return null;
+        return $attribute?->newInstance()?->process($reflectionProperty, $args);
     }
 
 

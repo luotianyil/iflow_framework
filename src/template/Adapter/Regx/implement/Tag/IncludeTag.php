@@ -37,7 +37,7 @@ class IncludeTag extends TagAbstract {
      * @throws templateViewNotFound
      * @throws \Exception
      */
-    protected function readImportTemplate() {
+    protected function readImportTemplate(): void {
 
         if (!$this->readFile || !file_exists($this->readFile))
             throw new templateViewNotFound("ReadTemplateFile Fails TemplatePath: {$this -> readFile}");

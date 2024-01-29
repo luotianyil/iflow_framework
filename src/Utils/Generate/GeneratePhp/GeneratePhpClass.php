@@ -98,6 +98,10 @@ class GeneratePhpClass {
             throw new GeneratePhpClassException($classPath);
         }
 
+        if (class_exists($this->getNamespaceClass())) {
+            app() -> delete($this->getNamespaceClass());
+        }
+
         include $classPath;
 
         return app($this->getNamespaceClass(), $this->getArgs());

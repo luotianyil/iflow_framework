@@ -3,9 +3,14 @@
 namespace iflow\http\Kernel\Request;
 
 use iflow\aop\Aop;
+use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\event\Adapter\Abstracts\SubjectAbstract;
 use iflow\exception\Adapter\ErrorException;
+use iflow\http\Hook\Annotation\RequestAfterHook;
+use iflow\http\Hook\Annotation\RequestBeforeHook;
+use iflow\http\Hook\Annotation\RequestHook;
 use iflow\Middleware;
 use iflow\Request;
 use iflow\Response;
@@ -42,7 +47,7 @@ abstract class RequestVerification extends SubjectAbstract {
     protected ReflectionClass $ReflectionClass;
 
     /**
-     * 当前 请求验证 执行声明周期
+     * 当前 请求验证 执行生命周期
      * @var array|string[]
      */
     protected array $RunProcessMethods = [
@@ -95,7 +100,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * 是否为socket.io
      * @param string $url
      * @return bool
-     * @throws InvokeClassException
+     * @throws InvokeClassException|ErrorException
      */
     protected function isSocketIo(string $url = ''): bool {
         $url = explode('/', trim($url, '/'))[0] ?? '/';
@@ -127,7 +132,7 @@ abstract class RequestVerification extends SubjectAbstract {
     /**
      * 运行中间件
      * @return bool
-     * @throws InvokeClassException
+     * @throws InvokeClassException|AttributeTypeException|InvokeFunctionException|ErrorException
      */
     protected function RunMiddleware(): bool {
         $app = app();
@@ -164,22 +169,27 @@ abstract class RequestVerification extends SubjectAbstract {
      * @throws InvokeClassException|ErrorException
      */
     protected function RunAop(): bool {
+
+        if ($this->triggerRequestHook('RequestBeforeHook', $this->request, $this->response, $this->router) === null)
+            return false;
+
         $this->RequestQueryParams = $this->GenerateRequestQueryParams($this -> router['parameter']);
+
         $aop = app(Aop::class) -> process(
             $this->RequestController[0], $this->RequestController[1], ...$this -> RequestQueryParams
         );
 
         if ($aop === false) return false;
 
-        $res = $aop -> then();
-        return !($res === true) && $this->send($res === false ? "" : $res);
+        $result = $aop -> then();
+        return !($result === true) && $this->send($result === false ? "" : $result);
     }
 
     /**
      * 验证响应数据
      * @param mixed $response
      * @return bool
-     * @throws InvokeClassException
+     * @throws InvokeClassException|ErrorException
      */
     public function ResponseBodyValidate(mixed $response): bool {
         if ($response instanceof Response || $response instanceof ResponseInterface) {
@@ -193,26 +203,50 @@ abstract class RequestVerification extends SubjectAbstract {
      * 返回响应信息
      * @param mixed $response
      * @return bool
-     * @throws InvokeClassException
+     * @throws InvokeClassException|ErrorException
      */
     protected function send(mixed $response): bool {
         if (!$response) return $this->response -> data($response) -> send();
         switch ($response) {
             case $response instanceof Response:
-                return $response->send();
+                $response->send();
+                break;
             case $response instanceof ResponseInterface:
                 // PSR7
-                return $this->response
+                $this->response
                     -> headers($response -> getHeaders())
                     -> withStatus($response -> getStatusCode())
                     -> data($response -> getBody() -> __toString())
                     -> send();
+                break;
             case !is_string($response) && !is_numeric($response):
                 // 为非字符串时
-                return json($response) -> send();
+                json($response) -> send();
+                break;
             default :
-                return $this->response -> data($response) -> send();
+                $this->response -> data($response) -> send();
+                break;
         }
+        $this->triggerRequestHook('RequestAfterHook', $this->request, $this->response);
+        return true;
+    }
+
+    /**
+     * 触发请求事件
+     * @param string $hookName
+     * @param ...$args
+     * @return RequestVerification|null
+     * @throws InvokeClassException|ErrorException
+     */
+    protected function triggerRequestHook(string $hookName, ...$args): RequestVerification|null {
+
+        if (!app() -> has(RequestHook::class)) return $this;
+
+        $result = app(RequestHook::class) -> trigger($hookName, ...$args);
+        if ($result === true) return $this;
+
+        $this->send($result);
+        return null;
     }
 
     /**

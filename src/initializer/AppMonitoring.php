@@ -7,13 +7,13 @@ namespace iflow\initializer;
 use iflow\App;
 use iflow\Utils\Tools\Timer;
 
-class appMonitoring
-{
+class AppMonitoring {
+
     protected App $app;
 
     protected array $config = [];
 
-    public function initializer(App $app) {
+    public function initializer(App $app): void {
         $this->app = $app;
         $this->config = config('app@appMonitoring');
         $this->appMonitoring();
@@ -28,7 +28,7 @@ class appMonitoring
     }
 
 
-    public function Monitoring() {
+    public function Monitoring(): bool {
         $this->config = config('app@appMonitoring');
         $units = ['B', 'kB', 'MB'];
 

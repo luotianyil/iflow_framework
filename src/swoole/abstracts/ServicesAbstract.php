@@ -5,7 +5,7 @@ namespace iflow\swoole\abstracts;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\fileSystem\Watch;
-use iflow\initializer\appMonitoring;
+use iflow\initializer\AppMonitoring;
 use iflow\swoole\Config;
 use iflow\swoole\implement\Tools\Pid;
 use iflow\swoole\implement\Tools\Task\Delivery;
@@ -67,7 +67,7 @@ abstract class ServicesAbstract implements ServicesInterface {
         $process = new Process(function () {
             run(function () {
                 Container::getInstance() -> make(Watch::class) -> initializer($this->servicesCommand -> app);
-                Container::getInstance() -> make(appMonitoring::class) -> initializer($this->servicesCommand -> app);
+                Container::getInstance() -> make(AppMonitoring::class) -> initializer($this->servicesCommand -> app);
             });
         });
         $this->getSwService() -> addProcess($process);

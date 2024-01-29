@@ -5,7 +5,7 @@ namespace iflow\http;
 use Exception;
 use iflow\App;
 use iflow\event\Event;
-use iflow\initializer\appSurroundings;
+use iflow\initializer\AppSurroundings;
 use iflow\initializer\Config;
 use iflow\initializer\Error;
 use iflow\initializer\Helpers;
@@ -20,7 +20,7 @@ class TestApp extends App {
         Event::class,
         Log::class,
         Error::class,
-        appSurroundings::class,
+        AppSurroundings::class,
         initializer::class
     ];
 

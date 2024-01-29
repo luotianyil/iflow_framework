@@ -11,6 +11,7 @@ abstract class Command {
     use Argument;
 
     public App $app;
+
     public Console $Console;
 
     /**

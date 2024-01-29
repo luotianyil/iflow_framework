@@ -6,11 +6,12 @@ namespace iflow;
 use Exception;
 use iflow\console\Console;
 use iflow\Container\Container;
+use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
 use iflow\Container\implement\annotation\traits\Execute;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\event\Event;
-use iflow\initializer\{appSurroundings, Config, Error, Helpers, initializer};
+use iflow\initializer\{AppSurroundings, Config, Error, Helpers, initializer};
 use iflow\log\Log;
 use ReflectionClass;
 
@@ -28,9 +29,13 @@ abstract class App {
 
     // 应用目录
     protected string $rootPath = '';
+
     protected string $frameWorkPath = '';
+
     protected string $appPath = '';
+
     protected string $runtimePath = '';
+
     protected string $configExt = '.php';
 
     // 执行时间
@@ -40,7 +45,7 @@ abstract class App {
     protected array $initializers = [
         Config::class,
         Helpers::class,
-        appSurroundings::class,
+        AppSurroundings::class,
         Event::class,
         Log::class,
         Error::class,
@@ -82,16 +87,16 @@ abstract class App {
      * 加载基础服务
      * @return App
      * @throws InvokeClassException
-     * @throws InvokeFunctionException
+     * @throws InvokeFunctionException|AttributeTypeException
      */
     public function initializer(): App {
-        $this -> boot();
-        return $this;
+        return $this -> boot();
     }
 
     /**
      * 加载基础类
-     * @return App
+     * @return $this
+     * @throws AttributeTypeException
      * @throws InvokeClassException
      * @throws InvokeFunctionException
      */

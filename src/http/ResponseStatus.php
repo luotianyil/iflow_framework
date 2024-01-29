@@ -66,7 +66,7 @@ class ResponseStatus {
         507 => 'Insufficient Storage',                                        // RFC4918
         508 => 'Loop Detected',                                               // RFC5842
         510 => 'Not Extended',                                                // RFC2774
-        511 => 'Network Authentication Required' // RFC6585
+        511 => 'Network Authentication Required'                              // RFC6585
     ];
 
 }

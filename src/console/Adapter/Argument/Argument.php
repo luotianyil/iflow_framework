@@ -8,6 +8,7 @@ trait Argument {
 
     // 指令参数
     protected array $arguments = [];
+
     protected array $instruction = [];
 
     /**

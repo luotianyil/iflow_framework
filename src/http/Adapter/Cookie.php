@@ -55,11 +55,6 @@ class Cookie
         return $this;
     }
 
-
-    public function toArray(): array {
-        return $this->cookie;
-    }
-
     /**
      * @throws InvokeClassException
      */
@@ -72,4 +67,7 @@ class Cookie
         );
     }
 
+    public function toArray(): array {
+        return $this->cookie;
+    }
 }

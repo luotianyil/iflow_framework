@@ -11,15 +11,22 @@ trait ResponseTrait
 {
 
     public array $headers = [];
+
     public string $contentType = 'text/html';
+
     public string $charSet = 'utf-8';
+
     public int $code = 200;
+
     public mixed $data = '';
+
     public array $options = [];
+
     public mixed $response = null;
 
     // HTTP 版本
     public string $version = "1.1";
+
     public ?ResponseInterface $responsePsr7 = null;
 
     /**

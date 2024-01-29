@@ -19,7 +19,7 @@ class Session extends ObserverAbstract {
      * @return mixed
      * @throws \Exception
      */
-    public function handle(App $app, $next) {
+    public function handle(App $app, $next): mixed {
         SessionObject::initializer();
         Event::getEvent('RequestEndEvent') ?-> attach($this);
         return $next($app);

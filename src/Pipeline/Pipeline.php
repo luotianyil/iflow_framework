@@ -4,21 +4,27 @@ namespace iflow\Pipeline;
 
 class Pipeline {
 
-    protected array $pipes = [];
+    public array $pipes = [];
 
-    public function through($pipes): static {
+
+    public function registerPipeline(mixed $pipeline): Pipeline {
+        $this -> pipes[] = $pipeline;
+        return $this;
+    }
+
+    public function through($pipes): Pipeline {
         $this->pipes = is_array($pipes) ? $pipes : func_get_args();
         return $this;
     }
 
 
-    public function process($app, ?callable $destination = null): void {
+    public function process(mixed $args, ?callable $destination = null): void {
         $pipeline = array_reduce(
             array_reverse($this->pipes),
             $this->carry(),
             fn($passable) => $destination === null ? true : $destination($passable)
         );
-        $pipeline($app);
+        $pipeline($args);
     }
 
     protected function carry(): \Closure {

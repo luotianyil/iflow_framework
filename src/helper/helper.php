@@ -92,7 +92,7 @@ if (!function_exists('request')) {
 if (!function_exists('local_file')) {
     function local_file($file) : mixed
     {
-        return app() -> make(File::class) -> create($file);
+        return app(File::class) -> create($file);
     }
 }
 
@@ -363,7 +363,7 @@ if (!function_exists('php_run_path')) {
 
 // 数组转一维数组
 if (!function_exists('array_multi_to_one')) {
-    function array_multi_to_one($array, &$arr, ?\Closure $closure = null) {
+    function array_multi_to_one($array, &$arr, ?\Closure $closure = null): void {
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 array_multi_to_one($value, $arr, $closure);

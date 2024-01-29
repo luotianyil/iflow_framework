@@ -8,6 +8,7 @@ use iflow\Container\implement\annotation\tools\data\exceptions\ValueException;
 use iflow\Container\implement\annotation\traits\Execute;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
+use iflow\exception\Adapter\ErrorException;
 use iflow\http\Kernel\Exception\RequestValidateException;
 use iflow\http\Adapter\Cookie;
 use iflow\Request;
@@ -23,7 +24,7 @@ class RequestInitializer extends RequestVerification {
      * @param object|null $response
      * @param float $startTime
      * @return RequestVerification|bool
-     * @throws InvokeClassException
+     * @throws InvokeClassException|InvokeFunctionException|ErrorException
      */
     public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification|bool {
         app() -> setStartTimes($startTime);
@@ -34,11 +35,13 @@ class RequestInitializer extends RequestVerification {
             return $response->sendfile($file);
         }
 
-        $this->setRequest($request) -> setResponse($response);
-
-        foreach ($this->RunProcessMethods as $key) {
-            if (method_exists($this, $key) && call_user_func([$this, $key])) break;
+        if ($this -> setRequest($this->request) -> setResponse($this->response)
+                -> triggerRequestHook('RequestInitializeHook', $request, $response)) {
+            foreach ($this->RunProcessMethods as $key) {
+                if (method_exists($this, $key) && call_user_func([$this, $key])) break;
+            }
         }
+
         return $this;
     }
 
@@ -48,6 +51,7 @@ class RequestInitializer extends RequestVerification {
      * @return bool
      * @throws InvokeClassException
      * @throws InvokeFunctionException
+     * @throws ErrorException
      */
     protected function ReturnsResponseBody(): bool {
         $controller = app($this->ReflectionClass -> getName(), [ $this->request, $this->response ], true);
@@ -59,7 +63,7 @@ class RequestInitializer extends RequestVerification {
      * 初始化请求数据
      * @param object $request
      * @return $this
-     * @throws InvokeClassException
+     * @throws InvokeClassException|InvokeFunctionException
      */
     public function setRequest(object $request): static {
         // 验证当前cookie是否为对象
@@ -74,7 +78,7 @@ class RequestInitializer extends RequestVerification {
      * 初始化响应数据
      * @param object $response
      * @return $this
-     * @throws InvokeClassException
+     * @throws InvokeClassException|InvokeFunctionException
      */
     public function setResponse(object $response): static {
         $this->response = app(Response::class, [], true) -> initializer($response);
@@ -103,7 +107,6 @@ class RequestInitializer extends RequestVerification {
         // 验证控制器方法是否存在
         if (!$this->ReflectionClass -> hasMethod($this->RequestController[1])) {
             return $this->response
-                -> withStatus(502)
                 -> notFount('Request Method dose not exists');
         }
         return false;

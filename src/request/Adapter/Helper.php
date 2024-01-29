@@ -7,17 +7,21 @@ namespace iflow\request\Adapter;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\fileSystem\implement\UpLoadFile;
 
-trait Helper
-{
+trait Helper {
+
+    public array $server = [];
 
     public mixed $request = null;
-    public array $server = [];
+
     public string $request_uri = '';
+
     public string $query_string = '';
+
     public string $request_method = '';
 
     // 获取ip信息
     protected string $realIp = '';
+
     protected array $proxyIpHeader = [
         'X_REAL_IP', 'X_FORWARDED_FOR',
         'CLIENT_IP', 'X_CLIENT_IP',
@@ -195,7 +199,7 @@ trait Helper
      * @throws InvokeClassException
      */
     public function file(string $name = ''): UpLoadFile|array {
-        $upLoadFile = app() -> make(UpLoadFile::class);
+        $upLoadFile = app(UpLoadFile::class);
         $file = $name === '' ? $upLoadFile -> getFileList() : $upLoadFile -> getFile($name);
         return $file ?: [];
     }
