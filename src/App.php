@@ -22,6 +22,8 @@ use ReflectionClass;
  */
 abstract class App {
 
+    private Container $container;
+
     final protected const version = '0.0.1 beta';
 
     // 用户路由
@@ -218,6 +220,7 @@ abstract class App {
 
     public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
+        $this->container = $this->container ?? Container::getInstance();
         return call_user_func([ Container::getInstance(), $name ], ...$arguments);
     }
 }

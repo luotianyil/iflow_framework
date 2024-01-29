@@ -35,8 +35,8 @@ class RequestInitializer extends RequestVerification {
             return $response->sendfile($file);
         }
 
-        if ($this -> setRequest($this->request) -> setResponse($this->response)
-                -> triggerRequestHook('RequestInitializeHook', $request, $response)) {
+        if ($this -> setRequest($request) -> setResponse($response)
+                -> triggerRequestHook('RequestInitializeHook', $this->request, $response)) {
             foreach ($this->RunProcessMethods as $key) {
                 if (method_exists($this, $key) && call_user_func([$this, $key])) break;
             }

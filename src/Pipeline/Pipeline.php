@@ -4,7 +4,7 @@ namespace iflow\Pipeline;
 
 class Pipeline {
 
-    public array $pipes = [];
+    protected array $pipes = [];
 
 
     public function registerPipeline(mixed $pipeline): Pipeline {
