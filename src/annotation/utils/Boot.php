@@ -32,6 +32,6 @@ class Boot extends AnnotationAbstract {
         $boot = app() -> GenerateClassParameters($reflector, $reflector -> newInstance());
         if (!$boot instanceof BootInterface)
             throw new \RuntimeException($boot::class . ' instanceof BootInterface fail');
-        return app() -> register($boot::class, $boot -> boot());
+        return app() -> register($reflector -> getName(), $boot -> boot());
     }
 }

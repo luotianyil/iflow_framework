@@ -2,6 +2,7 @@
 
 namespace iflow\swoole\implement\Client\Rpc\implement;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\swoole\implement\Client\Rpc\implement\interfaces\ProxyRpcInterface;
 use iflow\swoole\implement\Commounity\Rpc\Request\Request;
 use iflow\swoole\ServicesCommand;
@@ -72,6 +73,7 @@ class RpcClient implements ProxyRpcInterface {
      * @param string $name
      * @param array $params
      * @return string|array
+     * @throws InvokeClassException
      */
     public function request(string $name, array $params): string|array {
         // TODO: Implement request() method.
@@ -95,6 +97,7 @@ class RpcClient implements ProxyRpcInterface {
      * @param string $name
      * @param array $arguments
      * @return string|array
+     * @throws InvokeClassException
      */
     public function __call(string $name, array $arguments): string|array {
         // TODO: Implement __call() method.

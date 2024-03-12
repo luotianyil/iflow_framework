@@ -21,9 +21,7 @@ abstract class RoomAdapterAbstracts implements RoomAdapterInterface {
             Container::getInstance()
                 -> make(
                     $this->cacheClazz,
-                    $this->options['cache'] === 'table' && empty($constructArgs) ? [
-                        2048
-                    ] : $constructArgs
+                    $this->options['cache'] === 'table' && empty($constructArgs) ? [ 2048 ] : $constructArgs
                 );
 
         $this->initializer();

@@ -28,7 +28,7 @@ class Types {
                 $typeObject = $this->isObjectType($val);
 
                 $types = $typeObject === null
-                    ? call_user_func([ Type::class, $val ], ...$types ? [$types] : [])
+                    ? call_user_func([ Type::class, $val ], ...$types ? [ $types ] : [])
                     : $typeObject;
             },
             $type

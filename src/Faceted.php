@@ -5,12 +5,11 @@ namespace iflow;
 
 use iflow\Container\Container;
 
-abstract class Faceted
-{
+abstract class Faceted {
 
     protected static bool $isNew = false;
 
-    protected static function  createFacade(string $class = '', array $args = [], bool $isNew = false) {
+    protected static function  createFacade(string $class = '', array $args = [], bool $isNew = false): object {
         $class = $class?:static::class;
         $class =  static::getFaceClass()?:$class;
         $isNew = static::$isNew ?: $isNew;
@@ -20,8 +19,8 @@ abstract class Faceted
     // 获取类
     abstract protected static function getFaceClass() : string;
 
-    public static function instance(...$args) {
-        if (__CLASS__ != static::class) {
+    public static function instance(...$args): ?object {
+        if (__CLASS__ !== static::class) {
             return self::createFacade('', $args);
         }
         return null;

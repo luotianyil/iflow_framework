@@ -12,7 +12,6 @@ trait Attribute {
 
     protected array $attr = [];
 
-
     public function attributeToString(): string {
         $attr = "";
 

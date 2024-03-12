@@ -6,8 +6,8 @@ namespace iflow\console;
 
 use iflow\App;
 use iflow\command\buildPhar;
-use iflow\command\cmdInstruction;
-use iflow\command\http;
+use iflow\command\ShellInstruction;
+use iflow\command\Http;
 use iflow\command\install;
 use iflow\command\workMan;
 use iflow\console\Adapter\Input;
@@ -32,11 +32,11 @@ class Console
         'start-dht-services' => ServicesCommand::class,
         'start-kafka-consumer' => Services::class,
 //        'start-proxy-<client|server>' => netPenetrate::class,
-        'start' => http::class,
+        'start' => Http::class,
         'start-dev' => HttpServer::class,
         'install' => install::class,
         'build' => buildPhar::class,
-        'shell' => cmdInstruction::class
+        'shell' => ShellInstruction::class
     ];
 
     protected array $userCommand = [];

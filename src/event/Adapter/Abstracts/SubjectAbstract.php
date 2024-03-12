@@ -50,4 +50,5 @@ abstract class SubjectAbstract implements SplSubject {
      * @return mixed
      */
     abstract public function trigger(): mixed;
+
 }

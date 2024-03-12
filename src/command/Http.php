@@ -8,7 +8,7 @@ use iflow\socket\implement\http\Request;
 use iflow\socket\implement\http\Response;
 use iflow\socket\implement\http\Http as HttpServer;
 
-class http extends Command
+class Http extends Command
 {
 
     protected array $config = [];

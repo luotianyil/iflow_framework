@@ -6,7 +6,7 @@ namespace iflow\command;
 use iflow\console\Adapter\Command;
 use iflow\Response;
 
-class cmdInstruction extends Command
+class ShellInstruction extends Command
 {
 
     protected array $shell = [];

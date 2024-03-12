@@ -155,6 +155,7 @@ abstract class App {
      * @return string
      */
     public function getDefaultRootPath(): string {
+        return $this->frameWorkPath;
         return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
     }
 
@@ -221,6 +222,6 @@ abstract class App {
     public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
         $this->container = $this->container ?? Container::getInstance();
-        return call_user_func([ Container::getInstance(), $name ], ...$arguments);
+        return call_user_func([ $this->container, $name ], ...$arguments);
     }
 }

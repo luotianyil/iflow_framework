@@ -3,7 +3,6 @@
 namespace iflow\http\Hook\Annotation;
 
 use Attribute;
-use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use Reflector;
 use iflow\Response;
 use iflow\Pipeline\Pipeline;
@@ -14,6 +13,7 @@ use iflow\http\Hook\Interfaces\RequestHookInterface;
 use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class RequestHook extends AnnotationAbstract {
