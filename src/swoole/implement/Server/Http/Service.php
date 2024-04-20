@@ -25,7 +25,6 @@ class Service extends ServicesAbstract {
             $this -> registerWebSocketService();
         }
 
-
         $this -> registerSwServiceEvent($this) -> printStartContextToConsole(
             $this->isWebSocket ? [ 'http', 'ws' ] : 'http'
         );
@@ -34,12 +33,7 @@ class Service extends ServicesAbstract {
     }
 
     public function onRequest(object $request, object $response): mixed {
-        try {
-            return event('RequestVerification', $request, $response, microtime(true));
-        } catch (\Throwable $exception) {
-            // 全局异常函数处理
-            return $this->servicesCommand -> app -> make(Error::class) -> appHandler($exception);
-        }
+        return event('RequestVerification', $request, $response, microtime(true));
     }
 
     protected function getSwooleServiceClass(): string {

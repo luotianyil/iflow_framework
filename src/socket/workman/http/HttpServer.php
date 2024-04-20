@@ -24,7 +24,7 @@ class HttpServer
         }
         $onEvent = new $classes($this->config, $this->server);
         foreach ($onEvent -> events as $event => $action) {
-            $this->server->{$event} = [$onEvent, $action];
+            $this->server->{$event} = [ $onEvent, $action ];
         }
         return true;
     }

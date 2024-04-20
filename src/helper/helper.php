@@ -192,7 +192,7 @@ if (!function_exists('event')) {
 if (!function_exists('runtime_path')) {
     function runtime_path($path = ''): string
     {
-        return app()->getRuntimePath() . ($path ? $path . DIRECTORY_SEPARATOR : $path);
+        return app()->getRuntimePath() . DIRECTORY_SEPARATOR . ($path ?: '');
     }
 }
 

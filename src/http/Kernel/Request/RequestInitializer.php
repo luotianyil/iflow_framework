@@ -11,6 +11,7 @@ use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\exception\Adapter\ErrorException;
 use iflow\http\Kernel\Exception\RequestValidateException;
 use iflow\http\Adapter\Cookie;
+use iflow\initializer\Error;
 use iflow\Request;
 use iflow\Response;
 use ReflectionClass;
@@ -24,22 +25,25 @@ class RequestInitializer extends RequestVerification {
      * @param object|null $response
      * @param float $startTime
      * @return RequestVerification|bool
-     * @throws InvokeClassException|InvokeFunctionException|ErrorException
+     * @throws \Throwable
      */
     public function trigger(object $request = null, object $response = null, float $startTime = 0.00): RequestVerification|bool {
-        app() -> setStartTimes($startTime);
-
-        $request->server['path_info'] = $request->server['path_info'] ?? $request -> server['request_uri'];
-        if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
-            $file = config('app@favicon') ?: '';
-            return $response->sendfile($file);
-        }
-
-        if ($this -> setRequest($request) -> setResponse($response)
-                -> triggerRequestHook('RequestInitializeHook', $this->request, $response)) {
-            foreach ($this->RunProcessMethods as $key) {
-                if (method_exists($this, $key) && call_user_func([$this, $key])) break;
+        try {
+            app() -> setStartTimes($startTime);
+            $request->server['path_info'] = $request->server['path_info'] ?? $request -> server['request_uri'];
+            if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
+                $file = config('app@favicon') ?: '';
+                return $response->sendfile($file);
             }
+
+            if ($this -> setRequest($request) -> setResponse($response)
+                -> triggerRequestHook('RequestInitializeHook', $this->request, $response)) {
+                foreach ($this->RunProcessMethods as $key) {
+                    if (method_exists($this, $key) && call_user_func([$this, $key])) break;
+                }
+            }
+        } catch (\Throwable $exception) {
+            return app(Error::class) -> appHandler($exception);
         }
 
         return $this;

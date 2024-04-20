@@ -138,7 +138,7 @@ class Aop {
                 // 通过容器反射执行
                 $callback = app() -> invoke([$aspect, $action], $args);
 
-                if ($callback instanceof Response || $callback instanceof  ResponseInterface) {
+                if ($callback instanceof Response || $callback instanceof ResponseInterface) {
                     throw new HttpResponseException($callback);
                 }
 

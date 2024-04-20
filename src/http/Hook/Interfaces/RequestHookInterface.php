@@ -2,7 +2,7 @@
 
 namespace iflow\http\Hook\Interfaces;
 
-use iflow\http\App;
+use iflow\App;
 use iflow\Request;
 use iflow\Response;
 

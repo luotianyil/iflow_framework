@@ -26,10 +26,10 @@ class RenderDebugView {
     /**
      * 渲染数据
      * @param Response|ResponseInterface|Throwable|null $response
-     * @return Response|array|null
+     * @return Response
      * @throws InvokeClassException
      */
-    public function render(Response|ResponseInterface|Throwable|null $response = null): Response|array|null {
+    public function render(Response|ResponseInterface|Throwable|null $response = null): Response {
 
         $throwable =  $response ? (
             !$response instanceof Throwable

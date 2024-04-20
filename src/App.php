@@ -127,7 +127,7 @@ abstract class App {
      * @return $this
      */
     protected function load() : static {
-        include_once $this -> getDefaultRootPath() . 'helper/helper.php';
+        include_once $this -> getFrameWorkPath('helper/helper.php');
         return $this;
     }
 
@@ -142,8 +142,8 @@ abstract class App {
         $this->runtimePath = $this->getRootPath('runtime');
 
          array_map(function (string $file): string {
-           if (!file_exists($this->getRootPath() . $file)) {
-               throw new Exception("file $file dose not exists");
+           if (!file_exists($import = $this->getRootPath($file))) {
+               throw new Exception("file $file dose not exists; path: $import");
            }
            return $file;
         }, $this->frameWorkFolder);
@@ -182,7 +182,7 @@ abstract class App {
      * @return string
      */
     public function getConfigPath() : string {
-        return $this->getRootPath('config');
+        return $this->getRootPath('config') . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -195,10 +195,11 @@ abstract class App {
 
     /**
      * 获取框架运行路径
+     * @param string $path
      * @return string
      */
-    public function getFrameWorkPath() : string {
-        return $this->frameWorkPath;
+    public function getFrameWorkPath(string $path = '') : string {
+        return $this->frameWorkPath . DIRECTORY_SEPARATOR . ($path ?: '');
     }
 
     /**
@@ -214,7 +215,7 @@ abstract class App {
     }
 
     public function getRootPath(string $path = '') : string {
-        return $this->rootPath . ($path ? DIRECTORY_SEPARATOR . $path  : '') . DIRECTORY_SEPARATOR;
+        return $this->rootPath . DIRECTORY_SEPARATOR . ($path ?: '');
     }
 
     public function getAppClassName(): string {

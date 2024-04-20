@@ -92,6 +92,7 @@ class Response {
      */
     protected function setResponseHeader(): static {
         $this->response -> status($this->code);
+
         $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
 
         // 处理 Headers

@@ -13,6 +13,11 @@ class Response
         $this->response = new \Workerman\Protocols\Http\Response();
     }
 
+    public function status(int $status): Response {
+        $this -> response -> withStatus($status);
+        return $this;
+    }
+
     public function end(string $data = ''): bool
     {
         $this->response -> withBody($data);

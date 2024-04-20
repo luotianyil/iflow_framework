@@ -58,7 +58,7 @@ class Ast
      */
     private function getCode(string $class): string {
         $root = explode("\\", $class)[0] === "iflow" ?
-            app() -> getFrameWorkPath() : app() -> getDefaultRootPath();
+            app() -> getFrameWorkPath() : app() -> getRootPath();
 
         $filePath = str_replace("\\", "/", $root . $class . ".php");
         return file_exists($filePath) ? file_get_contents($filePath) : "";

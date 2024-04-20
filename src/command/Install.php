@@ -6,7 +6,6 @@ namespace iflow\command;
 use iflow\console\Adapter\Command;
 use iflow\Utils\basicTools;
 use think\db\ConnectionInterface;
-use think\db\exception\PDOException;
 use think\facade\Db;
 
 class Install extends Command {
@@ -28,7 +27,7 @@ class Install extends Command {
 
     protected function includeDataBase(): ?static {
         if (!extension_loaded('pdo_mysql')) {
-            $this->Console -> writeConsole -> writeLine('pdo_mysql does not extension! initializer database fail');
+            $this->Console -> writeConsole -> writeLine('cannot find pdo_mysql drive, please install pdo_mysql');
             return null;
         }
 
@@ -60,7 +59,7 @@ class Install extends Command {
                 }
             }
             return $this;
-        } catch (PDOException|\Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->Console -> writeConsole -> writeLine($exception -> getMessage());
             return null;
         }

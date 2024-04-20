@@ -30,7 +30,7 @@ class Configure {
      * @param Throwable $throwable
      * @param RenderDebugView $renderDebugView
      * @return bool
-     * @throws ReflectionException
+     * @throws ReflectionException|InvokeClassException
      */
     public function configure(string $exceptionClazz, Throwable $throwable, RenderDebugView $renderDebugView): bool {
         $thrace = $this->checkExceptionHandler($exceptionClazz, $throwable) ?: ($this->configure[$exceptionClazz] ?? []);
@@ -89,7 +89,7 @@ class Configure {
             $clazz = is_array($clazz) ? $clazz : [ $clazz ];
             return function ($app, $next) use ($clazz) {
                 $callback = app() -> invoke(
-                    [$app -> make($clazz[0]), 'configure'],
+                    [ $app -> make($clazz[0]), 'configure' ],
                     [ $this->throwable, $app, $next, $clazz[1] ?? [] ]
                 );
                 if ($callback instanceof Response || $callback instanceof ResponseInterface) {
@@ -99,7 +99,7 @@ class Configure {
         }, $thrace));
 
         $pipeline -> process(app(), function () use (&$isEnd) {
-            //TODO: 当自定义 异常接管执行完毕时 执行框架默认接管方法
+            // TODO: 当自定义 异常接管执行完毕时 执行框架默认接管方法
             $isEnd = false;
         });
 

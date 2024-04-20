@@ -30,7 +30,7 @@ class Error {
      * @param App $app
      * @return void
      */
-    public function initializer(App $app) {
+    public function initializer(App $app): void {
         $this->app = $app;
         $this->config = config('app');
 
@@ -93,7 +93,7 @@ class Error {
      */
     public function appShuDown(): void {
         if (!is_null($error = error_get_last()) && $this-> configure -> isFatal($error['type'])) {
-            throw new ErrorException(0, $error['message'], $error['file'], $error['line']);
+            throw new ErrorException($error['type'], $error['message'], $error['file'], $error['line']);
         }
     }
 
