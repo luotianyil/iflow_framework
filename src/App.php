@@ -29,10 +29,11 @@ abstract class App {
     // 用户路由
     public array $routers = [];
 
+    // 框架目录
+    protected string $frameWorkPath = '';
+
     // 应用目录
     protected string $rootPath = '';
-
-    protected string $frameWorkPath = '';
 
     protected string $appPath = '';
 
@@ -56,6 +57,10 @@ abstract class App {
     ];
 
     protected array $frameWorkFolder = [ 'app', 'runtime', 'config', 'public' ];
+
+    public function __construct(string $rootPath = __DIR__ . DIRECTORY_SEPARATOR) {
+        $this -> setFrameworkPath($rootPath);
+    }
 
     abstract public function runApp();
 
@@ -122,7 +127,7 @@ abstract class App {
      * @return $this
      */
     protected function load() : static {
-        include_once __DIR__ . DIRECTORY_SEPARATOR . 'helper/helper.php';
+        include_once $this -> getDefaultRootPath() . 'helper/helper.php';
         return $this;
     }
 
@@ -132,13 +137,12 @@ abstract class App {
      * @throws Exception
      */
     protected function frameWorkDirInit(): bool {
-        $this->frameWorkPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
 
-        $this->rootPath    = $this->getDefaultRootPath();
-        $this->appPath     = $this->rootPath . 'app' . DIRECTORY_SEPARATOR;
-        $this->runtimePath = $this->rootPath . 'runtime' . DIRECTORY_SEPARATOR;
+        $this->appPath     = $this->getRootPath('app');
+        $this->runtimePath = $this->getRootPath('runtime');
+
          array_map(function (string $file): string {
-           if (!file_exists($this->getDefaultRootPath() . $file)) {
+           if (!file_exists($this->getRootPath() . $file)) {
                throw new Exception("file $file dose not exists");
            }
            return $file;
@@ -151,11 +155,26 @@ abstract class App {
     }
 
     /**
+     * 设置框架根目录
+     * @param string $runPath
+     * @return $this
+     */
+    public function setFrameworkPath(string $runPath): App {
+        $this->rootPath = $runPath;
+        $frameWorkPath = $runPath . DIRECTORY_SEPARATOR . 'src';
+
+        $this->frameWorkPath = is_dir($frameWorkPath)
+            ? $frameWorkPath
+            : $runPath . 'vendor/iflow/framework/src';
+        return $this;
+    }
+
+    /**
      * 获取应用根目录
      * @return string
      */
     public function getDefaultRootPath(): string {
-        return dirname($this->frameWorkPath, 3) . DIRECTORY_SEPARATOR;
+        return $this->frameWorkPath . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -163,7 +182,7 @@ abstract class App {
      * @return string
      */
     public function getConfigPath() : string {
-        return $this->rootPath . 'config' . DIRECTORY_SEPARATOR;
+        return $this->getRootPath('config');
     }
 
     /**
@@ -194,8 +213,8 @@ abstract class App {
         return $this->appPath;
     }
 
-    public function getRootPath() : string {
-        return $this->rootPath;
+    public function getRootPath(string $path = '') : string {
+        return $this->rootPath . ($path ? DIRECTORY_SEPARATOR . $path  : '') . DIRECTORY_SEPARATOR;
     }
 
     public function getAppClassName(): string {

@@ -7,7 +7,7 @@ use iflow\socket\workman\http\implement\Request;
 use iflow\socket\workman\http\implement\Response;
 use Workerman\Connection\TcpConnection;
 
-class handle
+class Handle
 {
     public array $events = [
         'onMessage' => 'message'

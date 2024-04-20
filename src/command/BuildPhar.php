@@ -11,7 +11,7 @@ use iflow\console\Adapter\Command;
  * Class buildPhar
  * @package iflow\command
  */
-class buildPhar extends Command
+class BuildPhar extends Command
 {
 
     public function handle(array $event = [])

@@ -221,7 +221,7 @@ abstract class RequestVerification extends SubjectAbstract {
                 break;
             case !is_string($response) && !is_numeric($response):
                 // 为非字符串时
-                json($response) -> send();
+                json($response, $this -> response -> code) -> send();
                 break;
             default :
                 $this->response -> data($response) -> send();

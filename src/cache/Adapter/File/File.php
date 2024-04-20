@@ -81,7 +81,9 @@ class File implements AdapterInterface {
             }
         }
 
-        return $content ? unserialize(gzuncompress($content)) : [];
+        $content = unserialize(gzuncompress($content)) ?: '';
+        $jsonData = is_string($content) ? json_decode($content, true) : $content;
+        return $content ? ($jsonData !== null ? $jsonData : $content) : [];
     }
 
     /**

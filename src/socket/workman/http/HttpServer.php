@@ -6,7 +6,7 @@ namespace iflow\socket\workman\http;
 
 use Workerman\Worker;
 
-class httpServer
+class HttpServer
 {
     protected Worker $server;
 

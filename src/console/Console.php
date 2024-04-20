@@ -5,11 +5,11 @@ namespace iflow\console;
 
 
 use iflow\App;
-use iflow\command\buildPhar;
+use iflow\command\BuildPhar;
 use iflow\command\ShellInstruction;
 use iflow\command\Http;
-use iflow\command\install;
-use iflow\command\workMan;
+use iflow\command\Install;
+use iflow\command\Workerman;
 use iflow\console\Adapter\Input;
 use iflow\console\Adapter\WriteConsole;
 use iflow\http\HttpServer;
@@ -27,15 +27,15 @@ class Console
     public array $command = [
         '<start|stop|reload>-service' => ServicesCommand::class,
         '<start|stop|reload>-websocket' => ServicesCommand::class,
-        'start-workerMan' => workMan::class,
+        'start-workerman' => Workerman::class,
         '<start|stop|reload>-<tcp|udp|mqtt|rpc>-<client|server>' => ServicesCommand::class,
         'start-dht-services' => ServicesCommand::class,
         'start-kafka-consumer' => Services::class,
 //        'start-proxy-<client|server>' => netPenetrate::class,
         'start' => Http::class,
         'start-dev' => HttpServer::class,
-        'install' => install::class,
-        'build' => buildPhar::class,
+        'install' => Install::class,
+        'build' => BuildPhar::class,
         'shell' => ShellInstruction::class
     ];
 
@@ -60,18 +60,18 @@ class Console
      * @return void
      * @throws \Throwable
      */
-    protected function exec() {
+    protected function exec(): void {
         $this->getCommand()
             -> input
             -> parsingInputCommand($this->command, $this);
     }
 
-    protected function getCommand(): static {
+    protected function getCommand(): Console {
         $this->command = array_merge(config('command'), $this->command);
         return $this;
     }
 
-    public function outWrite($content = '') {
+    public function outWrite($content = ''): void {
         $this->writeConsole -> write($content) -> outPutWrite();
     }
 

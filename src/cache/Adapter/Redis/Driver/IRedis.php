@@ -40,7 +40,7 @@ class IRedis {
      * 设置配置
      * @param array $options
      * @return static
-     * @throws RedisOptionException
+     * @throws RedisOptionException|\RedisException
      */
     public function setOptions(array $options): static {
         if ($this->config['driver'] === 'SRedis') {
@@ -76,7 +76,7 @@ class IRedis {
      * 通过哨兵获取 Redis 地址
      * @throws \Exception
      */
-    protected function sentinelToAddress(string $sentinel_name) {
+    protected function sentinelToAddress(string $sentinel_name): void {
         $sentinel = $this->request('SENTINEL', 'get-master-addr-by-name', $sentinel_name);
 
         if (!$sentinel) {

@@ -15,6 +15,7 @@ use RuntimeException;
 class Event {
 
     protected App $app;
+
     protected Arr $arrayTools;
 
     /**
@@ -29,7 +30,7 @@ class Event {
     /**
      * @throws InvokeClassException
      */
-    public function initializer(App $app) {
+    public function initializer(App $app): void {
         $this -> app = $app;
         $this->events = array_merge($this->events, config('event') ?: []);
 

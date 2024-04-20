@@ -6,14 +6,14 @@ namespace iflow\socket\workman\websocket;
 
 use iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO\PacketFormatter;
 
-class event
+class Event
 {
     protected array $to = [];
 
-    protected handle $server;
+    protected Handle $server;
     protected string $nsp;
 
-    public function handle(handle $server, array $data, string $nsp): void {
+    public function handle(Handle $server, array $data, string $nsp): void {
         $this->server = $server;
         $this->nsp = $nsp;
     }

@@ -33,7 +33,7 @@ abstract class SubjectAbstract implements SplSubject {
     public function detach(SplObserver $observer): void {
         // TODO: Implement detach() method.
         $key = array_search($observer, $this->_observer);
-        if ($key) unset($this->_observer[$key]);
+        if ($key !== false) unset($this->_observer[$key]);
     }
 
     /**

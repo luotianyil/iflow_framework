@@ -60,11 +60,11 @@ class PacketFormatter {
         public string|array $data = ''
     ){}
 
-    public function open($data): string {
+    public static function open($data): string {
         return (new static(self::OPEN, $data)) -> toString();
     }
 
-    public function pong($data): string {
+    public static function pong($data = ''): string {
         return (new static(self::PONG, $data)) -> toString();
     }
 

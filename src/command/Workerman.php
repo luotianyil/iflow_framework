@@ -5,10 +5,9 @@ namespace iflow\command;
 
 
 use iflow\console\Adapter\Command;
-use iflow\socket\workman\http\httpServer;
+use iflow\socket\workman\http\HttpServer;
 
-class workMan extends Command
-{
+class Workerman extends Command {
 
     public function handle(array $event = []): bool {
         // TODO: Implement handle() method.
@@ -22,7 +21,7 @@ class workMan extends Command
             $configName = $config['default'];
         }
 
-        $this->Console -> writeConsole -> writeLine((new httpServer($config[$configName])) -> start());
+        $this->Console -> writeConsole -> writeLine((new HttpServer($config[$configName])) -> start());
         return true;
     }
 }

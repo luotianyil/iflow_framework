@@ -8,7 +8,7 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
 use Workerman\Worker;
 
-class handle
+class Handle
 {
 
     public array $events = [
@@ -51,7 +51,7 @@ class handle
             ]
         );
 
-        $connection -> send(PacketFormatter::OPEN. $payload);
+        $connection -> send(PacketFormatter::open($payload));
 
         if ($this->EIO < 4) {
             $this->ping -> clearPingTimeOut();
@@ -93,21 +93,19 @@ class handle
         $event = match (intval($data -> type)) {
             PacketFormatter::OPEN => $this->onConnection($data, $connection),
             PacketFormatter::EVENT => function () use ($data, $connection) {
-                // 接受信息回调
+                // 接收信息回调
                 $classes = $this->config['event'] ?? '';
                 if (class_exists($classes)) {
-                    call_user_func([
-                        new $classes, 'handle'
-                    ], $this, [
-                        'event' => $data->data [0],
-                        'data' => isset($data->data[1]) ? (
-                        json_decode($data->data[1], JSON_UNESCAPED_UNICODE) ?: $data->data[1]
-                        ) : ''
-                    ], $data->nsp
+                    call_user_func([ new $classes, 'handle' ], $this, [
+                            'event' => $data->data [0],
+                            'data' => isset($data->data[1]) ? (
+                                json_decode($data->data[1], JSON_UNESCAPED_UNICODE) ?: $data->data[1]
+                            ) : ''
+                        ], $data->nsp
                     );
                 }
             },
-            PacketFormatter::PING => $connection -> send(PacketFormatter::PONG),
+            PacketFormatter::PING => $connection -> send(PacketFormatter::pong()),
             PacketFormatter::PONG => $connection -> send(PacketFormatter::ping()),
             default => false
         };
@@ -117,9 +115,7 @@ class handle
     protected function onConnection(PacketFormatter $data = null, $connection = null): bool {
         $packet = PacketFormatter::create(PacketFormatter::CONNECT);
         if ($this->EIO >= 4) {
-            $packet -> data = [
-                'sid' => $this->sid
-            ];
+            $packet -> data = [ 'sid' => $this->sid ];
         }
         $connection -> send(PacketFormatter::message($packet -> toString(), nsp: $data ? $data -> nsp : '/'));
         return true;

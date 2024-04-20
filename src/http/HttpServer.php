@@ -13,7 +13,7 @@ class HttpServer extends Command {
             $phpRuntimePath = $this -> getArgument('--phprun', php_run_path());
 
             $shell = $phpRuntimePath . " -S {$config['host']}:{$config['port']} -t " . $config['document_root'];
-            $this->Console -> writeConsole ->writeLine((new BasicTools()) -> execShell($shell));
+            passthru($shell);
             return $config;
         });
     }

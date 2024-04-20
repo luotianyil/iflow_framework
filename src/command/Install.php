@@ -9,8 +9,7 @@ use think\db\ConnectionInterface;
 use think\db\exception\PDOException;
 use think\facade\Db;
 
-class install extends Command
-{
+class Install extends Command {
 
     protected array $config = [];
 
@@ -50,14 +49,14 @@ class install extends Command
                 return $item -> getExtension() === 'sql';
             });
             $install = $this->config['database']['rootPath'] . DIRECTORY_SEPARATOR . 'install.sql';
-            $create = $this->dataExecute($install);
+            $create = $this->dbImportExecute($install);
 
             // 验证 install.sql 是否执行成功
             if (!$create) return null;
 
             foreach ($files as $file) {
                 if ($file -> getPathname() !== $install) {
-                    $this->dataExecute($file -> getPathname());
+                    $this->dbImportExecute($file -> getPathname());
                 }
             }
             return $this;
@@ -78,9 +77,13 @@ class install extends Command
         $this -> db -> execute("use `{$defaultConfig['database']}`");
     }
 
-
-    protected function dataExecute(string $filePath = ''): bool {
-        $this->Console -> writeConsole -> writeLine('include DataBase file: ' . basename($filePath));
+    /**
+     * 导入SQL文件
+     * @param string $filePath
+     * @return bool
+     */
+    protected function dbImportExecute(string $filePath = ''): bool {
+        $this->Console -> writeConsole -> writeLine('import dbSQL: ' . basename($filePath));
         if (!file_exists($filePath)) return false;
         $sql = file_get_contents($filePath);
         $sql = str_replace("\r", "\n", $sql);

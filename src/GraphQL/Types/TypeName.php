@@ -18,9 +18,9 @@ class TypeName
 
     /**
      * @param string $typeName
-     * @return $this
+     * @return TypeName
      */
-    public function setTypeName(string $typeName): static
+    public function setTypeName(string $typeName): TypeName
     {
         $this->typeName = $typeName;
         return $this;
@@ -36,9 +36,9 @@ class TypeName
 
     /**
      * @param string $typeDescription
-     * @return static
+     * @return TypeName
      */
-    public function setTypeDescription(string $typeDescription): static
+    public function setTypeDescription(string $typeDescription): TypeName
     {
         $this->typeDescription = $typeDescription;
         return $this;
@@ -54,9 +54,9 @@ class TypeName
 
     /**
      * @param \Closure $resolveType
-     * @return typeName
+     * @return TypeName
      */
-    public function setResolveType(\Closure $resolveType): typeName
+    public function setResolveType(\Closure $resolveType): TypeName
     {
         $this->resolveType = $resolveType;
         return $this;
@@ -73,9 +73,9 @@ class TypeName
 
     /**
      * @param InterfaceType $interfaceType
-     * @return typeName
+     * @return TypeName
      */
-    public function setInterfaceType(InterfaceType $interfaceType): typeName
+    public function setInterfaceType(InterfaceType $interfaceType): TypeName
     {
         $this->interfaceType = $interfaceType;
         return $this;
