@@ -3,19 +3,35 @@
 
 namespace iflow\socket\workman\http\implement;
 
-class Response
-{
-    protected \Workerman\Protocols\Http\Response $response;
+use Workerman\Connection\TcpConnection;
+use Workerman\Protocols\Http\ServerSentEvents;
+use Workerman\Protocols\Http\Response as WorkerResponse;
 
-    public function __construct(
-        protected $connection
-    ) {
-        $this->response = new \Workerman\Protocols\Http\Response();
+class Response {
+
+    protected WorkerResponse $response;
+
+    protected bool $sendServerSendEventHeader = false;
+
+    public function __construct(protected TcpConnection $connection) {
+        $this->response = new WorkerResponse(body: "\r\n");
     }
 
     public function status(int $status): Response {
         $this -> response -> withStatus($status);
         return $this;
+    }
+
+    public function serverSentEvents(array $data = [], string $contentType = 'text/event-stream'): bool {
+        if (!$this->sendServerSendEventHeader) {
+            $this->sendServerSendEventHeader = true;
+            $this->connection -> send(
+                $this->response -> withHeader('Content-Type', $contentType)
+            );
+        }
+
+        $this->connection -> send(new ServerSentEvents($data));
+        return true;
     }
 
     public function end(string $data = ''): bool

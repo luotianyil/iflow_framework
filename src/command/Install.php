@@ -25,7 +25,7 @@ class Install extends Command {
         $this->Console -> writeConsole -> writeLine('installed');
     }
 
-    protected function includeDataBase(): ?static {
+    protected function includeDataBase(): ?Install {
         if (!extension_loaded('pdo_mysql')) {
             $this->Console -> writeConsole -> writeLine('cannot find pdo_mysql drive, please install pdo_mysql');
             return null;

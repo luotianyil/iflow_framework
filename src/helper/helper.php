@@ -105,11 +105,9 @@ if (!function_exists('find_files')) {
         foreach ($items as $item) {
             if ($item->isDir() && !$item->isLink()) {
                 yield from find_files($item->getPathname(), $filter);
-            } else {
-                if ($filter($item)) {
-                    yield $item;
-                }
+                continue;
             }
+            if ($filter($item)) yield $item;
         }
     }
 }
@@ -310,7 +308,7 @@ if (!function_exists('view')) {
 
 // 哈希加盐
 if (!function_exists('hasha')) {
-    function hasha($string, string $key = '@QU8LP!90YB'): string {
+    function hasha($string, string $key = '@QLBCGT3!.Y'): string {
         return md5(hash_hmac("sha512", $string, $key));
     }
 }

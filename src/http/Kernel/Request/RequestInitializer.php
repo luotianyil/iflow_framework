@@ -36,7 +36,7 @@ class RequestInitializer extends RequestVerification {
                 return $response->sendfile($file);
             }
 
-            if ($this -> setRequest($request) -> setResponse($response)
+            if ($this -> setRequest($request) -> setResponse($response, $startTime)
                 -> triggerRequestHook('RequestInitializeHook', $this->request, $response)) {
                 foreach ($this->RunProcessMethods as $key) {
                     if (method_exists($this, $key) && call_user_func([$this, $key])) break;
@@ -67,7 +67,7 @@ class RequestInitializer extends RequestVerification {
      * 初始化请求数据
      * @param object $request
      * @return $this
-     * @throws InvokeClassException|InvokeFunctionException
+     * @throws InvokeClassException|InvokeFunctionException|AttributeTypeException
      */
     public function setRequest(object $request): static {
         // 验证当前cookie是否为对象
@@ -81,11 +81,15 @@ class RequestInitializer extends RequestVerification {
     /**
      * 初始化响应数据
      * @param object $response
+     * @param float $startTime
      * @return $this
-     * @throws InvokeClassException|InvokeFunctionException
+     * @throws AttributeTypeException
+     * @throws InvokeClassException
+     * @throws InvokeFunctionException
      */
-    public function setResponse(object $response): static {
+    public function setResponse(object $response, float $startTime = 0.00): static {
         $this->response = app(Response::class, [], true) -> initializer($response);
+        $this->response -> startTime = $startTime;
         return $this;
     }
 

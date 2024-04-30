@@ -3,7 +3,6 @@ declare (strict_types = 1);
 
 namespace iflow;
 
-use Exception;
 use iflow\console\Console;
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
@@ -11,9 +10,12 @@ use iflow\Container\implement\annotation\traits\Execute;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\event\Event;
-use iflow\initializer\{AppSurroundings, Config, Error, Helpers, initializer};
+use iflow\initializer\{
+    AppSurroundings, Config, Error, Helpers, initializer
+};
 use iflow\log\Log;
 use ReflectionClass;
+use Exception;
 
 /**
  * Class App
@@ -58,8 +60,9 @@ abstract class App {
 
     protected array $frameWorkFolder = [ 'app', 'runtime', 'config', 'public' ];
 
-    public function __construct(string $rootPath = __DIR__ . DIRECTORY_SEPARATOR) {
-        $this -> setFrameworkPath($rootPath);
+    public function __construct(string $rootPath = '') {
+        $rootPath = $rootPath ?: dirname(__DIR__, 3);
+        $this -> setFrameworkPath(rtrim($rootPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
     }
 
     abstract public function runApp();
@@ -71,6 +74,7 @@ abstract class App {
      */
     public function run(): void {
         $this -> register('iflow\\App', $this);
+        $this -> register($this->getAppClassName(), $this);
         if ($this -> frameWorkDirInit()) {
             $this -> load() -> initializer();
         }
@@ -161,7 +165,7 @@ abstract class App {
      */
     public function setFrameworkPath(string $runPath): App {
         $this->rootPath = $runPath;
-        $frameWorkPath = $runPath . DIRECTORY_SEPARATOR . 'src';
+        $frameWorkPath = $runPath . 'src';
 
         $this->frameWorkPath = is_dir($frameWorkPath)
             ? $frameWorkPath

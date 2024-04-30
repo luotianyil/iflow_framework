@@ -68,8 +68,8 @@ class PacketFormatter {
         return (new static(self::PONG, $data)) -> toString();
     }
 
-    public static function ping(): int {
-        return self::PING;
+    public static function ping($data = ''): string {
+        return (new static(self::PING, $data)) -> toString();
     }
 
     public static function message($payload, int $offset = 1, string $nsp = '/'): string {

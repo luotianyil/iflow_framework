@@ -5,10 +5,10 @@ namespace iflow\response;
 
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\exception\Adapter\HttpResponseException;
+use iflow\Response;
 use Psr\Http\Message\ResponseInterface;
 
-trait ResponseTrait
-{
+trait ResponseTrait {
 
     public array $headers = [];
 
@@ -26,6 +26,9 @@ trait ResponseTrait
 
     // HTTP 版本
     public string $version = "1.1";
+
+    // 运行开始时间
+    public float $startTime = 0.00;
 
     public ?ResponseInterface $responsePsr7 = null;
 
@@ -99,9 +102,9 @@ trait ResponseTrait
     /**
      * 设置响应头
      * @param array $headers
-     * @return $this
+     * @return Response
      */
-    public function headers(array $headers = []): static
+    public function headers(array $headers = []): Response
     {
         // 解决 HeaderValues 为 Array
         $headerMap = [];

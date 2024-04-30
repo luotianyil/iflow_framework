@@ -3,6 +3,7 @@
 
 namespace iflow\response\Adapter;
 
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Response;
 
 class File extends Response
@@ -26,6 +27,7 @@ class File extends Response
      * 返回file
      * @param $data
      * @return bool
+     * @throws InvokeClassException
      */
     public function output($data): bool
     {
@@ -45,7 +47,7 @@ class File extends Response
         return $this->output($this->data);
     }
 
-    public function end($content = null): bool {
+    public function end(mixed $data = null): bool {
         // 验证是否已经结束请求
         if (method_exists($this->response, 'isWritable') && $this->response -> isWritable() === false) {
             return true;
@@ -54,7 +56,7 @@ class File extends Response
         if (request() -> isGet()) {
             $this->setLastModified() -> setCacheControl() -> steExpiresTimes();
         }
-        return $this->setResponseHeader() ->response -> sendfile($content);
+        return $this->setResponseHeader() -> response -> sendfile($data);
     }
 
 }

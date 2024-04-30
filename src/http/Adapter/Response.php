@@ -2,8 +2,8 @@
 
 namespace iflow\http\Adapter;
 
-use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\fileSystem\File;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
 
 class Response {
 
@@ -21,14 +21,18 @@ class Response {
         return $this->finish();
     }
 
+    public function write(mixed $content): bool {
+        echo $content;
+        return $this->finish();
+    }
+
     /**
      * 结束请求
      * @param $data
      * @return bool
      */
     public function end($data): bool {
-        echo $data;
-        return $this->finish();
+        return $this->write($data);
     }
 
     /**

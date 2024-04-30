@@ -22,6 +22,7 @@ class Response {
     protected function init($data, $code): void {
         $this->code = $code;
         $this->response = $this->response ?? response() -> response;
+        $this->startTime = response() -> startTime;
         $this->data($data);
     }
 
@@ -53,7 +54,6 @@ class Response {
      * @throws InvokeClassException
      */
     public function send(): bool {
-
         // 获取Response 原始响应体
         $this->response = response() -> response;
 
@@ -67,10 +67,10 @@ class Response {
             return true;
         }
 
-        $end = $this->setResponseHeader() -> response -> end($this->output($this->data));
+        $end = $this -> setResponseHeader() -> response -> end($this->output($this->data));
 
         // 结束请求
-        event('RequestEndEvent');
+        event('RequestEndEvent', $this -> startTime);
 
         return $end;
     }
@@ -90,7 +90,8 @@ class Response {
      * @return $this
      * @throws InvokeClassException
      */
-    protected function setResponseHeader(): static {
+    protected function setResponseHeader(): Response {
+
         $this->response -> status($this->code);
 
         $this->response -> header('Content-Type', $this->contentType . ';' . $this->charSet);
