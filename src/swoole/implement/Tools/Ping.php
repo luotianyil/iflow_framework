@@ -2,13 +2,14 @@
 
 namespace iflow\swoole\implement\Tools;
 
-use iflow\swoole\implement\Server\WebSocket\PacketPaser\SocketIO\Packet;
-use Swoole\Http\Request;
+use iflow\swoole\implement\Server\WebSocket\PacketFormatter\SocketIO\PacketFormatter;
 use Swoole\Server;
 use Swoole\Timer;
 
 class Ping {
+
     protected mixed $pingTimeoutTimer = 0;
+
     protected mixed $pingIntervalTimer = 0;
 
     public function __construct(
@@ -22,7 +23,10 @@ class Ping {
         Timer::clear($this->pingIntervalTimer);
         $this->pingIntervalTimer = Timer::after($this->pingTimer, function () {
             if (!$this->server -> exist($this-> fd)) return false;
-            $this->server->push($this -> fd, Packet::ping());
+
+            if (method_exists($this->server, 'push')) $this->server->push($this -> fd, PacketFormatter::ping());
+            else if (method_exists($this->server, 'send')) $this->server->send($this -> fd, PacketFormatter::ping());
+
             $this->clearPingTimeOut($this->pingTimeOut);
 
             return true;
@@ -30,7 +34,7 @@ class Ping {
         return true;
     }
 
-    public function clearPingTimeOut($timeout = null) {
+    public function clearPingTimeOut($timeout = null): void {
         Timer::clear($this->pingTimeoutTimer);
         $this->pingTimeoutTimer = Timer::after(
             $timeout === null ? $this->pingTimer + $this->pingTimeOut : $timeout,

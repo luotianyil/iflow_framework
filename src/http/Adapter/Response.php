@@ -23,7 +23,7 @@ class Response {
 
     public function write(mixed $content): bool {
         echo $content;
-        return $this->finish();
+        return true;
     }
 
     /**
@@ -32,7 +32,8 @@ class Response {
      * @return bool
      */
     public function end($data): bool {
-        return $this->write($data);
+        $this->write($data);
+        return $this->finish();
     }
 
     /**

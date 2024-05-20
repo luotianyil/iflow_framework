@@ -24,10 +24,10 @@ interface RoomAdapterInterface {
     /**
      * 发送消息
      * @param string $room
-     * @param array $data
+     * @param mixed $data
      * @return bool
      */
-    public function emit(string $room, array $data): bool;
+    public function emit(string $room, mixed $data): bool;
 
     /**
      * 获取房间内所有用户信息
@@ -35,6 +35,5 @@ interface RoomAdapterInterface {
      * @return array
      */
     public function getRoomAllUser(string $room): array;
-
 
 }

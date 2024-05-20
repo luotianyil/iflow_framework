@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\middleware\defaultMiddleware;
+namespace iflow\middleware\DefaultMiddleware;
 
 
 use iflow\App;
@@ -10,8 +10,8 @@ use iflow\Container\implement\generate\exceptions\InvokeClassException;
 /**
  * 跨域请求支持
  */
-class AllowCrossDomain
-{
+class AllowCrossDomain {
+
     protected array $header = [
         'Access-Control-Allow-Credentials' => 'true',
         'Access-Control-Max-Age'           => 1800,

@@ -31,7 +31,7 @@ class Console
         '<start|stop|reload>-<tcp|udp|mqtt|rpc>-<client|server>' => ServicesCommand::class,
         'start-dht-services' => ServicesCommand::class,
         'start-kafka-consumer' => Services::class,
-//        'start-proxy-<client|server>' => netPenetrate::class,
+        'start-proxy-<client|server>' => ServicesCommand::class,
         'start' => Http::class,
         'start-dev' => HttpServer::class,
         'install' => Install::class,

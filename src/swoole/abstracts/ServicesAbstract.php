@@ -8,6 +8,7 @@ use iflow\fileSystem\Watch;
 use iflow\initializer\AppMonitoring;
 use iflow\swoole\Config;
 use iflow\swoole\implement\Tools\Pid;
+use iflow\swoole\implement\Tools\Tables;
 use iflow\swoole\implement\Tools\Task\Delivery;
 use iflow\swoole\implement\Tools\Task\Finish;
 use iflow\swoole\interfaces\ServicesInterface;
@@ -32,6 +33,10 @@ abstract class ServicesAbstract implements ServicesInterface {
 
     protected array $events = [];
 
+    /**
+     * 监听服务列表
+     * @var array<Server\Port>
+     */
     protected array $serverListeners;
 
     #[Inject]
@@ -39,6 +44,9 @@ abstract class ServicesAbstract implements ServicesInterface {
 
     #[Inject]
     public Finish $finish;
+
+    #[Inject]
+    public Tables $tables;
 
     protected string $defaultEventClass = '';
 
@@ -58,11 +66,11 @@ abstract class ServicesAbstract implements ServicesInterface {
 
         $serviceClass = $this->getSwooleServiceClass();
 
-        $this->SwService = new $serviceClass(...$this->_params);
+        $this->SwService = new $serviceClass(...(array_slice($this->_params, 0, 3)));
         $this->SwService -> set($this->config -> get('swConfig'));
         $this->servicesCommand -> setServices();
 
-        $this->registerListeners() -> createServiceAfter();
+        $this -> registerListeners() -> createServiceAfter();
 
         $process = new Process(function () {
             run(function () {
@@ -73,7 +81,7 @@ abstract class ServicesAbstract implements ServicesInterface {
         $this->getSwService() -> addProcess($process);
     }
 
-    protected function createServiceAfter() {}
+    protected function createServiceAfter(): void {}
 
     /**
      * @return HttpServer|Server|SwooleClient|WebSocketServer|MQClient
@@ -141,6 +149,7 @@ abstract class ServicesAbstract implements ServicesInterface {
         if (empty($this->_params))
             $this->_params = $this->config -> get('host') ?: $this->config -> get('listener');
         $this->_params = array_values($this->_params);
+
         return $this;
     }
 
@@ -190,6 +199,7 @@ abstract class ServicesAbstract implements ServicesInterface {
     /**
      * 增加监听的端口
      * @return $this
+     * @throws \Exception
      */
     protected function registerListeners(): ServicesAbstract {
         $listeners = $this->config -> get('listeners');
@@ -197,7 +207,9 @@ abstract class ServicesAbstract implements ServicesInterface {
 
             $listener['options'] = $listener['options'] ?? 'default';
 
-            $listenerServer = $this->SwService -> addlistener($listener['host'], $listener['port'], $listener['mode'] ?? SWOOLE_SOCK_TCP);
+            $listenerServer =
+                $this->SwService -> addListener($listener['host'], $listener['port'], $listener['mode'] ?? SWOOLE_SOCK_TCP)
+                ?: throw new \Exception("listenPort: {$listener['port']} fail");
 
             $listenerServer -> set(
                 $listener['options'] === 'default' ? $this->config -> get('swConfig') : $listener['options']
@@ -209,7 +221,9 @@ abstract class ServicesAbstract implements ServicesInterface {
         return $this;
     }
 
-    public function onTask() {}
+    public function onTask(Server $server, int $task_id, int $reactor_id, mixed $data) {}
+
+    public function onCoroutineTask(Server $server, Server\Task $task) {}
 
     public function onFinish() {}
 
@@ -244,9 +258,22 @@ abstract class ServicesAbstract implements ServicesInterface {
     /**
      * 通过名称获取监听服务
      * @param string $name
-     * @return mixed
+     * @return Server\Port
      */
     public function getListenerServer(string $name): mixed {
         return $this->serverListeners[$name] ?? null;
+    }
+
+
+    /**
+     * @return Config
+     */
+    public function getConfig(): Config {
+        return $this->config;
+    }
+
+    public function checkClientConnection(int $fd): bool {
+        $clientInfo = $this -> getSwService() -> getClientInfo($fd);
+        return $clientInfo !== false;
     }
 }

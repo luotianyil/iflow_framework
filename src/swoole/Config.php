@@ -69,4 +69,12 @@ class Config extends Arr {
     public function getCommandEvent(): array {
         return $this->commandEvent;
     }
+
+    /**
+     * @return string
+     */
+    public function getPackageEof(): string {
+        return $this -> get('swConfig@open_eof_check')
+            ? $this -> get('swConfig@package_eof', '') : '';
+    }
 }

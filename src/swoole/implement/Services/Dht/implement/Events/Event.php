@@ -27,14 +27,14 @@ class Event extends \iflow\swoole\implement\Server\Tcp\Events\Event {
 
 
     protected function query(array $data, Server $server, array $clientInfo) {
-        return PacketEnum::from($data['q']) -> onPacket($data, $server, $clientInfo, $this -> servicesAbstract);
+        return PacketEnum::from($data['q']) -> onPacket($data, $server, $clientInfo, $this -> services);
     }
 
 
     protected function response (array $data, Server $server, array $clientInfo): array {
         if (!isset($data['r']['nodes']) || !isset($data['r']['nodes'][1])) return [];
-        return $this->servicesAbstract -> getNode() -> saveNode(
-            $this->servicesAbstract -> getNode() -> decode($data['r']['nodes'])
+        return $this->services -> getNode() -> saveNode(
+            $this->services -> getNode() -> decode($data['r']['nodes'])
         );
     }
 }

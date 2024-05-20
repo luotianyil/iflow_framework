@@ -64,6 +64,7 @@ class StreamedResponse extends Response {
             return $this->response -> serverSentEvents(
                 [
                     'event' => $this->event,
+                    'retry' => $this->retry,
                     'data' => strval($content),
                     'id' => $id
                 ],
@@ -74,7 +75,8 @@ class StreamedResponse extends Response {
             "event: {$this->event}\n".
             "retry: {$this->retry}\n".
             "id: ". $id . "\n".
-            "data: ". (!is_array($content) ? $content : json_encode($content, JSON_UNESCAPED_UNICODE)) . "\n\n"
+            "data: ". (!is_array($content) ? $content : json_encode($content, JSON_UNESCAPED_UNICODE))
+            . "\n\n"
         );
     }
 
@@ -82,7 +84,6 @@ class StreamedResponse extends Response {
      * 结束请求
      * @param mixed|null $data
      * @return bool
-     * @throws InvokeClassException
      */
     public function send(mixed $data = null): bool {
         $end = $this->write($this->finish_mark);

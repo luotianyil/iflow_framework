@@ -35,9 +35,9 @@ trait ResponseTrait {
     /**
      * 设置响应对象
      * @param $response
-     * @return $this
+     * @return Response
      */
-    protected function response($response): static {
+    protected function response($response): Response {
         $this->response = $response;
         return $this;
     }
@@ -63,9 +63,9 @@ trait ResponseTrait {
     /**
      * 设置返回响应数据
      * @param $data
-     * @return $this
+     * @return Response
      */
-    public function data($data): static {
+    public function data($data): Response {
         $this->data = $data;
         return $this;
     }
@@ -81,9 +81,9 @@ trait ResponseTrait {
     /**
      * 设置响应状态
      * @param int $status
-     * @return $this
+     * @return Response
      */
-    public function withStatus(int $status): static {
+    public function withStatus(int $status): Response {
         $this->code = $status;
         return $this;
     }
@@ -91,9 +91,9 @@ trait ResponseTrait {
     /**
      * 其他设置
      * @param array $options
-     * @return $this
+     * @return Response
      */
-    public function options(array $options = []): static
+    public function options(array $options = []): Response
     {
         $this->options = array_merge($this->options, $options);
         return $this;
@@ -118,9 +118,9 @@ trait ResponseTrait {
     /**
      * 设置 Modified 标识
      * @param string $value
-     * @return $this
+     * @return Response
      */
-    public function setLastModified(string $value = ""): static
+    public function setLastModified(string $value = ""): Response
     {
         $this->headers([
             'Last-Modified' => $value ?: gmdate('D,d M Y H:i:s')."GMT"
@@ -131,9 +131,9 @@ trait ResponseTrait {
     /**
      * 设置响应缓存
      * @param string $value
-     * @return $this
+     * @return Response
      */
-    public function setCacheControl(string $value = ""): static
+    public function setCacheControl(string $value = ""): Response
     {
         $this->headers([
             'Cache-Control' => $value ?: "max-age=36000,must-revalidata"
@@ -144,9 +144,9 @@ trait ResponseTrait {
     /**
      * 设置静态文件过期时间
      * @param string $value
-     * @return $this
+     * @return Response
      */
-    public function steExpiresTimes(string $value = ""): static
+    public function steExpiresTimes(string $value = ""): Response
     {
         $this->headers([
             'Expires' => $value ?: gmdate('D,d M Y H:i:s',time() + 36000)."GMT"
@@ -157,9 +157,9 @@ trait ResponseTrait {
     /**
      * 设置内容Type
      * @param string $contentType
-     * @return $this
+     * @return Response
      */
-    public function contentType(string $contentType = 'application/json') : static {
+    public function contentType(string $contentType = 'application/json') : Response {
         $this -> contentType = $contentType;
         return $this;
     }
@@ -167,9 +167,9 @@ trait ResponseTrait {
     /**
      * 设置重定向地址
      * @param string $url
-     * @return $this
+     * @return Response
      */
-    public function setRedirect(string $url = ""): static
+    public function setRedirect(string $url = ""): Response
     {
         $this->code = 302;
         $this->headers["Location"] = $url;
@@ -179,9 +179,9 @@ trait ResponseTrait {
     /**
      * 设置HTTP 响应版本
      * @param string $version
-     * @return static
+     * @return Response
      */
-    public function setVersion(string $version): static
+    public function setVersion(string $version): Response
     {
         $this->version = $version;
         return $this;
@@ -190,9 +190,9 @@ trait ResponseTrait {
     /**
      * 设置PSR7
      * @param ResponseInterface|null $responsePsr7
-     * @return $this
+     * @return Response
      */
-    public function responsePsr7(?ResponseInterface $responsePsr7 = null): static
+    public function responsePsr7(?ResponseInterface $responsePsr7 = null): Response
     {
         $this->responsePsr7 = $responsePsr7;
         return $this;

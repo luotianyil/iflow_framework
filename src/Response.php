@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
  * Response 响应类
  * @mixin \Swoole\Http2\Response
  * @mixin \Swoole\Http\Response
- * @mixin http\Adapter\Response
+ * @mixin Http\Adapter\Response
  */
 class Response {
 
@@ -31,10 +31,10 @@ class Response {
      * @param mixed $data
      * @param int $code
      * @param string $type
-     * @return object
+     * @return Response
      * @throws InvokeClassException|Container\implement\generate\exceptions\InvokeFunctionException|Container\implement\annotation\exceptions\AttributeTypeException
      */
-    public static function create(mixed $data = [], int $code = 200, string $type = 'json'): object {
+    public static function create(mixed $data = [], int $code = 200, string $type = 'json'): Response {
         $class = str_contains($type, '//') ? $type : '\\iflow\\response\\Adapter\\'.ucfirst($type);
         return app() -> invokeClass($class, [ $data, $code ]);
     }
@@ -107,9 +107,9 @@ class Response {
     /**
      * 初始化响应类
      * @param $response
-     * @return $this
+     * @return Response
      */
-    public function initializer($response): static {
+    public function initializer($response): Response {
         $this->response = $response;
         return $this;
     }
@@ -122,14 +122,15 @@ class Response {
     public function getResponsePsr7(?string $reason = null): ResponseInterface
     {
         if ($this->responsePsr7 !== null) return $this->responsePsr7;
-        $this->responsePsr7 = new \GuzzleHttp\Psr7\Response(
+
+        $raw = $this->data ?? '';
+        return $this->responsePsr7 = new \GuzzleHttp\Psr7\Response(
             $this->code,
             $this->headers,
-            $this->data ?? '',
+            is_string($raw) ? $raw : json_encode($raw, JSON_UNESCAPED_UNICODE),
             $this->version,
             $reason
         );
-        return $this->responsePsr7;
     }
 
     /**

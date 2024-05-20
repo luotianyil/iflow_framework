@@ -1,7 +1,7 @@
 <?php
 
 
-namespace iflow\middleware\defaultMiddleware;
+namespace iflow\middleware\DefaultMiddleware;
 
 
 use iflow\App;
