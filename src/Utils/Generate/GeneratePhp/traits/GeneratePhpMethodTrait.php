@@ -25,7 +25,7 @@ trait GeneratePhpMethodTrait {
     /**
      * 获取需要生成的方法列表
      * @return array
-     * @throws \ReflectionException
+     * @throws \ReflectionException|InvokeClassException
      */
     protected function getMethods(): array {
 
@@ -36,7 +36,7 @@ trait GeneratePhpMethodTrait {
 
     /**
      * @return string
-     * @throws \ReflectionException
+     * @throws \ReflectionException|InvokeClassException
      */
     protected function generateMethodPhpCode(): string {
 

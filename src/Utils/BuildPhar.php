@@ -5,7 +5,7 @@ namespace iflow\Utils;
 use Phar;
 use Throwable;
 
-class buildPhar {
+class BuildPhar {
 
     protected Phar $phar;
 

@@ -80,7 +80,7 @@ trait Request {
     private function sendRequest($methods, $uri, array|string $params = [], array $header = [])
     {
         if (is_array($params) && count($params) === 0) {
-            $params = "";
+            $params = '';
         }
 
         return httpRequest(

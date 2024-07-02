@@ -6,6 +6,8 @@ use iflow\swoole\implement\Services\Elasticsearch\Tool\Request;
 
 class Sql {
 
+    use Request;
+
     protected array $acceptType = [
         'csv' => 'text/csv',
         'json' => 'application/json',
@@ -15,8 +17,6 @@ class Sql {
         'cbor' => 'application/cbor',
         'smile' => 'application/smile'
     ];
-
-    use Request;
 
     /**
      * @param string $sql

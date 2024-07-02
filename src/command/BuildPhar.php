@@ -5,6 +5,7 @@ namespace iflow\command;
 
 
 use iflow\console\Adapter\Command;
+use iflow\Utils\BuildPhar as UBuildPhar;
 
 /**
  * 生成Phar包
@@ -24,6 +25,6 @@ class BuildPhar extends Command
             'privatekey' => $this->getArgument('privatekey')
         ];
         $this -> Console -> writeConsole -> writeLine('build start ....');
-        (new \iflow\Utils\buildPhar($info, $this)) -> build();
+        (new UBuildPhar($info, $this)) -> build();
     }
 }

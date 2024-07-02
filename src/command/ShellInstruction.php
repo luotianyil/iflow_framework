@@ -86,11 +86,11 @@ class ShellInstruction extends Command
     {
         $this->shell = explode(' ', trim($input));
 
-        if (array_key_exists($this->shell[0], $this->shellCommand)) {
-            if (method_exists($this, $this->shellCommand[$this->shell[0]])) {
-                call_user_func([$this, $this->shellCommand[$this->shell[0]]]);
-            }
-        }
+        if (
+            array_key_exists($this->shell[0], $this->shellCommand)
+            && method_exists($this, $this->shellCommand[$this->shell[0]])
+        ) call_user_func([$this, $this->shellCommand[$this->shell[0]]]);
+
         $this->outIFlowStart();
     }
 
@@ -103,7 +103,7 @@ class ShellInstruction extends Command
     {
         $this->Console -> writeConsole -> writeLine('iflow Shell, your out input: exit');
         $this->Console -> writeConsole -> writeLine('iflow Shell help:');
-        $this->Console -> writeConsole -> writeLine('run -c:ClassName -f:Function -p:Params&...');
+        $this->Console -> writeConsole -> writeLine('input-command: -c:ClassName -f:MethodName -p:Params&...');
         $this->Console -> writeConsole -> writeLine('help');
         return $this;
     }

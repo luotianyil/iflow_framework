@@ -48,11 +48,11 @@ class HttpServer
         return "start Server Success \r\n Server For WorkManServer \r\n serverAddress: {$address}";
     }
 
-    public function stop() {
+    public function stop(): void {
         Worker::stopAll();
     }
 
-    public function reload() {
+    public function reload(): void {
         Worker::signalHandler(SIGUSR1);
     }
 }

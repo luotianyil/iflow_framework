@@ -52,9 +52,8 @@ class Input {
         }
 
         if (!class_exists($commandClass)) throw new \Error("class $commandClass not exists");
-        else {
-            return $this->invokeClass($console, $commandClass, explode('-', $this->argv[1]));
-        }
+
+        return $this->invokeClass($console, $commandClass, explode('-', $this->argv[1]));
     }
 
     /**
