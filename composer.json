@@ -29,7 +29,8 @@
     "ext-ctype": "*",
     "ext-sockets": "*",
     "ext-gd": "*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "google/protobuf": "^4.27"
   },
   "license": "MulanPSL-2.0",
   "authors": [

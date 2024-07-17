@@ -19,7 +19,7 @@ class Event {
         Types::PINGREQ => 'onMqPingreq',
         // MQTT 断开连接
         Types::DISCONNECT => 'onMqDisconnect',
-        // MQTT 发布主题
+        // MQTT 发布消息
         Types::PUBLISH => 'onMqPublish',
         // MQTT 发布订阅
         Types::SUBSCRIBE => 'onMqSubscribe',

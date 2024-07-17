@@ -32,7 +32,7 @@ class AuthAnnotation extends AnnotationAbstract {
     public function __construct(
         public string $key = '',
         public string $role = 'admin|user',
-        public array|string $callBack = []
+        public array|string $callback = []
     ) {}
 
     /**
@@ -51,7 +51,7 @@ class AuthAnnotation extends AnnotationAbstract {
         $configCallBack = is_string($this -> config['callBack']) ? [
             $this -> config['callBack']
         ] : $this -> config['callBack'];
-        $this->callBack = array_merge(is_string($this->callBack) ? [$this->callBack] : $this->callBack, $configCallBack);
+        $this->callback = array_merge(is_string($this->callback) ? [$this->callback] : $this->callback, $configCallBack);
 
         $handle = $this->app -> make($this->config['Handle'], [ $this ], true);
         foreach ($this->initializers as $key) {

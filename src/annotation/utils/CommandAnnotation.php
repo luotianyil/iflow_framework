@@ -20,9 +20,7 @@ class CommandAnnotation extends AnnotationAbstract {
      * Command constructor.
      * @param string $command
      */
-    public function __construct(
-        protected string $command
-    ) {}
+    public function __construct(protected string $command) {}
 
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.

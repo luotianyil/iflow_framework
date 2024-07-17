@@ -38,8 +38,7 @@ trait Request {
         private Config $config
     ){}
 
-    public function setIndicesOptions($options = []): static
-    {
+    public function setIndicesOptions($options = []): static {
         $this->indicesOptions = array_replace_recursive($this->indicesOptions, $options) ?: [];
         return $this;
     }
@@ -48,8 +47,7 @@ trait Request {
      * @param array $docQuery
      * @return static
      */
-    public function setDocQuery(array $docQuery): static
-    {
+    public function setDocQuery(array $docQuery): static {
         $this->docQuery = array_replace_recursive($this->docQuery, $docQuery)?: [];
         return $this;
     }

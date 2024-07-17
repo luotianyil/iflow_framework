@@ -3,7 +3,6 @@
 namespace iflow\swoole\implement\Server\Http;
 
 use iflow\Container\Container;
-use iflow\initializer\Error;
 use iflow\swoole\abstracts\ServicesAbstract;
 use iflow\swoole\implement\Server\WebSocket\WebSocket;
 use Swoole\Http\Server;
