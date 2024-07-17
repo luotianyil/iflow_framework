@@ -5,7 +5,6 @@ namespace iflow\auth\Authorize;
 
 use iflow\Request;
 use iflow\Response;
-use function session;
 
 class AuthHandle
 {
@@ -19,7 +18,7 @@ class AuthHandle
     public bool $error = false;
 
     public function __construct(
-        protected authAnnotation $authAnnotation
+        protected AuthAnnotation $authAnnotation
     ){}
 
     public function getUserInfo(): array
@@ -79,8 +78,8 @@ class AuthHandle
 
     public function callback(): bool|Response
     {
-        $callbackList = is_array($this->authAnnotation -> callBack) ? $this->authAnnotation -> callBack : [
-            $this->authAnnotation -> callBack
+        $callbackList = is_array($this->authAnnotation -> callback) ? $this->authAnnotation -> callback : [
+            $this->authAnnotation -> callback
         ];
 
         foreach ($callbackList as $callback) {

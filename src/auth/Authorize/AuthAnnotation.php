@@ -48,9 +48,9 @@ class AuthAnnotation extends AnnotationAbstract {
         $request = request();
 
         // 处理回调方法
-        $configCallBack = is_string($this -> config['callBack']) ? [
-            $this -> config['callBack']
-        ] : $this -> config['callBack'];
+        $configCallBack = is_string($this -> config['callback']) ? [
+            $this -> config['callback']
+        ] : $this -> config['callback'];
         $this->callback = array_merge(is_string($this->callback) ? [$this->callback] : $this->callback, $configCallBack);
 
         $handle = $this->app -> make($this->config['Handle'], [ $this ], true);
