@@ -15,6 +15,7 @@ class AuthHandle
     protected array $authRoles = [];
 
     public array $router = [];
+
     public bool $error = false;
 
     public function __construct(

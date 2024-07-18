@@ -71,7 +71,6 @@ class Subscribe {
         if (is_array($callable)) {
             $callable[0] = is_object($callable[0]) ? $callable[0] : Container::getInstance() -> make($callable[0]);
         }
-
         call_user_func([ $this->redis, $subscribeType ], $topic['name'], $callable);
     }
 
