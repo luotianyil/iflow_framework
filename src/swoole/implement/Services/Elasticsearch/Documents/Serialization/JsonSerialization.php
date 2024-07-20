@@ -18,18 +18,21 @@ class JsonSerialization {
 
         $docsParams = [ 'body' => [] ];
         foreach ($docs as $doc) {
-            $docsParams['body'][] = [ $type => $this->getBulkType($index, $typeName) ];
+            if ($type !== 'query') {
+                $docsParams['body'][] = [ $type => $this->getBulkType($index, $typeName, $doc['_id'] ?? '') ];
+                if (isset($doc['_id'])) unset($doc['_id']);
+            }
 
             if ($type !== 'delete') {
                 $docsParams['body'][] = $type === 'update' ? [
                     'doc' => $doc
-                ] : $doc;
+                ] : ($type === 'query' && empty($doc) ? '{}' :  $doc);
             }
         }
 
         $body = "";
         foreach ($docsParams['body'] as $docsParam) {
-            $body .= json_encode($docsParam, JSON_PRESERVE_ZERO_FRACTION + JSON_INVALID_UTF8_SUBSTITUTE + JSON_THROW_ON_ERROR) . "\n";
+            $body .= is_string($docsParam) ? "$docsParam\n" : json_encode($docsParam, JSON_PRESERVE_ZERO_FRACTION + JSON_INVALID_UTF8_SUBSTITUTE + JSON_THROW_ON_ERROR) . "\n";
         }
 
         return $body;

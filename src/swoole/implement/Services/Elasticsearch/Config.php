@@ -14,7 +14,7 @@ class Config {
 
     protected readonly array $documentsMappings;
 
-    public function __construct(string $name)
+    public function __construct(string $name = '')
     {
         $config = config('elasticsearch');
         $name = $name === '' ? $config['default'] : $name;

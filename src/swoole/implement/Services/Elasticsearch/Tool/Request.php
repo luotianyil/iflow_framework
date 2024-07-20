@@ -34,9 +34,9 @@ trait Request {
         'version' => true
     ];
 
-    public function __construct(
-        private Config $config
-    ){}
+    protected array $queryParams = [];
+
+    public function __construct(private readonly Config $config){}
 
     public function setIndicesOptions($options = []): static {
         $this->indicesOptions = array_replace_recursive($this->indicesOptions, $options) ?: [];
@@ -49,6 +49,15 @@ trait Request {
      */
     public function setDocQuery(array $docQuery): static {
         $this->docQuery = array_replace_recursive($this->docQuery, $docQuery)?: [];
+        return $this;
+    }
+
+    /**
+     * @param array $query
+     * @return static
+     */
+    public function setQueryParams(array $query): static {
+        $this->queryParams = array_replace_recursive($this->queryParams, $query)?: [];
         return $this;
     }
 
