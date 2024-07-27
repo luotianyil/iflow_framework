@@ -56,6 +56,9 @@ class Configure {
      */
     protected function checkExceptionHandler(string $exceptionClazz, Throwable $throwable): array {
         $trace = $throwable -> getTrace()[0];
+
+        if (!isset($trace['class'])) return [];
+
         [ $class, $method ] = [ $trace['class'], $trace['function'] ];
         $ref = new \ReflectionClass($class);
 

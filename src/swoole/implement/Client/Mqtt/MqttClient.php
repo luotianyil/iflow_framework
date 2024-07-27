@@ -4,11 +4,9 @@ namespace iflow\swoole\implement\Client\Mqtt;
 
 use iflow\Container\Container;
 use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
-use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\swoole\Config;
-use iflow\swoole\implement\Client\implement\Events\Loop;
 use Simps\MQTT\Client;
 use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Hex\ReasonCode;
@@ -20,9 +18,6 @@ class MqttClient {
     protected ClientConfig $clientConfig;
 
     protected Client $client;
-
-    #[Inject]
-    public Loop $loop;
 
     protected array $inputConfig = [
         'connect' => [
@@ -218,6 +213,13 @@ class MqttClient {
      */
     public function getClient(): Client {
         return $this->client;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig(): Config {
+        return $this->config;
     }
 
 }

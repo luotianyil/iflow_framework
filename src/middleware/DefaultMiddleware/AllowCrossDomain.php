@@ -36,6 +36,11 @@ class AllowCrossDomain {
                     $origin && ('' == $cookieDomain || strpos($origin, $cookieDomain))? $origin : '';
             });
         }
+
+        if (request() -> getMethod() == 'OPTIONS') {
+            return response() -> withStatus(204);
+        }
+
         response() -> headers($this->header);
         return $next($app);
     }

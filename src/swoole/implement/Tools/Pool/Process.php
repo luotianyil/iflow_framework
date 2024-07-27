@@ -11,27 +11,26 @@ class Process {
      */
     protected array $processMethods = [];
 
-    public function register(string $key, callable $call, ...$args): Process {
-        $this->processMethods[$key] = new SProcess(
-            $call,
-            ...$args
-        );
+    public function register(string $processName, callable $call, ...$args): Process {
+        $this->processMethods[$processName] = new SProcess($call, ...$args);
         return $this;
     }
 
 
-    public function start(): Process {
+    public function start(bool $daemon = false): Process {
         foreach ($this->processMethods as $pName => $process) {
+            $process -> name($pName);
             $process -> start();
         }
 
+        if ($daemon) SProcess::daemon();
         return $this;
     }
 
 
-    public function getProcess(string $key): SProcess {
-        if (empty($this->processMethods[$key])) throw new \Exception('Process Non');
-        return $this->processMethods[$key];
+    public function getProcess(string $processName): SProcess {
+        if (empty($this->processMethods[$processName])) throw new \Exception('Process Non');
+        return $this->processMethods[$processName];
     }
 
 }

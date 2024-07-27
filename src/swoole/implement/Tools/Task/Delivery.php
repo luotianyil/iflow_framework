@@ -26,6 +26,11 @@ class Delivery {
 
         $class = Container::getInstance() -> make($callable[0], isNew: true);
 
+        // 回调函数不存在返回 NULL
+        if (!method_exists($class, $callable[1])) {
+            return $server -> finish(null);
+        }
+
         return $server -> finish(
             Container::getInstance() -> invoke(
                 [ $class, $callable[1] ], [ ...$this->getTaskCallableParams(), $task_id, $reactor_id ]
@@ -47,7 +52,9 @@ class Delivery {
                 $param[] = $value;
                 continue;
             }
-            $param[] = $value['type'] === 'object' ? Container::getInstance() -> make($value['value']) : $value;
+            $param[] = $value['type'] === 'object' ? Container::getInstance() -> make(
+                $value['value'], $value['args'] ?? [], $value['isNew'] ?? false
+            ) : $value;
         }
         return $param;
     }

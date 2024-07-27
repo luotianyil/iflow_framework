@@ -168,6 +168,9 @@ class RequestInitializer extends RequestVerification {
             return $container -> make($class);
         }
 
+        // 如果 容器内存在当前对象
+        if ($container -> has($class)) return $container -> get($class);
+
         $execute = new Execute();
         $execute -> getReflectorAttributes($ref) -> executeAnnotationLifeProcess('beforeCreate', $ref);
         $object = $ref -> newInstance();

@@ -2,7 +2,7 @@
 
 namespace iflow\swoole\implement\Server\Mqtt\Events;
 
-use iflow\swoole\implement\Server\Mqtt\Packet\abstracts\ReceiveAbstract;
+use iflow\swoole\Config;
 use iflow\swoole\implement\Server\Mqtt\Packet\Parser;
 use iflow\swoole\ServicesCommand;
 use Simps\MQTT\Protocol\Types;
@@ -38,7 +38,7 @@ class Event {
         $packet = $this->parser -> unpack($data, $this->protocol_level);
 
         // 非 MQTT协议 关闭连接
-        if (isset($packet['protocol_name']) && $packet['protocol_name'] != "MQTT") {
+        if (isset($packet['protocol_name']) && $packet['protocol_name'] !== 'MQTT') {
             $server->close($fd);
             return false;
         }
@@ -48,8 +48,8 @@ class Event {
             $this->protocol_level = $packet['protocol_level'];
         }
 
-        $handleClass = $this -> servicesCommand -> config -> get('messageType', '');
-        $method = $this->MQEvent[$packet['type'] ?? 1] ?? '';
+        $handleClass = $this -> servicesCommand -> config -> get('messageType', MQTTEvent::class);
+        $method = $this->MQEvent[$packet['type']] ?? 'onMessage';
 
         $server -> task([
             'callable' => [ $handleClass, $method ],
@@ -58,33 +58,39 @@ class Event {
                     'value' => $server::class,
                     'type' => 'object'
                 ],
-                $packet, $fd
+                $packet, $fd,
+                [
+                    'value' => Config::class,
+                    'args' => $this->servicesCommand -> config -> toArray(),
+                    'isNew' => true,
+                    'type' => 'object',
+                ]
             ]
         ]);
         return false;
     }
 
-    public function onConnect(Server $server, $fd) {
+    public function onConnect(Server $server, $fd): void {
         $this->servicesCommand -> callConfHandle(
             $this->servicesCommand -> config -> get('mqttEvent@connectAfter', ''),
             [ $server, $fd ]
         );
     }
 
-    public function onOpen($server, $req) {
+    public function onOpen($server, $req): void {
         // TODO: Implement onOpen() method.
     }
 
-    public function onMessage($server, $req) {
+    public function onMessage($server, $req): void {
         // TODO: Implement onMessage() method.
     }
 
-    public function onConnection($server, $fd) {
+    public function onConnection($server, $fd): void {
         // TODO: Implement onConnection() method.
     }
 
 
-    public function onClose() {
+    public function onClose(): void {
     }
 
     /**

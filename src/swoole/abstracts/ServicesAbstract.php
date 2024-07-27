@@ -52,6 +52,8 @@ abstract class ServicesAbstract implements ServicesInterface {
 
     public function __construct(protected ServicesCommand $servicesCommand) {
         $this->config = $this->servicesCommand -> getConfig();
+
+        $this -> setPid($this->config -> get('swConfig@pid_file'));
     }
 
     public function start() {
@@ -61,9 +63,7 @@ abstract class ServicesAbstract implements ServicesInterface {
         $this->events['finish'] = [ $this->finish, 'onFinish' ];
         $this->events['WorkerStart'] = [ $this, 'onWorkerStart' ];
 
-        $this -> setPid($this->config -> get('swConfig@pid_file'))
-              -> setServerParams();
-
+        $this -> setServerParams();
         $serviceClass = $this->getSwooleServiceClass();
 
         $this->SwService = new $serviceClass(...(array_slice($this->_params, 0, 3)));

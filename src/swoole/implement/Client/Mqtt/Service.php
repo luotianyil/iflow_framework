@@ -4,14 +4,10 @@ namespace iflow\swoole\implement\Client\Mqtt;
 
 use iflow\Container\implement\annotation\tools\data\Inject;
 use iflow\swoole\abstracts\ServicesAbstract;
-use iflow\swoole\implement\Client\implement\Events\Loop;
 use Simps\MQTT\Client;
 use Swoole\Coroutine\Scheduler;
 
 class Service extends ServicesAbstract {
-
-    #[Inject]
-    public Loop $loop;
 
     #[Inject]
     public Scheduler $scheduler;

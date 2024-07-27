@@ -44,4 +44,17 @@ class Mappings {
         );
     }
 
+    /**
+     * 设置索引类型
+     * @param array $data
+     * @param string $indexName
+     * @param string $typeName
+     * @return array
+     */
+    public function mappingSetting(array $data, string $indexName, string $typeName = ''): array {
+        return $this->sendRequest('PUT',
+            sprintf("%s%s/_settings", $indexName, $this->getTypeName($typeName)), $data
+        );
+    }
+
 }
