@@ -18,9 +18,8 @@ trait Argument {
      * @return mixed|string
      */
     public function getArgument(string $name, string $default = ''): mixed {
-        if (!str_starts_with($name, '-')) {
-            $name = "-{$name}";
-        }
+        $name = $this->getArgumentsKey($name);
+
         $instructionKey = array_search($name, $this->instruction);
         if (!$instructionKey) {
             return $default;
@@ -43,5 +42,23 @@ trait Argument {
         $instruction = is_array($input) ? $input : $input -> getUserCommand();
         $this->instruction = array_slice($instruction, $offset);
         return $this;
+    }
+
+    protected function getArgumentsKey(string $name): string {
+        if (!str_starts_with($name, '-')) {
+            $name = "-{$name}";
+        }
+
+        return $name;
+    }
+
+    /**
+     * 验证参数是否存在
+     * @param string $name
+     * @return bool
+     */
+    public function hasArgument(string $name): bool {
+        $name = $this->getArgumentsKey($name);
+        return in_array($name, $this->instruction);
     }
 }

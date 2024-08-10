@@ -19,6 +19,8 @@ class MqttClient {
 
     protected Client $client;
 
+    protected array $events = [];
+
     protected array $inputConfig = [
         'connect' => [
             'clean' => true,
@@ -27,10 +29,12 @@ class MqttClient {
         'topics' => []
     ];
 
+    protected bool $close = false;
+
     public function __construct(protected Config $config) {
     }
 
-    public function start() {
+    public function start(): void {
         $this->inputConfig['connect'] = $this -> config -> get('connect');
         $this->inputConfig['topics'] = $this -> config -> get('topics');
 
@@ -76,7 +80,9 @@ class MqttClient {
                 $this -> timeSincePing = time();
                 $this -> callback($this->config -> get('event'), [ $this, $packet ]);
             }
-            if (!$this -> ping()) break;
+
+            // 心跳检测
+            if ($this->close || !$this -> ping()) break;
         }
 
         // 掉线重连
@@ -85,6 +91,7 @@ class MqttClient {
 
 
     public function reConnection(): void {
+        if ($this->close) return;
         $this -> callback($this->config -> get('closeConnection'));
         $this -> connection();
         $this -> wait();
@@ -100,7 +107,9 @@ class MqttClient {
      */
     protected function callback(string $class, array $params = []): mixed {
         if (!class_exists($class)) return [];
-        return Container::getInstance() -> make($class, isNew: true) -> handle(...$params);
+
+        $this -> events[$class] = $this -> events[$class] ?? Container::getInstance() -> make($class, isNew: true);
+        return $this -> events[$class] -> handle(...$params);
     }
 
 
@@ -132,6 +141,7 @@ class MqttClient {
      * @return bool
      */
     public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = []): bool {
+        $this->close = true;
         return $this->client -> close($code, $properties);
     }
 

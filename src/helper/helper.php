@@ -234,7 +234,7 @@ if (!function_exists('httpRequest')) {
 
         $client -> addRequest($request, function (\iflow\Scrapy\implement\Response\Response $responseBody) use (&$response) {
             $response = $responseBody;
-        }) -> send();
+        }, $options) -> send();
 
         return $response;
     }

@@ -22,10 +22,11 @@ class Client {
      * 添加请求信息
      * @param Request $request
      * @param callable $cb
+     * @param array $options
      * @return $this
      */
-    public function addRequest(Request $request, callable $cb): Client {
-        $this->queue -> add($request, $cb);
+    public function addRequest(Request $request, callable $cb, array $options = []): Client {
+        $this->queue -> add($request, $cb, $options);
         return $this;
     }
 
