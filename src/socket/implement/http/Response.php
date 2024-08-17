@@ -20,9 +20,9 @@ class Response {
     // 是否已经结束请求
     protected bool $isWritable = true;
 
-    public function __construct(
-        protected $socket
-    ) {
+    protected bool $isHeaderWritable = true;
+
+    public function __construct(protected $socket) {
         $this->header = [
             'date' => gmdate('D, d M Y H:i:s T'),
             'content-type' => 'text/html',
@@ -30,16 +30,24 @@ class Response {
         ];
     }
 
+    public function write(string $data = ''): bool {
+        $raw = $this -> isHeaderWritable ? $this->setResponseBody() : '';
+        $raw .= $data;
+
+        socket_write($this->socket, $raw, strlen($raw));
+        $this -> isHeaderWritable = false;
+        return true;
+    }
+
     /**
      * 请求结束返回响应
      * @param string $data
      * @return bool
      */
-    public function end(string $data = ""): bool
-    {
-        $this->body = $this->setResponseBody() . $data;
+    public function end(string $data = ''): bool {
+        $this->body = ($this->isHeaderWritable ? $this->setResponseBody() : '' ) . $data;
         socket_write($this->socket, $this->body, strlen($this->body));
-        $this->isWritable = false;
+        $this -> isHeaderWritable = $this -> isWritable = false;
         return true;
     }
 
@@ -118,9 +126,9 @@ class Response {
         string $path = '/',
         string $domain = '',
         bool $secure = false,
-        $httponly = false,
-        $samesite = '',
-        $priority = ''
+        bool $httponly = false,
+        mixed $samesite = '',
+        mixed $priority = ''
     ): static {
         $cookie = "$name=$value; expires=$expires; path=$path; domain=$domain";
 

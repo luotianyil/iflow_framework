@@ -67,6 +67,7 @@ abstract class ServicesAbstract implements ServicesInterface {
         $serviceClass = $this->getSwooleServiceClass();
 
         $this->SwService = new $serviceClass(...(array_slice($this->_params, 0, 3)));
+
         $this->SwService -> set($this->config -> get('swConfig'));
         $this->servicesCommand -> setServices();
 

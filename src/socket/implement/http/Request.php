@@ -96,8 +96,7 @@ class Request
      * 设置请求主体信息
      * @return $this
      */
-    protected function setServer(): static
-    {
+    protected function setServer(): static {
 
         $request_uri = explode("?", $this->request_uri);
 
@@ -135,6 +134,14 @@ class Request
             $this->header[strtolower(str_replace("-", "_", $key))] = trim($value);
         }
         return $this;
+    }
+
+    /**
+     * 获取请求方式
+     * @return string
+     */
+    public function getMethod(): string {
+        return $this -> request_method;
     }
 
     /**

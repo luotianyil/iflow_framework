@@ -24,7 +24,7 @@ class Config {
     public function getHost(): string
     {
         $url = explode(':', $this->config['host']);
-        return "${url[0]}:${url[1]}";
+        return $url[0].':'.$url[1];
     }
 
     public function getPort(): int

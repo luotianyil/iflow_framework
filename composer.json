@@ -10,7 +10,7 @@
     "league/flysystem": "2.x",
     "yurunsoft/guzzle-swoole": "^2.2",
     "topthink/think-orm": "3.0.x",
-    "simps/mqtt": "^1.1.4",
+    "simps/mqtt": "^1.4.4",
     "nikic/php-parser": "^4.10",
     "phpunit/phpunit": "^9.5",
     "workerman/workerman": "v5.0.0-beta.7",
@@ -50,7 +50,7 @@
     }
   },
   "require-dev": {
-    "swoole/ide-helper": "^4.7"
+    "swoole/ide-helper": "^5.0.3"
   },
   "config": {
     "allow-plugins": {

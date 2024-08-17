@@ -13,8 +13,10 @@ class StreamedResponse extends Response {
 
     public array $headers = [
         'Cache-Control' => 'no-cache',
-        'Connection' => 'keep-alive'
+        'Connection'    => 'keep-alive'
     ];
+
+    protected bool $finish_close = true;
 
     public string $finish_mark = '[DONE]';
 
@@ -54,12 +56,25 @@ class StreamedResponse extends Response {
     }
 
     /**
+     * 结束后是否关闭链接
+     * @param bool $finish_close
+     * @return StreamedResponse
+     */
+    public function setFinishClose(bool $finish_close): StreamedResponse {
+        $this->finish_close = $finish_close;
+        return $this;
+    }
+
+    /**
      * 返回响应数据
      * @param mixed $content
      * @return bool
      */
     public function write(mixed $content): bool {
         $id = !is_array($content) || empty($content['$_id']) ? uniqid() : $content['$_id'];
+
+        $content = (!is_array($content) ? $content : json_encode($content, JSON_UNESCAPED_UNICODE));
+
         if (method_exists($this->response, 'serverSentEvents')) {
             return $this->response -> serverSentEvents(
                 [
@@ -75,7 +90,7 @@ class StreamedResponse extends Response {
             "event: {$this->event}\n".
             "retry: {$this->retry}\n".
             "id: ". $id . "\n".
-            "data: ". (!is_array($content) ? $content : json_encode($content, JSON_UNESCAPED_UNICODE))
+            "data: ". $content
             . "\n\n"
         );
     }
@@ -85,8 +100,10 @@ class StreamedResponse extends Response {
      * @param mixed|null $data
      * @return bool
      */
-    public function send(mixed $data = null): bool {
-        $end = $this->write($this->finish_mark);
+    public function send(mixed $data = ''): bool {
+        $end = $this -> write($this->finish_mark);
+
+        if ($this -> finish_close) $this -> end('');
 
         // 结束请求
         event('RequestEndEvent', $this -> startTime);

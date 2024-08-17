@@ -76,6 +76,22 @@ class Response {
     }
 
     /**
+     * 分块发送
+     * @param string $data
+     * @param object $response
+     * @param int $size
+     * @return bool
+     */
+    public function chunkWrite(string $data, object $response, int $size = 102400): bool {
+        while ($data !== '') {
+            $rawBody = mb_substr($data, 0, $size);
+            $data = mb_substr($data, $size);
+            $response -> write($rawBody);
+        }
+        return $response -> end('');
+    }
+
+    /**
      * 发送文件
      * @param string $path
      * @param bool $isConfigRootPath
@@ -141,7 +157,9 @@ class Response {
      */
     public function __call(string $name, array $arguments): mixed {
         // TODO: Implement __call() method.
-        if (method_exists($this->response, $name)) return call_user_func($name, ...$arguments);
+        if (method_exists($this->response, $name)) {
+            return $this -> response -> {$name}(...$arguments);
+        }
         return null;
     }
 }

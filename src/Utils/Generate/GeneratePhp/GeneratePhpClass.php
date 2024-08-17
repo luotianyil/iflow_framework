@@ -76,7 +76,7 @@ class GeneratePhpClass {
 
         if (!is_dir($this->saveToFolder)) return false;
 
-        $phpCode = $this->getClassCode();
+        $phpCode  = $this->getClassCode();
         $fileName = $this->getClassName();
 
         $saveToFile = "{$this -> saveToFolder}/{$fileName}.php";

@@ -34,9 +34,8 @@ class Response {
         return true;
     }
 
-    public function end(string $data = ''): bool
-    {
-        $this->response -> withBody($data);
+    public function end(string $data = ''): bool {
+        $this -> response -> withBody($data);
         $this -> connection -> send($this->response);
         return true;
     }

@@ -5,7 +5,7 @@ namespace iflow\socket\workman\http\implement;
 
 
 use iflow\http\Adapter\Cookie;
-use Workerman\Protocols\Http\Request as workermanRequest;
+use Workerman\Protocols\Http\Request as WorkerManRequest;
 
 class Request
 {
@@ -24,7 +24,7 @@ class Request
 
 
     public function __construct(
-        protected workermanRequest $request
+        protected WorkerManRequest $request
     ) {
         // 初始化参数
         $this->get = $this->request -> get() ?: [];
@@ -38,7 +38,10 @@ class Request
         $this->initServer();
     }
 
-    // 初始化ServerParams
+    /**
+     * 初始化ServerParams
+     * @return void
+     */
     public function initServer() {
         $request_uri = explode("?", $this->request_uri);
         $this->server = $this->header;

@@ -10,10 +10,15 @@ class Request
     public array $server = [];
 
     public array $get = [];
+
     public array $post = [];
+
     public array $header = [];
+
     public array $files = [];
+
     public Cookie $cookie;
+
     public array $request;
     public array|string|null $rowContent = [];
 
@@ -84,5 +89,10 @@ class Request
         } else {
             $this->rowContent = $this->input;
         }
+    }
+
+
+    public function getMethod(): string {
+        return $this->server['request_method'];
     }
 }

@@ -51,7 +51,7 @@ class RegisterRpcInterface extends AnnotationAbstract {
      */
     protected function getProxy(Reflector $reflector): object {
 
-        $proxyPath = app() -> getRootPath() . '/rpc_service';
+        $proxyPath = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, app() -> getRootPath('rpc_service'));
         if (!is_dir($proxyPath)) mkdir($proxyPath);
 
         $className = explode('\\', $reflector -> getName());

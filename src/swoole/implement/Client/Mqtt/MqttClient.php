@@ -39,6 +39,14 @@ class MqttClient {
         $this->inputConfig['topics'] = $this -> config -> get('topics');
 
         $this->clientConfig = new ClientConfig($this -> config -> all());
+
+        $this->clientConfig -> setPassword(
+            $this->config -> get('passWord', $this->config -> get('password', ''))
+        );
+
+        $this -> clientConfig -> setSwooleConfig(
+            $this->config -> get('swooleConfig',  $this->config -> get('swConfig', []))
+        );
         $this->clientConfig -> setKeepAlive($this->config -> get('keep_alive', 0));
         $this->connection();
     }
@@ -64,6 +72,7 @@ class MqttClient {
             logs('error', 'connect failed. Error', $res) -> update();
             return false;
         }
+
         return true;
     }
 
@@ -74,13 +83,12 @@ class MqttClient {
             $this->subscribe($this->inputConfig['topics']);
         }
 
+        $this -> timeSincePing = time();
         while ($this->client -> getClient() -> isConnected()) {
             $packet = $this->client -> recv();
             if ($packet && $packet !== true) {
-                $this -> timeSincePing = time();
                 $this -> callback($this->config -> get('event'), [ $this, $packet ]);
             }
-
             // 心跳检测
             if ($this->close || !$this -> ping()) break;
         }
@@ -92,6 +100,7 @@ class MqttClient {
 
     public function reConnection(): void {
         if ($this->close) return;
+        $this -> client -> close();
         $this -> callback($this->config -> get('closeConnection'));
         $this -> connection();
         $this -> wait();
@@ -99,13 +108,18 @@ class MqttClient {
 
 
     /**
-     * @param string $class
+     * @param mixed $class
      * @param array $params
      * @return mixed
      * @throws InvokeClassException
      * @throws InvokeFunctionException|AttributeTypeException
      */
-    protected function callback(string $class, array $params = []): mixed {
+    protected function callback(mixed $class, array $params = []): mixed {
+
+        if (is_callable($class)) return $class(...$params);
+
+        if (is_object($class)) return $class -> handle(...$params);
+
         if (!class_exists($class)) return [];
 
         $this -> events[$class] = $this -> events[$class] ?? Container::getInstance() -> make($class, isNew: true);
@@ -176,9 +190,12 @@ class MqttClient {
      * @return bool
      */
     protected function ping(): bool {
-        $pingTime = $this -> config -> get('ping_time');
-        if ($pingTime !== 0 && $this -> timeSincePing <= time() - $pingTime) {
-            $buffer = $this -> client -> ping();
+        if ($this -> config -> get('keep_alive', 0) === 0) return true;
+
+        $keepAlive = $this->client -> getConfig() -> getKeepAlive();
+        if ($this -> timeSincePing <= (time() - $keepAlive)) {
+            $buffer = $this->client->ping();
+            $this -> timeSincePing = time();
             return !!$buffer;
         }
         return true;
@@ -190,8 +207,7 @@ class MqttClient {
      * @param bool $response
      * @return array|bool
      */
-    public function send(array $data = [], bool $response = true): array|bool
-    {
+    public function send(array $data = [], bool $response = true): array|bool {
         return $this->client -> send($data, $response);
     }
 

@@ -5,7 +5,6 @@ namespace iflow\socket\implement\http;
 
 
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
-use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\initializer\Error;
 use iflow\socket\implement\interfaces\Services;
 
@@ -66,8 +65,8 @@ class Http implements Services
                 $pack = socket_read($sock, 2048);
                 if ($pack) {
                     try {
-                        $this->request = new request($pack, $sock, $this->options);
-                        $this->response = new response($sock);
+                        $this->request = new Request($pack, $sock, $this->options);
+                        $this->response = new Response($sock);
                         // 接收到 请求后的回调
                         $this->trigger('request', $this->request, $this->response);
                     } catch (\Throwable $exception) {
