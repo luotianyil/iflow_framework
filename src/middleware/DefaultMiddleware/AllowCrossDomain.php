@@ -37,11 +37,12 @@ class AllowCrossDomain {
             });
         }
 
+        response() -> headers($this->header);
+
         if (request() -> getMethod() == 'OPTIONS') {
             return response() -> withStatus(204);
         }
 
-        response() -> headers($this->header);
         return $next($app);
     }
 
