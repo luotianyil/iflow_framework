@@ -33,6 +33,10 @@ class Cache {
 
         $type = ucfirst($this->config['type']);
         $class = sprintf("%s%s\\%s", $this->namespace, $type, $type);
+
+        if (Container::getInstance() -> has($class))
+            return Container::getInstance() -> get($class);
+
         return Container::getInstance() -> make($class) -> initializer($this->config);
     }
 }

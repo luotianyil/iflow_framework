@@ -209,7 +209,7 @@ abstract class ServicesAbstract implements ServicesInterface {
             $listener['options'] = $listener['options'] ?? 'default';
 
             $listenerServer =
-                $this->SwService -> addListener($listener['host'], $listener['port'], $listener['mode'] ?? SWOOLE_SOCK_TCP)
+                $this->SwService -> addListener($listener['host'], $listener['port'], $listener['sockType'] ?? SWOOLE_SOCK_TCP)
                 ?: throw new \Exception("listenPort: {$listener['port']} fail");
 
             $listenerServer -> set(

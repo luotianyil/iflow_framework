@@ -84,7 +84,7 @@ trait RequestTrait
      * 初始化请求参数
      * @return $this
      */
-    public function initRequestParams(): static {
+    public function withRequestParams(): static {
         $_GET = $this->getParams();
         $_POST = $this->postParams();
         $_COOKIE = $this->request -> cookie -> get();

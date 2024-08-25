@@ -9,7 +9,7 @@ class File implements AdapterInterface {
 
     protected array $config = [];
 
-    public function initializer(array $config): static {
+    public function initializer(array $config): File {
         $this->config = $config;
         return $this;
     }
@@ -39,7 +39,6 @@ class File implements AdapterInterface {
         go(function () use ($name, $data) {
             !is_dir($this->config['path']) && mkdir($this->config['path'], 0755, true);
             $file = $this->getStorePath($name);
-
             $old_data = $this->get($name);
             $fileStream = fopen($file, "w+");
             flock($fileStream, LOCK_EX);
@@ -69,6 +68,7 @@ class File implements AdapterInterface {
 
         $file = fopen($path, 'rb');
         $content = '';
+        $jsonData = null;
         if ($file) {
             try {
                 if (flock($file, LOCK_SH)) {
@@ -76,13 +76,12 @@ class File implements AdapterInterface {
                     $content = fread($file, filesize($path) ?: 1);
                     flock($file, LOCK_UN);
                 }
+                $content = $content ? (unserialize(gzuncompress($content)) ?: '') : '';
+                $jsonData = is_string($content) ? json_decode($content, true) : $content;
             } finally {
                 fclose($file);
             }
         }
-
-        $content = unserialize(gzuncompress($content)) ?: '';
-        $jsonData = is_string($content) ? json_decode($content, true) : $content;
         return $content ? ($jsonData !== null ? $jsonData : $content) : [];
     }
 

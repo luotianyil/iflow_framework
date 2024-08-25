@@ -21,6 +21,11 @@ class Ping {
 
     public function ping(): bool {
         Timer::clear($this->pingIntervalTimer);
+
+        if ($this->pingTimer < 0 || $this->pingTimeOut < 0) {
+            return true;
+        }
+
         $this->pingIntervalTimer = Timer::after($this->pingTimer, function () {
             if (!$this->server -> exist($this-> fd)) return false;
 

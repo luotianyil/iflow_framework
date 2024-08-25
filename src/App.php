@@ -210,8 +210,8 @@ abstract class App {
      * 获取运行路径
      * @return string
      */
-    public function getRuntimePath() : string {
-        return $this->runtimePath;
+    public function getRuntimePath(string $path = '') : string {
+        return $this->runtimePath . DIRECTORY_SEPARATOR . ($path ?: '');
     }
 
     public function getAppPath() : string {
@@ -219,7 +219,7 @@ abstract class App {
     }
 
     public function getRootPath(string $path = '') : string {
-        return $this->rootPath . DIRECTORY_SEPARATOR . ($path ?: '');
+        return $this->rootPath . ($path ?: '');
     }
 
     public function getAppClassName(): string {

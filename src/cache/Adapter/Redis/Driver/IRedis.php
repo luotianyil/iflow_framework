@@ -2,20 +2,24 @@
 
 namespace iflow\cache\Adapter\Redis\Driver;
 
+use iflow\cache\Adapter\AdapterInterface;
 use iflow\cache\Adapter\Redis\Exceptions\RedisOptionException;
+use iflow\swoole\implement\Services\Database\Redis\RedisPool;
 use Redis;
-use \Swoole\Coroutine\Redis as SwRedis;
 
 /**
  * @mixin Redis
  */
-class IRedis {
+class IRedis implements AdapterInterface
+{
 
     /**
      * Redis 连接句柄
-     * @var Redis|SwRedis
+     * @var Redis|RedisPool
      */
-    public Redis|SwRedis $handle;
+    public Redis|RedisPool $handle;
+
+    protected \Redis|RedisPool $redis;
 
     protected array $config = [];
 
@@ -23,49 +27,62 @@ class IRedis {
 
     /**
      * @param array $config 连接配置
-     * @throws RedisOptionException
+     * @throws RedisOptionException|\RedisException
      */
-    public function initializer(array $config): static {
+    public function initializer(array $config): IRedis {
 
         $config['driver'] = $config['driver'] ?? 'Redis';
         $this->connectType = $config['connectType'] ?? 'pconnect';
 
-        $this->handle = $config['driver'] === 'Redis' ? new Redis() : new SwRedis();
+        $this->handle = $config['driver'] === 'Redis' ? new Redis() : app(RedisPool::class, [ $config ]);
+        $this->redis = $this->handle;
+
         $this->config = $config;
-        $this -> setOptions($this->config['options'] ?? []) -> Connection();
+
+        if ($this->config['driver'] === 'Redis') {
+            $this -> setOptions($this->config['options'] ?? []) -> Connection();
+        }
+
         return $this;
     }
+
+
+    public function getRedis(): \Redis {
+        return $this->redis = $this->handle instanceof RedisPool
+            ? $this->handle -> getConnection()
+            : $this->handle;
+    }
+
 
     /**
      * 设置配置
      * @param array $options
-     * @return static
+     * @return IRedis
      * @throws RedisOptionException|\RedisException
      */
-    public function setOptions(array $options): static {
-        if ($this->config['driver'] === 'SRedis') {
-            $this->handle -> setOptions($options);
-            return $this;
-        }
-
+    public function setOptions(array $options): IRedis {
         foreach ($options as $optionName => $optionValue) {
             is_int($optionName)
-                ? $this->handle -> setOption($optionName, $optionValue)
+                ? $this->redis -> setOption($optionName, $optionValue)
                 : throw new RedisOptionException('optionsKey must be a Number');
         }
 
         return $this;
     }
 
-    protected function Connection(): static {
-
-        call_user_func([ $this->handle, $this->connectType ], $this->config['host'], $this->config['port'], $this->config['timeout'] ?? 30);
+    /**
+     * 初始化连接
+     * @return $this
+     * @throws \RedisException
+     */
+    protected function Connection(): IRedis {
+        call_user_func([ $this->redis, $this->connectType ], $this->config['host'], $this->config['port'], $this->config['timeout'] ?? 30);
 
         if (!empty($this->config['sentinel_name']) && is_string($this->config['sentinel_name'])) {
             $this->sentinelToAddress($this->config['sentinel_name']);
         }
 
-        if (key_exists('auth', $this->config) && $this->config['auth']['pass'] !== '') {
+        if (key_exists('auth', $this->config)) {
             $this->authLogin($this->config['auth']) ?: throw new \RuntimeException('Redis Auth Verification Failed');
         }
 
@@ -83,8 +100,8 @@ class IRedis {
             throw new \Exception('Redis Sentinel does not exist');
         }
 
-        $this->handle -> close();
-        call_user_func([ $this->handle, $this->connectType ], $this->config['host'], $this->config['port'], $this->config['timeout'] ?? 30);
+        $this->redis -> close();
+        call_user_func([ $this->redis, $this->connectType ], $this->config['host'], $this->config['port'], $this->config['timeout'] ?? 30);
     }
 
     /**
@@ -93,11 +110,7 @@ class IRedis {
      * @throws \RedisException
      */
     public function request(): mixed {
-        $args = func_get_args();
-        if (method_exists($this->handle, 'request')) {
-            return $this->handle -> request($args);
-        }
-        return $this->handle -> rawCommand(...$args);
+        return $this->redis -> rawCommand(...func_get_args());
     }
 
     /**
@@ -112,8 +125,8 @@ class IRedis {
     {
         $value = is_numeric($value) ? $value  : serialize($value);
         return $expire > 0
-            ? $this->handle -> setex($name, $expire, $value)
-            : $this->handle -> set($name, $value);
+            ? $this->redis -> setex($name, $expire, $value)
+            : $this->redis -> set($name, $value);
     }
 
     /**
@@ -122,24 +135,21 @@ class IRedis {
      * @return mixed
      * @throws \RedisException
      */
-    public function pull(string $name): mixed
-    {
+    public function pull(string $name): mixed {
         $result = $this-> get($name);
-        if ($result) {
-            $this->handle -> del($name);
-        }
+        if ($result) $this->redis -> del($name);
         return $result;
     }
 
     /**
-     * 获取handle数据
+     * 获取redis数据
      * @param string $name
      * @param mixed $default
      * @return mixed
      * @throws \RedisException
      */
     public function get(string $name, mixed $default = ''): mixed {
-        $result = $this->handle -> get($name);
+        $result = $this->redis -> get($name);
 
         if (false === $result || is_null($result)) {
             return $default;
@@ -155,7 +165,7 @@ class IRedis {
      * @throws \RedisException
      */
     public function clear(): bool {
-        return $this->handle -> flushDB();
+        return $this->redis -> flushDB();
     }
 
     /**
@@ -165,24 +175,31 @@ class IRedis {
      * @throws \RedisException
      */
     public function has(string $name): bool {
-        return $this->handle -> exists($name);
+        return $this->redis -> exists($name);
     }
 
     /**
      * Redis 登录
-     * @param array $auth
+     * @param string $auth
      * @return bool
      * @throws \RedisException
      */
-    public function authLogin(array $auth): bool {
-        if (empty($auth['user'])) unset($auth['user']);
-        if ($this->config['driver'] === 'SRedis') $auth = $auth['pass'];
-        return $this->handle -> auth($auth);
+    public function authLogin(string $auth): bool {
+        return $this->redis -> auth($auth);
+    }
+
+    public function close(): void {
+        if ($this->handle instanceof RedisPool) {
+            $this -> handle -> close($this->redis);
+            return;
+        }
+        $this->handle -> close();
     }
 
     public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
-        if (!method_exists($this -> handle, $name)) return null;
-        return call_user_func([ $this->handle, $name ], ...$arguments);
+        if (!method_exists($this->redis, $name)) return null;
+        return call_user_func([ $this->redis, $name ], ...$arguments);
     }
+
 }

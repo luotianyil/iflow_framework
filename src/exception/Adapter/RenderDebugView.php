@@ -3,7 +3,6 @@
 
 namespace iflow\exception\Adapter;
 
-use iflow\console\Console;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\http\ResponseStatus;
 use iflow\Response;
@@ -84,6 +83,9 @@ class RenderDebugView {
         $startLine = 1;
 
         $source = [];
+
+        if (!file_exists($file)) return [];
+
         $fp = fopen($file, 'r');
 
         while (!feof($fp)) {

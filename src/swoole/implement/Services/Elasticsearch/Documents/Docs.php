@@ -119,4 +119,10 @@ class Docs {
         );
     }
 
+    public function refresh(string $indexName, string $typeName = ''): mixed {
+        return $this->sendRequest('POST',
+            sprintf("%s%s/_refresh", $indexName, $typeName ? '/'.$typeName : '')
+        );
+    }
+
 }

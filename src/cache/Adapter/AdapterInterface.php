@@ -4,6 +4,6 @@ namespace iflow\cache\Adapter;
 
 interface AdapterInterface {
 
-    public function initializer(array $config): static;
+    public function initializer(array $config): AdapterInterface;
 
 }

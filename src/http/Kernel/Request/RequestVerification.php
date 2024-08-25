@@ -206,7 +206,7 @@ abstract class RequestVerification extends SubjectAbstract {
      * @throws InvokeClassException|ErrorException
      */
     protected function send(mixed $response): bool {
-        if (!$response) return $this->response -> data($response) -> send();
+        if (!$response) return json($response, $this -> response -> code) -> send();
         switch ($response) {
             case $response instanceof Response:
                 $response->send();

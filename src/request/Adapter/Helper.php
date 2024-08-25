@@ -111,6 +111,8 @@ trait Helper {
         if (!in_array($type, ['post', 'get', 'header'])) {
             return false;
         }
+
+//        return array_key_exists($paramName, $this->request -> {$type});
         return !empty($this->request -> {$type}[$paramName]);
     }
 

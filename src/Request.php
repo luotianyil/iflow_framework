@@ -35,8 +35,8 @@ class Request
         $this->request_method = $request -> server['request_method'];
 
         return $this
-            -> initRequestParams()
-            -> initFile();
+            -> withRequestParams()
+            -> withFile();
     }
 
     /**
@@ -44,8 +44,7 @@ class Request
      * @return $this
      * @throws InvokeClassException
      */
-    protected function initFile(): static
-    {
+    protected function withFile(): Request {
         $files = $this->request -> files ?? [];
         $upLoadFile = app(UpLoadFile::class) -> clear();
         foreach ($files as $key => $value) {
@@ -60,8 +59,7 @@ class Request
      * @param array $arguments
      * @return false|mixed
      */
-    public function __call(string $name, array $arguments)
-    {
+    public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
         return call_user_func([$this->request, $name], ...$arguments);
     }
