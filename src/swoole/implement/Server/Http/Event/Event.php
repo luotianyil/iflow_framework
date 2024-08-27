@@ -7,7 +7,23 @@ use Swoole\Server;
 
 class Event extends TcpEvent {
 
-    protected array $events = [];
+    protected array $events = [
+        // TCP/UDP 事件
+        'start' => 'onStart',
+        'receive' => 'onReceive',
+        'packet' => 'onPacket',
+        'connect' => 'onConnect',
+        'close' => 'onClose',
+        'pipeMessage' => 'onPipeMessage'
+    ];
+
+    public function getEvent(array $events): array {
+        foreach ($this -> events as $eventKey => $event) {
+            $this->events[$eventKey] = [ $this, $event ];
+        }
+
+        return array_merge($this -> events, $events);
+    }
 
     public function onConnect(Server $server, int $fd, int $reactorId): void {
     }

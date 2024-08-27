@@ -13,15 +13,7 @@ class Service extends ServicesAbstract {
     protected array $events = [
         'request' => 'onRequest',
         'task'    => 'onTask',
-        'finish'  => 'onFinish',
-
-        // TCP/UDP 事件
-        'start' => 'onStart',
-        'receive' => 'onReceive',
-        'packet' => 'onPacket',
-        'connect' => 'onConnect',
-        'close' => 'onClose',
-        'pipeMessage' => 'onPipeMessage'
+        'finish'  => 'onFinish'
     ];
 
     protected bool $isWebSocket = false;
@@ -35,9 +27,10 @@ class Service extends ServicesAbstract {
             $this -> registerWebSocketService();
         }
 
-        $this -> registerSwServiceEvent(
-            Container::getInstance() -> make($this->getEventClass('aliasEvent'), [ $this ])
-        ) -> printStartContextToConsole(
+        $event = Container::getInstance() -> make($this->getEventClass('aliasEvent'), [ $this ]);
+        $this->events = $event -> getEvent($this -> events);
+
+        $this -> registerSwServiceEvent($this) -> printStartContextToConsole(
             $this->isWebSocket ? [ 'http', 'ws' ] : 'http'
         );
 

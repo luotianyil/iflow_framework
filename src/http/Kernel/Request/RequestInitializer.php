@@ -33,7 +33,8 @@ class RequestInitializer extends RequestVerification {
             $request->server['path_info'] = $request->server['path_info'] ?? $request -> server['request_uri'];
             if ($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
                 $file = config('app@favicon') ?: '';
-                return $response->sendfile($file);
+                if (file_exists($file)) return $response->sendfile($file);
+                return true;
             }
 
             if ($this -> setRequest($request) -> setResponse($response, $startTime)
