@@ -84,7 +84,7 @@ class ServicesCommand extends Command {
 
         if (class_exists($class)) return $class;
 
-        return "";
+        return '';
     }
 
 

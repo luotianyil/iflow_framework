@@ -230,8 +230,8 @@ abstract class ServicesAbstract implements ServicesInterface {
 
     public function onWorkerStart() {}
 
-    protected function getEventClass(): string {
-        return $this->servicesCommand -> config -> get('event') ?: $this->defaultEventClass;
+    protected function getEventClass(string $eventKey = 'event'): string {
+        return $this->servicesCommand -> config -> get($eventKey) ?: $this->defaultEventClass;
     }
 
     /**
@@ -276,5 +276,14 @@ abstract class ServicesAbstract implements ServicesInterface {
     public function checkClientConnection(int $fd): bool {
         $clientInfo = $this -> getSwService() -> getClientInfo($fd);
         return $clientInfo !== false;
+    }
+
+    /**
+     * @param string $event 事件名称
+     * @return array|string
+     */
+    public function getEvents(string $event = ''): array|string {
+        if ($event) return $this->events[$event] ?? '';
+        return $this->events;
     }
 }

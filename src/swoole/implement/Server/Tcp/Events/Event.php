@@ -27,8 +27,8 @@ class Event {
 
     public function onConnect(Server $server, int $fd, int $reactorId): void {
         $this->ping = new Ping($server, $fd, ...[
-            $this->services -> getServicesCommand() -> config -> get('heartbeat@ping_interval'),
-            $this->services -> getServicesCommand() -> config -> get('heartbeat@ping_timeout')
+            $this->services -> getServicesCommand() -> config -> get('heartbeat@ping_interval', -1),
+            $this->services -> getServicesCommand() -> config -> get('heartbeat@ping_timeout', -1)
         ]);
     }
 

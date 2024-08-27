@@ -60,7 +60,6 @@ class ModbusRtuCrc {
         for ($i = 0; $i < $strlen; $i++) $fan .= $bin[$i] == 1 ? '0' : '1';
 
         return -bindec($fan);
-
     }
     
 }
