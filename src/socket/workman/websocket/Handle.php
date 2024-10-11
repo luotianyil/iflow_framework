@@ -8,8 +8,7 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
 use Workerman\Worker;
 
-class Handle
-{
+class Handle {
 
     public array $events = [
         'onMessage' => 'message',

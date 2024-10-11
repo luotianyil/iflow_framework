@@ -19,7 +19,7 @@ class Install extends Command {
         'dump-autoload'
     ];
 
-    public function handle(array $event = []) {
+    public function handle(array $event = []): void {
         $this->config = config('install');
         $this -> includeDataBase() ?->  installLibrary();
         $this->Console -> writeConsole -> writeLine('installed');
@@ -65,7 +65,7 @@ class Install extends Command {
         }
     }
 
-    protected function checkDatabase(array $defaultConfig) {
+    protected function checkDatabase(array $defaultConfig): void {
         $database = $this->db -> query("show databases like '{$defaultConfig['database']}'");
 
         // Create Database
@@ -96,7 +96,7 @@ class Install extends Command {
         return true;
     }
 
-    protected function installLibrary() {
+    protected function installLibrary(): void {
         $this->Console -> writeConsole -> writeLine('start install library');
         $composer = $this->config['composer']['rootPath'];
         if (file_exists($composer)) {

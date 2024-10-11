@@ -12,8 +12,8 @@ use Throwable;
 
 class RenderDebugView {
 
-    protected string $exception_tpl = "";
-    protected string $trace = "";
+    protected string $exception_tpl = '';
+    protected string $trace = '';
 
     public function __construct(protected Throwable $throwable, protected array $config) {
         $this->exception_tpl =
@@ -121,9 +121,8 @@ class RenderDebugView {
             return $response -> server_error($this->throwable -> getCode(), $this->throwable->getMessage(), $error);
         }
 
-        if (!file_exists($this->exception_tpl)) {
-            $this->exception_tpl = str_replace("\\", '/', __DIR__ . "/../exception.tpl");
-        }
+        $this->exception_tpl = file_exists($this->exception_tpl)
+            ? $this->exception_tpl : str_replace("\\", '/', __DIR__ . "/../exception.tpl");
 
         if (!file_exists($this->exception_tpl)) {
             return $response -> server_error(502, $this->exception_tpl.' template file does not exists', $error);

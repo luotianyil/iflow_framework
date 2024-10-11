@@ -244,7 +244,7 @@ abstract class App {
 
     public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
-        $this->container = $this->container ?? Container::getInstance();
+        $this->container ??= Container::getInstance();
         return call_user_func([ $this->container, $name ], ...$arguments);
     }
 }

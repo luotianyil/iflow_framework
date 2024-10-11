@@ -12,10 +12,10 @@ use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\PrettyPrinterAbstract;
 
-class Ast
-{
+class Ast {
 
     private Parser $astParser;
+
     private PrettyPrinterAbstract $printer;
 
     public function __construct() {
@@ -24,11 +24,10 @@ class Ast
         $this->printer = new Standard();
     }
 
-    public function proxy(string $class, ?NodeVisitorAbstract $node = null, string $aspectClass = ""): string
-    {
+    public function proxy(string $class, ?NodeVisitorAbstract $node = null, string $aspectClass = ''): string {
         $code = $this->getCode($class);
 
-        if ($code === "") return $code;
+        if ($code === '') return $code;
 
         // 解析后的 ast 树
         $stmts = $this->parse($code);
@@ -57,10 +56,10 @@ class Ast
      * @throws InvokeClassException
      */
     private function getCode(string $class): string {
-        $root = explode("\\", $class)[0] === "iflow" ?
+        $root = explode("\\", $class)[0] === 'iflow' ?
             app() -> getFrameWorkPath() : app() -> getRootPath();
 
-        $filePath = str_replace("\\", "/", $root . $class . ".php");
-        return file_exists($filePath) ? file_get_contents($filePath) : "";
+        $filePath = str_replace("\\", '/', $root . $class . '.php');
+        return file_exists($filePath) ? file_get_contents($filePath) : '';
     }
 }

@@ -17,9 +17,7 @@ class Workerman extends Command {
             return true;
         }
         $configName = $this->getArgument('config', $this->getArgument('--c'));
-        if (!$configName) {
-            $configName = $config['default'];
-        }
+        if (!$configName) $configName = $config['default'];
 
         $this->Console -> writeConsole -> writeLine((new HttpServer($config[$configName])) -> start());
         return true;

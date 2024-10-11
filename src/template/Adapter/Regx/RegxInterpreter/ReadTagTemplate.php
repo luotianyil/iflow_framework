@@ -24,11 +24,11 @@ class ReadTagTemplate {
 
         if (empty($templateCode)) return "";
 
-        if (isset($templateCode['isCloseLabel']) && $templateCode['isCloseLabel'] === true) {
-            if (str_starts_with($templateCode['tagContent'], ':')) {
-                return $this->echoTagToPhpCode($templateCode);
-            }
-        }
+        if (
+            isset($templateCode['isCloseLabel'])
+            && $templateCode['isCloseLabel'] === true
+            && str_starts_with($templateCode['tagContent'], ':')
+        ) return $this->echoTagToPhpCode($templateCode);
 
         $tagAttrs = $templateCode['tagAttrs'];
         $tagClazz = $this->config -> getTagByName($tagAttrs['tag']);

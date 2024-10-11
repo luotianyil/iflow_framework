@@ -82,7 +82,7 @@ class IRedis implements AdapterInterface
             $this->sentinelToAddress($this->config['sentinel_name']);
         }
 
-        if (key_exists('auth', $this->config)) {
+        if (key_exists('auth', $this->config) && !empty($this->config['auth'])) {
             $this->authLogin($this->config['auth']) ?: throw new \RuntimeException('Redis Auth Verification Failed');
         }
 

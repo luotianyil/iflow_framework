@@ -47,18 +47,10 @@ class ModbusRtuCrc {
     }
 
     protected function hexDec(string $hex): int | float {
-
         $dec = hexdec($hex);
-
         if (hexdec($hex[0]) < 8) return $dec;
-
-        $bin = decbin($dec - 1);
-        $strlen = strlen($bin);
-
-        $fan = '';
-
+        $bin = decbin($dec - 1); $strlen = strlen($bin); $fan = '';
         for ($i = 0; $i < $strlen; $i++) $fan .= $bin[$i] == 1 ? '0' : '1';
-
         return -bindec($fan);
     }
     

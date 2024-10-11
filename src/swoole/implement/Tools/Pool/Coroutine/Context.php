@@ -8,12 +8,11 @@ class Context {
 
     /**
      * 获取协程上下文
-     * @param int|null $cid
-     * @return mixed
+     * @param ?int $cid
+     * @return ?Coroutine\Context
      */
-    public static function get(int $cid = null): mixed
-    {
-        return Coroutine::getContext($cid);
+    public static function get(?int $cid = 0): ?Coroutine\Context {
+        return Coroutine::getContext($cid ?: 0);
     }
 
     /**
@@ -27,15 +26,15 @@ class Context {
 
     /**
      * 获取当前协程父id
-     * @param int $cid
+     * @param int|null $cid
      * @return int
      */
-    public static function getPCid(int $cid): int
+    public static function getPCid(?int $cid): int
     {
         return Coroutine::getPcid($cid);
     }
 
-    public static function getDataArrayObject($cid = null): \ArrayObject
+    public static function getDataArrayObject(?int $cid = 0): \ArrayObject
     {
         $context = self::get($cid);
         if (!isset($context['data'])) $context['data'] = new \ArrayObject();
@@ -46,12 +45,12 @@ class Context {
      * 获取临时数据
      * @param string $key
      * @param mixed|null $default
-     * @param null $cid
+     * @param ?int $cid
      * @return mixed
      */
-    public static function getData(string $key, mixed $default = null, $cid = null): mixed {
+    public static function getData(string $key, mixed $default = null, ?int $cid = 0): mixed {
         if (self::hasData($key, $cid)) {
-            return self::getDataArrayObject($cid);
+            return self::getDataArrayObject($cid) -> offsetGet($key);
         }
         return $default;
     }
@@ -59,10 +58,10 @@ class Context {
     /**
      * 判断数据是否存在
      * @param string $key
-     * @param null $cid
+     * @param ?int $cid
      * @return bool
      */
-    public static function hasData(string $key, $cid = null): bool
+    public static function hasData(string $key, ?int $cid = 0): bool
     {
         return self::getDataArrayObject($cid) -> offsetExists($key);
     }
@@ -71,18 +70,18 @@ class Context {
      * 设置数据
      * @param string $key
      * @param mixed $value
-     * @param null $cid
+     * @param ?int $cid
      */
-    public static function setData(string $key, mixed $value, $cid = null): void {
+    public static function setData(string $key, mixed $value, ?int $cid = 0): void {
         self::getDataArrayObject($cid) -> offsetSet($key, $value);
     }
 
     /**
      * 删除数据
      * @param string $key
-     * @param null $cid
+     * @param ?int $cid
      */
-    public static function removeData(string $key, $cid = null): void {
+    public static function removeData(string $key, ?int $cid = 0): void {
         if (self::hasData($key, $cid)) {
             self::getDataArrayObject($cid) -> offsetUnset($key);
         }
@@ -92,14 +91,13 @@ class Context {
      * 如果不存在则写入数据
      * @param string $key
      * @param $value
-     * @param $cid
+     * @param int $cid
      * @return mixed
      */
-    public static function rememberData(string $key, $value, $cid): mixed
-    {
-        if (self::hasData($key)) {
-            return self::getData($key, cid: $cid);
-        }
+    public static function rememberData(string $key, $value, int $cid = 0): mixed {
+
+        if (self::hasData($key)) return self::getData($key, cid: $cid);
+
         if ($value instanceof \Closure) {
             // 获取缓存数据
             $value = $value();
@@ -109,12 +107,11 @@ class Context {
     }
 
     /**
-     * @param null $cid
+     * @param ?int $cid
      * @internal
      * 清空数据
      */
-    public static function clear($cid = null)
-    {
+    public static function clear(?int $cid = 0): void {
         self::getDataArrayObject($cid)->exchangeArray([]);
     }
 

@@ -56,11 +56,11 @@ class RequestInitializer extends RequestVerification {
      * @return bool
      * @throws InvokeClassException
      * @throws InvokeFunctionException
-     * @throws ErrorException
+     * @throws ErrorException|AttributeTypeException
      */
     protected function ReturnsResponseBody(): bool {
-        $controller = app($this->ReflectionClass -> getName(), [ $this->request, $this->response ], true);
         // 执行方法
+        $controller = app() -> invokeClass($this -> ReflectionClass -> getName(), [ $this->request, $this->response ]);
         return $this->send(app() -> invoke([$controller, $this->RequestController[1]], $this->RequestQueryParams));
     }
 

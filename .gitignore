@@ -3,6 +3,7 @@
 /.git
 /vendor
 /app
+/Protocols
 /config
 /public
 /iflow

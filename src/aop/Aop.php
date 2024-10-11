@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class Aop {
 
-    // 用户定义切面
+    // 自定义切面
     private array $aspects = [];
 
     // AOP 配置
@@ -42,7 +42,7 @@ class Aop {
      * @return bool|Aop
      * @throws InvokeClassException
      */
-    public function process(string $class, string $method, ...$args): bool|static {
+    public function process(string $class, string $method, ...$args): bool|Aop {
         // 统计切面， 以批量执行
         $aspects = [];
         if (count($this->aspects) === 0) return false;
@@ -60,15 +60,15 @@ class Aop {
                 }
                 if (!$this->MethodsProxy($method, $action) && count($list) > 1) continue;
 
-                $hashClass = "_" . sha1($aspect . $class);
+                $hashClass = '_' . sha1($aspect . $class);
 
                 // 生成代理类
                 if (!$this->CacheExists($hashClass)) {
                     $ast = (new Ast()) -> proxy($class, aspectClass: $aspect);
-                    if ($ast === "") throw new HttpException(502, "proxyClass {$class} not exists");
+                    if ($ast === '') throw new HttpException(502, "proxyClass {$class} not exists");
                     $this->saveCache($hashClass, $ast);
                 }
-                include_once $this->config['cache_path']. DIRECTORY_SEPARATOR . $hashClass . ".php";
+                include_once $this->config['cache_path']. DIRECTORY_SEPARATOR . $hashClass . '.php';
                 $aspects[] = app(substr($class, 0, strrpos($class, "\\"))."\\$hashClass");
                 break;
             }

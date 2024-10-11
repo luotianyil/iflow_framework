@@ -113,7 +113,7 @@ class Docs {
 
 
     public function countDoc(string $indexName, string $typeName = '', bool $isRefresh = false): mixed {
-        return $this->sendRequest($isRefresh ? 'PUT' : 'POST',
+        return $this->sendRequest($isRefresh ? 'POST' : 'GET',
             sprintf("%s%s/_count%s", $indexName, $typeName ? '/'.$typeName : '', $isRefresh ? '?refresh' : ''),
             $this->queryParams
         );

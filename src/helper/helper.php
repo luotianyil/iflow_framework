@@ -362,14 +362,12 @@ if (!function_exists('php_run_path')) {
 // 数组转一维数组
 if (!function_exists('array_multi_to_one')) {
     function array_multi_to_one($array, &$arr, ?\Closure $closure = null): void {
-        foreach ($array as $key => $value) {
+        foreach ($array as $value) {
             if (is_array($value)) {
                 array_multi_to_one($value, $arr, $closure);
             } else {
                 if ($closure === null) $arr[] = $value;
-                else if (call_user_func($closure, $value)) {
-                    $arr[] = $value;
-                }
+                else if (call_user_func($closure, $value)) $arr[] = $value;
             }
         }
     }

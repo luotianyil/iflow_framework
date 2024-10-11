@@ -20,6 +20,8 @@
     "iflow/emailer": "^0.0.1",
     "iflow/scrapy": "^0.0.1",
     "iflow/helper": "^0.0.1",
+    "google/protobuf": "^4.27",
+    "open-smf/connection-pool": "^2.0",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-bcmath": "*",
@@ -29,8 +31,7 @@
     "ext-ctype": "*",
     "ext-sockets": "*",
     "ext-gd": "*",
-    "ext-openssl": "*",
-    "google/protobuf": "^4.27"
+    "ext-openssl": "*"
   },
   "license": "MulanPSL-2.0",
   "authors": [

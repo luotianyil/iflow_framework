@@ -14,7 +14,9 @@ use Swoole\Server;
 class Watch {
 
     private App $app;
+
     protected File $file;
+
     private array $config = [
         'watchFolder' => [
             'app',
@@ -37,7 +39,7 @@ class Watch {
     }
 
 
-    protected function WatchFile(): static {
+    protected function WatchFile(): Watch {
         $this->files = [];
         foreach ($this->config['watchFolder'] as $dir) {
             find_files($this->app -> getRootPath() . DIRECTORY_SEPARATOR . $dir, function (\SplFileInfo $splFileInfo) {
@@ -64,7 +66,7 @@ class Watch {
         }
     }
 
-    private function reload(): static {
+    private function reload(): Watch {
         $this->app -> make(Server::class) -> stop();
 
         // 重新运行应用

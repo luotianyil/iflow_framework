@@ -39,7 +39,7 @@ class IncludeTag extends TagAbstract {
      */
     protected function readImportTemplate(): void {
 
-        if (!$this->readFile || !file_exists($this->readFile))
+        if (!file_exists($this->readFile))
             throw new templateViewNotFound("ReadTemplateFile Fails TemplatePath: {$this -> readFile}");
 
         $content = file_get_contents($this->readFile);

@@ -28,7 +28,7 @@ class Parser {
         } catch (\Exception $exception) {
             logs('error', $exception -> getMessage()) -> update();
         }
-        return [];
+        return '';
     }
 
 }

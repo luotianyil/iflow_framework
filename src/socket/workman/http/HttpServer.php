@@ -3,7 +3,6 @@
 
 namespace iflow\socket\workman\http;
 
-
 use Workerman\Worker;
 
 class HttpServer
@@ -18,11 +17,7 @@ class HttpServer
 
     protected function event(): bool {
         $classes = $this->config['handle'];
-        if (!class_exists($classes)){
-            $this->stop();
-            return false;
-        }
-        $onEvent = new $classes($this->config, $this->server);
+        $onEvent = app() -> invokeClass($classes, [ $this->config, $this->server ]);
         foreach ($onEvent -> events as $event => $action) {
             $this->server->{$event} = [ $onEvent, $action ];
         }

@@ -62,6 +62,7 @@ abstract class ServicesAbstract implements ServicesInterface {
         $this->events['task'] = [ $this->delivery, 'onTask' ];
         $this->events['finish'] = [ $this->finish, 'onFinish' ];
         $this->events['WorkerStart'] = [ $this, 'onWorkerStart' ];
+        $this->events['WorkerError'] = [ $this, 'onWorkerError' ];
 
         $this -> setServerParams();
         $serviceClass = $this->getSwooleServiceClass();
@@ -229,6 +230,11 @@ abstract class ServicesAbstract implements ServicesInterface {
     public function onFinish() {}
 
     public function onWorkerStart() {}
+
+    public function onWorkerError(Server $server, int $worker_id, int $worker_pid, int $exit_code, int $signal): void {
+        $onWorkerError = $this->config -> get('on@workerError');
+        $onWorkerError && $onWorkerError(...func_get_args());
+    }
 
     protected function getEventClass(string $eventKey = 'event'): string {
         return $this->servicesCommand -> config -> get($eventKey) ?: $this->defaultEventClass;

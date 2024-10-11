@@ -40,7 +40,7 @@ class Input {
 
                 if (count($userCommand) !== count($commandKey)) continue;
 
-                foreach ($commandKey as $index => $commandChildren) {
+                foreach ($commandKey as $commandChildren) {
                     $key_command_start = explode('|', str_replace(['<', '>'], '', $commandChildren));
                     $userCommandIndex = array_shift($userCommand);
 

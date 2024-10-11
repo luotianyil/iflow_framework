@@ -8,7 +8,7 @@ class MQTT {
 
     public function __construct( protected Parser $parser) {}
 
-    public function pack(int $protocol_level = 5) {
+    public function pack(int $protocol_level = 5): string {
         return $this->parser -> pack($this->data, $protocol_level);
     }
 
@@ -44,6 +44,12 @@ class MQTT {
 
     public function setMessage(mixed $message): MQTT {
         $this->data['message'] = $message;
+        return $this;
+    }
+
+
+    public function setMessageId(int|string $messageId): MQTT {
+        $this->data['message_id'] = $messageId;
         return $this;
     }
 

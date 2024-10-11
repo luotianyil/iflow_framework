@@ -26,8 +26,7 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
         parent::__construct($filename);
     }
 
-    public function setFile($name, $file): static
-    {
+    public function setFile($name, $file): UpLoadFile {
         $file['error'] = $file['error'] ?? 0;
         if ($file['error'] === 0) $this->fileList[$name][] = new self($file['tmp_name']);
         return $this;
@@ -62,8 +61,7 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
      * @param array $config
      * @return array|bool
      */
-    public function move(string $savePath, array $config = []): array|bool
-    {
+    public function move(string $savePath, array $config = []): array|bool {
         $validate = $this->validate($config);
         if ($validate -> error) {
             throw new HttpException(403, $validate -> error[0]);
@@ -76,6 +74,7 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
         !is_dir($basePath) && mkdir($basePath, 0755, true);
         // 当 move_uploaded_file 无法使用时(非框架自带HTTP服务时) 直接使用 rename
         $upload = move_uploaded_file($this->getPathname(), $path['path']) || rename($this->getPathname(), $path['path']);
+
         return $upload ? $path : false;
     }
 
@@ -116,9 +115,9 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
     /**
      * 验证文件规则
      * @param array $validate
-     * @return $this
+     * @return UpLoadFile
      */
-    protected function validate(array $validate): static
+    protected function validate(array $validate): UpLoadFile
     {
         $validate = array_merge($this->defValidate, $validate);
         if (count($validate['mineType']) > 0) {
@@ -148,8 +147,7 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
         return $this->read();
     }
 
-    public function moveTo($targetPath)
-    {
+    public function moveTo($targetPath) {
         // TODO: Implement moveTo() method.
         return $this->move($targetPath);
     }

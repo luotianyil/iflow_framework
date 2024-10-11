@@ -11,7 +11,7 @@ class Service extends \iflow\swoole\implement\Server\Udp\Service {
 
     protected Node $node;
 
-    public function start() {
+    public function start(): void {
         $this->node = app(Node::class, [
             $this->getNodeConfig()
         ]);
@@ -30,7 +30,7 @@ class Service extends \iflow\swoole\implement\Server\Udp\Service {
         ];
     }
 
-    public function onStart() {
+    public function onStart(): void {
         Container::getInstance() -> get(Server::class) -> node = $this->node;
         $this->SwService -> task([
             'callable' => [

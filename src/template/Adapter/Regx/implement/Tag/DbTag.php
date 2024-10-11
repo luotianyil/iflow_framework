@@ -40,7 +40,7 @@ class DbTag extends TagAbstract {
         $props = $this -> props ? "...[{$this -> props}]" : "";
 
         if ($this->sql) {
-            $this->html .= "\\think\\facade\\Db::{$this -> queryAction}(\"{$this->sql}\", $props)";
+            $this->html .= "\\iflow\\facade\\Db::{$this -> queryAction}(\"{$this->sql}\", $props)";
         } else if ($this->queryModel) {
             $this->html .= "app('{$this -> queryModel}') -> {$this -> queryAction}($props)";
         }

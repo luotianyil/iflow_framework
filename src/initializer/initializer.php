@@ -6,8 +6,8 @@ use GuzzleHttp\DefaultHandler;
 use iflow\App;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
+use iflow\facade\Db;
 use iflow\i18n\i18n;
-use think\facade\Db;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 
 class initializer {
