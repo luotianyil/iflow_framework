@@ -97,7 +97,7 @@ class FileSystem extends SplFileInfo {
      */
     public function move(string $savePath, array $config = []): mixed {
         $this->fileSystem -> move($this->getPathname(), $savePath, $config);
-        return;
+        return true;
     }
 
     /**
