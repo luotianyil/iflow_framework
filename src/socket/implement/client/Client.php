@@ -21,8 +21,8 @@ class Client {
 
     public function __construct(protected bool $enableSSL = true) {}
 
-    public function connect(string $host, int $port, float $timeout = 30): bool
-    {
+    public function connect(string $host, int $port, float $timeout = 30): bool {
+
         $this->handle = stream_socket_client("$host:$port", $this->errCode, $this->errMsg, $timeout);
 
         if ($this->handle) {

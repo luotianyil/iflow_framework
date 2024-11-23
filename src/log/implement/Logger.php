@@ -13,7 +13,8 @@ class Logger extends ObserverAbstract implements LoggerInterface {
     protected string $file = '';
     protected array $config = [];
 
-    protected string $nameSpaces = 'iflow\\log\\implement\\channels\\';
+    final protected const NAMESPACE = 'iflow\\log\\implement\\channels\\';
+
     protected object $channel;
 
     public function emergency($message, array $context = array())
@@ -64,22 +65,19 @@ class Logger extends ObserverAbstract implements LoggerInterface {
         return $this->setLogs('debug', $message, $context);
     }
 
-    public function log($level, $message, array $context = array())
-    {
+    public function log($level, $message, array $context = array()) {
         // TODO: Implement log() method.
         return $this->setLogs('log', $message, $context);
     }
 
-    protected function setLogs(string $type, $message, $content): static
-    {
+    protected function setLogs(string $type, $message, $content): Logger {
         $content = $message. trim(var_export(count($content) <= 0 ? '' : $content, true), "'");
         $timer = \DateTime::createFromFormat('0.u00 U', microtime())->setTimezone(new \DateTimeZone(date_default_timezone_get()))->format($this->config['time_format']);
         $this->logs[] = [ 'time' => $timer, 'content' => $content, 'type' => strtoupper($type) ];
         return $this;
     }
 
-    public function clear(): bool {
+    public function clear(): void {
         $this->logs = [];
-        return true;
     }
 }

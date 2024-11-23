@@ -5,6 +5,7 @@ namespace iflow\initializer;
 
 
 use iflow\App;
+use iflow\Helper\Tools\System;
 use iflow\Utils\Tools\Timer;
 
 class AppMonitoring {
@@ -32,9 +33,7 @@ class AppMonitoring {
         $this->config = config('app@appMonitoring');
         $units = ['B', 'kB', 'MB'];
 
-        if (!function_exists('systemInfo')) {
-            return false;
-        }
+        if (!function_exists('systemInfo')) return false;
 
         $systemInfo = systemInfo();
         $MemFree = explode(' ', $systemInfo['mem']['MemFree'])[0] / 1024 / 1024;

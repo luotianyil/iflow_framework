@@ -72,15 +72,12 @@ abstract class ServicesAbstract implements ServicesInterface {
         $this->SwService -> set($this->config -> get('swConfig'));
         $this->servicesCommand -> setServices();
 
-        $this -> registerListeners() -> createServiceAfter();
-
-        $process = new Process(function () {
-            run(function () {
-                Container::getInstance() -> make(Watch::class) -> initializer($this->servicesCommand -> app);
-                Container::getInstance() -> make(AppMonitoring::class) -> initializer($this->servicesCommand -> app);
-            });
+        run(function () {
+            Container::getInstance() -> make(Watch::class) -> initializer($this->servicesCommand -> app);
+            Container::getInstance() -> make(AppMonitoring::class) -> initializer($this->servicesCommand -> app);
         });
-        $this->getSwService() -> addProcess($process);
+
+        $this -> registerListeners() -> createServiceAfter();
     }
 
     protected function createServiceAfter(): void {}

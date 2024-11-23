@@ -28,7 +28,7 @@ class Watch {
     private array $files = [];
 
     public function initializer(App $app): bool {
-        if (!config('app@hot_update')) return false;
+        if (!config('app@hot_update', false)) return false;
         go(function () use ($app) {
             $this->app = $app;
             $this->file = app(File::class) -> initializer();

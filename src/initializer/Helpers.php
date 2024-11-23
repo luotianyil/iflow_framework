@@ -31,7 +31,7 @@ class Helpers {
     protected string $applicationCommunityHelper = '';
 
     public function initializer(App $app): void {
-        $this -> applicationHelperFolder = config('app@application_helper_folder', $app->getAppPath() . 'helpers');
+        $this -> applicationHelperFolder = config('app@application_helper_folder', $app->getAppPath() . 'helpers') ;
         $this -> frameworkHelperFolder = $app->getFrameWorkPath() . 'helpers';
         $this->applicationCommunityHelper = $app->getAppPath() . 'common.php';
         $this->loadFrameworkHelper() -> loadApplicationHelper() -> includeHelperFile();

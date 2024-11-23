@@ -6,7 +6,7 @@ use GuzzleHttp\DefaultHandler;
 use iflow\App;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
-use iflow\facade\Db;
+use iflow\facade\DB;
 use iflow\i18n\i18n;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 
@@ -54,7 +54,7 @@ class initializer {
      */
     protected function db_initializer(): initializer {
         return config('database',
-            call: fn ($config) => !empty($config) ? (Db::setConfig($config) ?? $this) : $this
+            call: fn ($config) => !empty($config) ? (DB::setConfig($config) ?? $this) : $this
         );
     }
 

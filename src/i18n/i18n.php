@@ -11,7 +11,9 @@ use iflow\i18n\Tools\Utils;
 class i18n {
 
     use Utils;
+
     protected array $lang = [];
+
     protected App $app;
 
     public function initializer(App $app): void {

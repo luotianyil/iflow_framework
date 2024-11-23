@@ -31,7 +31,7 @@ class Service extends TCPService {
         while ($this->server -> isConnected()) {
             if (($pack = $this -> getPack(packFormatter: false)) === '') break;
             go(function () use ($pack) {
-                $local = $this -> connection('local');
+                $local  = $this  -> connection('local');
                 $tunnel = $this -> connection('tunnel');
 
                 $connectionStatus = $this -> checkTunnelConnection($local, $tunnel, function () use ($local, $tunnel, $pack) {

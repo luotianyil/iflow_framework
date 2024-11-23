@@ -53,7 +53,7 @@ trait Helper {
         if (str_starts_with('http', $host)) return $host;
 
         $scheme = $this -> server('request_scheme');
-        $scheme = $scheme ? "$scheme://" : ($this -> isHTTPS() ? 'https://' : "http://");
+        $scheme = $scheme ? "$scheme://" : ($this -> isHTTPS() ? 'https://' : 'http://');
         return !$scheme_uri ? $host : $scheme.$host;
     }
 
@@ -122,7 +122,7 @@ trait Helper {
      * @param string $default
      * @return mixed
      */
-    public function postParams(string $name = '', string $default = ''): mixed
+    public function postParams(string $name = '', mixed $default = ''): mixed
     {
         if ($this->isGet()) return [];
         $row = $this->request -> getContent();
@@ -132,13 +132,22 @@ trait Helper {
     }
 
     /**
+     * 获取POST参数
+     * @param string $name
+     * @param string $default
+     * @return mixed
+     */
+    public function post(string $name = '', string $default = ''): mixed {
+        return $this -> postParams($name, $default);
+    }
+
+    /**
      * 根据请求获取参数
      * @param string $name
      * @param mixed $default
      * @return mixed
      */
-    public function params(string $name = '', mixed $default = ''): mixed
-    {
+    public function params(string $name = '', mixed $default = ''): mixed {
         return match ($this->isGet()) {
             false => $this->postParams($name, $default),
             true => $this->getParams($name, $default)
@@ -151,8 +160,7 @@ trait Helper {
      * @param string $default
      * @return string|array|null
      */
-    public function getParams(string $name = '', string $default = ''): string|array|null
-    {
+    public function getParams(string $name = '', mixed $default = ''): mixed {
         if ($name === '') return $this->request -> get;
         return $this->get($name, 'get', $default);
     }
@@ -162,8 +170,7 @@ trait Helper {
      * @param string $name
      * @return string|array|null
      */
-    public function getHeader(string $name = ''): string|array|null
-    {
+    public function getHeader(string $name = ''): mixed {
         if ($name === '') return $this->request -> header;
         return $this->get(strtolower(str_replace('_', '-', $name)), 'header', '');
     }
@@ -187,7 +194,7 @@ trait Helper {
      * @param string $default
      * @return string|array|null
      */
-    protected function get(string $name, string $type, string $default = ''): string|array|null {
+    protected function get(string $name, string $type, mixed $default = ''): mixed {
         if ($this->has($name, $type)) {
             return $this->request -> {$type}[$name] ?? $default;
         }

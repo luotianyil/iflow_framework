@@ -7,19 +7,18 @@ use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\fileSystem\implement\UpLoadFile;
 use iflow\request\RequestTrait;
 
-class Request
-{
+class Request {
 
     use RequestTrait;
 
     /**
      * 初始化Request类
      * @param $request
-     * @return $this
+     * @return Request
      * @throws InvokeClassException
      */
-    public function initializer($request): static
-    {
+    public function initializer($request): Request {
+
         $url = $request -> server['path_info'] ?? $request -> server['request_uri'];
 
         // 初始化 原生Request
@@ -59,7 +58,7 @@ class Request
      * @param array $arguments
      * @return false|mixed
      */
-    public function __call(string $name, array $arguments) {
+    public function __call(string $name, array $arguments): mixed {
         // TODO: Implement __call() method.
         return call_user_func([$this->request, $name], ...$arguments);
     }

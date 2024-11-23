@@ -7,11 +7,11 @@ use GuzzleHttp\Psr7\{BufferStream, Request, ServerRequest};
 use iflow\request\Adapter\ValidRequest;
 use Psr\Http\Message\{RequestInterface, ServerRequestInterface, StreamInterface};
 
-trait RequestTrait
-{
+trait RequestTrait {
+
     use ValidRequest;
 
-    protected string $version = "";
+    protected string $version = '';
     protected ?RequestInterface $requestPsr7 = null;
     protected ?ServerRequestInterface $serverRequestPsr7 = null;
 

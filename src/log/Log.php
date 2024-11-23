@@ -12,9 +12,9 @@ class Log extends Logger {
 
     public object $channel;
 
-    public function initializer() {
+    public function initializer(): void {
         $this->config = config('log');
-        $channels = $this->nameSpaces . ucwords($this->config['default']);
+        $channels = self::NAMESPACE . ucwords($this->config['default']);
         $this->channel = app() -> make($channels, [$this->config[$this->config['default']]]);
 
         // 订阅事件
@@ -36,6 +36,7 @@ class Log extends Logger {
      * 结束请求时写入日志
      * @param SplSubject|null $subject
      * @return void
+     * @throws \Exception
      */
     public function update(?SplSubject $subject = null): void {
         if ($this->channel -> save($this->logs)) {
