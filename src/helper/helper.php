@@ -275,7 +275,7 @@ if (!function_exists('cookie')) {
 
 // 返回json
 if (!function_exists('json')) {
-    function json($data, int $code = 200, array $headers = [], array $options = []): Json {
+    function json($data, int $code = 200, array $headers = [], array $options = []): Json|Response {
         return Response::create($data, $code, 'json')
             -> headers($headers) -> options($options);
     }
@@ -283,7 +283,7 @@ if (!function_exists('json')) {
 
 // 返回xml
 if (!function_exists('xml')) {
-    function xml(array $data, int $code = 200, array $headers = [], array $options = []): Xml {
+    function xml(array $data, int $code = 200, array $headers = [], array $options = []): Xml|Response {
         return Response::create($data, $code, 'xml')
             -> headers($headers) -> options($options);
     }
@@ -291,7 +291,7 @@ if (!function_exists('xml')) {
 
 // 发送文件
 if (!function_exists('sendFile')) {
-    function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\Adapter\File
+    function sendFile(string $path, int $code = 200, array $headers = [], bool $isConfigRootPath = true) : \iflow\response\Adapter\File|Response
     {
         $path = ($isConfigRootPath ? config('app@resources.file.rootPath') . DIRECTORY_SEPARATOR : '') . $path;
         return Response::create($path, $code, 'file')
@@ -345,10 +345,18 @@ if (!function_exists('is_http_services')) {
 }
 
 // 部分代码使用 go 所以为了兼容 未安装swoole 扩展 提供此方法
-if (!function_exists('go')) {
-    function go(\Closure $closure, callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null) {
+if (!function_exists('coroutine_go')) {
+    function coroutine_go(\Closure $closure, callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null) {
+        if (swoole_success()) return go($closure);
+
         $promise = new Promise($closure);
         return $promise -> then($onFulfilled, $onRejected, $onProgress) -> done();
+    }
+}
+
+if (!function_exists('go')) {
+    function go(\Closure $closure, callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null) {
+        return coroutine_go(...func_get_args());
     }
 }
 

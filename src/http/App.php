@@ -6,7 +6,7 @@ namespace iflow\http;
 use iflow\event\Event;
 use iflow\http\Adapter\Request;
 use iflow\http\Adapter\Response;
-use iflow\initializer\{ appSurroundings, Config, Error, Helpers, initializer };
+use iflow\initializer\{ AppSurroundings, Config, Error, Helpers, initializer };
 use iflow\log\Log;
 
 abstract class App extends \iflow\App {
@@ -17,7 +17,7 @@ abstract class App extends \iflow\App {
         Event::class,
         Log::class,
         Error::class,
-        appSurroundings::class,
+        AppSurroundings::class,
         initializer::class
     ];
 

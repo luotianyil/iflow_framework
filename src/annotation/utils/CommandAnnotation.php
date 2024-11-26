@@ -5,7 +5,6 @@ namespace iflow\annotation\utils;
 
 
 use Attribute;
-use iflow\console\Adapter\Command;
 use iflow\Container\implement\annotation\abstracts\AnnotationAbstract;
 use iflow\Container\implement\annotation\implement\enum\AnnotationEnum;
 use Reflector;
@@ -24,7 +23,7 @@ class CommandAnnotation extends AnnotationAbstract {
 
     public function process(Reflector $reflector, &$args): mixed {
         // TODO: Implement process() method.
-        if ($reflector -> getParentClass() -> getName() !== Command::class)
+        if (!$reflector -> hasMethod('handle') || !$reflector -> hasProperty('console'))
             throw new \RuntimeException($reflector -> getName() . ' instanceof Command fail');
 
         return config([ $this->command => $reflector -> getName() ], 'command');

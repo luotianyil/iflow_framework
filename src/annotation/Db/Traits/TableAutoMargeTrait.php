@@ -42,10 +42,9 @@ trait TableAutoMargeTrait {
      */
     protected function autoMarge(): Table {
         try {
+            if (!config('database@auto_marge.enable')) return $this;
 
             DB::startTrans();
-
-            if (!config('database@auto_marge.enable')) return $this;
 
             $dbType = $this -> model -> getConfig()['type'];
 
@@ -69,6 +68,4 @@ trait TableAutoMargeTrait {
             throw $exception;
         }
     }
-
-
 }

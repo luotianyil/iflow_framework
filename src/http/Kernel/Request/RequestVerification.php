@@ -106,7 +106,7 @@ abstract class RequestVerification extends SubjectAbstract {
         $url = explode('/', trim($url, '/'))[0] ?? '/';
         if (config('swoole.service@websocket.enable')) {
             if ($url === 'socket.io') {
-                // TODO SOCKET.IO Connection
+                // TODO: SOCKET.IO Connection
                 return $this->send(
                     app(WebSocket::class) -> connection($this->request, $this->response)
                 );

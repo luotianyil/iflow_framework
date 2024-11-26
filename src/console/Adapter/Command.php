@@ -14,6 +14,8 @@ abstract class Command {
 
     public Console $Console;
 
+    public Console $console;
+
     /**
      * @param App $app
      * @return Command
@@ -24,11 +26,12 @@ abstract class Command {
     }
 
     /**
-     * @param Console $Console
+     * @param Console $console
      * @return Command
      */
-    public function setConsole(Console $Console): static {
-        $this->Console = $Console;
+    public function setConsole(Console $console): static {
+        $this->Console = $console;
+        $this->console = $console;
         return $this;
     }
 
