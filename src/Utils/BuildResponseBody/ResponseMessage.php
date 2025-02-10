@@ -64,6 +64,7 @@ trait ResponseMessage {
 
             return match ($this->filter) {
                 'xml' => xml($data, $code),
+                'msgpack' => msgpack($data, $code),
                 default => json($data, $code)
             };
         }

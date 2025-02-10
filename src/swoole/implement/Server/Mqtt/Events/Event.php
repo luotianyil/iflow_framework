@@ -2,13 +2,16 @@
 
 namespace iflow\swoole\implement\Server\Mqtt\Events;
 
-use iflow\swoole\Config;
+use iflow\swoole\implement\Server\Mqtt\Events\Traits\MQTTServerHelperTrait;
 use iflow\swoole\implement\Server\Mqtt\Packet\Parser;
+use iflow\swoole\implement\Server\Mqtt\Subscribe\Subscribe;
 use iflow\swoole\ServicesCommand;
 use Simps\MQTT\Protocol\Types;
 use Swoole\Server;
 
 class Event {
+
+    use MQTTServerHelperTrait;
 
     protected int $protocol_level = 5;
 
@@ -16,7 +19,7 @@ class Event {
         // MQTT连接初始化
         Types::CONNECT => 'onMqConnect',
         // MQTT PING
-        Types::PINGREQ => 'onMqPingreq',
+        Types::PINGREQ => 'onMqPingReq',
         // MQTT 断开连接
         Types::DISCONNECT => 'onMqDisconnect',
         // MQTT 发布消息
@@ -28,17 +31,17 @@ class Event {
     ];
 
     public function __construct(
-        protected Parser $parser,
-        protected ServicesCommand $servicesCommand
+        protected Parser $parser, protected ServicesCommand $servicesCommand
     ) {
         $this->protocol_level = $this->servicesCommand -> config -> get('mqttEvent@protocol_level', 5);
     }
+
 
     public function onReceive(Server $server, $fd, $from_id, $data): bool {
         $packet = $this->parser -> unpack($data, $this->protocol_level);
 
         // 非 MQTT协议 关闭连接
-        if (isset($packet['protocol_name']) && $packet['protocol_name'] !== 'MQTT') {
+        if (!$packet || (isset($packet['protocol_name']) && $packet['protocol_name'] !== 'MQTT')) {
             $server->close($fd);
             return false;
         }
@@ -48,23 +51,19 @@ class Event {
             $this->protocol_level = $packet['protocol_level'];
         }
 
+        $packet['protocol_level'] ??= $this->protocol_level;
         $handleClass = $this -> servicesCommand -> config -> get('messageType', MQTTEvent::class);
         $method = $this->MQEvent[$packet['type']] ?? 'onMessage';
 
         $server -> task([
             'callable' => [ $handleClass, $method ],
             'callable_params' => [
-                [
-                    'value' => $server::class,
-                    'type' => 'object'
-                ],
-                $packet, $fd,
-                [
-                    'value' => Config::class,
-                    'args' => $this->servicesCommand -> config -> toArray(),
-                    'isNew' => true,
-                    'type' => 'object',
-                ]
+                [ 'value' => $server::class, 'type' => 'object' ], $packet, $fd,
+                $this -> getTaskConfigArgs([
+                    'clientInfo' => $server -> getClientInfo($fd),
+                    'protocol_level' => $packet['protocol_level'],
+                    '_exists' => $this -> getUsernameConnectionStatus($server, $fd, $packet['user_name'] ?? '')
+                ])
             ]
         ]);
         return false;
@@ -89,8 +88,8 @@ class Event {
         // TODO: Implement onConnection() method.
     }
 
-
-    public function onClose(): void {
+    public function onClose(Server $server, int $fd, int $reactorId): void {
+        app(Subscribe::class) -> clearConnectByFd($fd);
     }
 
     /**

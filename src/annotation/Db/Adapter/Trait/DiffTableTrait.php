@@ -21,8 +21,8 @@ trait DiffTableTrait  {
         }
 
         $this -> checkColumnIndex($adapter, $table_structure['indexes'], $last_table_structure['indexes'])
-              -> checkAwaitRemoveColumns($adapter, $table_structure['columns'], $last_table_structure['columns'] ?? [])
-              -> checkAwaitRemoveIndexes($adapter, $table_structure['indexes'], $last_table_structure['indexes']);
+              -> checkAwaitRemoveColumns($adapter, $table_structure['columns'], $last_table_structure['columns'] ?? []);
+        $this -> checkAwaitRemoveIndexes($adapter, $table_structure['indexes'], $last_table_structure['indexes']);
 
         return true;
     }
@@ -30,8 +30,7 @@ trait DiffTableTrait  {
     protected function checkColumnIndex(CreateTableAdapterInterface $adapter, array $index, array $lastIndex): CreateTableAdapterInterface {
         foreach ($index as $column => $indexList) {
             foreach ($indexList as $indexType => $index) {
-                if (empty($lastIndex[$column][$indexType] ?? []))
-                    $adapter -> addIndex($adapter -> getTable(), $index);
+                if (empty($lastIndex[$column][$indexType] ?? [])) $adapter -> addIndex($adapter -> getTable(), $index);
             }
         }
         return $this;
@@ -42,7 +41,7 @@ trait DiffTableTrait  {
      * @param CreateTableAdapterInterface $adapter
      * @param array $columns
      * @param array $lastColumns
-     * @return bool
+     * @return CreateTableAdapterInterface
      */
     protected function checkAwaitRemoveColumns(CreateTableAdapterInterface $adapter, array $columns, array $lastColumns): CreateTableAdapterInterface {
         $nowColumnNames = array_keys($columns);

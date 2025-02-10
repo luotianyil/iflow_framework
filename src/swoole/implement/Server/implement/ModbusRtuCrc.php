@@ -4,7 +4,7 @@ namespace iflow\swoole\implement\Server\implement;
 
 class ModbusRtuCrc {
 
-    public function RtuCrc16(string $data): string {
+    public static function RtuCrc16(string $data): string {
         $string = unpack('H*', $data)[1];
         $crc = 0xFFFF;
         for ($x = 0, $xMax = \strlen($string); $x < $xMax; $x++) {
@@ -24,7 +24,7 @@ class ModbusRtuCrc {
     public function toHexCode(string $data): array {
         $data = str_replace(' ', '', $data);
         $str = pack('H*', $data);
-        $rtuCrc = $this->RtuCrc16($str);
+        $rtuCrc = static::RtuCrc16($str);
 
         return [
             strtoupper(unpack("H*", $rtuCrc)[1]),
@@ -47,11 +47,7 @@ class ModbusRtuCrc {
     }
 
     protected function hexDec(string $hex): int | float {
-        $dec = hexdec($hex);
-        if (hexdec($hex[0]) < 8) return $dec;
-        $bin = decbin($dec - 1); $strlen = strlen($bin); $fan = '';
-        for ($i = 0; $i < $strlen; $i++) $fan .= $bin[$i] == 1 ? '0' : '1';
-        return -bindec($fan);
+        return PackFormatter::hexToNumber($hex);
     }
     
 }

@@ -198,7 +198,6 @@ class IRedis implements AdapterInterface
 
     public function __call(string $name, array $arguments) {
         // TODO: Implement __call() method.
-        if (!method_exists($this->redis, $name)) return null;
         return call_user_func([ $this->redis, $name ], ...$arguments);
     }
 

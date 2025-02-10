@@ -37,8 +37,8 @@ class Service extends ServicesAbstract {
         $this->SwService -> start();
     }
 
-    public function onRequest(object $request, object $response): mixed {
-        return event('RequestVerification', $request, $response, microtime(true));
+    public function onRequest(object $request, object $response): void {
+        event('RequestVerification', $request, $response, microtime(true));
     }
 
     protected function getSwooleServiceClass(): string {

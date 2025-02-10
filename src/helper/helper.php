@@ -281,6 +281,14 @@ if (!function_exists('json')) {
     }
 }
 
+// 返回msgpack
+if (!function_exists('msgpack')) {
+    function msgpack($data, int $code = 200, array $headers = [], array $options = []): Json|Response {
+        return Response::create($data, $code, 'msgPack')
+            -> headers($headers) -> options($options);
+    }
+}
+
 // 返回xml
 if (!function_exists('xml')) {
     function xml(array $data, int $code = 200, array $headers = [], array $options = []): Xml|Response {

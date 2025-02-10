@@ -146,7 +146,7 @@ abstract class ServicesAbstract implements ServicesInterface {
         ] : [];
 
         if (empty($this->_params))
-            $this->_params = $this->config -> get('host') ?: $this->config -> get('listener');
+            $this->_params = $this->config -> get('host', $this->config -> get('listener'));
         $this->_params = array_values($this->_params);
 
         return $this;

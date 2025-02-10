@@ -5,9 +5,13 @@ namespace iflow\swoole\implement\Server\Mqtt\Packet\abstracts;
 use iflow\swoole\Config;
 use iflow\swoole\implement\Server\Mqtt\Packet\MQTT;
 use iflow\swoole\implement\Server\Mqtt\Packet\Parser;
+use iflow\swoole\implement\Server\Mqtt\Packet\ReceiveInterface;
+use iflow\swoole\implement\Server\Mqtt\Subscribe\Subscribe;
+use Simps\MQTT\Hex\ReasonCode;
+use Simps\MQTT\Protocol\Types;
 use Swoole\Server;
 
-abstract class ReceiveAbstract {
+abstract class ReceiveAbstract implements ReceiveInterface {
 
     protected MQTT $MQTTPacket;
 
@@ -15,22 +19,67 @@ abstract class ReceiveAbstract {
         $this->MQTTPacket = new MQTT(new Parser());
     }
 
-    // MQTT 连接初始化
-    abstract public function onMqConnect(Server $server, array $data, int $fd, Config $config): bool;
+    /**
+     * 权限校验
+     * @param array $data
+     * @param Config $config
+     * @return int
+     */
+    protected function checkAuth(array $data, Config $config): int {
+        $auth = $config -> get('subscribe@auth');
+        if (!$auth) return ReasonCode::SUCCESS;
 
-    // MQTT PING
-    abstract public function onMqPingReq(Server $server, array $data, int $fd, Config $config): bool;
+        $auth = valid_closure($auth, [ $data ]);
+        return $auth($data, $config);
+    }
 
-    // MQTT 断开连接
-    abstract public function onMqDisconnect(Server $server, array $data, int $fd, Config $config): bool;
+    protected function getProtocolLevel(Config $config): int {
+        return $config -> get(
+            'mqttEvent@protocol_level', $config -> get('protocol_level', 5)
+        );
+    }
 
-    // MQTT 发布主题
-    abstract public function onMqPublish(Server $server, array $data, int $fd, Config $config): bool;
+    protected function publishByTopic(
+        Server $server, string $topic, array $data, Config $config, int $fd = 0
+    ): void {
+        $topicAllFd = app(Subscribe::class) -> getSubscribeTopicAllFd($topic);
+        if (($rIndex = array_search($fd, $topicAllFd)) !== false) unset($topicAllFd[$rIndex]);
 
-    // MQTT 发布订阅
-    abstract public function onMqSubscribe(Server $server, array $data, int $fd, Config $config): bool;
+        array_map(function (int $_fd) use ($server, $topic, $data, $config, $fd) {
+            $server -> send(
+                $_fd,
+                $this -> MQTTPacket
+                    -> setMessageId($data['message_id'] ?? 0)
+                    -> setMessage($data['message'] ?? '')
+                    -> setTopic($topic)
+                    -> setType(Types::PUBLISH)
+                    -> setCode(ReasonCode::SUCCESS)
+                    -> setQos($data['qos'] ?? ReasonCode::GRANTED_QOS_0)
+                    -> setProperties(
+                        $config -> get('MQTTOptions@properties')
+                    )
+                    -> pack($this -> getProtocolLevel($config))
+            );
+        }, $topicAllFd);
 
-    // MQTT 取消订阅
-    abstract public function onMqUnsubscribe(Server $server, array $data, int $fd, Config $config): bool;
+    }
+
+
+    /**
+     * 获取当前消息的所有主题名称
+     * @param array $topics
+     * @return array
+     */
+    protected function getTopicNameByPublish(array $topics): array {
+        $topicNames = [];
+        foreach ($topics as $topic => $topicNameOrOptions) {
+            if (is_integer($topic)) {
+                $topicNames[] = $topicNameOrOptions;
+                continue;
+            }
+            $topicNames[] = $topic;
+        }
+        return $topicNames;
+    }
 
 }

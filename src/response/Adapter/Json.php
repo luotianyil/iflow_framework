@@ -23,8 +23,7 @@ class Json extends Response
      * @return string
      * @throws \Exception|\Throwable
      */
-    public function output($data) : string
-    {
+    public function output($data) : string {
         try {
             $data = json_encode($data, $this->options['json_encode']);
             if (false === $data) throw new \InvalidArgumentException(json_last_error_msg());

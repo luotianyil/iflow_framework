@@ -11,7 +11,7 @@ class Pid {
     }
 
     public function getPid(): int {
-        if (is_readable($this->file)) {
+        if (file_exists($this->file) && is_readable($this->file)) {
             return (int) file_get_contents($this->file);
         }
         return 0;

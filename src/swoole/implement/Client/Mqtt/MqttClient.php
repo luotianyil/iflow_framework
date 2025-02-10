@@ -7,6 +7,7 @@ use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
 use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\swoole\Config;
+use iflow\swoole\Exceptions\ConnectionException;
 use Simps\MQTT\Client;
 use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Hex\ReasonCode;
@@ -55,7 +56,7 @@ class MqttClient {
      * 链接服务端
      * @return bool
      * @throws InvokeClassException
-     * @throws InvokeFunctionException
+     * @throws InvokeFunctionException|AttributeTypeException|ConnectionException
      */
     protected function connection(): bool {
         $config = $this -> callback($this->config -> get('connectBefore'));
@@ -72,7 +73,9 @@ class MqttClient {
             logs('error', 'connect failed. Error', $res) -> update();
             return false;
         }
-
+        if (isset($res['code']) && $res['code'] !== ReasonCode::SUCCESS) throw new ConnectionException(
+            'CONNECTION FAIL RESULT-CODE: ' . $res['code']
+        );
         return true;
     }
 
