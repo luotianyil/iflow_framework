@@ -19,12 +19,14 @@ use Exception;
 
 /**
  * Class App
+ * @property Config $config
+ * @property Request $request
+ * @property Response $response
+ * @property Error $error
  * @mixin Container
  * @package iflow
  */
-abstract class App {
-
-    private Container $container;
+abstract class App extends Container {
 
     final protected const version = '0.0.1 beta';
 
@@ -60,6 +62,15 @@ abstract class App {
 
     protected array $frameWorkFolder = [ 'app', 'runtime', 'config', 'public' ];
 
+    protected array $aliases = [
+        'config'    => Config::class,
+        'event'     => Event::class,
+        'log'       => Log::class,
+        'request'   => Request::class,
+        'response'  => Response::class,
+        'error'     => Error::class,
+    ];
+
     public function __construct(string $rootPath = '') {
         $rootPath = $rootPath ?: dirname(__DIR__, 3);
         $this -> setFrameworkPath(rtrim($rootPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
@@ -73,8 +84,9 @@ abstract class App {
      * @throws Exception
      */
     public function run(): void {
-        $this -> register('iflow\\App', $this);
-        $this -> register($this->getAppClassName(), $this);
+        self::setInstance($this);
+        $this -> instance(App::class, $this);
+        $this -> instance($this->getAppClassName(), $this);
         if ($this -> frameWorkDirInit()) {
             $this -> load() -> initializer();
         }
@@ -96,12 +108,12 @@ abstract class App {
 
     /**
      * 加载基础服务
-     * @return App
+     * @return void
      * @throws InvokeClassException
      * @throws InvokeFunctionException|AttributeTypeException
      */
-    public function initializer(): App {
-        return $this -> boot();
+    public function initializer(): void {
+        $this -> boot();
     }
 
     /**
@@ -208,6 +220,7 @@ abstract class App {
 
     /**
      * 获取运行路径
+     * @param string $path
      * @return string
      */
     public function getRuntimePath(string $path = '') : string {
@@ -242,9 +255,4 @@ abstract class App {
         return $this->startTimes;
     }
 
-    public function __call(string $name, array $arguments) {
-        // TODO: Implement __call() method.
-        $this->container ??= Container::getInstance();
-        return call_user_func([ $this->container, $name ], ...$arguments);
-    }
 }

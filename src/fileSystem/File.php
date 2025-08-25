@@ -9,7 +9,6 @@ use iflow\fileSystem\implement\FileList;
 /**
  * Class File
  * @package iflow\fileSystem
- * @property FileList $fileList
  */
 class File {
 
@@ -17,7 +16,7 @@ class File {
 
     protected array $config = [];
 
-    public function initializer() {
+    public function initializer(): File {
         $this->fileList = app(FileList::class);
         return $this;
     }
@@ -29,8 +28,7 @@ class File {
         return Container::getInstance()->invokeClass($class, [$file, $this->config]);
     }
 
-    public function readFile($path): string|\Generator
-    {
+    public function readFile($path): string|\Generator {
         if (file_exists($path)) {
             $fp = fopen($path, "r");
             while (!feof($fp)) yield fgets($fp);

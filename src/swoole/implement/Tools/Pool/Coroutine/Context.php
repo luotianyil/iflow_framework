@@ -16,6 +16,22 @@ class Context {
     }
 
     /**
+     * 获取协程ID
+     * @return int
+     */
+    public static function getCoroutineId(): int {
+        return Coroutine::getuid();
+    }
+
+    /**
+     * 获取是否为协程
+     * @return bool
+     */
+    public static function isCoroutine(): bool {
+        return self::getCoroutineId() > 0;
+    }
+
+    /**
      * 获取当前协程id
      * @return mixed
      */
@@ -34,10 +50,13 @@ class Context {
         return Coroutine::getPcid($cid);
     }
 
-    public static function getDataArrayObject(?int $cid = 0): \ArrayObject
+    public static function getDataArrayObject(?int $cid = 0, bool $root = false): \ArrayObject
     {
         $context = self::get($cid);
-        if (!isset($context['data'])) $context['data'] = new \ArrayObject();
+        if (!isset($context['data'])) {
+            $context['data'] = new \ArrayObject();
+            $context['data'] -> offsetSet('__is_root', $root);
+        }
         return $context['data'];
     }
 
@@ -61,8 +80,7 @@ class Context {
      * @param ?int $cid
      * @return bool
      */
-    public static function hasData(string $key, ?int $cid = 0): bool
-    {
+    public static function hasData(string $key, ?int $cid = 0): bool {
         return self::getDataArrayObject($cid) -> offsetExists($key);
     }
 

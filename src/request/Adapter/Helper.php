@@ -5,7 +5,7 @@ namespace iflow\request\Adapter;
 
 
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
-use iflow\fileSystem\implement\UpLoadFile;
+use iflow\fileSystem\implement\UploadFile;
 
 trait Helper {
 
@@ -111,7 +111,6 @@ trait Helper {
         if (!in_array($type, ['post', 'get', 'header'])) {
             return false;
         }
-
 //        return array_key_exists($paramName, $this->request -> {$type});
         return !empty($this->request -> {$type}[$paramName]);
     }
@@ -194,7 +193,7 @@ trait Helper {
      * @param string $default
      * @return string|array|null
      */
-    protected function get(string $name, string $type, mixed $default = ''): mixed {
+    protected function get(string $name, string $type = 'get', mixed $default = ''): mixed {
         if ($this->has($name, $type)) {
             return $this->request -> {$type}[$name] ?? $default;
         }
@@ -204,11 +203,11 @@ trait Helper {
     /**
      * 获取上传文件
      * @param string $name
-     * @return UpLoadFile|UpLoadFile[]
+     * @return UploadFile|UploadFile[]
      * @throws InvokeClassException
      */
-    public function file(string $name = ''): UpLoadFile|array {
-        $upLoadFile = app(UpLoadFile::class);
+    public function file(string $name = ''): UploadFile|array {
+        $upLoadFile = app(UploadFile::class);
         $file = $name === '' ? $upLoadFile -> getFileList() : $upLoadFile -> getFile($name);
         return $file ?: [];
     }

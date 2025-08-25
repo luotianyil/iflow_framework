@@ -12,7 +12,9 @@ trait RequestTrait {
     use ValidRequest;
 
     protected string $version = '';
+
     protected ?RequestInterface $requestPsr7 = null;
+
     protected ?ServerRequestInterface $serverRequestPsr7 = null;
 
     /**

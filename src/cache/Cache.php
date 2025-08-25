@@ -6,6 +6,9 @@ namespace iflow\cache;
 use iflow\cache\Adapter\File\File;
 use iflow\cache\Adapter\Redis\Redis;
 use iflow\Container\Container;
+use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
+use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 
 /**
  * @mixin Redis
@@ -19,11 +22,15 @@ class Cache {
 
     protected string $namespace = '\\iflow\\cache\\Adapter\\';
 
-    protected function getConfig(string|array $default = '')
-    {
+    protected function getConfig(string|array $default = ''): void {
         $this->config = is_string($default) ? config('cache@stores.'.$default) : $default;
     }
 
+    /**
+     * @param string|array $name
+     * @return Redis|File
+     * @throws AttributeTypeException | InvokeClassException | InvokeFunctionException
+     */
     public function store(string|array $name = ''): Redis | File {
         if (is_string($name)) {
             $name = $name ?: config('cache@default');
@@ -34,9 +41,9 @@ class Cache {
         $type = ucfirst($this->config['type']);
         $class = sprintf("%s%s\\%s", $this->namespace, $type, $type);
 
-        if (Container::getInstance() -> has($class))
-            return Container::getInstance() -> get($class);
+        if (app() -> has($class))
+            return app() -> get($class);
 
-        return Container::getInstance() -> make($class) -> initializer($this->config);
+        return app() -> make($class) -> initializer($this->config);
     }
 }

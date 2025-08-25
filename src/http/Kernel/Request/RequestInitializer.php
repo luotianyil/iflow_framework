@@ -46,7 +46,6 @@ class RequestInitializer extends RequestVerification {
         } catch (\Throwable $exception) {
             return app(Error::class) -> appHandler($exception);
         }
-
         return $this;
     }
 
@@ -161,7 +160,7 @@ class RequestInitializer extends RequestVerification {
         $class = empty($params[$keys[0]]['class']) || isset($params['class'])
                 ? $params['class'] : $params[$keys[0]]['class'];
 
-        $container = Container::getInstance();
+        $container = app();
         $ref = new \ReflectionClass($class);
 
         // 如果是接口类型则从容器中实例化对象

@@ -5,11 +5,14 @@ namespace iflow\session;
 use iflow\Helper\Arr\Arr;
 use iflow\session\Adapter\abstracts\SessionAbstracts;
 
-class Session
-{
+class Session {
+
     protected string $namespace = '\\iflow\\session\\Adapter\\';
+
     protected array $config = [];
+
     protected ?SessionAbstracts $session = null;
+
     protected mixed $sessionId = '';
 
     // 存放的session信息
@@ -25,7 +28,7 @@ class Session
         $this->config = config('session');
         if (!$this->config) throw new \Exception('session config null');
         $class = $this->namespace . ucfirst($this->config['type']);
-        $this -> session = app($class, [], true) -> initializer($this->config);
+        $this -> session = app($class, isNew:  true) -> initializer($this -> config);
 
         $this->sessionId = $this->getSessionId();
 
@@ -92,11 +95,11 @@ class Session
      * @throws \Exception
      */
     public function save(): bool {
+        if ($this -> sessionTools ?? null) return true;
 
         if ($this->sessionTools -> count() === 0) {
             return true;
         }
-
         return $this->session -> set($this->getSessionId(), $this->sessionTools -> all());
     }
 }

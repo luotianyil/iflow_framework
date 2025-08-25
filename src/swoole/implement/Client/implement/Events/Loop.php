@@ -11,11 +11,11 @@ class Loop {
         callable $read_callback = null,
         callable $write_callback = null,
         int $flags = SWOOLE_EVENT_READ
-    ) {
+    ): bool|int {
         return Event::add(...func_get_args());
     }
 
-    public function eventSet() {
+    public function setEvent(): bool {
         return Event::set(...func_get_args());
     }
 
@@ -30,8 +30,8 @@ class Loop {
     }
 
 
-    public function wait() {
-        return Event::wait();
+    public function wait(): void {
+        Event::wait();
     }
 
 }

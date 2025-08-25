@@ -118,7 +118,7 @@ abstract class RequestVerification extends SubjectAbstract {
     /**
      * 前置路由验证
      * @return bool
-     * @throws InvokeClassException
+     * @throws InvokeClassException|ErrorException
      */
     protected function RouterBeforeValidate(): bool {
         if ($this->isStaticResources($this->request -> request_uri)) return true;
@@ -137,7 +137,7 @@ abstract class RequestVerification extends SubjectAbstract {
     protected function RunMiddleware(): bool {
         $app = app();
         return $this->ResponseBodyValidate(
-            $app -> make(Middleware::class)
+            $app -> invokeClass(Middleware::class)
                  -> initializer($app, $this->request, $this->response)
         );
     }
@@ -164,18 +164,17 @@ abstract class RequestVerification extends SubjectAbstract {
     }
 
     /**
-     * 运行AOP拦截
+     * 运行 AOP 切面
      * @return bool
-     * @throws InvokeClassException|ErrorException
+     * @throws AttributeTypeException | ErrorException | InvokeClassException | InvokeFunctionException
      */
     protected function RunAop(): bool {
-
         if ($this->triggerRequestHook('RequestBeforeHook', $this->request, $this->response, $this->router) === null)
             return false;
 
         $this->RequestQueryParams = $this->GenerateRequestQueryParams($this -> router['parameter']);
 
-        $aop = app(Aop::class) -> process(
+        $aop = app() -> invokeClass(Aop::class) -> process(
             $this->RequestController[0], $this->RequestController[1], ...$this -> RequestQueryParams
         );
 

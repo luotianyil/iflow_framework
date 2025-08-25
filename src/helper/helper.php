@@ -41,7 +41,7 @@ if (!function_exists('app')) {
      * @template T
      */
     function app(string $name = '', array $args = [], bool $isNew = false, ?callable $call = null): object {
-        if ($name === '')  return Container::getInstance() -> get(App::class);
+        if ($name === '') return Container::getInstance();
         return Container::getInstance() -> make($name, $args, $isNew, $call);
     }
 }

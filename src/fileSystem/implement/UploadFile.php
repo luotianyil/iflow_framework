@@ -7,7 +7,7 @@ use iflow\exception\Adapter\HttpException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
-class UpLoadFile extends FileSystem implements UploadedFileInterface
+class UploadFile extends FileSystem implements UploadedFileInterface
 {
 
     protected array $fileList = [];
@@ -26,7 +26,7 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
         parent::__construct($filename);
     }
 
-    public function setFile($name, $file): UpLoadFile {
+    public function setFile($name, $file): UploadFile {
         $file['error'] = $file['error'] ?? 0;
         if ($file['error'] === 0) $this->fileList[$name][] = new self($file['tmp_name']);
         return $this;
@@ -49,7 +49,10 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
         return $this->fileList[$index] ?? null;
     }
 
-    // 读取文件
+    /**
+     * 读取文件
+     * @return string
+     */
     public function read(): string
     {
         return file_get_contents($this->getPathname());
@@ -86,9 +89,7 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
     protected function fileNameHash(array $config = []): mixed
     {
         $fileNameType = $config['type'] ?? 'hash';
-        $fileNameType = is_string($fileNameType) ? [
-            $fileNameType
-        ] : [
+        $fileNameType = is_string($fileNameType) ? [ $fileNameType ] : [
             array_keys($fileNameType),
             $fileNameType['algo'] ?? 'sha1'
         ];
@@ -115,9 +116,9 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
     /**
      * 验证文件规则
      * @param array $validate
-     * @return UpLoadFile
+     * @return UploadFile
      */
-    protected function validate(array $validate): UpLoadFile
+    protected function validate(array $validate): UploadFile
     {
         $validate = array_merge($this->defValidate, $validate);
         if (count($validate['mineType']) > 0) {
@@ -169,7 +170,7 @@ class UpLoadFile extends FileSystem implements UploadedFileInterface
      * 清除文件列表
      * @return $this
      */
-    public function clear(): upLoadFile {
+    public function clear(): UploadFile {
         $this->fileList = [];
         return $this;
     }

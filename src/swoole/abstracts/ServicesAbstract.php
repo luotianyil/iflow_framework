@@ -161,7 +161,6 @@ abstract class ServicesAbstract implements ServicesInterface {
         foreach ($this->events as $eventName => $event) {
             $eventCallback = is_array($event) ? [ $event[0], $event[1] ] : [ $eventObject, $event ];
             $server = is_array($event) && count($event) > 2 ? $event[2] : $this->getSwService();
-
             $server -> on($eventName, $eventCallback);
         }
         return $this;

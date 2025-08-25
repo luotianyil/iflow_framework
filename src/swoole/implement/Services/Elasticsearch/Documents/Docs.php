@@ -20,12 +20,10 @@ class Docs {
         return $this->sendRequest('DELETE', sprintf("%s%s/%s", $indexName, $this->getTypeName($typeName), $docId));
     }
 
-    public function deleteDocsBulk(array $docs, string $indexName, string $typeName = '')
-    {
+    public function deleteDocsBulk(array $docs, string $indexName, string $typeName = '') {
         $docs = $this->bulk($docs, $indexName, $typeName, 'delete');
         if ($docs) return $this->sendRequest('POST',"_bulk", $docs);
         return false;
-
     }
 
     /**
@@ -110,7 +108,6 @@ class Docs {
         if ($docs) return $this->sendRequest('GET',sprintf("%s%s/_msearch", $indexName, $typeName ? '/'.$typeName : ''), $docs);
         return false;
     }
-
 
     public function countDoc(string $indexName, string $typeName = '', bool $isRefresh = false): mixed {
         return $this->sendRequest($isRefresh ? 'POST' : 'GET',

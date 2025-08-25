@@ -10,8 +10,8 @@ abstract class Faceted {
     protected static bool $isNew = false;
 
     protected static function  createFacade(string $class = '', array $args = [], bool $isNew = false): object {
-        $class = $class?:static::class;
-        $class =  static::getFaceClass()?:$class;
+        $class = $class ?: static::class;
+        $class =  static::getFaceClass() ?: $class;
         $isNew = static::$isNew ?: $isNew;
         return Container::getInstance() -> make($class, $args, $isNew);
     }

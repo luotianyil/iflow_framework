@@ -5,7 +5,9 @@ namespace iflow\event;
 use Closure;
 use Exception;
 use iflow\App;
+use iflow\Container\implement\annotation\exceptions\AttributeTypeException;
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
+use iflow\Container\implement\generate\exceptions\InvokeFunctionException;
 use iflow\event\Adapter\Abstracts\SubjectAbstract;
 use iflow\event\Adapter\AppDefaultEvent\RequestEndEvent;
 use iflow\Helper\Arr\Arr;
@@ -28,7 +30,10 @@ class Event {
     ];
 
     /**
+     * @param App $app
+     * @return void
      * @throws InvokeClassException
+     * @throws AttributeTypeException | InvokeFunctionException
      */
     public function initializer(App $app): void {
         $this -> app = $app;

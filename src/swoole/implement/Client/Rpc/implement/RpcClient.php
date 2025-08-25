@@ -77,14 +77,13 @@ class RpcClient implements ProxyRpcInterface {
      */
     public function request(string $name, array $params): string|array {
         // TODO: Implement request() method.
-
         $params['client_name'] = $this->rpcServerName;
         $params['event'] = $params['event'] ?? 3;
 
         $this->rpcRequest = rpc(
             $this->rpcServerIp ?: app(ServicesCommand::class) -> config -> get('listeners@rpc_server.host'),
             $this->rpcServerPort ?: app(ServicesCommand::class) -> config -> get('listeners@rpc_server.port'),
-            "{$this -> requestBaseUrl}/{$name}",
+            "{$this -> requestBaseUrl}/$name",
             $this->isSsl,
             $params
         );

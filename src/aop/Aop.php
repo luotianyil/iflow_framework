@@ -45,6 +45,7 @@ class Aop {
     public function process(string $class, string $method, ...$args): bool|Aop {
         // 统计切面， 以批量执行
         $aspects = [];
+        $this -> aspects = config('aop@aspects');
         if (count($this->aspects) === 0) return false;
         foreach ($this->aspects as $aspect => $classes) {
             foreach ($classes as $className) {
@@ -83,7 +84,9 @@ class Aop {
      * @param array $aspectArray
      */
     public function addAspect(string $class, array $aspectArray): void {
-        $this->aspects[$class] = $aspectArray;
+        $this->config['aspects'] ??= [];
+        $this->config['aspects'][$class] = $aspectArray;
+        config($this -> config, 'aop');
     }
 
     /**

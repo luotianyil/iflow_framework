@@ -4,7 +4,7 @@
 namespace iflow;
 
 use iflow\Container\implement\generate\exceptions\InvokeClassException;
-use iflow\fileSystem\implement\UpLoadFile;
+use iflow\fileSystem\implement\UploadFile;
 use iflow\request\RequestTrait;
 
 class Request {
@@ -45,7 +45,7 @@ class Request {
      */
     protected function withFile(): Request {
         $files = $this->request -> files ?? [];
-        $upLoadFile = app(UpLoadFile::class) -> clear();
+        $upLoadFile = app(UploadFile::class) -> clear();
         foreach ($files as $key => $value) {
             $upLoadFile -> setFile($key, $value);
         }

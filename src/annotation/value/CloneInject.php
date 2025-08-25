@@ -2,10 +2,11 @@
 
 namespace iflow\annotation\value;
 
-use iflow\Container\implement\annotation\tools\data\Inject;
+use Attribute;
 use Reflector;
+use iflow\Container\implement\annotation\tools\data\Inject;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY|\Attribute::TARGET_PARAMETER)]
+#[Attribute(Attribute::TARGET_PROPERTY| Attribute::TARGET_PARAMETER)]
 class CloneInject extends Inject {
 
     public function getValue(Reflector $ref, ?object $object = null, array &$args = []): mixed {

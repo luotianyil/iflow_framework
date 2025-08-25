@@ -21,12 +21,12 @@ class Parser {
         return $this -> Protocol($protocol_level === 5 ? V5::class : V3::class , $data, 'pack');
     }
 
-    protected function Protocol($class, $data, $func = 'unpack'): mixed
-    {
+    protected function Protocol($class, $data, $func = 'unpack'): mixed {
         try {
             if (class_exists($class)) return $class::$func($data);
-        } catch (\Exception $exception) {
-            logs('error', $exception -> getMessage()) -> update();
+        } catch (\Exception) {
+            $class = $class === V5::class ? V3::class : V5::class;
+            return $class::$func($data);
         }
         return '';
     }

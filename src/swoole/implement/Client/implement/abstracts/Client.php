@@ -13,13 +13,14 @@ abstract class Client {
         $this->client = new \Swoole\Client($this->serverConfig['mode'] ?? SWOOLE_TCP);
     }
 
-    protected function Connection() {
+    protected function Connection(): void {
         Timer::tick(intval($this -> serverConfig['re_connection']), function (int $timer_id) {
             if ($this->client -> connect($this->serverConfig['host'], $this->serverConfig['port'])) {
                 Timer::clear($timer_id);
                 return $this->wait();
             }
             $this->services ?-> getServicesCommand() -> Console -> outWrite('Connection FAIL errCode: ' . $this->client -> errCode);
+            return null;
         });
     }
 
